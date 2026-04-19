@@ -70,14 +70,22 @@ img{display:block}
 .menu-toggle{display:none;flex-direction:column;gap:5px;padding:8px}
 .menu-toggle span{width:22px;height:1.5px;background:var(--black);transition:all .3s}
 
-/* HERO */
-.hero{min-height:100vh;background:#050505;color:var(--white);display:flex;align-items:center;position:relative;padding:120px 0 80px;overflow:hidden}
-.hero::before{content:"N-LIVE";position:absolute;font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(180px,30vw,420px);letter-spacing:-.05em;color:rgba(255,255,255,.018);bottom:-6%;right:-4%;line-height:.85;pointer-events:none;z-index:1}
-/* Subtle ambient glow behind meteor canvas */
-.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 75% 20%,rgba(255,182,39,.08) 0%,transparent 55%),radial-gradient(ellipse at 20% 80%,rgba(45,123,255,.06) 0%,transparent 55%);pointer-events:none;z-index:1}
+/* HERO — DEEP SPACE */
+.hero{min-height:100vh;background:radial-gradient(ellipse at 50% 50%,#0a0a14 0%,#030308 70%,#000 100%);color:var(--white);display:flex;align-items:center;position:relative;padding:120px 0 80px;overflow:hidden}
+/* Distant nebula clouds — very soft, blue/purple/amber whisper */
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:
+  radial-gradient(ellipse 60% 40% at 78% 18%,rgba(45,123,255,.10) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 18% 78%,rgba(255,77,58,.07) 0%,transparent 60%),
+  radial-gradient(ellipse 45% 30% at 50% 50%,rgba(120,80,200,.05) 0%,transparent 65%),
+  radial-gradient(ellipse 40% 30% at 88% 75%,rgba(0,214,122,.06) 0%,transparent 60%);
+  filter:blur(2px)}
+/* Subtle ambient warm glow */
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 75% 20%,rgba(255,182,39,.06) 0%,transparent 55%);pointer-events:none;z-index:1}
 /* Meteor canvas layer */
-.meteor-bg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:1;opacity:.95}
-@media(prefers-reduced-motion:reduce){.meteor-bg{opacity:.5}}
+.meteor-bg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:2;opacity:1}
+/* Suppress global noise overlay over hero (keeps space feeling clean) */
+.hero ~ .noise,.hero .noise{display:none}
+@media(prefers-reduced-motion:reduce){.meteor-bg{opacity:.6}}
 .hero-content{position:relative;z-index:2;width:100%}
 .hero-eyebrow{font-size:12px;letter-spacing:.3em;font-weight:600;margin-bottom:40px;opacity:.6;text-transform:uppercase}
 .hero-eyebrow::before{content:"— "}

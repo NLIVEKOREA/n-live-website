@@ -81,10 +81,12 @@ export default function MeteorBackground() {
     interface Star {
       x: number;
       y: number;
+      r: number;
       base: number;
       twinkle: number;
       speed: number;
-      color: Color;
+      color: Color | null; // null = white
+      glow: boolean;
     }
 
     const meteors: Meteor[] = [];
@@ -92,16 +94,38 @@ export default function MeteorBackground() {
     const bursts: Burst[] = [];
     const stars: Star[] = [];
 
-    // Build a sparse field of static twinkle stars in our brand colors
-    const STAR_COUNT = reduce ? 18 : 36;
+    // Deep space starfield: tiered (distant tiny, mid, bright accents)
+    const STAR_COUNT = reduce ? 90 : 220;
     for (let i = 0; i < STAR_COUNT; i++) {
+      const tier = Math.random();
+      let r: number, base: number, glow: boolean;
+      if (tier < 0.7) {
+        // distant tiny
+        r = 0.5 + Math.random() * 0.6;
+        base = 0.15 + Math.random() * 0.3;
+        glow = false;
+      } else if (tier < 0.93) {
+        // mid
+        r = 0.9 + Math.random() * 0.7;
+        base = 0.35 + Math.random() * 0.3;
+        glow = false;
+      } else {
+        // bright accents (occasionally colored)
+        r = 1.3 + Math.random() * 0.9;
+        base = 0.55 + Math.random() * 0.3;
+        glow = true;
+      }
+      // ~85% white, ~15% colored brand tint
+      const colored = Math.random() < 0.15;
       stars.push({
         x: Math.random(),
         y: Math.random(),
-        base: 0.15 + Math.random() * 0.4,
+        r,
+        base,
         twinkle: Math.random() * Math.PI * 2,
-        speed: 0.005 + Math.random() * 0.01,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        speed: 0.0015 + Math.random() * 0.006,
+        color: colored ? COLORS[Math.floor(Math.random() * COLORS.length)] : null,
+        glow,
       });
     }
 
@@ -181,15 +205,23 @@ export default function MeteorBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Twinkle stars
+      // Deep-space starfield with twinkle
       for (const s of stars) {
         s.twinkle += s.speed * dt;
-        const alpha = s.base + Math.sin(s.twinkle) * 0.25;
-        const a = Math.max(0, Math.min(0.7, alpha));
-        ctx.fillStyle = `rgba(${s.color.rgb},${a})`;
+        const alpha = s.base + Math.sin(s.twinkle) * 0.22;
+        const a = Math.max(0.05, Math.min(0.95, alpha));
+        const px = s.x * width;
+        const py = s.y * height;
+        const rgb = s.color ? s.color.rgb : "255,255,255";
+        if (s.glow) {
+          ctx.shadowColor = s.color ? s.color.core : "#ffffff";
+          ctx.shadowBlur = 8;
+        }
+        ctx.fillStyle = `rgba(${rgb},${a})`;
         ctx.beginPath();
-        ctx.arc(s.x * width, s.y * height, 1.1, 0, Math.PI * 2);
+        ctx.arc(px, py, s.r, 0, Math.PI * 2);
         ctx.fill();
+        if (s.glow) ctx.shadowBlur = 0;
       }
 
       // Spawn meteors at intervals
