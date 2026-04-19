@@ -8,7 +8,7 @@ const C: Record<Lang, any> = {
   ko: {
     crumb: "NETWORK · 자원 풀",
     h1: "왕홍 · 연예인 · 크리에이터 — 검증된 자원 풀.",
-    lead: "중국 왕홍 1,500+ 통합 네트워크와 한국 정상급 연예인 200+ 협업 풀, 그리고 한국 라이브 크리에이터까지 — 단일 창구로 매칭합니다.",
+    lead: "검증 협력 브랜드 150+ · 한·중 라이브커머스 셀러 500+ · 한국 인플루언서 200+ · 한국 정상급 연예인 100+. 모두 직접 미팅을 거친 풀에서 매칭합니다.",
     eb1: "WANGHONG INFRASTRUCTURE", st1: "콘텐츠 왕홍과 커머스 왕홍, 두 축의 운영",
     sl1: "중국 왕홍은 역할과 목적에 따라 운영 방식이 다릅니다. 엔라이브는 브랜드 단계에 맞춰 두 축을 조합해 운영합니다.",
     wh: [
@@ -17,10 +17,10 @@ const C: Record<Lang, any> = {
     ],
     eb2: "KOREAN INFLUENCER POOL", st2: "한국 인플루언서 4단계 풀",
     tiers: [
-      { n: "10+", t: "쇼호스트 · 방송 MC", d: "라이브커머스 전문 진행 · 뷰티·패션·라이프 카테고리 · 한중 2개국어 가능." },
+      { n: "10+", t: "쇼호스트 · 방송 MC", d: "라이브커머스 전문 진행 · 뷰티·패션·라이프 카테고리 · 한·중 2개국어 가능." },
       { n: "30+", t: "라이브 크리에이터", d: "Grip 등 플랫폼 크리에이터 · 누적 판매 실적 보유 · 카테고리별 전문." },
-      { n: "1,500+", t: "KOL · 크리에이터 풀", d: "Instagram · YouTube · 샤오홍슈 · 주요 MCN 연동 · 카테고리별 매칭." },
-      { n: "200+", t: "정상급 연예인", d: "배우 · K-POP · 가수 · BASIC/PREMIUM/유가 · PPL · 드라마 PPL." },
+      { n: "200+", t: "한국 유명 인플루언서", d: "Instagram · YouTube · 샤오홍슈 · 주요 MCN 연동 · 메가부터 마이크로까지 카테고리별 매칭." },
+      { n: "100+", t: "정상급 연예인", d: "배우 · K-POP · 가수 · BASIC/PREMIUM/유가 · PPL · 드라마 PPL." },
     ],
     ctaH: "특정 왕홍이나 연예인 매칭이 필요하신가요?", ctaP: "브랜드 카테고리와 목표를 알려주시면 맞춤 후보를 제안드립니다.",
     ctaB: "매칭 문의 →",
@@ -29,7 +29,7 @@ const C: Record<Lang, any> = {
   en: {
     crumb: "NETWORK · Resource Pool",
     h1: "Wanghongs · Celebrities · Creators — Verified Resource Pool.",
-    lead: "1,500+ Chinese wanghong integrated network, 200+ top-tier Korean celebrity collaboration pool, plus Korean live creators — all matched through a single window.",
+    lead: "150+ verified partner brands · 500+ K-CN live commerce sellers · 200+ Korean influencers · 100+ top-tier Korean celebrities. All matched from pools we've met directly.",
     eb1: "WANGHONG INFRASTRUCTURE", st1: "Content Wanghong vs Commerce Wanghong — Two-Axis Operation",
     sl1: "Chinese wanghongs operate differently depending on role and purpose. N-LIVE combines both axes according to brand stage.",
     wh: [
@@ -40,8 +40,8 @@ const C: Record<Lang, any> = {
     tiers: [
       { n: "10+", t: "Show Hosts · Broadcast MCs", d: "Live commerce specialists · beauty/fashion/lifestyle categories · bilingual Korean–Chinese." },
       { n: "30+", t: "Live Creators", d: "Platform creators on Grip and others · proven sales records · category specialists." },
-      { n: "1,500+", t: "KOL · Creator Pool", d: "Instagram · YouTube · Xiaohongshu · major MCN integration · category-matched." },
-      { n: "200+", t: "Top-Tier Celebrities", d: "Actors · K-POP · singers · BASIC / PREMIUM / paid · PPL · drama PPL." },
+      { n: "200+", t: "Korean Influencers", d: "Instagram · YouTube · Xiaohongshu · major MCN integration · mega to micro, category-matched." },
+      { n: "100+", t: "Top-Tier Celebrities", d: "Actors · K-POP · singers · BASIC / PREMIUM / paid · PPL · drama PPL." },
     ],
     ctaH: "Need a specific wanghong or celebrity match?", ctaP: "Share your brand category and goals — we'll propose tailored candidates.",
     ctaB: "Inquire about matching →",
@@ -50,7 +50,7 @@ const C: Record<Lang, any> = {
   zh: {
     crumb: "网络 · 资源池",
     h1: "达人 · 艺人 · 创作者 — 经验证的资源池。",
-    lead: "1,500+ 中国达人整合网络与 200+ 韩国顶级艺人合作池,以及韩国直播创作者 — 通过单一窗口匹配。",
+    lead: "经验证合作品牌 150+ · 中韩直播电商卖家 500+ · 韩国达人 200+ · 韩国顶级艺人 100+。所有人选均来自我们亲自对接过的资源池。",
     eb1: "达人基础设施", st1: "内容达人与商业达人,双轴运营",
     sl1: "中国达人根据角色和目的,运营方式不同。恩联根据品牌阶段组合两个轴。",
     wh: [
@@ -61,8 +61,8 @@ const C: Record<Lang, any> = {
     tiers: [
       { n: "10+", t: "主播 · 节目主持", d: "直播电商专业主持 · 美妆/时尚/生活品类 · 中韩双语可。" },
       { n: "30+", t: "直播创作者", d: "Grip 等平台创作者 · 累积销售业绩 · 品类专家。" },
-      { n: "1,500+", t: "KOL · 创作者池", d: "Instagram · YouTube · 小红书 · 主要 MCN 联动 · 按品类匹配。" },
-      { n: "200+", t: "顶级艺人", d: "演员 · K-POP · 歌手 · 基础/高端/付费 · PPL · 电视剧 PPL。" },
+      { n: "200+", t: "韩国知名达人", d: "Instagram · YouTube · 小红书 · 主要 MCN 联动 · 从头部到中腰部按品类匹配。" },
+      { n: "100+", t: "顶级艺人", d: "演员 · K-POP · 歌手 · 基础/高端/付费 · PPL · 电视剧 PPL。" },
     ],
     ctaH: "需要特定达人或艺人匹配?", ctaP: "告诉我们您的品牌品类和目标,我们将提供定制候选。",
     ctaB: "咨询匹配 →",
@@ -71,7 +71,7 @@ const C: Record<Lang, any> = {
   ja: {
     crumb: "NETWORK · リソースプール",
     h1: "KOL · 芸能人 · クリエイター — 検証済みリソースプール。",
-    lead: "1,500+ 中国KOL統合ネットワークと 200+ 韓国トップクラス芸能人コラボプール、そして韓国ライブクリエイターまで — 単一窓口でマッチング。",
+    lead: "検証済みパートナーブランド 150+ · 韓中ライブコマースセラー 500+ · 韓国インフルエンサー 200+ · 韓国トップクラス芸能人 100+。すべて直接対面したプールからマッチングします。",
     eb1: "WANGHONG INFRASTRUCTURE", st1: "コンテンツKOLとコマースKOL、二軸運営",
     sl1: "中国KOLは役割と目的によって運営方法が異なります。N-LIVEはブランド段階に合わせて二軸を組み合わせて運営します。",
     wh: [
@@ -82,8 +82,8 @@ const C: Record<Lang, any> = {
     tiers: [
       { n: "10+", t: "ショーホスト · 放送MC", d: "ライブコマース専門進行 · ビューティ/ファッション/ライフカテゴリ · 韓中二か国語可。" },
       { n: "30+", t: "ライブクリエイター", d: "Gripなどプラットフォームクリエイター · 累積販売実績 · カテゴリ別専門。" },
-      { n: "1,500+", t: "KOL · クリエイタープール", d: "Instagram · YouTube · 小紅書 · 主要MCN連動 · カテゴリ別マッチング。" },
-      { n: "200+", t: "トップクラス芸能人", d: "俳優 · K-POP · 歌手 · BASIC / PREMIUM / 有償 · PPL · ドラマPPL。" },
+      { n: "200+", t: "韓国有名インフルエンサー", d: "Instagram · YouTube · 小紅書 · 主要MCN連動 · メガからマイクロまでカテゴリ別マッチング。" },
+      { n: "100+", t: "トップクラス芸能人", d: "俳優 · K-POP · 歌手 · BASIC / PREMIUM / 有償 · PPL · ドラマPPL。" },
     ],
     ctaH: "特定のKOLや芸能人とのマッチングが必要ですか?", ctaP: "ブランドカテゴリと目標をお知らせいただければ、カスタム候補を提案いたします。",
     ctaB: "マッチングお問い合わせ →",
@@ -92,7 +92,7 @@ const C: Record<Lang, any> = {
 };
 
 export default function NetworkPage() {
-  const { lang } = useLang();
+  const { lang, t: tr } = useLang();
   const t = C[lang];
   return (
     <PageEnter variant="blocks" className="pt-blocks-multi">
@@ -145,6 +145,10 @@ export default function NetworkPage() {
 
       <section className="detail-section gray">
         <div className="container">
+          <div className="image-placeholder tall">
+            <div className="ip-tag">IMAGE</div>
+            <div className="ip-caption">{tr("ip.network")}</div>
+          </div>
           <div className="detail-cta">
             <h3>{t.ctaH}</h3>
             <p>{t.ctaP}</p>

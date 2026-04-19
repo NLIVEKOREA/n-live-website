@@ -11,9 +11,9 @@ const C: Record<Lang, any> = {
     lead: "한국 브랜드의 중국 진출이든, 해외 왕홍의 한국 상품 조달이든 — 엔라이브는 동일한 단계별 구조로 파트너십을 설계하고 실행합니다.",
     eb1: "3-STAGE FRAMEWORK", st1: "진단 → 실행 → 확장, 세 단계의 운영",
     stages: [
-      { n: "01 / STRATEGY", t: "전략 설계", d: "파트너의 시장·상품·경쟁 상황을 진단하고, 타겟 포지셔닝과 KPI를 정의합니다. 채널·예산·단계별 실행안까지 설계 완료 후 합의.", b: ["시장 · 상품 · 경쟁 진단", "타겟 포지셔닝 · KPI 정의", "채널 · 예산 · 단계 설계"] },
-      { n: "02 / EXECUTION", t: "매칭 · 실행", d: "왕홍·KOL·셀러 매칭, 콘텐츠·라이브 제작, 플랫폼별 운영을 실행합니다. 매주 성과 리포트로 드리프트 방지.", b: ["왕홍 · KOL · 셀러 매칭", "콘텐츠 · 라이브 운영", "플랫폼별 트래픽 분산 운영"] },
-      { n: "03 / SCALING", t: "확장 · 자산화", d: "성과 기반으로 채널·카테고리를 확장하고, 반복 협업 구조와 장기 브랜드 자산을 구축합니다.", b: ["데이터 기반 콘텐츠 최적화", "반복 협업 · 카테고리 확장", "장기 브랜드 자산 구축"] },
+      { n: "01 / STRATEGY", t: "진단 · 전략 설계", d: "비대면 30분 진단 미팅으로 시작합니다. 시장·상품·경쟁을 정리하고, 타겟·KPI·예산·일정까지 합의 후 다음 단계로 넘어갑니다.", b: ["시장 · 상품 · 경쟁 진단", "타겟 포지셔닝 · KPI 정의", "채널 · 예산 · 단계 설계"], deliv: "산출 — 진단 리포트 + 후보 풀 리스트" },
+      { n: "02 / EXECUTION", t: "매칭 · 실행", d: "확정된 풀에서 왕홍·KOL·셀러를 매칭하고, 콘텐츠·라이브 제작과 플랫폼 운영을 직접 수행합니다. 매주 정기 리포트로 진행 상황을 공유합니다.", b: ["왕홍 · KOL · 셀러 매칭", "콘텐츠 · 라이브 운영", "플랫폼별 트래픽 분산 운영"], deliv: "산출 — 주간 성과 리포트 + 정산서" },
+      { n: "03 / SCALING", t: "확장 · 자산화", d: "초기 성과 데이터를 기반으로 카테고리·채널을 확장하고, 반복 협업 구조와 장기 브랜드 자산을 함께 설계합니다.", b: ["데이터 기반 콘텐츠 최적화", "반복 협업 · 카테고리 확장", "장기 브랜드 자산 구축"], deliv: "산출 — 분기 리뷰 + 다음 단계 로드맵" },
     ],
     eb2: "REPORTING", st2: "투명한 성과 리포팅",
     sl2: "모든 파트너에게 주간·월간 성과 리포트를 제공합니다. 왕홍·셀러별 GMV, 플랫폼별 CTR·CVR, 콘텐츠 성과 데이터까지 — 의사결정에 필요한 모든 숫자를 한 장에.",
@@ -29,9 +29,9 @@ const C: Record<Lang, any> = {
     lead: "Whether it's Korean brands entering China or global wanghongs sourcing Korean products — N-LIVE designs and executes partnerships through the same staged structure.",
     eb1: "3-STAGE FRAMEWORK", st1: "Diagnose → Execute → Scale — Three-Stage Operations",
     stages: [
-      { n: "01 / STRATEGY", t: "Strategy Design", d: "We diagnose the partner's market, product, and competitive situation, then define target positioning and KPIs. Channel, budget, and stage-by-stage execution plan all designed and agreed before kickoff.", b: ["Market · product · competitive diagnostics", "Target positioning · KPI definition", "Channel · budget · stage design"] },
-      { n: "02 / EXECUTION", t: "Match · Execute", d: "We match wanghongs, KOLs, and sellers; produce content and live shows; run platform-specific operations. Weekly performance reports prevent drift.", b: ["Wanghong · KOL · seller matching", "Content · live operations", "Per-platform traffic distribution"] },
-      { n: "03 / SCALING", t: "Scale · Asset-Build", d: "Based on results, we expand channels and categories, and build repeat collaboration structures and long-term brand assets.", b: ["Data-based content optimization", "Repeat collaborations · category expansion", "Long-term brand asset building"] },
+      { n: "01 / STRATEGY", t: "Diagnose · Strategy", d: "We start with a 30-minute remote diagnostic meeting. We organize market, product, and competition; agree on target, KPI, budget, and timeline before moving on.", b: ["Market · product · competitive diagnostics", "Target positioning · KPI definition", "Channel · budget · stage design"], deliv: "Delivered — Diagnostic report + candidate pool list" },
+      { n: "02 / EXECUTION", t: "Match · Execute", d: "From the agreed pool, we match wanghongs, KOLs, and sellers; produce content and live shows; run platform operations directly. Weekly reports keep you in the loop.", b: ["Wanghong · KOL · seller matching", "Content · live operations", "Per-platform traffic distribution"], deliv: "Delivered — Weekly performance report + settlement" },
+      { n: "03 / SCALING", t: "Scale · Asset-Build", d: "Based on early performance data, we expand channels and categories, and co-design repeat collaboration structures and long-term brand assets.", b: ["Data-based content optimization", "Repeat collaborations · category expansion", "Long-term brand asset building"], deliv: "Delivered — Quarterly review + next-stage roadmap" },
     ],
     eb2: "REPORTING", st2: "Transparent Performance Reporting",
     sl2: "We provide weekly and monthly performance reports to all partners. GMV per wanghong/seller, CTR/CVR per platform, content performance data — all the numbers needed for decisions, on a single page.",
@@ -47,9 +47,9 @@ const C: Record<Lang, any> = {
     lead: "无论是韩国品牌进入中国市场,还是海外达人采购韩国商品 — 恩联通过相同的分阶段结构设计和执行合作。",
     eb1: "三阶段框架", st1: "诊断 → 执行 → 扩展,三阶段运营",
     stages: [
-      { n: "01 / 战略", t: "战略设计", d: "我们诊断合作方的市场、产品、竞争状况,定义目标定位和 KPI。渠道、预算、分阶段执行方案全部设计并达成共识后启动。", b: ["市场 · 产品 · 竞争诊断", "目标定位 · KPI 定义", "渠道 · 预算 · 阶段设计"] },
-      { n: "02 / 执行", t: "匹配 · 执行", d: "我们匹配达人、KOL、卖家;制作内容和直播;按平台执行运营。每周绩效报告防止偏离。", b: ["达人 · KOL · 卖家匹配", "内容 · 直播运营", "按平台分散流量运营"] },
-      { n: "03 / 扩展", t: "扩展 · 资产化", d: "基于成果扩展渠道和品类,构建重复合作结构和长期品牌资产。", b: ["基于数据的内容优化", "重复合作 · 品类扩展", "长期品牌资产建设"] },
+      { n: "01 / 战略", t: "诊断 · 战略设计", d: "从线上 30 分钟诊断会议开始。整理市场、产品、竞争情况,确定目标、KPI、预算和时间表后再进入下一步。", b: ["市场 · 产品 · 竞争诊断", "目标定位 · KPI 定义", "渠道 · 预算 · 阶段设计"], deliv: "交付物 — 诊断报告 + 候选资源清单" },
+      { n: "02 / 执行", t: "匹配 · 执行", d: "从已确定的资源池中匹配达人、KOL、卖家;制作内容与直播;直接执行平台运营。每周定期报告同步进度。", b: ["达人 · KOL · 卖家匹配", "内容 · 直播运营", "按平台分散流量运营"], deliv: "交付物 — 周报 + 结算单" },
+      { n: "03 / 扩展", t: "扩展 · 资产化", d: "基于初期成果数据扩展品类与渠道,共同设计重复合作结构与长期品牌资产。", b: ["基于数据的内容优化", "重复合作 · 品类扩展", "长期品牌资产建设"], deliv: "交付物 — 季度复盘 + 下阶段路线图" },
     ],
     eb2: "报告", st2: "透明的绩效报告",
     sl2: "我们为所有合作方提供周报和月报。每位达人/卖家的 GMV、每个平台的 CTR/CVR、内容效果数据 — 决策所需的所有数字,集中在一页。",
@@ -65,9 +65,9 @@ const C: Record<Lang, any> = {
     lead: "韓国ブランドの中国進出であれ、海外KOLの韓国商品調達であれ — N-LIVEは同一の段階構造でパートナーシップを設計・実行します。",
     eb1: "3-STAGE FRAMEWORK", st1: "診断 → 実行 → 拡張、3段階の運営",
     stages: [
-      { n: "01 / STRATEGY", t: "戦略設計", d: "パートナーの市場・商品・競合状況を診断し、ターゲットポジショニングとKPIを定義。チャネル・予算・段階別実行案まで設計合意後に開始。", b: ["市場 · 商品 · 競合診断", "ターゲットポジショニング · KPI定義", "チャネル · 予算 · 段階設計"] },
-      { n: "02 / EXECUTION", t: "マッチング · 実行", d: "KOL・セラーのマッチング、コンテンツ・ライブ制作、プラットフォーム別運営を実行。毎週の成果レポートでドリフトを防止。", b: ["KOL · セラーマッチング", "コンテンツ · ライブ運営", "プラットフォーム別トラフィック分散運営"] },
-      { n: "03 / SCALING", t: "拡張 · 資産化", d: "成果に基づきチャネル・カテゴリを拡張し、反復コラボ構造と長期ブランド資産を構築します。", b: ["データに基づくコンテンツ最適化", "反復コラボ · カテゴリ拡張", "長期ブランド資産構築"] },
+      { n: "01 / STRATEGY", t: "診断 · 戦略設計", d: "オンライン30分の診断ミーティングから始めます。市場・商品・競合を整理し、ターゲット・KPI・予算・スケジュールを合意してから次に進みます。", b: ["市場 · 商品 · 競合診断", "ターゲットポジショニング · KPI定義", "チャネル · 予算 · 段階設計"], deliv: "成果物 — 診断レポート + 候補プールリスト" },
+      { n: "02 / EXECUTION", t: "マッチング · 実行", d: "確定したプールからKOL・セラーをマッチングし、コンテンツ・ライブ制作とプラットフォーム運営を直接遂行します。週次レポートで進捗を共有。", b: ["KOL · セラーマッチング", "コンテンツ · ライブ運営", "プラットフォーム別トラフィック分散運営"], deliv: "成果物 — 週次パフォーマンスレポート + 精算書" },
+      { n: "03 / SCALING", t: "拡張 · 資産化", d: "初期成果データに基づきカテゴリ・チャネルを拡張し、反復コラボ構造と長期ブランド資産を共同で設計します。", b: ["データに基づくコンテンツ最適化", "反復コラボ · カテゴリ拡張", "長期ブランド資産構築"], deliv: "成果物 — 四半期レビュー + 次段階ロードマップ" },
     ],
     eb2: "REPORTING", st2: "透明な成果レポーティング",
     sl2: "すべてのパートナーに週次・月次の成果レポートを提供します。KOL・セラー別のGMV、プラットフォーム別のCTR・CVR、コンテンツ成果データまで — 意思決定に必要なすべての数字を1ページに。",
@@ -80,7 +80,7 @@ const C: Record<Lang, any> = {
 };
 
 export default function ProcessPage() {
-  const { lang } = useLang();
+  const { lang, t: tr } = useLang();
   const t = C[lang];
   return (
     <PageEnter variant="wipe-l" color="#2D7BFF">
@@ -105,6 +105,11 @@ export default function ProcessPage() {
                 <ul style={{ listStyle: 'none', marginTop: 16, fontSize: 13, color: 'var(--gray-600)' }}>
                   {s.b.map((bullet: string, j: number) => <li key={j}>· {bullet}</li>)}
                 </ul>
+                {s.deliv && (
+                  <div style={{ marginTop: 18, paddingTop: 14, borderTop: '1px dashed var(--gray-200)', fontSize: 12, color: 'var(--gray-800)', letterSpacing: '.02em', fontWeight: 600 }}>
+                    {s.deliv}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -116,9 +121,9 @@ export default function ProcessPage() {
           <div className="detail-eyebrow">{t.eb2}</div>
           <h2 className="detail-title">{t.st2}</h2>
           <p className="detail-lead">{t.sl2}</p>
-          <div className="pending-box">
-            <div className="pending-label">{t.pendL}</div>
-            <p>{t.pendP}</p>
+          <div className="image-placeholder tall">
+            <div className="ip-tag">IMAGE</div>
+            <div className="ip-caption">{tr("ip.report")}</div>
           </div>
           <div className="detail-cta">
             <h3>{t.ctaH}</h3>

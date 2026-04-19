@@ -481,6 +481,57 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 .fade-up{opacity:0;transform:translateY(30px);transition:all .9s cubic-bezier(.2,.7,.2,1)}
 .fade-up.in{opacity:1;transform:translateY(0)}
 
+/* ============ IMAGE PLACEHOLDER (subtle, on-tone) ============ */
+.image-placeholder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:220px;padding:48px 32px;margin:32px 0;
+  border:1.5px dashed var(--gray-200);
+  background:var(--gray-50);
+  color:var(--gray-400);text-align:center;border-radius:0
+}
+.image-placeholder .ip-tag{
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:13px;
+  letter-spacing:.28em;color:var(--gray-400);margin-bottom:10px
+}
+.image-placeholder .ip-caption{
+  font-size:12px;color:var(--gray-400);max-width:420px;line-height:1.6;letter-spacing:.01em
+}
+.image-placeholder.dark{
+  background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.15)
+}
+.image-placeholder.dark .ip-tag,.image-placeholder.dark .ip-caption{color:rgba(255,255,255,.45)}
+.image-placeholder.tall{min-height:340px}
+
+/* ============ CONTACT — SCENARIOS + PROMISES ============ */
+.contact-scenarios{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+  margin:0 auto 40px;max-width:720px
+}
+.contact-scenario{
+  padding:18px 20px;border:1px solid var(--gray-200);background:var(--white);
+  transition:border-color .25s
+}
+.contact-scenario:hover{border-color:var(--amber)}
+.contact-scenario .cs-tag{
+  font-family:'Unbounded',sans-serif;font-size:10px;letter-spacing:.22em;font-weight:700;
+  color:var(--gray-400);text-transform:uppercase;margin-bottom:8px
+}
+.contact-scenario p{font-size:13px;color:var(--gray-800);line-height:1.55;margin:0}
+.contact-scenarios-eyebrow{
+  text-align:center;font-size:11px;letter-spacing:.28em;font-weight:700;
+  color:var(--gray-400);text-transform:uppercase;margin-bottom:18px
+}
+.contact-promises{
+  max-width:720px;margin:24px auto 0;
+  display:flex;flex-direction:column;gap:6px;
+  font-size:12px;color:var(--gray-600);line-height:1.7;
+  border-top:1px solid var(--gray-200);padding-top:18px
+}
+.contact-promises span::before{content:"✓ ";color:var(--amber);font-weight:700;margin-right:6px}
+@media(max-width:640px){
+  .contact-scenarios{grid-template-columns:1fr}
+}
+
 /* ============ PAGE-HERO ENTRANCE — per-element cascade (home-hero style) ============ */
 /* Each child of page-hero animates separately with stagger, similar to
    how the home hero entrance reveals eyebrow → title → tags → sub.

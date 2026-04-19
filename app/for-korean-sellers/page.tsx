@@ -25,10 +25,10 @@ const C: Record<Lang, any> = {
       { t: "왕홍·브랜드 매칭", d: "셀러 포지셔닝에 맞는 중국 왕홍과 해외 브랜드 후보를 제안. 트라이얼 방송부터 시작합니다." },
       { t: "정착 · 반복", d: "성과가 나오는 조합을 정기 협업 구조로 굳히고, 점진적으로 더 큰 왕홍·상위 브랜드로 확장합니다." },
     ],
-    eb3: "참고 케이스", st3: "주요 실행 사례", pending: "COMING SOON",
-    pmsg: "상세 케이스 스터디는 준비 중입니다. 구체적인 레퍼런스가 필요하시면 문의 폼으로 요청해 주세요.",
+    eb3: "참고 케이스", st3: "주요 실행 사례",
+    pmsg: "진행한 캠페인 자료는 비공개로 운영합니다. NDA 사전 체결 후 직접 공유드립니다.",
     ctaH: "라이브의 다음 단계를 고민 중이신가요?", ctaP: "운영 채널과 관심 카테고리를 알려주시면, 맞춤 협업안을 회신드립니다.",
-    ctaB: "이 서비스 문의하기 →",
+    ctaB: "셀러 파트너십 신청 →",
   },
   en: {
     back: "← Back to all services", crumb: "KOREA · SELLER · INFLUENCER",
@@ -50,10 +50,10 @@ const C: Record<Lang, any> = {
       { t: "Wanghong · Brand Matching", d: "We propose Chinese wanghongs and global brands matching your positioning. We start with trial broadcasts." },
       { t: "Stabilize · Repeat", d: "We solidify high-performing combinations into regular collaboration structures and progressively expand to bigger wanghongs and tier-A brands." },
     ],
-    eb3: "REFERENCE CASES", st3: "Selected Execution Cases", pending: "COMING SOON",
-    pmsg: "Detailed case studies are in preparation. If you need specific references, please request via the inquiry form.",
+    eb3: "REFERENCE CASES", st3: "Selected Execution Cases",
+    pmsg: "Campaign materials are kept confidential. We share specifics directly after an NDA is signed.",
     ctaH: "Considering your next move in live commerce?", ctaP: "Share your channel and category interests — we'll respond with a tailored collaboration plan.",
-    ctaB: "Inquire about this service →",
+    ctaB: "Apply for seller partnership →",
   },
   zh: {
     back: "← 返回全部服务", crumb: "韩国 · 卖家 · 达人",
@@ -75,10 +75,10 @@ const C: Record<Lang, any> = {
       { t: "达人 · 品牌匹配", d: "推荐符合卖家定位的中国达人和海外品牌候选。从试播开始。" },
       { t: "扎根 · 反复", d: "将出成果的组合固化为定期合作结构,逐步扩展到更大的达人和顶级品牌。" },
     ],
-    eb3: "参考案例", st3: "主要执行案例", pending: "敬请期待",
-    pmsg: "详细案例研究正在筹备中。如需具体参考,请通过咨询表单申请。",
+    eb3: "参考案例", st3: "主要执行案例",
+    pmsg: "项目资料保密运营。签署 NDA 后我们将直接分享具体内容。",
     ctaH: "正在思考直播的下一步?", ctaP: "告诉我们您的运营频道和兴趣品类,我们将以定制合作方案回复。",
-    ctaB: "咨询此项服务 →",
+    ctaB: "申请卖家合作 →",
   },
   ja: {
     back: "← 全サービスへ戻る", crumb: "韓国 · セラー · インフルエンサー",
@@ -100,15 +100,15 @@ const C: Record<Lang, any> = {
       { t: "KOL · ブランドマッチング", d: "セラーのポジショニングに合う中国KOLと海外ブランド候補を提案。トライアル放送から始めます。" },
       { t: "定着 · 反復", d: "成果が出る組み合わせを定期コラボ構造に固定し、徐々により大きなKOL・上位ブランドへ拡張します。" },
     ],
-    eb3: "参考ケース", st3: "主要実行事例", pending: "COMING SOON",
-    pmsg: "詳細なケーススタディは準備中です。具体的なリファレンスが必要な場合は、お問い合わせフォームよりご依頼ください。",
+    eb3: "参考ケース", st3: "主要実行事例",
+    pmsg: "プロジェクト資料は非公開で運営しています。NDAを事前に締結後、直接共有いたします。",
     ctaH: "ライブの次のステップを検討中ですか?", ctaP: "運営チャネルと関心カテゴリをお知らせいただければ、カスタムコラボ案を返信いたします。",
-    ctaB: "このサービスについてお問い合わせ →",
+    ctaB: "セラーパートナーシップのお申込み →",
   },
 };
 
 export default function KoreanSellersPage() {
-  const { lang } = useLang();
+  const { lang, t: tr } = useLang();
   const t = C[lang];
   return (
     <PageEnter variant="rise" theme="k-seller" color="#00D67A">
@@ -157,10 +157,11 @@ export default function KoreanSellersPage() {
         <div className="container">
           <div className="detail-eyebrow">{t.eb3}</div>
           <h2 className="detail-title">{t.st3}</h2>
-          <div className="pending-box">
-            <div className="pending-label">{t.pending}</div>
-            <p>{t.pmsg}</p>
+          <div className="image-placeholder">
+            <div className="ip-tag">IMAGE</div>
+            <div className="ip-caption">{tr("ip.case")}</div>
           </div>
+          <p style={{ fontSize: 13, color: 'var(--gray-600)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>{t.pmsg}</p>
           <div className="detail-cta">
             <h3>{t.ctaH}</h3>
             <p>{t.ctaP}</p>

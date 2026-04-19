@@ -28,10 +28,10 @@ const C: Record<Lang, any> = {
       { t: "SNS · YouTube PPL", d: "Instagram · YouTube 콘텐츠 · 팬덤 직격 · 글로벌 확산." },
       { t: "방송 · 드라마 PPL", d: "드라마 · 예능 · OTT 노출 · 장기 노출 · 브랜드 고급화." },
     ],
-    eb3: "참고 케이스", st3: "주요 실행 사례", pending: "COMING SOON",
-    pmsg: "상세 케이스 스터디는 준비 중입니다. 구체적인 레퍼런스가 필요하시면 문의 폼으로 요청해 주세요.",
+    eb3: "참고 케이스", st3: "주요 실행 사례",
+    pmsg: "진행한 캠페인 자료는 비공개로 운영합니다. NDA 사전 체결 후 직접 공유드립니다.",
     ctaH: "한국 시장이 궁금하신가요?", ctaP: "브랜드·목표·예산 범위를 알려주시면 맞춤 옵션을 회신드립니다.",
-    ctaB: "이 서비스 문의하기 →",
+    ctaB: "한국 진출 상담 신청 →",
   },
   en: {
     back: "← Back to all services", crumb: "GLOBAL · BRAND",
@@ -56,10 +56,10 @@ const C: Record<Lang, any> = {
       { t: "SNS · YouTube PPL", d: "Instagram · YouTube content · direct fandom hit · global reach." },
       { t: "Broadcast · Drama PPL", d: "Drama · variety · OTT exposure · long-term · brand premiumization." },
     ],
-    eb3: "REFERENCE CASES", st3: "Selected Execution Cases", pending: "COMING SOON",
-    pmsg: "Detailed case studies are in preparation. If you need specific references, please request via the inquiry form.",
+    eb3: "REFERENCE CASES", st3: "Selected Execution Cases",
+    pmsg: "Campaign materials are kept confidential. We share specifics directly after an NDA is signed.",
     ctaH: "Curious about the Korean market?", ctaP: "Share your brand, goals, and budget range — we'll respond with tailored options.",
-    ctaB: "Inquire about this service →",
+    ctaB: "Request Korea entry consultation →",
   },
   zh: {
     back: "← 返回全部服务", crumb: "海外 · 品牌",
@@ -84,10 +84,10 @@ const C: Record<Lang, any> = {
       { t: "SNS · YouTube PPL", d: "Instagram · YouTube 内容 · 直击粉丝群 · 全球传播。" },
       { t: "电视 · 电视剧 PPL", d: "电视剧 · 综艺 · OTT 曝光 · 长期曝光 · 品牌高端化。" },
     ],
-    eb3: "参考案例", st3: "主要执行案例", pending: "敬请期待",
-    pmsg: "详细案例研究正在筹备中。如需具体参考,请通过咨询表单申请。",
+    eb3: "参考案例", st3: "主要执行案例",
+    pmsg: "项目资料保密运营。签署 NDA 后我们将直接分享具体内容。",
     ctaH: "对韩国市场感兴趣?", ctaP: "告诉我们您的品牌、目标和预算范围,我们将以定制选项回复。",
-    ctaB: "咨询此项服务 →",
+    ctaB: "申请韩国进入咨询 →",
   },
   ja: {
     back: "← 全サービスへ戻る", crumb: "海外 · ブランド",
@@ -112,15 +112,15 @@ const C: Record<Lang, any> = {
       { t: "SNS · YouTube PPL", d: "Instagram · YouTubeコンテンツ · ファンダム直撃 · グローバル拡散。" },
       { t: "放送 · ドラマPPL", d: "ドラマ · バラエティ · OTT露出 · 長期露出 · ブランド高級化。" },
     ],
-    eb3: "参考ケース", st3: "主要実行事例", pending: "COMING SOON",
-    pmsg: "詳細なケーススタディは準備中です。具体的なリファレンスが必要な場合は、お問い合わせフォームよりご依頼ください。",
+    eb3: "参考ケース", st3: "主要実行事例",
+    pmsg: "プロジェクト資料は非公開で運営しています。NDAを事前に締結後、直接共有いたします。",
     ctaH: "韓国市場にご興味がありますか?", ctaP: "ブランド、目標、予算範囲をお知らせいただければ、カスタムオプションを返信いたします。",
-    ctaB: "このサービスについてお問い合わせ →",
+    ctaB: "韓国進出のご相談 →",
   },
 };
 
 export default function OverseasBrandsPage() {
-  const { lang } = useLang();
+  const { lang, t: tr } = useLang();
   const t = C[lang];
   return (
     <PageEnter variant="diagonal" theme="o-brand" color="#2D7BFF">
@@ -173,10 +173,11 @@ export default function OverseasBrandsPage() {
         <div className="container">
           <div className="detail-eyebrow">{t.eb3}</div>
           <h2 className="detail-title">{t.st3}</h2>
-          <div className="pending-box">
-            <div className="pending-label">{t.pending}</div>
-            <p>{t.pmsg}</p>
+          <div className="image-placeholder">
+            <div className="ip-tag">IMAGE</div>
+            <div className="ip-caption">{tr("ip.case")}</div>
           </div>
+          <p style={{ fontSize: 13, color: 'var(--gray-600)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>{t.pmsg}</p>
           <div className="detail-cta">
             <h3>{t.ctaH}</h3>
             <p>{t.ctaP}</p>

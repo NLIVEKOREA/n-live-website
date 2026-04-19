@@ -7,7 +7,7 @@ import type { Lang } from "@/lib/i18n";
 const C: Record<Lang, any> = {
   ko: {
     crumb: "COMPANY · ABOUT", h1: "엔라이브 · N-LIVE · 恩联",
-    lead: "한국과 해외의 브랜드·인플루언서·셀러·왕홍을 직접 연결하는 크로스보더 에이전시. 라이브커머스 현장 경험과 양국 네트워크를 기반으로, 단방향 수출이 아닌 양방향 비즈니스 구조를 운영합니다.",
+    lead: "엔라이브는 한국과 해외 시장을 양방향으로 잇는 라이브커머스 에이전시입니다. 브랜드·셀러·왕홍·연예인 — 4가지 파트너 카테고리를 단일 창구에서 매칭하고 직접 운영합니다.",
     eb1: "CORE VALUES", st1: "엔라이브의 네 가지 경쟁력",
     items: [
       { t: "양방향 크로스보더 구조", d: "한국 → 해외, 해외 → 한국. 양쪽 시장을 동시에 운영하며 어느 방향의 파트너십이든 설계할 수 있습니다." },
@@ -28,7 +28,7 @@ const C: Record<Lang, any> = {
   },
   en: {
     crumb: "COMPANY · ABOUT", h1: "N-LIVE · 엔라이브 · 恩联",
-    lead: "A cross-border agency that directly connects brands, influencers, sellers, and wanghongs across Korea and global. Built on live commerce field experience and networks in both countries — we operate not one-way export, but two-way business architecture.",
+    lead: "N-LIVE is a live commerce agency connecting Korea and global markets in both directions. We match and directly operate four partner categories — brands, sellers, wanghongs, and celebrities — through a single window.",
     eb1: "CORE VALUES", st1: "Four Competitive Edges of N-LIVE",
     items: [
       { t: "Bi-Directional Cross-Border Architecture", d: "Korea → global, global → Korea. We operate both markets simultaneously and can design partnerships in either direction." },
@@ -49,7 +49,7 @@ const C: Record<Lang, any> = {
   },
   zh: {
     crumb: "公司 · 关于", h1: "恩联 · N-LIVE · 엔라이브",
-    lead: "直接连接韩国与海外品牌、达人、卖家、网红的跨境代理机构。基于直播电商现场经验和两国网络,我们运营的不是单向出口,而是双向业务架构。",
+    lead: "恩联是双向连接韩国与海外市场的直播电商代理机构。品牌、卖家、达人、艺人 — 四类合作方均由我们在单一窗口匹配并直接运营。",
     eb1: "核心价值", st1: "恩联的四大竞争力",
     items: [
       { t: "双向跨境架构", d: "韩国→海外,海外→韩国。同时运营两个市场,可设计任一方向的合作。" },
@@ -70,7 +70,7 @@ const C: Record<Lang, any> = {
   },
   ja: {
     crumb: "COMPANY · ABOUT", h1: "N-LIVE · 엔라이브 · 恩联",
-    lead: "韓国と海外のブランド・インフルエンサー・セラー・KOLを直接つなぐクロスボーダーエージェンシー。ライブコマースの現場経験と両国のネットワークを基盤に、一方通行の輸出ではなく、双方向のビジネス構造を運営しています。",
+    lead: "N-LIVEは韓国と海外市場を双方向につなぐライブコマースエージェンシーです。ブランド・セラー・KOL・芸能人 — 4つのパートナーカテゴリを単一窓口でマッチングし、直接運営します。",
     eb1: "CORE VALUES", st1: "N-LIVEの4つの競争力",
     items: [
       { t: "双方向クロスボーダー構造", d: "韓国→海外、海外→韓国。両市場を同時に運営し、どちら方向のパートナーシップでも設計できます。" },

@@ -43,10 +43,10 @@ export default function HomePage() {
   };
 
   const STMT: Record<Lang, { eyebrow: string; h: string; s: string; cta: string }> = {
-    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "라이브커머스의<br>모든 연결<br>엔라이브에서", s: "검증된 네트워크. 직접 매칭. 단일 창구. — 엔라이브의 운영 원칙입니다.", cta: "프로세스 보기" },
-    en: { eyebrow: "OUR PROMISE", h: "Every connection<br>in live commerce<br>at N-LIVE", s: "Verified network. Direct matching. Single window. — How N-LIVE operates.", cta: "See process" },
-    zh: { eyebrow: "我们的承诺", h: "直播电商的<br>所有连接<br>在恩联", s: "经验证的网络。直接匹配。单一窗口。— 恩联的运营原则。", cta: "查看流程" },
-    ja: { eyebrow: "OUR PROMISE", h: "ライブコマースの<br>すべての繋がりを<br>N-LIVEで", s: "検証済みネットワーク。直接マッチング。単一窓口。— N-LIVEの運営原則です。", cta: "プロセスを見る" },
+    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "이 모든 것을<br>한 곳에서<br>실행합니다", s: "4가지 입장의 파트너십을 단일 창구에서. 검증된 풀에서 직접 매칭, 직접 운영합니다.", cta: "프로세스 보기" },
+    en: { eyebrow: "OUR PROMISE", h: "All of this<br>executed<br>in one place", s: "Every partnership across four roles, run from a single window — direct matching, direct operations.", cta: "See process" },
+    zh: { eyebrow: "我们的承诺", h: "全部由我们<br>在一处<br>执行", s: "四种身份的合作,集中于单一窗口。从经验证的资源池中直接匹配、直接运营。", cta: "查看流程" },
+    ja: { eyebrow: "OUR PROMISE", h: "そのすべてを<br>一つの場所で<br>実行します", s: "4つの立場のパートナーシップを単一窓口で。検証済みプールから直接マッチング、直接運営。", cta: "プロセスを見る" },
   };
 
   const METRICS: Record<Lang, { eyebrow: string; nums: Array<{ n: string; label: string; sub: string; amber?: boolean }>; desc: string; cta: string }> = {
@@ -257,6 +257,17 @@ export default function HomePage() {
 
       {/* MARQUEE 2 — multilingual */}
       <Marquee items={marquee2} />
+
+      {/* CASE PLACEHOLDER — to be filled with reference visuals */}
+      <section style={{ padding: "100px 0", background: "var(--white)" }}>
+        <div className="container">
+          <div className="section-eyebrow">— {lang === "ko" ? "REFERENCE · 참고 사례" : lang === "en" ? "REFERENCE" : lang === "zh" ? "参考案例" : "REFERENCE"}</div>
+          <div className="image-placeholder tall">
+            <div className="ip-tag">IMAGE</div>
+            <div className="ip-caption">{t("ip.case")}</div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
