@@ -43,10 +43,10 @@ export default function HomePage() {
   };
 
   const STMT: Record<Lang, { eyebrow: string; h: string; s: string; cta: string }> = {
-    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "라이브커머스의<br>모든 연결<br>엔라이브에서", s: "브랜드와 셀러 사이의 거리를 줄입니다. 검증된 네트워크, 직접 매칭, 한 창구 — 엔라이브가 다른 점입니다.", cta: "프로세스 보기" },
-    en: { eyebrow: "OUR PROMISE", h: "Every connection<br>in live commerce<br>at N-LIVE", s: "We close the gap between brands and sellers. Verified network, direct matching, single window — that's the N-LIVE difference.", cta: "See process" },
-    zh: { eyebrow: "我们的承诺", h: "直播电商的<br>所有连接<br>在恩联", s: "缩短品牌与卖家之间的距离。经验证的网络、直接匹配、单一窗口 — 这就是恩联的不同。", cta: "查看流程" },
-    ja: { eyebrow: "OUR PROMISE", h: "ライブコマースの<br>すべての繋がりを<br>N-LIVEで", s: "ブランドとセラーの距離を縮めます。検証済みネットワーク、直接マッチング、単一窓口 — それがN-LIVEの違いです。", cta: "プロセスを見る" },
+    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "라이브커머스의<br>모든 연결<br>엔라이브에서", s: "검증된 네트워크. 직접 매칭. 단일 창구. — 엔라이브의 운영 원칙입니다.", cta: "프로세스 보기" },
+    en: { eyebrow: "OUR PROMISE", h: "Every connection<br>in live commerce<br>at N-LIVE", s: "Verified network. Direct matching. Single window. — How N-LIVE operates.", cta: "See process" },
+    zh: { eyebrow: "我们的承诺", h: "直播电商的<br>所有连接<br>在恩联", s: "经验证的网络。直接匹配。单一窗口。— 恩联的运营原则。", cta: "查看流程" },
+    ja: { eyebrow: "OUR PROMISE", h: "ライブコマースの<br>すべての繋がりを<br>N-LIVEで", s: "検証済みネットワーク。直接マッチング。単一窓口。— N-LIVEの運営原則です。", cta: "プロセスを見る" },
   };
 
   const METRICS: Record<Lang, { eyebrow: string; nums: Array<{ n: string; label: string; sub: string; amber?: boolean }>; desc: string; cta: string }> = {
@@ -58,7 +58,7 @@ export default function HomePage() {
         { n: "200+", label: "한국 유명 인플루언서", sub: "메가 KOL부터 마이크로까지 전 등급" },
         { n: "100+", label: "한국 정상급 연예인", sub: "배우·K-POP·가수·방송인" },
       ],
-      desc: "숫자보다 중요한 건 검증입니다. 모든 파트너는 직접 만나보고 합을 맞춰본 곳들입니다.",
+      desc: "규모보다 검증을 우선합니다. 모든 파트너는 직접 미팅을 거친 후에만 매칭됩니다.",
       cta: "네트워크 자세히 보기 →",
     },
     en: {
@@ -69,7 +69,7 @@ export default function HomePage() {
         { n: "200+", label: "Korean Influencers", sub: "Mega-KOL to micro across all tiers" },
         { n: "100+", label: "Top Korean Celebrities", sub: "Actors · K-POP · singers · broadcasters" },
       ],
-      desc: "Numbers matter less than verification. Every partner here is one we've worked with directly.",
+      desc: "Verification before scale. Every partner is matched only after a direct meeting.",
       cta: "See network →",
     },
     zh: {
@@ -80,7 +80,7 @@ export default function HomePage() {
         { n: "200+", label: "韩国知名达人", sub: "从头部 KOL 到中腰部全覆盖" },
         { n: "100+", label: "韩国顶级艺人", sub: "演员 · K-POP · 歌手 · 主持人" },
       ],
-      desc: "比数字更重要的是验证。这里的每一位合作方,都是我们亲自对接过的。",
+      desc: "验证优先于规模。每一位合作方都经过直接面谈后才会匹配。",
       cta: "查看网络 →",
     },
     ja: {
@@ -91,7 +91,7 @@ export default function HomePage() {
         { n: "200+", label: "韓国有名インフルエンサー", sub: "メガKOLからマイクロまで全等級" },
         { n: "100+", label: "韓国トップクラス芸能人", sub: "俳優 · K-POP · 歌手 · 放送人" },
       ],
-      desc: "数より大切なのは検証です。ここに並ぶパートナーはすべて、直接対面して相性を確かめた相手です。",
+      desc: "規模より検証を優先します。すべてのパートナーは直接ミーティングを経た後にのみマッチングされます。",
       cta: "ネットワーク詳細 →",
     },
   };
