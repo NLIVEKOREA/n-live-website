@@ -184,17 +184,17 @@ body.lang-ko .detail-cta h3,body.lang-zh .detail-cta h3,body.lang-ja .detail-cta
 .statement-block::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");background-size:200px 200px;opacity:.06;mix-blend-mode:multiply;pointer-events:none}
 .statement-block .container{position:relative;z-index:2}
 .statement-headline{
-  font-family:var(--display);font-size:clamp(64px,13vw,220px);font-weight:900;
-  line-height:.85;letter-spacing:-.04em;text-transform:uppercase;
+  font-family:var(--display);font-size:clamp(56px,10vw,160px);font-weight:900;
+  line-height:.88;letter-spacing:-.04em;text-transform:uppercase;
   color:var(--black);margin-bottom:48px;max-width:1300px;
 }
 body.lang-ko .statement-headline{
   font-family:var(--display-ko);font-weight:400;
-  font-size:clamp(48px,9vw,160px);letter-spacing:-.05em;line-height:.95;text-transform:none;
+  font-size:clamp(44px,8vw,140px);letter-spacing:-.05em;line-height:.95;text-transform:none;
 }
 body.lang-zh .statement-headline,body.lang-ja .statement-headline{
   font-family:'Pretendard','Noto Sans JP','Noto Sans SC',sans-serif;font-weight:900;
-  font-size:clamp(48px,9vw,160px);letter-spacing:-.05em;line-height:.95;text-transform:none;
+  font-size:clamp(44px,8vw,140px);letter-spacing:-.05em;line-height:.95;text-transform:none;
 }
 .statement-block .statement-eyebrow{font-size:13px;letter-spacing:.3em;font-weight:700;color:var(--black);margin-bottom:48px;text-transform:uppercase;opacity:.7}
 .statement-block .statement-sub{font-size:clamp(20px,2.2vw,28px);max-width:780px;line-height:1.55;color:var(--black);opacity:.95;font-weight:500;letter-spacing:-.005em}

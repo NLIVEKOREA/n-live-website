@@ -42,10 +42,10 @@ export default function HomePage() {
   };
 
   const STMT: Record<Lang, { eyebrow: string; h: string; s: string; cta: string }> = {
-    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "라이브커머스의 모든 연결<br>한 곳에서", s: "엔라이브는 브랜드와 셀러 사이에 존재하는 모든 거리를 0으로 만드는 에이전시입니다. 검증된 네트워크, 직접 매칭, 단일 창구 — 그것이 엔라이브가 만드는 차이입니다.", cta: "프로세스 보기" },
-    en: { eyebrow: "OUR PROMISE", h: "Every connection in live commerce<br>in one place", s: "N-LIVE is the agency that collapses every distance between brands and sellers to zero. Verified network, direct matching, single window — this is the difference N-LIVE makes.", cta: "See process" },
-    zh: { eyebrow: "我们的承诺", h: "直播电商的所有连接<br>集于一处", s: "恩联是将品牌与卖家之间的所有距离归零的代理机构。经验证的网络、直接匹配、单一窗口 — 这就是恩联创造的差异。", cta: "查看流程" },
-    ja: { eyebrow: "OUR PROMISE", h: "ライブコマースのすべての繋がりを<br>一つの場所で", s: "N-LIVEはブランドとセラーの間に存在するすべての距離をゼロにするエージェンシーです。検証済みネットワーク、直接マッチング、単一窓口 — これがN-LIVEが作る違いです。", cta: "プロセスを見る" },
+    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "라이브커머스의<br>모든 연결<br>엔라이브에서", s: "엔라이브는 브랜드와 셀러 사이에 존재하는 모든 거리를 0으로 만드는 에이전시입니다. 검증된 네트워크, 직접 매칭, 단일 창구 — 그것이 엔라이브가 만드는 차이입니다.", cta: "프로세스 보기" },
+    en: { eyebrow: "OUR PROMISE", h: "Every connection<br>in live commerce<br>at N-LIVE", s: "N-LIVE is the agency that collapses every distance between brands and sellers to zero. Verified network, direct matching, single window — this is the difference N-LIVE makes.", cta: "See process" },
+    zh: { eyebrow: "我们的承诺", h: "直播电商的<br>所有连接<br>在恩联", s: "恩联是将品牌与卖家之间的所有距离归零的代理机构。经验证的网络、直接匹配、单一窗口 — 这就是恩联创造的差异。", cta: "查看流程" },
+    ja: { eyebrow: "OUR PROMISE", h: "ライブコマースの<br>すべての繋がりを<br>N-LIVEで", s: "N-LIVEはブランドとセラーの間に存在するすべての距離をゼロにするエージェンシーです。検証済みネットワーク、直接マッチング、単一窓口 — これがN-LIVEが作る違いです。", cta: "プロセスを見る" },
   };
 
   const METRICS: Record<Lang, { eyebrow: string; nums: Array<{ n: string; label: string; sub: string; amber?: boolean }>; desc: string; cta: string }> = {
