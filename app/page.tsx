@@ -22,7 +22,7 @@ export default function HomePage() {
       setRole(r);
       setShowSelector(false);
       setFadeOut(false);
-    }, 400);
+    }, 650);
   };
 
   const changeRole = () => {
@@ -58,39 +58,12 @@ export default function HomePage() {
     },
   };
 
-  // Role selector labels per language
-  const ROLE_LABELS: Record<Lang, Record<Role, { title: string; desc: string; icon: string }>> = {
-    ko: {
-      "korean-brand": { title: "한국 브랜드", desc: "중국 라이브커머스 진출", icon: "🏢" },
-      "korean-seller": { title: "한국 셀러 · 인플루언서", desc: "해외 브랜드 소싱 & 왕홍 콜라보", icon: "🎙️" },
-      "overseas-brand": { title: "해외 브랜드", desc: "한국 시장 진출 & 셀러브리티 매칭", icon: "🌏" },
-      "overseas-seller": { title: "해외 셀러 · 왕홍", desc: "K-뷰티/패션 직공급 & 한국 촬영", icon: "📱" },
-    },
-    en: {
-      "korean-brand": { title: "Korean Brand", desc: "Enter China via live commerce", icon: "🏢" },
-      "korean-seller": { title: "Korean Seller · Influencer", desc: "Brand sourcing & KOL collab", icon: "🎙️" },
-      "overseas-brand": { title: "Global Brand", desc: "Enter Korea & celebrity matching", icon: "🌏" },
-      "overseas-seller": { title: "Global Seller · KOL", desc: "K-Beauty/Fashion direct supply", icon: "📱" },
-    },
-    zh: {
-      "korean-brand": { title: "韩国品牌", desc: "通过直播电商进入中国", icon: "🏢" },
-      "korean-seller": { title: "韩国卖家 · 达人", desc: "品牌货源 & 达人联名", icon: "🎙️" },
-      "overseas-brand": { title: "海外品牌", desc: "进入韩国 & 明星匹配", icon: "🌏" },
-      "overseas-seller": { title: "海外卖家 · 达人", desc: "K-Beauty/Fashion直供", icon: "📱" },
-    },
-    ja: {
-      "korean-brand": { title: "韓国ブランド", desc: "ライブコマースで中国進出", icon: "🏢" },
-      "korean-seller": { title: "韓国セラー · インフルエンサー", desc: "ブランドソーシング & KOLコラボ", icon: "🎙️" },
-      "overseas-brand": { title: "海外ブランド", desc: "韓国進出 & セレブリティマッチング", icon: "🌏" },
-      "overseas-seller": { title: "海外セラー · KOL", desc: "K-Beauty/Fashion直供給", icon: "📱" },
-    },
-  };
-
-  const SELECTOR_TITLE: Record<Lang, { eyebrow: string; title: string; sub: string }> = {
-    ko: { eyebrow: "N-LIVE 엔라이브", title: "어떤 입장에서 오셨나요?", sub: "맞춤형 서비스를 안내해드립니다" },
-    en: { eyebrow: "N-LIVE", title: "What brings you here?", sub: "We'll tailor our services to your needs" },
-    zh: { eyebrow: "N-LIVE 恩联", title: "您以什么身份访问？", sub: "为您推荐定制化服务" },
-    ja: { eyebrow: "N-LIVE エンライブ", title: "どのお立場ですか？", sub: "お客様に最適なサービスをご案内します" },
+  // Role selector — trilingual labels (KO / EN / ZH shown simultaneously)
+  const ROLE_CARDS: Record<Role, { ko: string; en: string; zh: string; tag: string }> = {
+    "korean-brand":   { ko: "한국 브랜드",           en: "Korean Brand",              zh: "韩国品牌",     tag: "BRAND → CHINA" },
+    "korean-seller":  { ko: "한국 셀러 · 인플루언서", en: "Korean Seller · Influencer", zh: "韩国卖家 · 达人", tag: "SELLER × KOL" },
+    "overseas-brand": { ko: "해외 브랜드",           en: "Global Brand",              zh: "海外品牌",     tag: "BRAND → KOREA" },
+    "overseas-seller":{ ko: "해외 셀러 · 왕홍",      en: "Global Seller · KOL",       zh: "海外卖家 · 达人", tag: "K-SUPPLY" },
   };
 
   // Tag interactive panels — what each audience can do with us
@@ -206,24 +179,25 @@ export default function HomePage() {
 
   // Get role-specific hero content or fallback to generic
   const heroContent = role ? ROLE_HERO[role][lang] : null;
-  const selectorText = SELECTOR_TITLE[lang];
-  const roleLabels = ROLE_LABELS[lang];
 
   // Current role label for the "change role" badge
-  const currentRoleLabel = role ? roleLabels[role].title : "";
+  const currentRoleLabel = role ? ROLE_CARDS[role].ko : "";
 
   return (
     <>
       {/* ROLE SELECTOR OVERLAY */}
       {showSelector && (
         <div className={`role-selector-overlay ${fadeOut ? "fade-out" : ""}`}>
+          <MeteorBackground />
           <div className="role-selector-inner">
             <div className="role-selector-logo">
-              <Image src="/logo.svg" alt="N-LIVE" width={48} height={48} />
-              <span>{selectorText.eyebrow}</span>
+              <Image src="/logo.svg" alt="N-LIVE" width={44} height={44} />
             </div>
-            <h1 className="role-selector-title">{selectorText.title}</h1>
-            <p className="role-selector-sub">{selectorText.sub}</p>
+            <div className="role-selector-eyebrow">LIVE COMMERCE AGENCY</div>
+            <h1 className="role-selector-title">
+              <span className="rst-ko">어떤 입장에서 오셨나요?</span>
+              <span className="rst-intl">What brings you here? &nbsp;/&nbsp; 请选择您的身份</span>
+            </h1>
             <div className="role-selector-grid">
               {(["korean-brand", "korean-seller", "overseas-brand", "overseas-seller"] as Role[]).map((r) => (
                 <button
@@ -232,9 +206,10 @@ export default function HomePage() {
                   onClick={() => selectRole(r)}
                   type="button"
                 >
-                  <span className="rsc-icon">{roleLabels[r].icon}</span>
-                  <span className="rsc-title">{roleLabels[r].title}</span>
-                  <span className="rsc-desc">{roleLabels[r].desc}</span>
+                  <span className="rsc-tag">{ROLE_CARDS[r].tag}</span>
+                  <span className="rsc-ko">{ROLE_CARDS[r].ko}</span>
+                  <span className="rsc-intl">{ROLE_CARDS[r].en} &nbsp;/&nbsp; {ROLE_CARDS[r].zh}</span>
+                  <span className="rsc-arrow">&rarr;</span>
                 </button>
               ))}
             </div>
@@ -243,12 +218,13 @@ export default function HomePage() {
       )}
 
       {/* HERO */}
-      <section className="hero">
+      <section className={`hero ${!showSelector && role ? "hero-entered" : ""}`}>
         <MeteorBackground />
         <div className="container hero-content">
           {/* Role badge + change button */}
           {role && !showSelector && (
             <button className="hero-role-badge" onClick={changeRole} type="button">
+              <span className="hrb-dot" />
               {currentRoleLabel}
               <span className="hero-role-change">{lang === "ko" ? "변경" : lang === "en" ? "Change" : lang === "zh" ? "更换" : "変更"}</span>
             </button>

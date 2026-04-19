@@ -850,87 +850,169 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 }
 
 /* ========================================================
-   ROLE SELECTOR OVERLAY
+   ROLE SELECTOR OVERLAY — premium, trilingual
    ======================================================== */
 .role-selector-overlay{
   position:fixed;top:0;left:0;right:0;bottom:0;
   z-index:9999;
   background:var(--black);
   display:flex;align-items:center;justify-content:center;
-  animation:roleOverlayIn .6s ease-out;
+  animation:roleOverlayIn .8s cubic-bezier(.16,1,.3,1);
 }
+.role-selector-overlay .meteor-bg{z-index:0}
 .role-selector-overlay.fade-out{
-  animation:roleOverlayOut .4s ease-in forwards;
+  animation:roleSlideUp .7s cubic-bezier(.76,0,.24,1) forwards;
 }
 @keyframes roleOverlayIn{
-  from{opacity:0}to{opacity:1}
+  from{opacity:0;transform:scale(1.02)}
+  to{opacity:1;transform:scale(1)}
 }
-@keyframes roleOverlayOut{
-  from{opacity:1}to{opacity:0}
+@keyframes roleSlideUp{
+  0%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-60px)}
+}
+
+/* Hero entrance after role selected */
+.hero.hero-entered .hero-content{
+  animation:heroFadeIn .9s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes heroFadeIn{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
 .role-selector-inner{
-  max-width:720px;width:100%;padding:40px 24px;text-align:center;
-}
-.role-selector-logo{
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  margin-bottom:32px;font-size:1.1rem;font-weight:600;color:var(--white);letter-spacing:.02em;
-}
-.role-selector-title{
-  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:var(--white);
-  margin-bottom:12px;line-height:1.2;
-}
-.role-selector-sub{
-  font-size:1.05rem;color:rgba(255,255,255,.6);margin-bottom:48px;
+  position:relative;z-index:1;
+  max-width:800px;width:100%;padding:40px 32px;text-align:center;
 }
 
-.role-selector-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+/* Logo */
+.role-selector-logo{
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:48px;opacity:.7;
 }
+
+/* Eyebrow */
+.role-selector-eyebrow{
+  font-size:.75rem;font-weight:500;letter-spacing:.2em;
+  color:rgba(255,255,255,.35);text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+/* Title — KO large, EN/ZH small below */
+.role-selector-title{
+  margin-bottom:56px;
+}
+.rst-ko{
+  display:block;
+  font-size:clamp(1.6rem,3.8vw,2.6rem);font-weight:700;color:var(--white);
+  line-height:1.3;letter-spacing:-.02em;
+}
+.rst-intl{
+  display:block;margin-top:10px;
+  font-size:clamp(.85rem,1.6vw,1rem);font-weight:400;
+  color:rgba(255,255,255,.35);letter-spacing:.01em;
+}
+
+/* Grid — 2×2 */
+.role-selector-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+
+/* Card — clean, editorial */
 .role-selector-card{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:16px;padding:32px 20px;
-  cursor:pointer;transition:all .25s ease;
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  text-align:center;
+  position:relative;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:28px 24px 24px;
+  cursor:pointer;transition:all .35s cubic-bezier(.16,1,.3,1);
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+  text-align:left;overflow:hidden;
+}
+.role-selector-card::before{
+  content:"";position:absolute;inset:0;
+  border-radius:14px;opacity:0;
+  transition:opacity .35s ease;
 }
 .role-selector-card:hover{
-  background:rgba(255,255,255,.12);
-  border-color:rgba(255,255,255,.25);
-  transform:translateY(-4px);
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.18);
+  transform:translateY(-2px);
 }
-/* Role-specific hover accents */
-.role-selector-card.korean-brand:hover{border-color:var(--k-brand)}
-.role-selector-card.korean-seller:hover{border-color:var(--k-seller)}
-.role-selector-card.overseas-brand:hover{border-color:var(--o-brand)}
-.role-selector-card.overseas-seller:hover{border-color:var(--o-seller)}
+.role-selector-card:hover::before{opacity:1}
+.role-selector-card:active{transform:translateY(0);transition-duration:.1s}
 
-.rsc-icon{font-size:2.4rem;margin-bottom:4px}
-.rsc-title{font-size:1.1rem;font-weight:700;color:var(--white)}
-.rsc-desc{font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.4}
+/* Role-specific glow on hover */
+.role-selector-card.korean-brand:hover{border-color:rgba(255,191,36,.35)}
+.role-selector-card.korean-brand::before{background:radial-gradient(ellipse at 30% 80%,rgba(255,191,36,.06) 0%,transparent 70%)}
+.role-selector-card.korean-seller:hover{border-color:rgba(0,230,118,.3)}
+.role-selector-card.korean-seller::before{background:radial-gradient(ellipse at 30% 80%,rgba(0,230,118,.05) 0%,transparent 70%)}
+.role-selector-card.overseas-brand:hover{border-color:rgba(41,182,246,.35)}
+.role-selector-card.overseas-brand::before{background:radial-gradient(ellipse at 30% 80%,rgba(41,182,246,.06) 0%,transparent 70%)}
+.role-selector-card.overseas-seller:hover{border-color:rgba(255,82,82,.3)}
+.role-selector-card.overseas-seller::before{background:radial-gradient(ellipse at 30% 80%,rgba(255,82,82,.05) 0%,transparent 70%)}
 
-/* Hero role badge (shows selected role + change button) */
+/* Tag — small uppercase label */
+.rsc-tag{
+  font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);margin-bottom:4px;
+}
+
+/* KO title */
+.rsc-ko{
+  font-size:1.15rem;font-weight:700;color:var(--white);
+  line-height:1.3;
+}
+
+/* EN / ZH subtitle */
+.rsc-intl{
+  font-size:.78rem;font-weight:400;
+  color:rgba(255,255,255,.35);line-height:1.4;
+  margin-top:2px;
+}
+
+/* Arrow */
+.rsc-arrow{
+  position:absolute;top:24px;right:20px;
+  font-size:1rem;color:rgba(255,255,255,.15);
+  transition:all .3s ease;
+}
+.role-selector-card:hover .rsc-arrow{
+  color:rgba(255,255,255,.5);
+  transform:translateX(3px);
+}
+
+/* Hero role badge */
 .hero-role-badge{
   display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-  border-radius:100px;padding:8px 16px;
-  font-size:.85rem;font-weight:600;color:var(--white);
-  cursor:pointer;transition:all .2s ease;margin-bottom:16px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:100px;padding:8px 18px;
+  font-size:.82rem;font-weight:600;color:rgba(255,255,255,.85);
+  cursor:pointer;transition:all .25s ease;margin-bottom:16px;
+  backdrop-filter:blur(8px);
 }
 .hero-role-badge:hover{
-  background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);
+  background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);
+}
+.hrb-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--amber);
+  flex-shrink:0;
 }
 .hero-role-change{
-  font-size:.75rem;font-weight:500;color:var(--amber);
-  border-left:1px solid rgba(255,255,255,.2);padding-left:8px;
+  font-size:.72rem;font-weight:500;color:rgba(255,255,255,.4);
+  border-left:1px solid rgba(255,255,255,.15);padding-left:8px;
+  transition:color .2s;
 }
+.hero-role-badge:hover .hero-role-change{color:var(--amber)}
 
 /* Mobile role selector */
-@media(max-width:520px){
-  .role-selector-grid{grid-template-columns:1fr;gap:12px}
-  .role-selector-card{padding:24px 16px;flex-direction:row;gap:14px;text-align:left}
-  .rsc-icon{font-size:2rem;margin-bottom:0}
-  .role-selector-title{font-size:1.6rem}
-  .role-selector-sub{margin-bottom:32px}
+@media(max-width:600px){
+  .role-selector-inner{padding:32px 20px}
+  .role-selector-grid{grid-template-columns:1fr;gap:10px}
+  .role-selector-card{padding:22px 20px 20px;flex-direction:column;gap:4px}
+  .rsc-arrow{top:20px;right:16px}
+  .rst-ko{font-size:1.5rem}
+  .rst-intl{font-size:.82rem}
+  .role-selector-logo{margin-bottom:36px}
+  .role-selector-title{margin-bottom:40px}
 }
