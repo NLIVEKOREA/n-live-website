@@ -39,7 +39,7 @@ export const MESSAGES: Messages = {
     "hero.cta1": "파트너 문의",
     "hero.cta2": "서비스 살펴보기",
 
-    "aud.title": "네 가지 축, 네 가지 연결",
+    "aud.title": "네 가지 축<br>네 가지 연결",
     "aud.desc": "브랜드와 셀러, 한국과 해외 — 각기 다른 파트너가 각자 필요한 것을 얻도록 설계된 에이전시입니다.",
     "aud.detail": "자세히 보기",
     "aud.1.t": "한국 브랜드",
@@ -96,7 +96,7 @@ export const MESSAGES: Messages = {
     "hero.cta1": "Partner Inquiry",
     "hero.cta2": "Explore Services",
 
-    "aud.title": "Four Axes, Four Connections",
+    "aud.title": "Four Axes<br>Four Connections",
     "aud.desc": "Brands and sellers, Korea and overseas — an agency designed so each partner gets exactly what they need.",
     "aud.detail": "See details",
     "aud.1.t": "Korean Brands",
@@ -153,7 +153,7 @@ export const MESSAGES: Messages = {
     "hero.cta1": "合作咨询",
     "hero.cta2": "了解服务",
 
-    "aud.title": "四大轴向,四种连接",
+    "aud.title": "四大轴向<br>四种连接",
     "aud.desc": "品牌与卖家,韩国与海外 — 代理机构的设计,让每种合作方都能获得所需。",
     "aud.detail": "查看详情",
     "aud.1.t": "韩国品牌",
@@ -210,7 +210,7 @@ export const MESSAGES: Messages = {
     "hero.cta1": "パートナーお問い合わせ",
     "hero.cta2": "サービスを見る",
 
-    "aud.title": "4つの軸、4つの接続",
+    "aud.title": "4つの軸<br>4つの接続",
     "aud.desc": "ブランドとセラー、韓国と海外 — それぞれ異なるパートナーが必要なものを得られるよう設計されたエージェンシー。",
     "aud.detail": "詳細を見る",
     "aud.1.t": "韓国ブランド",
