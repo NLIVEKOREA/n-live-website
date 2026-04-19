@@ -126,6 +126,7 @@ export default function HomePage() {
             <span className="line-mask"><span className="line-inner"><em>{t("hero.title.2")}</em></span></span>
           </h1>
 
+          <div className="hero-tags-label">{t("hero.tag.label")}</div>
           <div className="hero-tags">
             {tags.map((tag, i) => (
               <button

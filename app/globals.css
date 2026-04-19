@@ -69,11 +69,20 @@ body.lang-ko .hero-title{font-family:var(--display-ko);text-transform:none;font-
 body.lang-zh .hero-title,body.lang-ja .hero-title{font-family:'Pretendard','Noto Sans JP','Noto Sans SC',sans-serif;text-transform:none;font-weight:900;letter-spacing:-.05em;line-height:.95;font-size:clamp(48px,8.5vw,130px)}
 .hero-title em{font-style:normal;display:inline-block;position:relative;color:var(--amber)}
 .hero-title em::after{content:"";position:absolute;bottom:.02em;left:0;right:0;height:.08em;background:var(--amber);opacity:.35}
-.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin:36px 0 0;position:relative;z-index:3}
-.hero-tag{padding:11px 18px;font-size:12px;font-weight:600;letter-spacing:.04em;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.9);transition:all .35s cubic-bezier(.7,0,.2,1);white-space:nowrap;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:8px;font-family:inherit}
-.hero-tag:hover{background:rgba(232,163,61,.15);border-color:var(--amber);color:var(--amber);transform:translateY(-2px)}
-.hero-tag.active{background:var(--amber);border-color:var(--amber);color:var(--black);transform:translateY(-2px)}
-.hero-tag-arrow{font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;width:14px;display:inline-block;text-align:center}
+.hero-tags-label{font-size:13px;letter-spacing:.2em;font-weight:700;color:var(--amber);margin:48px 0 18px;text-transform:uppercase;position:relative;z-index:3;display:flex;align-items:center;gap:14px}
+.hero-tags-label::before{content:"";display:block;width:36px;height:1.5px;background:var(--amber);flex-shrink:0}
+.hero-tags{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 8px;position:relative;z-index:3}
+.hero-tag{padding:18px 28px;font-size:clamp(15px,1.4vw,18px);font-weight:700;letter-spacing:-.005em;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.95);transition:all .35s cubic-bezier(.7,0,.2,1);white-space:nowrap;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:inline-flex;align-items:center;gap:14px;font-family:inherit;line-height:1}
+.hero-tag:hover{background:rgba(232,163,61,.18);border-color:var(--amber);color:var(--amber);transform:translateY(-3px);box-shadow:0 8px 24px rgba(232,163,61,.2)}
+.hero-tag.active{background:var(--amber);border-color:var(--amber);color:var(--black);transform:translateY(-3px);box-shadow:0 10px 30px rgba(232,163,61,.4)}
+.hero-tag-arrow{font-family:'Unbounded',sans-serif;font-weight:800;font-size:18px;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.12);transition:background .3s}
+.hero-tag:hover .hero-tag-arrow{background:rgba(232,163,61,.25)}
+.hero-tag.active .hero-tag-arrow{background:rgba(0,0,0,.18)}
+
+@media(max-width:640px){
+  .hero-tag{padding:14px 20px;font-size:14px;width:100%;justify-content:space-between}
+  .hero-tags{gap:8px}
+}
 
 /* TAG REVEAL PANEL */
 .tag-panel{margin-top:24px;margin-bottom:32px;padding:28px 32px;background:rgba(232,163,61,.08);border-left:3px solid var(--amber);max-width:780px;position:relative;z-index:3;animation:tagSlide .45s cubic-bezier(.7,0,.2,1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -282,20 +291,23 @@ body.lang-ko .huge-display,body.lang-zh .huge-display,body.lang-ja .huge-display
 .hero-title .line-mask:nth-child(2) .line-inner{animation-delay:.85s}
 @keyframes lineReveal{to{transform:translateY(0)}}
 
+/* Tags label fade in */
+.hero-tags-label{opacity:0;animation:fadeUp .7s 1.6s cubic-bezier(.7,0,.2,1) forwards}
+
 /* Tags pop in cascading */
 .hero-tags .hero-tag{opacity:0;transform:translateY(20px) scale(.92);will-change:transform,opacity;animation:tagPop .55s cubic-bezier(.4,1.5,.5,1) forwards}
-.hero-tags .hero-tag:nth-child(1){animation-delay:1.7s}
-.hero-tags .hero-tag:nth-child(2){animation-delay:1.78s}
-.hero-tags .hero-tag:nth-child(3){animation-delay:1.86s}
-.hero-tags .hero-tag:nth-child(4){animation-delay:1.94s}
-.hero-tags .hero-tag:nth-child(5){animation-delay:2.02s}
+.hero-tags .hero-tag:nth-child(1){animation-delay:1.85s}
+.hero-tags .hero-tag:nth-child(2){animation-delay:1.95s}
+.hero-tags .hero-tag:nth-child(3){animation-delay:2.05s}
+.hero-tags .hero-tag:nth-child(4){animation-delay:2.15s}
+.hero-tags .hero-tag:nth-child(5){animation-delay:2.25s}
 @keyframes tagPop{to{opacity:1;transform:translateY(0) scale(1)}}
 
 /* Sub fade up */
-.hero-sub{opacity:0;animation:fadeUp .9s 2.3s cubic-bezier(.7,0,.2,1) forwards}
+.hero-sub{opacity:0;animation:fadeUp .9s 2.5s cubic-bezier(.7,0,.2,1) forwards}
 
 /* CTA buttons pop in */
-.hero-actions{opacity:0;animation:fadeUp .9s 2.6s cubic-bezier(.7,0,.2,1) forwards}
+.hero-actions{opacity:0;animation:fadeUp .9s 2.8s cubic-bezier(.7,0,.2,1) forwards}
 
 /* Common fade up keyframe */
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
