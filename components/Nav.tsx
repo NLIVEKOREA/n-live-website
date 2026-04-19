@@ -25,19 +25,19 @@ export default function Nav() {
         </Link>
 
         <div className={`nav-links ${menuOpen ? "open" : ""}`}>
-          <Link href="/about">{t("nav.about")}</Link>
+          <Link href="/about" onClick={() => setMenuOpen(false)}>{t("nav.about")}</Link>
           <div className="nav-dropdown" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
-            <button className="nav-dropdown-trigger">{t("nav.services")} ▾</button>
+            <button className="nav-dropdown-trigger" onClick={() => setServicesOpen(!servicesOpen)}>{t("nav.services")} ▾</button>
             <div className={`nav-dropdown-menu ${servicesOpen ? "open" : ""}`}>
-              <Link href="/for-korean-brands">{t("nav.services.kbrand")}</Link>
-              <Link href="/for-korean-sellers">{t("nav.services.kseller")}</Link>
-              <Link href="/for-overseas-brands">{t("nav.services.obrand")}</Link>
-              <Link href="/for-overseas-sellers">{t("nav.services.oseller")}</Link>
+              <Link href="/for-korean-brands" onClick={() => setMenuOpen(false)}>{t("nav.services.kbrand")}</Link>
+              <Link href="/for-korean-sellers" onClick={() => setMenuOpen(false)}>{t("nav.services.kseller")}</Link>
+              <Link href="/for-overseas-brands" onClick={() => setMenuOpen(false)}>{t("nav.services.obrand")}</Link>
+              <Link href="/for-overseas-sellers" onClick={() => setMenuOpen(false)}>{t("nav.services.oseller")}</Link>
             </div>
           </div>
-          <Link href="/network">{t("nav.network")}</Link>
-          <Link href="/process">{t("nav.process")}</Link>
-          <Link href="/contact">{t("nav.contact")}</Link>
+          <Link href="/network" onClick={() => setMenuOpen(false)}>{t("nav.network")}</Link>
+          <Link href="/process" onClick={() => setMenuOpen(false)}>{t("nav.process")}</Link>
+          <Link href="/contact" onClick={() => setMenuOpen(false)}>{t("nav.contact")}</Link>
         </div>
 
         <div className="nav-right">
