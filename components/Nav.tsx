@@ -1,0 +1,62 @@
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { useLang } from "./LangContext";
+import { Lang } from "@/lib/i18n";
+
+export default function Nav() {
+  const { lang, setLang, t } = useLang();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setMenuOpen(false);
+    window.addEventListener("hashchange", handler);
+    return () => window.removeEventListener("hashchange", handler);
+  }, []);
+
+  return (
+    <nav className="nav">
+      <div className="nav-inner">
+        <Link href="/" className="logo">
+          <span className="logo-mark"><Image src="/logo.svg" alt="N-LIVE" width={40} height={40} /></span>
+          <span>{t("brand")}</span>
+        </Link>
+
+        <div className={`nav-links ${menuOpen ? "open" : ""}`}>
+          <Link href="/about">{t("nav.about")}</Link>
+          <div className="nav-dropdown" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
+            <button className="nav-dropdown-trigger">{t("nav.services")} ▾</button>
+            <div className={`nav-dropdown-menu ${servicesOpen ? "open" : ""}`}>
+              <Link href="/for-korean-brands">{t("nav.services.kbrand")}</Link>
+              <Link href="/for-korean-sellers">{t("nav.services.kseller")}</Link>
+              <Link href="/for-overseas-brands">{t("nav.services.obrand")}</Link>
+              <Link href="/for-overseas-sellers">{t("nav.services.oseller")}</Link>
+            </div>
+          </div>
+          <Link href="/network">{t("nav.network")}</Link>
+          <Link href="/process">{t("nav.process")}</Link>
+          <Link href="/contact">{t("nav.contact")}</Link>
+        </div>
+
+        <div className="nav-right">
+          <div className="lang-switch">
+            {(["ko", "zh", "en", "ja"] as Lang[]).map((l, i) => (
+              <span key={l}>
+                {i > 0 && <span className="divider">·</span>}
+                <button onClick={() => setLang(l)} className={lang === l ? "active" : ""}>
+                  {l === "ko" ? "KO" : l === "zh" ? "中" : l === "en" ? "EN" : "JP"}
+                </button>
+              </span>
+            ))}
+          </div>
+          <Link href="/contact" className="nav-cta">{t("nav.cta")}</Link>
+          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+            <span /><span /><span />
+          </button>
+        </div>
+      </div>
+    </nav>
+  );
+}

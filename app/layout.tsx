@@ -1,0 +1,99 @@
+import type { Metadata } from "next";
+import "./globals.css";
+import { LangProvider } from "@/components/LangContext";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
+import Effects from "@/components/Effects";
+
+const SITE_URL = "https://n-live.com";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "엔라이브 N-LIVE · 한중 크로스보더 라이브커머스 에이전시",
+    template: "%s · 엔라이브 N-LIVE",
+  },
+  description:
+    "엔라이브(N-LIVE)는 한국과 해외의 브랜드·셀러·인플루언서·왕홍을 직접 연결하는 한중 크로스보더 라이브커머스 에이전시입니다. 중국 왕홍 매칭, 한국 연예인 PPL, K-Beauty·K-Fashion 직공급, 샤오홍슈·더우인 운영까지.",
+  keywords: [
+    "엔라이브",
+    "N-LIVE",
+    "한중 라이브커머스",
+    "크로스보더 에이전시",
+    "왕홍 마케팅",
+    "중국 왕홍 매칭",
+    "한국 연예인 PPL",
+    "K-Beauty 중국 진출",
+    "K-Fashion 중국 진출",
+    "샤오홍슈 마케팅",
+    "더우인 라이브",
+    "한국 KOL 네트워크",
+    "한국 인플루언서 에이전시",
+    "라이브커머스 에이전시",
+    "한중 무역",
+    "中韩跨境电商",
+    "韩国KOL",
+    "韩国直播代理",
+  ],
+  authors: [{ name: "엔라이브 N-LIVE" }],
+  creator: "엔라이브",
+  publisher: "엔라이브",
+  formatDetection: { email: false, address: false, telephone: false },
+  alternates: {
+    canonical: "/",
+    languages: {
+      "ko-KR": "/",
+      "en-US": "/",
+      "zh-CN": "/",
+      "ja-JP": "/",
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    alternateLocale: ["en_US", "zh_CN", "ja_JP"],
+    url: SITE_URL,
+    siteName: "엔라이브 N-LIVE",
+    title: "엔라이브 N-LIVE · 한중 크로스보더 라이브커머스 에이전시",
+    description:
+      "브랜드와 셀러, 국경 너머 직접 연결. 한국과 해외의 브랜드·인플루언서·왕홍을 잇는 크로스보더 에이전시 — 엔라이브.",
+    images: [
+      { url: "/og.png", width: 1200, height: 630, alt: "엔라이브 N-LIVE — Korea × Overseas Brand & Influencer Agency" },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "엔라이브 N-LIVE · 한중 크로스보더 에이전시",
+    description: "브랜드와 셀러, 국경 너머 직접 연결.",
+    images: ["/og.png"],
+  },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+  icons: {
+    icon: [{ url: "/logo.svg", type: "image/svg+xml" }],
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="ko">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Unbounded:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+        <meta name="naver-site-verification" content="" />
+        <meta name="google-site-verification" content="" />
+      </head>
+      <body className="lang-ko">
+        <LangProvider>
+          <Effects />
+          <Nav />
+          <main>{children}</main>
+          <Footer />
+        </LangProvider>
+      </body>
+    </html>
+  );
+}
