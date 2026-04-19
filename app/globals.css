@@ -159,10 +159,15 @@ body.lang-zh .section-title,body.lang-ja .section-title{font-family:'Pretendard'
 
 /* 4-AUDIENCE MATRIX */
 .audience-matrix{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--gray-200);border:1px solid var(--gray-200);margin-top:60px}
-.audience-card{background:var(--white);padding:48px 40px;display:flex;flex-direction:column;gap:18px;position:relative;transition:all .4s ease;min-height:420px;overflow:hidden;text-decoration:none;color:inherit;cursor:pointer}
-.audience-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--cat-color,var(--amber));transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.7,0,.2,1)}
-.audience-card:hover{background:var(--gray-50);transform:translateY(-4px)}
+.audience-card{background:var(--white);padding:0;display:flex;flex-direction:column;position:relative;transition:all .4s ease;min-height:420px;overflow:hidden;text-decoration:none;color:inherit;cursor:pointer}
+.audience-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--cat-color,var(--amber));transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.7,0,.2,1);z-index:3}
+.audience-card:hover{transform:translateY(-4px)}
 .audience-card:hover::before{transform:scaleX(1)}
+.aud-img{position:relative;width:100%;height:220px;overflow:hidden}
+.aud-img img{transition:transform .6s ease}
+.audience-card:hover .aud-img img{transform:scale(1.05)}
+.aud-overlay{position:absolute;top:0;left:0;right:0;height:220px;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.08) 100%);z-index:1;pointer-events:none}
+.aud-content{padding:32px 40px;display:flex;flex-direction:column;gap:18px;flex:1}
 .aud-tag{display:flex;gap:0;align-items:center;font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:.22em;font-weight:700;text-transform:uppercase;margin-bottom:4px}
 .aud-flag{padding:6px 12px;background:var(--black);color:var(--white)}
 .aud-type{padding:6px 12px;border:1px solid var(--gray-200);border-left:none;color:var(--black);background:var(--white)}
@@ -712,7 +717,10 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
   .section-eyebrow{font-size:11px;letter-spacing:.2em;margin-bottom:20px}
 
   /* — Audience matrix — */
-  .audience-card{padding:32px 24px;min-height:320px;gap:14px}
+  .audience-card{min-height:auto}
+  .aud-img{height:180px}
+  .aud-overlay{height:180px}
+  .aud-content{padding:24px 20px;gap:14px}
   .audience-card h3{font-size:clamp(24px,6vw,32px)}
   .aud-need{font-size:14px;padding:12px 14px}
 

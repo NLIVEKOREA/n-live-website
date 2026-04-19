@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useLang } from "@/components/LangContext";
 import Marquee from "@/components/Marquee";
@@ -192,28 +193,44 @@ export default function HomePage() {
 
           <div className="audience-matrix">
             <Link href="/for-korean-brands" className="audience-card k-brand">
-              <div className="aud-tag"><span className="aud-flag">KOREA</span><span className="aud-type">BRAND</span></div>
-              <h3>{t("aud.1.t")}</h3>
-              <p className="aud-need">{t("aud.1.n")}</p>
-              <span className="aud-detail-link">{t("aud.detail")}</span>
+              <div className="aud-img"><Image src="/images/k-brand.jpg" alt="K-Beauty products" fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
+              <div className="aud-overlay" />
+              <div className="aud-content">
+                <div className="aud-tag"><span className="aud-flag">KOREA</span><span className="aud-type">BRAND</span></div>
+                <h3>{t("aud.1.t")}</h3>
+                <p className="aud-need">{t("aud.1.n")}</p>
+                <span className="aud-detail-link">{t("aud.detail")}</span>
+              </div>
             </Link>
             <Link href="/for-korean-sellers" className="audience-card k-seller">
-              <div className="aud-tag"><span className="aud-flag">KOREA</span><span className="aud-type">SELLER · INFLUENCER</span></div>
-              <h3>{t("aud.2.t")}</h3>
-              <p className="aud-need">{t("aud.2.n")}</p>
-              <span className="aud-detail-link">{t("aud.detail")}</span>
+              <div className="aud-img"><Image src="/images/k-seller.jpg" alt="Live streaming seller" fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
+              <div className="aud-overlay" />
+              <div className="aud-content">
+                <div className="aud-tag"><span className="aud-flag">KOREA</span><span className="aud-type">SELLER · INFLUENCER</span></div>
+                <h3>{t("aud.2.t")}</h3>
+                <p className="aud-need">{t("aud.2.n")}</p>
+                <span className="aud-detail-link">{t("aud.detail")}</span>
+              </div>
             </Link>
             <Link href="/for-overseas-brands" className="audience-card o-brand">
-              <div className="aud-tag"><span className="aud-flag">GLOBAL</span><span className="aud-type">BRAND</span></div>
-              <h3>{t("aud.3.t")}</h3>
-              <p className="aud-need">{t("aud.3.n")}</p>
-              <span className="aud-detail-link">{t("aud.detail")}</span>
+              <div className="aud-img"><Image src="/images/o-brand.jpg" alt="Global fashion brand" fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
+              <div className="aud-overlay" />
+              <div className="aud-content">
+                <div className="aud-tag"><span className="aud-flag">GLOBAL</span><span className="aud-type">BRAND</span></div>
+                <h3>{t("aud.3.t")}</h3>
+                <p className="aud-need">{t("aud.3.n")}</p>
+                <span className="aud-detail-link">{t("aud.detail")}</span>
+              </div>
             </Link>
             <Link href="/for-overseas-sellers" className="audience-card o-seller">
-              <div className="aud-tag"><span className="aud-flag">GLOBAL</span><span className="aud-type">SELLER · WANGHONG</span></div>
-              <h3>{t("aud.4.t")}</h3>
-              <p className="aud-need">{t("aud.4.n")}</p>
-              <span className="aud-detail-link">{t("aud.detail")}</span>
+              <div className="aud-img"><Image src="/images/o-seller.jpg" alt="Wanghong live commerce" fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
+              <div className="aud-overlay" />
+              <div className="aud-content">
+                <div className="aud-tag"><span className="aud-flag">GLOBAL</span><span className="aud-type">SELLER · WANGHONG</span></div>
+                <h3>{t("aud.4.t")}</h3>
+                <p className="aud-need">{t("aud.4.n")}</p>
+                <span className="aud-detail-link">{t("aud.detail")}</span>
+              </div>
             </Link>
           </div>
         </div>
