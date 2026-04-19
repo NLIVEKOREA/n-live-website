@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
 import PageEnter from "@/components/PageEnter";
+import CaseCards from "@/components/CaseCards";
 import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
@@ -25,8 +26,16 @@ const C: Record<Lang, any> = {
       { t: "샘플 · 라이브 트라이얼", d: "샘플 송부 후 소규모 테스트 방송으로 시장 반응을 확인. 성과 나오는 상품을 선별합니다." },
       { t: "정기 공급 · 확장", d: "성과 상품은 정기 공급 구조로 전환. 추가 카테고리·한국 연예인 콜라보까지 단계적 확장." },
     ],
-    eb3: "참고 케이스", st3: "주요 실행 사례",
-    pmsg: "진행한 캠페인 자료는 비공개로 운영합니다. NDA 사전 체결 후 직접 공유드립니다.",
+    eb3: "참고 케이스", st3: "업계 주요 성공 사례",
+    cases: [
+      { brand: "왕홍 '댠댠' (신쉔그룹)", metric: "3일간 매출 2,000억 원", desc: "한국 방문 3일간 라이브 4회 진행, 총 매출 약 2,000억 원(10억 위안). 더후·설화수·메디큐브 등 K뷰티 집중 판매." },
+      { brand: "리자치 (Top 왕홍)", metric: "1분 20초 · 6.3억 원", desc: "한국 유자차 제품을 1분 20초 만에 6.3억 원어치 판매. 히알루론산 제품 단일 방송 15만 병 완판 기록." },
+      { brand: "왕홍 '따루루' (700만 팔로워)", metric: "마스크팩 100만장 완판", desc: "K뷰티 마스크팩 라이브에서 100만장 완판. 500만 위안(약 11억 원) 매출로 국내 홈쇼핑 대박 수준." },
+      { brand: "중국 라이브커머스 시장", metric: "시장 규모 5.5조 위안", desc: "2024년 중국 라이브커머스 규모 5.5조 위안(약 1,018조 원), 온라인 소매 점유율 35%. 더우인 GMV 40% 점유." },
+      { brand: "크로스보더 소비자", metric: "1.88억 명 해외직구", desc: "중국 해외직구 소비자 1.88억 명으로 5년 전 대비 2배 성장. 뷰티·퍼스널케어 카테고리 28% 점유." },
+      { brand: "왕홍 Top 10", metric: "연간 판매액 11조 원", desc: "중국 왕홍 Top 10의 라이브커머스 연간 판매액 합산 11조 원 육박. K뷰티·K패션이 핵심 카테고리." },
+    ],
+    pmsg: "위 사례는 공개 보도 기반입니다. 엔라이브 자체 캠페인 자료는 NDA 체결 후 공유드립니다.",
     ctaH: "한국 상품이나 한국 콘텐츠에 관심 있으신가요?", ctaP: "운영 채널과 원하는 카테고리를 알려주시면 맞춤 제안을 회신드립니다.",
     ctaB: "K-브랜드 소싱 문의 →",
   },
@@ -50,8 +59,16 @@ const C: Record<Lang, any> = {
       { t: "Samples · Live Trials", d: "After samples, run small test broadcasts to verify market response. We curate the products that perform." },
       { t: "Regular Supply · Expansion", d: "Convert performing products into regular supply structures. Expand step-by-step to additional categories and Korean celebrity collaborations." },
     ],
-    eb3: "REFERENCE CASES", st3: "Selected Execution Cases",
-    pmsg: "Campaign materials are kept confidential. We share specifics directly after an NDA is signed.",
+    eb3: "REFERENCE CASES", st3: "Industry Success Stories",
+    cases: [
+      { brand: "Wanghong 'Dandan' (Xinxuan)", metric: "₩200B in 3 Days", desc: "4 live sessions over 3 days in Korea, total sales ~₩200B (¥1B CNY). Focused on K-beauty brands including Whoo, Sulwhasoo, Medicube." },
+      { brand: "Li Jiaqi (Top Wanghong)", metric: "₩630M in 80 Seconds", desc: "Sold ₩630M worth of Korean citron tea in just 80 seconds. Also sold out 150K bottles of hyaluronic acid in a single broadcast." },
+      { brand: "Wanghong 'Daruru' (7M Followers)", metric: "1M Masks Sold Out", desc: "Sold out 1 million K-beauty mask packs in a single live. ¥5M CNY (~₩1.1B) revenue — equivalent to a hit home shopping broadcast." },
+      { brand: "China Live Commerce Market", metric: "Market Size ¥5.5T CNY", desc: "2024 China live commerce market reached ¥5.5T CNY (~$760B). 35% of online retail. Douyin holds 40% GMV share." },
+      { brand: "Cross-Border Shoppers", metric: "188M Chinese Buyers", desc: "188 million Chinese cross-border shoppers — doubled in 5 years. Beauty & personal care holds 28% category share." },
+      { brand: "Top 10 Wanghongs", metric: "₩11T Annual Sales", desc: "Top 10 Chinese wanghongs' combined annual live commerce sales approach ₩11T. K-beauty and K-fashion are core categories." },
+    ],
+    pmsg: "Above cases are based on public reports. N-LIVE's own campaign data is shared after NDA signing.",
     ctaH: "Interested in Korean products or Korean content?", ctaP: "Share your channel and desired categories — we'll respond with a tailored proposal.",
     ctaB: "Inquire about K-brand sourcing →",
   },
@@ -75,8 +92,16 @@ const C: Record<Lang, any> = {
       { t: "样品 · 直播试播", d: "送样后通过小规模测试播验证市场反应。精选有成果的商品。" },
       { t: "定期供货 · 扩展", d: "将出成果的商品转为定期供货结构。逐步扩展至更多品类与韩国艺人合作。" },
     ],
-    eb3: "参考案例", st3: "主要执行案例",
-    pmsg: "项目资料保密运营。签署 NDA 后我们将直接分享具体内容。",
+    eb3: "参考案例", st3: "行业主要成功案例",
+    cases: [
+      { brand: "达人'丹丹' (辛选集团)", metric: "3天销售额2000亿韩元", desc: "访韩3天进行4场直播,总销售额约2000亿韩元(10亿元人民币)。集中销售后、雪花秀、Medicube等K美妆品牌。" },
+      { brand: "李佳琦 (顶级达人)", metric: "80秒 · 6.3亿韩元", desc: "韩国柚子茶产品80秒内售出6.3亿韩元。玻尿酸产品单场直播15万瓶售罄。" },
+      { brand: "达人'大噜噜' (700万粉丝)", metric: "面膜100万片售罄", desc: "K美妆面膜直播中100万片售罄。500万元人民币(约11亿韩元)销售额,相当于国内电视购物爆款级别。" },
+      { brand: "中国直播电商市场", metric: "市场规模5.5万亿元", desc: "2024年中国直播电商规模达5.5万亿元,占在线零售35%。抖音GMV占比40%。" },
+      { brand: "跨境消费者", metric: "1.88亿人海外购", desc: "中国跨境电商消费者达1.88亿人,5年翻倍增长。美妆个护品类占比28%。" },
+      { brand: "达人Top 10", metric: "年销售额11万亿韩元", desc: "中国Top 10达人直播电商年销售额合计近11万亿韩元。K美妆和K时尚是核心品类。" },
+    ],
+    pmsg: "以上案例基于公开报道。恩联自有项目资料在签署NDA后分享。",
     ctaH: "对韩国商品或韩国内容感兴趣?", ctaP: "告诉我们您的频道和期望品类,我们将以定制方案回复。",
     ctaB: "K-品牌采购咨询 →",
   },
@@ -100,8 +125,16 @@ const C: Record<Lang, any> = {
       { t: "サンプル · ライブトライアル", d: "サンプル送付後、小規模テスト放送で市場反応を確認。成果が出る商品を厳選します。" },
       { t: "定期供給 · 拡張", d: "成果商品を定期供給構造に転換。追加カテゴリと韓国芸能人コラボまで段階的に拡張。" },
     ],
-    eb3: "参考ケース", st3: "主要実行事例",
-    pmsg: "プロジェクト資料は非公開で運営しています。NDAを事前に締結後、直接共有いたします。",
+    eb3: "参考ケース", st3: "業界の主な成功事例",
+    cases: [
+      { brand: "KOL「ダンダン」(辛選グループ)", metric: "3日間で売上2,000億ウォン", desc: "訪韓3日間でライブ4回実施、総売上約2,000億ウォン(10億元)。后・雪花秀・メディキューブなどKビューティを集中販売。" },
+      { brand: "リー・ジャーチー (トップKOL)", metric: "80秒 · 6.3億ウォン", desc: "韓国のユズ茶製品を80秒で6.3億ウォン分販売。ヒアルロン酸製品は単一放送で15万本完売記録。" },
+      { brand: "KOL「ダルル」(700万フォロワー)", metric: "マスクパック100万枚完売", desc: "Kビューティマスクパックのライブで100万枚完売。500万元(約11億ウォン)売上で国内ホームショッピングの大ヒット級。" },
+      { brand: "中国ライブコマース市場", metric: "市場規模5.5兆元", desc: "2024年中国ライブコマース規模5.5兆元(約114兆円)。オンライン小売の35%。抖音がGMVの40%を占有。" },
+      { brand: "クロスボーダー消費者", metric: "1.88億人の海外直購", desc: "中国越境EC消費者1.88億人で5年前比2倍成長。ビューティ・パーソナルケアカテゴリが28%を占有。" },
+      { brand: "トップ10 KOL", metric: "年間販売額11兆ウォン", desc: "中国トップ10 KOLのライブコマース年間販売額合算11兆ウォンに迫る。Kビューティ・Kファッションがコアカテゴリ。" },
+    ],
+    pmsg: "上記事例は公開報道に基づいています。N-LIVE自体のキャンペーン資料はNDA締結後に共有いたします。",
     ctaH: "韓国商品や韓国コンテンツにご興味がありますか?", ctaP: "運営チャネルと希望カテゴリをお知らせいただければ、カスタム提案を返信いたします。",
     ctaB: "Kブランドソーシングのお問い合わせ →",
   },
@@ -157,11 +190,8 @@ export default function OverseasSellersPage() {
         <div className="container">
           <div className="detail-eyebrow">{t.eb3}</div>
           <h2 className="detail-title">{t.st3}</h2>
-          <div className="image-placeholder">
-            <div className="ip-tag">IMAGE</div>
-            <div className="ip-caption">{tr("ip.case")}</div>
-          </div>
-          <p style={{ fontSize: 13, color: 'var(--gray-600)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>{t.pmsg}</p>
+          <CaseCards cases={t.cases} accent="var(--coral)" />
+          <p style={{ fontSize: 13, color: 'var(--gray-600)', textAlign: 'center', marginTop: 24, lineHeight: 1.6 }}>{t.pmsg}</p>
           <div className="detail-cta">
             <h3>{t.ctaH}</h3>
             <p>{t.ctaP}</p>

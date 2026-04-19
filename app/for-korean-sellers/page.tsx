@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
 import PageEnter from "@/components/PageEnter";
+import CaseCards from "@/components/CaseCards";
 import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
@@ -25,8 +26,16 @@ const C: Record<Lang, any> = {
       { t: "왕홍·브랜드 매칭", d: "셀러 포지셔닝에 맞는 중국 왕홍과 해외 브랜드 후보를 제안. 트라이얼 방송부터 시작합니다." },
       { t: "정착 · 반복", d: "성과가 나오는 조합을 정기 협업 구조로 굳히고, 점진적으로 더 큰 왕홍·상위 브랜드로 확장합니다." },
     ],
-    eb3: "참고 케이스", st3: "주요 실행 사례",
-    pmsg: "진행한 캠페인 자료는 비공개로 운영합니다. NDA 사전 체결 후 직접 공유드립니다.",
+    eb3: "참고 케이스", st3: "업계 주요 성공 사례",
+    cases: [
+      { brand: "이다해 (배우)", metric: "드라마 팬덤 → 커머스 전환", desc: "중국에서 '마이걸' 여신 이미지로 축적된 팬덤을 라이브커머스 매출로 전환. 기존 연예인 해외 활동의 새로운 모델." },
+      { brand: "코스알엑스", metric: "5년간 매출 12배 성장", desc: "인플루언서 UGC 전략으로 아마존 뷰티 카테고리 최상위 진입. 글로벌 소비자 직접 공략 성공." },
+      { brand: "티르티르", metric: "아마존 파운데이션 1위", desc: "인종 다양성 쉐이드 전략으로 미국 아마존 파운데이션 부문 1위 달성. SNS 바이럴로 글로벌 인지도 급상승." },
+      { brand: "센텔리안24 + 프롬더스킨", metric: "50회 라이브 · 10억 원", desc: "4개월간 50회 이상 뷰티 전용 라이브 판매 진행, 저예산으로 매출 10억 원 달성." },
+      { brand: "MBC플러스", metric: "왕홍 제휴 시장 공략", desc: "미디어 기업이 중국 왕홍과 공식 제휴하여 K뷰티 라이브커머스 시장 공략을 가속화한 사례." },
+      { brand: "펠리시티 (K-크리에이터 에이전시)", metric: "샤오홍슈 K-크리에이터 수출", desc: "한국어 콘텐츠를 중국어로 최적화하는 원스톱 시스템 구축. 샤오홍슈→더우인→틱톡샵 하이브리드 전략." },
+    ],
+    pmsg: "위 사례는 공개 보도 기반입니다. 엔라이브 자체 캠페인 자료는 NDA 체결 후 공유드립니다.",
     ctaH: "라이브의 다음 단계를 고민 중이신가요?", ctaP: "운영 채널과 관심 카테고리를 알려주시면, 맞춤 협업안을 회신드립니다.",
     ctaB: "셀러 파트너십 신청 →",
   },
@@ -50,8 +59,16 @@ const C: Record<Lang, any> = {
       { t: "Wanghong · Brand Matching", d: "We propose Chinese wanghongs and global brands matching your positioning. We start with trial broadcasts." },
       { t: "Stabilize · Repeat", d: "We solidify high-performing combinations into regular collaboration structures and progressively expand to bigger wanghongs and tier-A brands." },
     ],
-    eb3: "REFERENCE CASES", st3: "Selected Execution Cases",
-    pmsg: "Campaign materials are kept confidential. We share specifics directly after an NDA is signed.",
+    eb3: "REFERENCE CASES", st3: "Industry Success Stories",
+    cases: [
+      { brand: "Lee Da-hae (Actress)", metric: "Fandom → Commerce Conversion", desc: "Leveraged her 'My Girl' goddess status in China to convert drama fandom into live commerce revenue. A new model for celebrity cross-border activity." },
+      { brand: "COSRX", metric: "12x Revenue in 5 Years", desc: "Influencer UGC strategy drove entry into top Amazon beauty category rankings. Successfully targeted global consumers directly." },
+      { brand: "TIRTIR", metric: "#1 Amazon Foundation", desc: "Achieved #1 in US Amazon foundation category with inclusive shade range strategy. SNS virality drove explosive global awareness." },
+      { brand: "Centellian24 + FromTheSkin", metric: "50 Lives · ¥1B KRW", desc: "Conducted 50+ beauty-focused live sales over 4 months, achieving ¥1B KRW revenue on a lean budget." },
+      { brand: "MBC Plus", metric: "Wanghong Alliance", desc: "A major Korean media company officially partnered with Chinese wanghongs to accelerate K-beauty live commerce market entry." },
+      { brand: "Felicity (K-Creator Agency)", metric: "Xiaohongshu K-Creator Export", desc: "Built a one-stop system converting Korean content to optimized Chinese. Hybrid strategy across Xiaohongshu → Douyin → TikTok Shop." },
+    ],
+    pmsg: "Above cases are based on public reports. N-LIVE's own campaign data is shared after NDA signing.",
     ctaH: "Considering your next move in live commerce?", ctaP: "Share your channel and category interests — we'll respond with a tailored collaboration plan.",
     ctaB: "Apply for seller partnership →",
   },
@@ -75,8 +92,16 @@ const C: Record<Lang, any> = {
       { t: "达人 · 品牌匹配", d: "推荐符合卖家定位的中国达人和海外品牌候选。从试播开始。" },
       { t: "扎根 · 反复", d: "将出成果的组合固化为定期合作结构,逐步扩展到更大的达人和顶级品牌。" },
     ],
-    eb3: "参考案例", st3: "主要执行案例",
-    pmsg: "项目资料保密运营。签署 NDA 后我们将直接分享具体内容。",
+    eb3: "参考案例", st3: "行业主要成功案例",
+    cases: [
+      { brand: "李多海 (演员)", metric: "粉丝 → 电商转化", desc: "凭借在中国'我的女孩'女神形象积累的粉丝转化为直播电商收入。艺人跨境活动的新模式。" },
+      { brand: "COSRX", metric: "5年收入增长12倍", desc: "通过达人UGC策略进入亚马逊美妆品类排名顶端。成功直接触达全球消费者。" },
+      { brand: "TIRTIR", metric: "亚马逊粉底液第1名", desc: "以种族多样性色号策略获得美国亚马逊粉底液品类第1。社交媒体病毒式传播带动全球知名度暴涨。" },
+      { brand: "森特莉安24 + FromTheSkin", metric: "50场直播 · 10亿韩元", desc: "4个月内进行50余次美妆专场直播销售,以低预算实现10亿韩元销售额。" },
+      { brand: "MBC Plus", metric: "达人联盟市场攻略", desc: "韩国大型媒体公司与中国达人正式联盟,加速K美妆直播电商市场攻略。" },
+      { brand: "Felicity (K-创作者代理)", metric: "小红书K创作者输出", desc: "构建韩语内容转化为优化中文的一站式系统。小红书→抖音→TikTok Shop混合策略。" },
+    ],
+    pmsg: "以上案例基于公开报道。恩联自有项目资料在签署NDA后分享。",
     ctaH: "正在思考直播的下一步?", ctaP: "告诉我们您的运营频道和兴趣品类,我们将以定制合作方案回复。",
     ctaB: "申请卖家合作 →",
   },
@@ -100,8 +125,16 @@ const C: Record<Lang, any> = {
       { t: "KOL · ブランドマッチング", d: "セラーのポジショニングに合う中国KOLと海外ブランド候補を提案。トライアル放送から始めます。" },
       { t: "定着 · 反復", d: "成果が出る組み合わせを定期コラボ構造に固定し、徐々により大きなKOL・上位ブランドへ拡張します。" },
     ],
-    eb3: "参考ケース", st3: "主要実行事例",
-    pmsg: "プロジェクト資料は非公開で運営しています。NDAを事前に締結後、直接共有いたします。",
+    eb3: "参考ケース", st3: "業界の主な成功事例",
+    cases: [
+      { brand: "イ・ダヘ (女優)", metric: "ファンダム → コマース転換", desc: "中国での「マイガール」女神イメージで蓄積されたファンダムをライブコマース売上に転換。芸能人海外活動の新モデル。" },
+      { brand: "COSRX", metric: "5年間で売上12倍成長", desc: "インフルエンサーUGC戦略でAmazonビューティカテゴリ最上位進入。グローバル消費者への直接アプローチ成功。" },
+      { brand: "TIRTIR", metric: "Amazonファンデーション1位", desc: "人種多様性シェード戦略でUS Amazonファンデーション部門1位達成。SNSバイラルでグローバル認知度急上昇。" },
+      { brand: "センテリアン24 + フロムザスキン", metric: "50回ライブ · 10億ウォン", desc: "4ヶ月間50回以上のビューティ専用ライブ販売を実施、低予算で売上10億ウォン達成。" },
+      { brand: "MBCプラス", metric: "KOL提携で市場攻略", desc: "韓国メディア大手が中国KOLと公式提携し、Kビューティライブコマース市場攻略を加速。" },
+      { brand: "フェリシティ (K-クリエイターエージェンシー)", metric: "小紅書K-クリエイター輸出", desc: "韓国語コンテンツを最適化された中国語に変換するワンストップシステム構築。小紅書→抖音→TikTok Shopのハイブリッド戦略。" },
+    ],
+    pmsg: "上記事例は公開報道に基づいています。N-LIVE自体のキャンペーン資料はNDA締結後に共有いたします。",
     ctaH: "ライブの次のステップを検討中ですか?", ctaP: "運営チャネルと関心カテゴリをお知らせいただければ、カスタムコラボ案を返信いたします。",
     ctaB: "セラーパートナーシップのお申込み →",
   },
@@ -157,11 +190,8 @@ export default function KoreanSellersPage() {
         <div className="container">
           <div className="detail-eyebrow">{t.eb3}</div>
           <h2 className="detail-title">{t.st3}</h2>
-          <div className="image-placeholder">
-            <div className="ip-tag">IMAGE</div>
-            <div className="ip-caption">{tr("ip.case")}</div>
-          </div>
-          <p style={{ fontSize: 13, color: 'var(--gray-600)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>{t.pmsg}</p>
+          <CaseCards cases={t.cases} accent="var(--emerald)" />
+          <p style={{ fontSize: 13, color: 'var(--gray-600)', textAlign: 'center', marginTop: 24, lineHeight: 1.6 }}>{t.pmsg}</p>
           <div className="detail-cta">
             <h3>{t.ctaH}</h3>
             <p>{t.ctaP}</p>

@@ -441,6 +441,17 @@ body{font-weight:450}
 .pending-box .pending-label{font-size:11px;letter-spacing:.25em;color:var(--amber);font-weight:700;margin-bottom:12px;text-transform:uppercase}
 .pending-box p{color:var(--gray-600);line-height:1.7;max-width:560px;margin:0 auto}
 
+/* CASE CARDS */
+.case-cards-wrap{overflow-x:auto;margin:0 -20px;padding:0 20px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.case-cards{display:flex;gap:20px;padding-bottom:16px;min-width:max-content}
+.case-card{flex:0 0 320px;background:var(--white);border:1px solid var(--gray-200);padding:32px 28px;display:flex;flex-direction:column;gap:12px;transition:all .3s ease;position:relative;overflow:hidden}
+.case-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:var(--card-accent,var(--amber))}
+.case-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
+.case-num{font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:.2em;color:var(--gray-400);font-weight:700}
+.case-brand{font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--black)}
+.case-metric{font-family:'Unbounded',sans-serif;font-size:24px;font-weight:900;color:var(--card-accent,var(--amber));letter-spacing:-.03em;line-height:1.1}
+.case-desc{font-size:14px;color:var(--gray-700);line-height:1.65;flex:1}
+
 /* FOOTER */
 .site-footer{background:var(--black);color:var(--white);padding:80px 0 32px}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.4fr;gap:48px;margin-bottom:60px}

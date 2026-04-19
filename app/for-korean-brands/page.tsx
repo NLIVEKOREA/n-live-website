@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
 import PageEnter from "@/components/PageEnter";
+import CaseCards from "@/components/CaseCards";
 import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
@@ -25,8 +26,17 @@ const C: Record<Lang, any> = {
       { t: "매칭 · 실행", d: "단계별 왕홍 매칭, 콘텐츠·라이브 제작, 플랫폼 운영, 트래픽·판매 드라이브." },
       { t: "확장 · 자산화", d: "성과 기반 카테고리·채널 확장, 반복 협업 구조화, 장기 브랜드 포지셔닝." },
     ],
-    eb3: "참고 케이스", st3: "주요 실행 사례",
-    pmsg: "진행한 캠페인 자료는 비공개로 운영합니다. NDA 사전 체결 후 직접 공유드립니다.",
+    eb3: "참고 케이스", st3: "업계 주요 성공 사례",
+    cases: [
+      { brand: "더후 (LG생활건강)", metric: "단일 방송 183억 원", desc: "왕홍 '댠댠'의 한국 방문 라이브 방송에서 더후 제품 매출 183억 원 달성. 같은 라이브에서 설화수 124억 원 기록." },
+      { brand: "메디큐브 (에이피알)", metric: "4시간 만에 전량 매진", desc: "더우인 라이브커머스에서 1.2만개 기획세트 4시간 만에 전량 매진. 2025년 단일 브랜드 매출 1.4조 원 돌파." },
+      { brand: "애경산업", metric: "17.5만개 · 45억 원", desc: "왕홍 라이브 방송에서 '시그니처 에센스 커버 팩트' 17.5만개 판매, 매출 45억 원 달성." },
+      { brand: "제나벨", metric: "단일 방송 25억 원", desc: "중국 유명 왕홍 '따따'와 함께 진행한 라이브 방송 한 번으로 매출 25억 원 기록." },
+      { brand: "셀인펙트", metric: "마스크팩 100만장 완판", desc: "700만 팔로워 왕홍 '따루루' 라이브로 트리플 마스크팩 100만장 완판, 매출 11억 원." },
+      { brand: "DPC", metric: "270만 명 시청", desc: "왕홍 '코니'와의 방송 1시간 만에 270만 명 시청, 410만 좋아요 기록. 누적 시청자 550만 명 돌파." },
+      { brand: "조선미녀", metric: "상반기 매출 1,500억 원", desc: "2024년 상반기 매출 1,500억 원으로 전년 전체 매출 초과. 아마존 선크림 부문 1위 달성." },
+    ],
+    pmsg: "위 사례는 공개 보도 기반입니다. 엔라이브 자체 캠페인 자료는 NDA 체결 후 공유드립니다.",
     ctaH: "중국 시장 진출을 검토 중이신가요?", ctaP: "브랜드·상품·목표를 알려주시면 맞춤 전략을 회신드립니다.",
     ctaB: "중국 진출 상담 신청 →",
   },
@@ -50,8 +60,17 @@ const C: Record<Lang, any> = {
       { t: "Match · Execute", d: "Stage-appropriate wanghong matching, content and live production, platform operations, traffic and sales drive." },
       { t: "Scale · Asset-Build", d: "Performance-based category and channel expansion, structured repeat collaborations, long-term brand positioning." },
     ],
-    eb3: "REFERENCE CASES", st3: "Selected Execution Cases",
-    pmsg: "Campaign materials are kept confidential. We share specifics directly after an NDA is signed.",
+    eb3: "REFERENCE CASES", st3: "Industry Success Stories",
+    cases: [
+      { brand: "The History of Whoo (LG H&H)", metric: "¥183M in a Single Live", desc: "Wanghong 'Dandan' achieved ¥18.3B KRW in a single Korea-visit live broadcast. Sulwhasoo recorded ¥12.4B KRW in the same session." },
+      { brand: "Medicube (APR)", metric: "Sold Out in 4 Hours", desc: "12,000 curated sets sold out within 4 hours on Douyin live commerce. Medicube surpassed ¥1.4T KRW in single-brand annual revenue in 2025." },
+      { brand: "Aekyung", metric: "175K Units · ¥4.5B KRW", desc: "Sold 175,000 units of 'Signature Essence Cover Pact' via wanghong live broadcast, achieving ¥4.5B KRW in sales." },
+      { brand: "Jenabelle", metric: "¥2.5B KRW Single Broadcast", desc: "Recorded ¥2.5B KRW in sales from a single live broadcast with top Chinese wanghong 'Dada'." },
+      { brand: "Cellinfect", metric: "1M Masks Sold Out", desc: "7M-follower wanghong 'Daruru' sold out 1 million Triple Mask Packs via live broadcast, generating ¥1.1B KRW." },
+      { brand: "DPC", metric: "2.7M Viewers", desc: "1-hour broadcast with wanghong 'Coni' drew 2.7M viewers and 4.1M likes. Cumulative viewers surpassed 5.5M." },
+      { brand: "Beauty of Joseon", metric: "¥150B KRW in H1 2024", desc: "H1 2024 revenue of ¥150B KRW exceeded full-year 2023. Ranked #1 in Amazon sunscreen category." },
+    ],
+    pmsg: "Above cases are based on public reports. N-LIVE's own campaign data is shared after NDA signing.",
     ctaH: "Considering entering the Chinese market?", ctaP: "Share your brand, product, and goals — we'll respond with a tailored strategy.",
     ctaB: "Request China entry consultation →",
   },
@@ -75,8 +94,17 @@ const C: Record<Lang, any> = {
       { t: "匹配 · 执行", d: "分阶段达人匹配、内容与直播制作、平台运营、流量与销售推动。" },
       { t: "扩展 · 资产化", d: "基于效果的品类与渠道扩展、重复合作结构化、长期品牌定位。" },
     ],
-    eb3: "参考案例", st3: "主要执行案例",
-    pmsg: "项目资料保密运营。签署 NDA 后我们将直接分享具体内容。",
+    eb3: "参考案例", st3: "行业主要成功案例",
+    cases: [
+      { brand: "后 (LG生活健康)", metric: "单场直播 183亿韩元", desc: "达人'丹丹'访韩直播中,后品牌实现183亿韩元销售额。同场雪花秀录得124亿韩元。" },
+      { brand: "Medicube (APR)", metric: "4小时全部售罄", desc: "抖音直播中1.2万套策划套装4小时内售罄。2025年单品牌年销售额突破1.4万亿韩元。" },
+      { brand: "爱敬产业", metric: "17.5万件 · 45亿韩元", desc: "达人直播中'精华气垫粉饼'售出17.5万件,销售额达45亿韩元。" },
+      { brand: "Jenabelle", metric: "单场25亿韩元", desc: "与中国知名达人'大大'合作,单场直播实现25亿韩元销售额。" },
+      { brand: "Cellinfect", metric: "面膜100万片售罄", desc: "700万粉丝达人'大噜噜'直播中三重面膜100万片售罄,销售额11亿韩元。" },
+      { brand: "DPC", metric: "270万人观看", desc: "与达人'Coni'直播1小时内270万人观看,410万点赞。累计观看突破550万。" },
+      { brand: "朝鲜美女", metric: "上半年1500亿韩元", desc: "2024上半年销售额1500亿韩元,超过上年全年。亚马逊防晒霜品类排名第一。" },
+    ],
+    pmsg: "以上案例基于公开报道。恩联自有项目资料在签署NDA后分享。",
     ctaH: "正在考虑进入中国市场?", ctaP: "告诉我们您的品牌、产品和目标,我们将以定制战略回复。",
     ctaB: "申请中国进入咨询 →",
   },
@@ -100,8 +128,17 @@ const C: Record<Lang, any> = {
       { t: "マッチング · 実行", d: "段階別KOLマッチング、コンテンツ・ライブ制作、プラットフォーム運営、トラフィックと販売の推進。" },
       { t: "拡張 · 資産化", d: "成果に基づくカテゴリ・チャネル拡張、反復協業の構造化、長期ブランドポジショニング。" },
     ],
-    eb3: "参考ケース", st3: "主要実行事例",
-    pmsg: "プロジェクト資料は非公開で運営しています。NDAを事前に締結後、直接共有いたします。",
+    eb3: "参考ケース", st3: "業界の主な成功事例",
+    cases: [
+      { brand: "ザ・ヒストリー・オブ・后 (LG)", metric: "単一放送で183億ウォン", desc: "KOL「ダンダン」の訪韓ライブで后ブランドが183億ウォンの売上を達成。同放送で雪花秀は124億ウォンを記録。" },
+      { brand: "メディキューブ (APR)", metric: "4時間で完売", desc: "抖音ライブで1.2万セットの企画セットが4時間で完売。2025年に単一ブランド年間売上1.4兆ウォン突破。" },
+      { brand: "愛敬産業", metric: "17.5万個 · 45億ウォン", desc: "KOLライブで「シグニチャーエッセンスカバーパクト」17.5万個販売、売上45億ウォン達成。" },
+      { brand: "ジェナベル", metric: "単一放送で25億ウォン", desc: "中国有名KOL「ダダ」との単一ライブで売上25億ウォンを記録。" },
+      { brand: "セルインフェクト", metric: "マスクパック100万枚完売", desc: "700万フォロワーKOL「ダルル」のライブでトリプルマスクパック100万枚完売、売上11億ウォン。" },
+      { brand: "DPC", metric: "270万人視聴", desc: "KOL「コニ」との放送1時間で270万人視聴、410万いいね記録。累計視聴者550万人突破。" },
+      { brand: "朝鮮美女", metric: "上半期売上1,500億ウォン", desc: "2024年上半期の売上1,500億ウォンで前年通期を超過。Amazonサンクリーム部門1位達成。" },
+    ],
+    pmsg: "上記事例は公開報道に基づいています。N-LIVE自体のキャンペーン資料はNDA締結後に共有いたします。",
     ctaH: "中国市場への進出をご検討中ですか?", ctaP: "ブランド、商品、目標をお知らせいただければ、カスタム戦略を返信いたします。",
     ctaB: "中国進出のご相談 →",
   },
@@ -157,11 +194,8 @@ export default function KoreanBrandsPage() {
         <div className="container">
           <div className="detail-eyebrow">{t.eb3}</div>
           <h2 className="detail-title">{t.st3}</h2>
-          <div className="image-placeholder">
-            <div className="ip-tag">IMAGE</div>
-            <div className="ip-caption">{tr("ip.case")}</div>
-          </div>
-          <p style={{ fontSize: 13, color: 'var(--gray-600)', textAlign: 'center', marginTop: 16, lineHeight: 1.6 }}>{t.pmsg}</p>
+          <CaseCards cases={t.cases} accent="var(--amber)" />
+          <p style={{ fontSize: 13, color: 'var(--gray-600)', textAlign: 'center', marginTop: 24, lineHeight: 1.6 }}>{t.pmsg}</p>
           <div className="detail-cta">
             <h3>{t.ctaH}</h3>
             <p>{t.ctaP}</p>
