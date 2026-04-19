@@ -1274,10 +1274,66 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 .role-change-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;font-size:13px;font-weight:600;letter-spacing:.02em;border:1px solid var(--gray-200);border-radius:100px;background:var(--white);color:var(--gray-600);cursor:pointer;transition:all .25s ease}
 .role-change-btn:hover{border-color:var(--gray-400);color:var(--black);background:var(--gray-50)}
 
+/* ═══════════════════════════════════════════════════════
+   ROLE FEATURES GRID (audience 보충)
+   ═══════════════════════════════════════════════════════ */
+.role-features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--gray-200);border:1px solid var(--gray-200);margin-top:48px;max-width:800px;margin-left:auto;margin-right:auto}
+.role-feature-card{background:var(--white);padding:32px 28px;display:flex;gap:20px;align-items:flex-start;transition:background .3s ease}
+.role-feature-card:hover{background:var(--gray-50)}
+.rf-num{font-family:var(--display);font-size:28px;font-weight:800;color:var(--gray-200);letter-spacing:-.03em;line-height:1;flex-shrink:0;min-width:36px}
+.rf-body{flex:1}
+.rf-title{font-size:16px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;color:var(--black)}
+.rf-desc{font-size:14px;color:var(--gray-600);line-height:1.6}
+
+/* ═══════════════════════════════════════════════════════
+   TRUST PROOF STRIP (metrics 보충)
+   ═══════════════════════════════════════════════════════ */
+.trust-proof-strip{display:flex;justify-content:center;gap:40px;margin-top:40px;padding:24px 0;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
+.tp-item{display:flex;align-items:center;gap:10px}
+.tp-dot{width:8px;height:8px;border-radius:50%;background:var(--lime);flex-shrink:0}
+.tp-text{font-size:15px;font-weight:600;color:var(--white);letter-spacing:-.01em}
+
+/* ═══════════════════════════════════════════════════════
+   CASE INSIGHT (cases 보충 — testimonial)
+   ═══════════════════════════════════════════════════════ */
+.case-insight{max-width:720px;margin:48px auto 0;padding:40px;background:var(--gray-50);border-left:4px solid var(--black);border-radius:0 8px 8px 0}
+.ci-quote{font-size:18px;font-weight:500;line-height:1.7;color:var(--black);letter-spacing:-.02em;font-style:italic;margin-bottom:16px}
+.ci-quote::before{content:"\201C";font-size:32px;font-weight:800;color:var(--gray-400);line-height:0;vertical-align:-8px;margin-right:4px}
+.ci-from{font-size:14px;color:var(--gray-600);font-weight:500;margin-bottom:12px}
+.ci-extra{font-size:14px;font-weight:600;color:var(--black);padding:12px 16px;background:var(--white);border:1px solid var(--gray-200);border-radius:6px;display:inline-block}
+
+/* ═══════════════════════════════════════════════════════
+   K-PRODUCT SHOWCASE (overseas-brand 전용)
+   ═══════════════════════════════════════════════════════ */
+.k-product-showcase{padding:100px 0;background:var(--gray-50)}
+.kps-sub{font-size:17px;color:var(--gray-600);line-height:1.7;max-width:680px;margin-top:16px}
+.kps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray-200);border:1px solid var(--gray-200);margin-top:48px}
+.kps-card{background:var(--white);padding:36px 32px;transition:background .3s ease}
+.kps-card:hover{background:var(--azure-soft);background:rgba(45,123,255,.04)}
+.kps-category{font-family:var(--display);font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--azure-deep);margin-bottom:4px}
+.kps-examples{font-size:14px;color:var(--gray-600);margin-bottom:16px;letter-spacing:-.01em}
+.kps-desc{font-size:15px;color:var(--gray-800);line-height:1.65}
+.kps-bottom{text-align:center;margin-top:40px}
+
 /* Mobile overrides for compact layouts */
+@media(max-width:768px){
+  .role-features-grid{grid-template-columns:1fr}
+  .trust-proof-strip{flex-direction:column;gap:16px;align-items:flex-start;padding:20px 24px}
+  .kps-grid{grid-template-columns:1fr}
+  .case-insight{padding:28px 24px}
+  .ci-quote{font-size:16px}
+}
 @media(max-width:600px){
   .audience-card-featured{min-height:320px}
   .audience-card-featured .aud-content{padding:28px 20px}
   .metrics-grid-compact{grid-template-columns:1fr!important;gap:20px}
   .case-highlight-grid-compact{grid-template-columns:1fr!important;gap:16px}
+  .role-feature-card{padding:24px 20px;gap:14px}
+  .rf-num{font-size:22px;min-width:28px}
+  .rf-title{font-size:15px}
+  .rf-desc{font-size:13px}
+  .kps-card{padding:28px 20px}
+  .kps-category{font-size:20px}
+  .case-insight{margin-top:32px;padding:24px 20px}
+  .ci-extra{font-size:13px}
 }
