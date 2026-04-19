@@ -44,10 +44,10 @@ export default function HomePage() {
   };
 
   const STMT: Record<Lang, { eyebrow: string; h: string; s: string; cta: string }> = {
-    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "이 모든 것을<br>한 곳에서<br>실행합니다", s: "4가지 입장의 파트너십을 단일 창구에서. 검증된 풀에서 직접 매칭, 직접 운영합니다.", cta: "프로세스 보기" },
-    en: { eyebrow: "OUR PROMISE", h: "All of this<br>executed<br>in one place", s: "Every partnership across four roles, run from a single window — direct matching, direct operations.", cta: "See process" },
-    zh: { eyebrow: "我们的承诺", h: "全部由我们<br>在一处<br>执行", s: "四种身份的合作,集中于单一窗口。从经验证的资源池中直接匹配、直接运营。", cta: "查看流程" },
-    ja: { eyebrow: "OUR PROMISE", h: "そのすべてを<br>一つの場所で<br>実行します", s: "4つの立場のパートナーシップを単一窓口で。検証済みプールから直接マッチング、直接運営。", cta: "プロセスを見る" },
+    ko: { eyebrow: "왜 N-LIVE인가", h: "소개만 하는 곳이<br>아닙니다", s: "왕홍 찾아주고 끝나는 에이전시가 아닙니다. 매칭부터 라이브 운영, 물류, 정산, CS까지 — 한 팀이 끝까지 실행합니다.", cta: "실행 프로세스 보기" },
+    en: { eyebrow: "WHY N-LIVE", h: "We don't just<br>introduce", s: "We're not an agency that finds you a KOL and walks away. From matching to live ops, logistics, settlement, CS — one team executes end to end.", cta: "See our process" },
+    zh: { eyebrow: "为什么选择 N-LIVE", h: "不只是介绍<br>我们直接执行", s: "我们不是找完达人就结束的中介。从匹配到直播运营、物流、结算、客服 — 一个团队从头做到尾。", cta: "查看执行流程" },
+    ja: { eyebrow: "なぜ N-LIVE か", h: "紹介だけの会社では<br>ありません", s: "KOLを見つけて終わるエージェンシーではありません。マッチングからライブ運営、物流、精算、CSまで — 一つのチームが最後まで実行します。", cta: "実行プロセスを見る" },
   };
 
   const METRICS: Record<Lang, { eyebrow: string; nums: Array<{ n: string; label: string; sub: string; amber?: boolean }>; desc: string; cta: string }> = {
@@ -273,13 +273,76 @@ export default function HomePage() {
       {/* MARQUEE 2 — multilingual */}
       <Marquee items={marquee2} />
 
-      {/* CASE PLACEHOLDER — to be filled with reference visuals */}
-      <section style={{ padding: "100px 0", background: "var(--white)" }}>
+      {/* CASE HIGHLIGHTS — proven results */}
+      <section className="case-highlights">
         <div className="container">
-          <div className="section-eyebrow">— {lang === "ko" ? "REFERENCE · 참고 사례" : lang === "en" ? "REFERENCE" : lang === "zh" ? "参考案例" : "REFERENCE"}</div>
-          <div className="image-placeholder tall">
-            <div className="ip-tag">IMAGE</div>
-            <div className="ip-caption">{t("ip.case")}</div>
+          <div className="section-eyebrow">— {lang === "ko" ? "PROVEN RESULTS · 검증된 성과" : lang === "en" ? "PROVEN RESULTS" : lang === "zh" ? "验证的成果" : "PROVEN RESULTS · 検証された成果"}</div>
+          <h2 className="section-title section-title-huge">{lang === "ko" ? "숫자로 증명합니다" : lang === "en" ? "Backed by numbers" : lang === "zh" ? "用数字证明" : "数字で証明します"}</h2>
+          <div className="case-highlight-grid">
+            {[
+              { num: lang === "ko" ? "183억 원" : lang === "zh" ? "183亿韩元" : lang === "ja" ? "183億ウォン" : "₩18.3B", brand: lang === "ko" ? "더후 × 댠댠" : lang === "zh" ? "后 × 丹丹" : lang === "ja" ? "后 × ダンダン" : "Whoo × Dandan", desc: lang === "ko" ? "단일 라이브 매출 — 한국 방문 3일, 4회 라이브" : lang === "zh" ? "单场直播销售额 — 访韩3天4场直播" : lang === "ja" ? "単一ライブ売上 — 訪韓3日間4回ライブ" : "Single live revenue — 3-day Korea visit, 4 broadcasts", cat: "m-amber" },
+              { num: lang === "ko" ? "4시간 전량 매진" : lang === "zh" ? "4小时全部售罄" : lang === "ja" ? "4時間で完売" : "Sold out in 4hrs", brand: lang === "ko" ? "메디큐브" : "Medicube", desc: lang === "ko" ? "더우인 라이브에서 1.2만개 기획세트 전량 소진" : lang === "zh" ? "抖音直播1.2万套策划套装全部售罄" : lang === "ja" ? "抖音ライブで1.2万セット完売" : "12,000 curated sets sold out on Douyin live", cat: "m-emerald" },
+              { num: lang === "ko" ? "매출 50% 증가" : lang === "zh" ? "销售额增长50%" : lang === "ja" ? "売上50%増加" : "+50% revenue", brand: lang === "ko" ? "Dior × 지수" : lang === "zh" ? "Dior × 智秀" : lang === "ja" ? "Dior × ジス" : "Dior × Jisoo", desc: lang === "ko" ? "BLACKPINK 지수 앰배서더 발탁 후 한국 매출 급증" : lang === "zh" ? "BLACKPINK智秀任大使后韩国销售额激增" : lang === "ja" ? "BLACKPINKジスアンバサダー就任後、韓国売上急増" : "Korea revenue surged after BLACKPINK Jisoo ambassadorship", cat: "m-azure" },
+              { num: lang === "ko" ? "2,000억 원" : lang === "zh" ? "10亿元人民币" : lang === "ja" ? "2,000億ウォン" : "₩200B", brand: lang === "ko" ? "왕홍 댠댠 한국 방문" : lang === "zh" ? "达人丹丹访韩" : lang === "ja" ? "KOLダンダン訪韓" : "Dandan Korea Visit", desc: lang === "ko" ? "3일간 총 매출 — K-뷰티 집중 판매" : lang === "zh" ? "3天总销售额 — K-Beauty集中销售" : lang === "ja" ? "3日間の総売上 — K-Beauty集中販売" : "3-day total — focused K-Beauty sales", cat: "m-coral" },
+            ].map((c, i) => (
+              <div className={`case-highlight-card ${c.cat}`} key={i}>
+                <div className="ch-num">{c.num}</div>
+                <div className="ch-brand">{c.brand}</div>
+                <p className="ch-desc">{c.desc}</p>
+              </div>
+            ))}
+          </div>
+          <p className="case-highlight-note">{lang === "ko" ? "위 사례는 공개 보도 기반입니다. 프로젝트별 상세 데이터는 NDA 체결 후 공유드립니다." : lang === "zh" ? "以上案例基于公开报道。项目详细数据可在签署NDA后共享。" : lang === "ja" ? "上記事例は公開報道に基づいています。プロジェクト別の詳細データはNDA締結後に共有いたします。" : "Cases above are based on public reporting. Detailed project data is shared after NDA signing."}</p>
+          <div style={{ textAlign: "center", marginTop: "32px" }}>
+            <Link href="/contact" className="btn btn-primary">{lang === "ko" ? "내 브랜드에 맞는 사례 듣기 →" : lang === "zh" ? "了解适合我品牌的案例 →" : lang === "ja" ? "自社ブランドに合う事例を聞く →" : "Hear cases for my brand →"}</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* TRUST & PROCESS */}
+      <section className="trust-process">
+        <div className="container">
+          <div className="section-eyebrow">— {lang === "ko" ? "HOW WE WORK · 이렇게 진행됩니다" : lang === "en" ? "HOW WE WORK" : lang === "zh" ? "我们的工作方式" : "HOW WE WORK · 進め方"}</div>
+          <h2 className="section-title">{lang === "ko" ? "문의부터 실행까지, 5단계" : lang === "en" ? "From inquiry to execution — 5 steps" : lang === "zh" ? "从咨询到执行，5步搞定" : "問い合わせから実行まで5ステップ"}</h2>
+          <div className="trust-steps">
+            {[
+              { n: "01", t: lang === "ko" ? "문의 접수" : lang === "zh" ? "咨询受理" : lang === "ja" ? "問い合わせ受付" : "Inquiry", d: lang === "ko" ? "48시간 이내 회신 · 한/중/영 대응" : lang === "zh" ? "48小时内回复 · 中/韩/英对应" : lang === "ja" ? "48時間以内返信 · 韓/中/英対応" : "Reply within 48hrs · KO/ZH/EN" },
+              { n: "02", t: lang === "ko" ? "무료 컨셉 미팅" : lang === "zh" ? "免费概念会议" : lang === "ja" ? "無料コンセプトMTG" : "Free Concept Meeting", d: lang === "ko" ? "비대면 30분 · 브랜드·목표·예산 파악" : lang === "zh" ? "线上30分钟 · 了解品牌/目标/预算" : lang === "ja" ? "オンライン30分 · ブランド/目標/予算把握" : "Remote 30min · brand/goal/budget" },
+              { n: "03", t: lang === "ko" ? "맞춤 제안서" : lang === "zh" ? "定制方案" : lang === "ja" ? "カスタム提案書" : "Custom Proposal", d: lang === "ko" ? "파트너 후보 · 플랫폼 · 예상 성과 · 견적" : lang === "zh" ? "合作候选 · 平台 · 预期成果 · 报价" : lang === "ja" ? "パートナー候補 · プラットフォーム · 予想成果 · 見積" : "Partner candidates · platform · projections · quote" },
+              { n: "04", t: lang === "ko" ? "계약·실행" : lang === "zh" ? "签约·执行" : lang === "ja" ? "契約・実行" : "Contract & Execute", d: lang === "ko" ? "왕홍 매칭 → 라이브 기획 → 운영 → 정산" : lang === "zh" ? "达人匹配 → 直播企划 → 运营 → 结算" : lang === "ja" ? "KOLマッチング → ライブ企画 → 運営 → 精算" : "KOL matching → live planning → ops → settlement" },
+              { n: "05", t: lang === "ko" ? "성과 리포트" : lang === "zh" ? "成果报告" : lang === "ja" ? "成果レポート" : "Performance Report", d: lang === "ko" ? "실시간 데이터 공유 + 다음 단계 제안" : lang === "zh" ? "实时数据共享 + 下一步建议" : lang === "ja" ? "リアルタイムデータ共有 + 次のステップ提案" : "Real-time data + next steps" },
+            ].map((s, i) => (
+              <div className="trust-step" key={i}>
+                <div className="ts-num">{s.n}</div>
+                <div className="ts-body">
+                  <div className="ts-title">{s.t}</div>
+                  <p className="ts-desc">{s.d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="trust-badges">
+            {[
+              lang === "ko" ? "최소 물량 제한 없음" : lang === "zh" ? "无最低量限制" : lang === "ja" ? "最小数量制限なし" : "No minimum order",
+              lang === "ko" ? "트라이얼 1회 가능" : lang === "zh" ? "可试播1次" : lang === "ja" ? "トライアル1回可能" : "1-time trial OK",
+              lang === "ko" ? "사전 NDA 가능" : lang === "zh" ? "可事前签NDA" : lang === "ja" ? "事前NDA可能" : "Pre-NDA available",
+              lang === "ko" ? "3개 국어 소통" : lang === "zh" ? "中韩英三语" : lang === "ja" ? "3言語対応" : "KO/ZH/EN",
+              lang === "ko" ? "위약금 없음" : lang === "zh" ? "无违约金" : lang === "ja" ? "違約金なし" : "No penalty",
+            ].map((badge, i) => (
+              <span className="trust-badge" key={i}>{badge}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="final-cta">
+        <div className="container">
+          <h2 className="final-cta-title">{lang === "ko" ? "지금 시작하지 않으면, 경쟁사가 먼저 합니다" : lang === "en" ? "If you don't start now, your competitors will" : lang === "zh" ? "现在不开始，竞争对手就先行一步" : "今始めなければ、競合が先に動きます"}</h2>
+          <p className="final-cta-sub">{lang === "ko" ? "첫 미팅은 무료, 리스크는 제로. 30분이면 가능성을 확인할 수 있습니다." : lang === "en" ? "First meeting is free, zero risk. 30 minutes to discover the opportunity." : lang === "zh" ? "首次会议免费，零风险。30分钟即可确认可能性。" : "初回ミーティング無料、リスクゼロ。30分で可能性を確認できます。"}</p>
+          <div className="final-cta-buttons">
+            <Link href="/contact" className="btn btn-primary">{lang === "ko" ? "맞춤 제안서 요청 →" : lang === "en" ? "Request custom proposal →" : lang === "zh" ? "定制方案咨询 →" : "カスタム提案書リクエスト →"}</Link>
+            <Link href="/contact" className="btn btn-outline">{lang === "ko" ? "무료 컨셉 미팅 예약 →" : lang === "en" ? "Book free concept meeting →" : lang === "zh" ? "预约免费概念会议 →" : "無料コンセプトMTG予約 →"}</Link>
           </div>
         </div>
       </section>

@@ -457,6 +457,48 @@ body{font-weight:450}
 .case-metric{font-family:'Unbounded',sans-serif;font-size:24px;font-weight:900;color:var(--card-accent,var(--amber));letter-spacing:-.03em;line-height:1.1}
 .case-desc{font-size:14px;color:var(--gray-700);line-height:1.65;flex:1}
 
+/* CASE HIGHLIGHTS — main page proven results */
+.case-highlights{padding:100px 0;background:var(--gray-50)}
+.case-highlight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px}
+.case-highlight-card{background:var(--white);border:1px solid var(--gray-200);padding:36px 28px;position:relative;overflow:hidden;transition:all .3s ease}
+.case-highlight-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px}
+.case-highlight-card.m-amber::before{background:var(--amber)}
+.case-highlight-card.m-emerald::before{background:var(--emerald)}
+.case-highlight-card.m-azure::before{background:var(--azure)}
+.case-highlight-card.m-coral::before{background:var(--coral)}
+.case-highlight-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
+.ch-num{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:8px}
+.case-highlight-card.m-amber .ch-num{color:var(--amber-deep)}
+.case-highlight-card.m-emerald .ch-num{color:var(--emerald-deep)}
+.case-highlight-card.m-azure .ch-num{color:var(--azure-deep)}
+.case-highlight-card.m-coral .ch-num{color:var(--coral-deep)}
+.ch-brand{font-size:15px;font-weight:800;color:var(--black);margin-bottom:8px}
+.ch-desc{font-size:13px;color:var(--gray-600);line-height:1.6;margin:0}
+.case-highlight-note{text-align:center;font-size:13px;color:var(--gray-400);margin-top:32px}
+
+/* TRUST & PROCESS */
+.trust-process{padding:100px 0;background:var(--white)}
+.trust-steps{display:flex;gap:0;margin-top:48px;position:relative}
+.trust-steps::before{content:"";position:absolute;top:20px;left:0;right:0;height:2px;background:var(--gray-200);z-index:0}
+.trust-step{flex:1;text-align:center;position:relative;z-index:1;padding:0 12px}
+.ts-num{width:40px;height:40px;border-radius:50%;background:var(--black);color:var(--white);font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.ts-title{font-size:15px;font-weight:800;color:var(--black);margin-bottom:6px}
+.ts-desc{font-size:12px;color:var(--gray-600);line-height:1.5;margin:0}
+.trust-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:48px}
+.trust-badge{padding:8px 20px;border:1px solid var(--gray-200);font-size:13px;font-weight:600;color:var(--gray-600);letter-spacing:-.01em;background:var(--gray-50);transition:all .2s}
+.trust-badge:hover{border-color:var(--amber);color:var(--black)}
+
+/* FINAL CTA */
+.final-cta{padding:100px 0;background:var(--black);color:var(--white);text-align:center}
+.final-cta-title{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.03em;line-height:1.2;margin-bottom:16px}
+body.lang-ko .final-cta-title{font-family:var(--display-ko)}
+.final-cta-sub{font-size:16px;opacity:.7;margin-bottom:40px;line-height:1.6}
+.final-cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.final-cta .btn-primary{background:var(--amber);color:var(--black);border-color:var(--amber)}
+.final-cta .btn-primary:hover{background:var(--white);color:var(--black)}
+.final-cta .btn-outline{border-color:rgba(255,255,255,.3);color:var(--white)}
+.final-cta .btn-outline:hover{border-color:var(--white);background:rgba(255,255,255,.1)}
+
 /* FOOTER */
 .site-footer{background:var(--black);color:var(--white);padding:80px 0 32px}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.4fr;gap:48px;margin-bottom:60px}
@@ -672,6 +714,14 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 
 /* ============ MOBILE ≤ 768px ============ */
 @media(max-width:768px){
+  /* — New sections mobile — */
+  .case-highlight-grid{grid-template-columns:1fr 1fr;gap:16px}
+  .ch-num{font-size:22px}
+  .trust-steps{flex-direction:column;gap:24px}
+  .trust-steps::before{display:none}
+  .trust-step{text-align:left;display:flex;gap:16px;align-items:flex-start;padding:0}
+  .ts-num{margin:0;flex-shrink:0}
+  .final-cta-buttons{flex-direction:column;align-items:center}
   /* — Container padding tighter — */
   .container{padding:0 20px}
   .nav-inner{padding:0 16px;height:60px}
