@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useLang } from "@/components/LangContext";
 import Marquee from "@/components/Marquee";
+import MeteorBackground from "@/components/MeteorBackground";
 import type { Lang } from "@/lib/i18n";
 
 export default function HomePage() {
@@ -99,6 +100,11 @@ export default function HomePage() {
   const stmt = STMT[lang];
   const m = METRICS[lang];
 
+  // Map each tag index to a color category for hero glow + tag-panel theming
+  const TAG_CATS = ["k-brand", "o-brand", "k-seller", "o-seller", "k-brand"] as const;
+  // Cycle metric cards through the 4-audience neon palette
+  const METRIC_CATS = ["m-amber", "m-emerald", "m-azure", "m-coral"] as const;
+
   // Multi-language marquee items (한·중·영 mixed)
   const marquee1 = [
     "KOREA × GLOBAL", "한국 × 해외", "韩国 × 海外",
@@ -118,7 +124,8 @@ export default function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="hero topo-bg">
+      <section className="hero">
+        <MeteorBackground />
         <div className="container hero-content">
           <div className="hero-eyebrow">{t("hero.eyebrow")}</div>
           <h1 className="hero-title">
@@ -132,6 +139,7 @@ export default function HomePage() {
               <button
                 key={i}
                 className={`hero-tag ${activeTag === i ? "active" : ""}`}
+                data-cat={TAG_CATS[i] || "k-brand"}
                 onClick={() => setActiveTag(activeTag === i ? null : i)}
                 type="button"
               >
@@ -142,7 +150,7 @@ export default function HomePage() {
           </div>
 
           {activeTag !== null && (
-            <div className="tag-panel" key={activeTag}>
+            <div className="tag-panel" key={activeTag} data-cat={TAG_CATS[activeTag] || "k-brand"}>
               <p className="tag-panel-text">{tags[activeTag].pitch}</p>
               <Link href={tags[activeTag].href} className="tag-panel-cta">
                 {lang === "ko" ? "자세히 보기" : lang === "en" ? "Learn more" : lang === "zh" ? "查看详情" : "詳細を見る"} →
@@ -218,7 +226,7 @@ export default function HomePage() {
 
           <div className="metrics-grid">
             {m.nums.map((item, i) => (
-              <div className={`metric-card ${item.amber ? "amber" : ""}`} key={i}>
+              <div className={`metric-card ${METRIC_CATS[i % METRIC_CATS.length]}`} key={i}>
                 <div className="metric-num-big">{item.n}</div>
                 <div className="metric-label">{item.label}</div>
                 <div className="metric-sub">{item.sub}</div>

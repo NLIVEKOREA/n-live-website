@@ -122,7 +122,7 @@ export default function OverseasBrandsPage() {
   const { lang } = useLang();
   const t = C[lang];
   return (
-    <>
+    <div className="theme-o-brand">
       <section className="page-hero">
         <div className="container page-hero-inner">
           <Link href="/#services" className="back-link">{t.back}</Link>
@@ -183,6 +183,6 @@ export default function OverseasBrandsPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

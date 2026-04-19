@@ -110,7 +110,7 @@ export default function KoreanBrandsPage() {
   const { lang } = useLang();
   const t = C[lang];
   return (
-    <>
+    <div className="theme-k-brand">
       <section className="page-hero">
         <div className="container page-hero-inner">
           <Link href="/#services" className="back-link">{t.back}</Link>
@@ -167,6 +167,6 @@ export default function KoreanBrandsPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
