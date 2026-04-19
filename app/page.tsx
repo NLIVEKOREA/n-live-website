@@ -16,6 +16,13 @@ export default function HomePage() {
             {t("hero.title.1")}<br />
             <em>{t("hero.title.2")}</em>
           </h1>
+          <div className="hero-tags">
+            <span className="hero-tag">{t("hero.tag.1")}</span>
+            <span className="hero-tag">{t("hero.tag.2")}</span>
+            <span className="hero-tag">{t("hero.tag.3")}</span>
+            <span className="hero-tag">{t("hero.tag.4")}</span>
+            <span className="hero-tag">{t("hero.tag.5")}</span>
+          </div>
           <p className="hero-sub">{t("hero.sub")}</p>
           <div className="hero-actions">
             <Link href="/contact" className="btn btn-primary">{t("hero.cta1")} →</Link>
