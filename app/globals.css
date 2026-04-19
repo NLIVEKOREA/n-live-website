@@ -488,7 +488,7 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 
 /* Wrapper-level fade so the entire page fades up together */
 .pt{
-  animation:ptWrap 1.8s cubic-bezier(.2,.7,.2,1) both;
+  animation:ptWrap 2.8s cubic-bezier(.2,.7,.2,1) both;
 }
 @keyframes ptWrap{
   from{opacity:0}
@@ -499,7 +499,7 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
    This is normally the page-hero — but works for any first child. */
 .pt > .page-hero,
 .pt > section:first-child{
-  animation-duration:2s;
+  animation-duration:3s;
   animation-timing-function:cubic-bezier(.2,.7,.2,1);
   animation-fill-mode:both;
 }
@@ -554,7 +554,7 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 }
 
 .pt-blocks > .page-hero,
-.pt-blocks > section:first-child{animation-name:ptInZoom;animation-duration:2s}
+.pt-blocks > section:first-child{animation-name:ptInZoom;animation-duration:3s}
 
 /* Honor reduced-motion but with a gentle short fade — never nothing */
 @media(prefers-reduced-motion:reduce){
