@@ -481,72 +481,88 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 .fade-up{opacity:0;transform:translateY(30px);transition:all .9s cubic-bezier(.2,.7,.2,1)}
 .fade-up.in{opacity:1;transform:translateY(0)}
 
-/* ============ PAGE TRANSITIONS — CONTENT SLIDE-IN ONLY ============ */
-/* No overlays, no bars. Just smooth content motion on mount.
-   Each variant uses a different direction so users still feel
-   "different page entered" without any flashing. */
+/* ============ PAGE TRANSITIONS — DRAMATIC CONTENT SLIDE ============ */
+/* Animation is applied to the page-hero (first visible block) AND the
+   wrapper itself, so the motion is unmissable. Big displacement + scale +
+   blur combination so there's no way to confuse it with "no animation". */
+
+/* Wrapper-level fade so the entire page fades up together */
 .pt{
-  position:relative;
-  animation-duration:.7s;
+  animation:ptWrap .9s cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes ptWrap{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+/* Per-variant direction is applied to the FIRST visible block.
+   This is normally the page-hero — but works for any first child. */
+.pt > .page-hero,
+.pt > section:first-child{
+  animation-duration:.95s;
   animation-timing-function:cubic-bezier(.2,.7,.2,1);
   animation-fill-mode:both;
-  will-change:transform,opacity;
 }
 
-/* Slide in from left */
-.pt-wipe-r{animation-name:ptSlideR}
-@keyframes ptSlideR{
-  from{opacity:0;transform:translate3d(-32px,0,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
+.pt-wipe-r > .page-hero,
+.pt-wipe-r > section:first-child{animation-name:ptInR}
+@keyframes ptInR{
+  from{opacity:0;transform:translate3d(-90px,0,0) scale(.97);filter:blur(6px)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
 }
 
-/* Slide in from right */
-.pt-wipe-l{animation-name:ptSlideL}
-@keyframes ptSlideL{
-  from{opacity:0;transform:translate3d(32px,0,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
+.pt-wipe-l > .page-hero,
+.pt-wipe-l > section:first-child{animation-name:ptInL}
+@keyframes ptInL{
+  from{opacity:0;transform:translate3d(90px,0,0) scale(.97);filter:blur(6px)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
 }
 
-/* Rise from below */
-.pt-rise{animation-name:ptSlideUp;animation-duration:.75s}
-@keyframes ptSlideUp{
-  from{opacity:0;transform:translate3d(0,28px,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
+.pt-rise > .page-hero,
+.pt-rise > section:first-child{animation-name:ptInUp}
+@keyframes ptInUp{
+  from{opacity:0;transform:translate3d(0,80px,0) scale(.97);filter:blur(6px)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
 }
 
-/* Fall from above */
-.pt-fall{animation-name:ptSlideDown}
-@keyframes ptSlideDown{
-  from{opacity:0;transform:translate3d(0,-24px,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
+.pt-fall > .page-hero,
+.pt-fall > section:first-child{animation-name:ptInDown}
+@keyframes ptInDown{
+  from{opacity:0;transform:translate3d(0,-70px,0) scale(.97);filter:blur(6px)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
 }
 
-/* Subtle zoom in */
-.pt-iris{animation-name:ptZoom;animation-duration:.75s}
-@keyframes ptZoom{
-  from{opacity:0;transform:scale3d(.97,.97,1)}
-  to{opacity:1;transform:scale3d(1,1,1)}
+.pt-iris > .page-hero,
+.pt-iris > section:first-child{animation-name:ptInZoom}
+@keyframes ptInZoom{
+  from{opacity:0;transform:scale(.92);filter:blur(8px)}
+  to{opacity:1;transform:scale(1);filter:blur(0)}
 }
 
-/* Squeeze in horizontally */
-.pt-curtain{animation-name:ptSqueeze;transform-origin:center top}
-@keyframes ptSqueeze{
-  from{opacity:0;transform:scale3d(.96,1,1)}
-  to{opacity:1;transform:scale3d(1,1,1)}
+.pt-curtain > .page-hero,
+.pt-curtain > section:first-child{animation-name:ptInSqueeze;transform-origin:center top}
+@keyframes ptInSqueeze{
+  from{opacity:0;transform:scaleX(.85);filter:blur(6px)}
+  to{opacity:1;transform:scaleX(1);filter:blur(0)}
 }
 
-/* Diagonal slide from upper-left */
-.pt-diagonal{animation-name:ptSlideDiag}
-@keyframes ptSlideDiag{
-  from{opacity:0;transform:translate3d(-22px,-22px,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}
+.pt-diagonal > .page-hero,
+.pt-diagonal > section:first-child{animation-name:ptInDiag}
+@keyframes ptInDiag{
+  from{opacity:0;transform:translate3d(-70px,-50px,0) scale(.96);filter:blur(6px)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
 }
 
-/* Subtle scale + fade for blocks variant */
-.pt-blocks{animation-name:ptZoom;animation-duration:.8s}
+.pt-blocks > .page-hero,
+.pt-blocks > section:first-child{animation-name:ptInZoom;animation-duration:1s}
 
+/* Honor reduced-motion but with a gentle short fade — never nothing */
 @media(prefers-reduced-motion:reduce){
-  .pt{animation:none!important;opacity:1!important;transform:none!important}
+  .pt,.pt > .page-hero,.pt > section:first-child{
+    animation-duration:.35s!important;
+    animation-name:ptWrap!important;
+    transform:none!important;filter:none!important;
+  }
 }
 
 /* RESPONSIVE */
