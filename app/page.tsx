@@ -122,8 +122,8 @@ export default function HomePage() {
         <div className="container hero-content">
           <div className="hero-eyebrow">{t("hero.eyebrow")}</div>
           <h1 className="hero-title">
-            {t("hero.title.1")}<br />
-            <em>{t("hero.title.2")}</em>
+            <span className="line-mask"><span className="line-inner">{t("hero.title.1")}</span></span>
+            <span className="line-mask"><span className="line-inner"><em>{t("hero.title.2")}</em></span></span>
           </h1>
 
           <div className="hero-tags">

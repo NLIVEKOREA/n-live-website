@@ -48,7 +48,8 @@ export default function Effects() {
         }
       });
     }, { threshold: 0.12 });
-    document.querySelectorAll("section > .container > *, .audience-matrix > *, .hero-content > *").forEach((el) => {
+    // Skip hero-content children (they have their own keyframe entrance)
+    document.querySelectorAll("section:not(.hero) > .container > *, .audience-matrix > *").forEach((el) => {
       el.classList.add("fade-up");
       io.observe(el);
     });
