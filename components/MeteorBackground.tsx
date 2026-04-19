@@ -20,12 +20,13 @@ export default function MeteorBackground() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Brand palette — neon
+    // Brand palette — MAX fluorescent for meteors only
+    // (Site palette stays warmer; canvas uses pumped neon for visibility)
     const COLORS = [
-      { core: "#FFB627", rgb: "255,182,39", name: "amber" },
-      { core: "#00D67A", rgb: "0,214,122", name: "emerald" },
-      { core: "#2D7BFF", rgb: "45,123,255", name: "azure" },
-      { core: "#FF4D3A", rgb: "255,77,58", name: "coral" },
+      { core: "#FFE500", rgb: "255,229,0", name: "amber" },     // electric yellow-gold
+      { core: "#00FF88", rgb: "0,255,136", name: "emerald" },   // neon green
+      { core: "#00E5FF", rgb: "0,229,255", name: "azure" },     // electric cyan
+      { core: "#FF1F8E", rgb: "255,31,142", name: "coral" },    // hot magenta
     ];
 
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -228,9 +229,9 @@ export default function MeteorBackground() {
       );
       meteors.push(target);
 
-      // Homing missile: fast, big, glows hard, comes from a side edge
+      // Homing missile: VERY fast, big, glows hard, comes from a side edge
       const fromLeft = Math.random() > 0.5;
-      const missileSpeed = 6.5 + Math.random() * 1.5;
+      const missileSpeed = 10 + Math.random() * 2.5; // was 6.5+1.5 — much faster
       const startX = fromLeft ? -80 : width + 80;
       const startY = Math.random() * height * 0.55;
       const dx0 = targetX - startX;
@@ -246,8 +247,8 @@ export default function MeteorBackground() {
       missile.homing = true;
       missile.targetId = target.id;
       missile.maxSpeed = missileSpeed;
-      missile.size = 3.4 + Math.random() * 0.9; // much bigger
-      missile.tail = 180 + Math.random() * 80; // longer trail
+      missile.size = 4.2 + Math.random() * 1.0; // bigger
+      missile.tail = 240 + Math.random() * 100; // longer trail
       missile.maxLife = 500;
       meteors.push(missile);
     }
@@ -446,46 +447,86 @@ export default function MeteorBackground() {
         const tx = m.x - (m.vx / speed) * m.tail;
         const ty = m.y - (m.vy / speed) * m.tail;
 
+        // Pulsing brightness for that "alive" neon flicker
+        const pulse = 0.85 + Math.sin(m.life * 0.35) * 0.15;
+
         // Trail gradient
         const grad = ctx.createLinearGradient(tx, ty, m.x, m.y);
         grad.addColorStop(0, `rgba(${m.color.rgb},0)`);
-        grad.addColorStop(0.5, `rgba(${m.color.rgb},${m.homing ? 0.55 : 0.35})`);
-        grad.addColorStop(1, `rgba(${m.color.rgb},${m.homing ? 1 : 0.95})`);
+        grad.addColorStop(
+          0.5,
+          `rgba(${m.color.rgb},${(m.homing ? 0.65 : 0.45) * pulse})`
+        );
+        grad.addColorStop(1, `rgba(${m.color.rgb},${m.homing ? 1 : 0.98})`);
         ctx.strokeStyle = grad;
         ctx.lineWidth = m.size;
         ctx.lineCap = "round";
+        // Extra shadow to make trail itself glow
+        ctx.shadowColor = m.color.core;
+        ctx.shadowBlur = m.homing ? 26 : 12;
         ctx.beginPath();
         ctx.moveTo(tx, ty);
         ctx.lineTo(m.x, m.y);
         ctx.stroke();
+        ctx.shadowBlur = 0;
 
-        if (m.homing) {
-          // Outer aura ring for missiles
-          const aura = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.size * 6);
-          aura.addColorStop(0, `rgba(${m.color.rgb},0.55)`);
-          aura.addColorStop(0.4, `rgba(${m.color.rgb},0.22)`);
-          aura.addColorStop(1, `rgba(${m.color.rgb},0)`);
-          ctx.fillStyle = aura;
-          ctx.beginPath();
-          ctx.arc(m.x, m.y, m.size * 6, 0, Math.PI * 2);
-          ctx.fill();
-        }
+        // Outer aura — bigger, brighter for everyone
+        const auraR = m.size * (m.homing ? 10 : 5);
+        const aura = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, auraR);
+        aura.addColorStop(0, `rgba(${m.color.rgb},${(m.homing ? 0.7 : 0.55) * pulse})`);
+        aura.addColorStop(0.35, `rgba(${m.color.rgb},${(m.homing ? 0.32 : 0.22) * pulse})`);
+        aura.addColorStop(1, `rgba(${m.color.rgb},0)`);
+        ctx.fillStyle = aura;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, auraR, 0, Math.PI * 2);
+        ctx.fill();
 
-        // Head with glow
+        // Head with strong glow
         ctx.shadowColor = m.color.core;
-        ctx.shadowBlur = m.homing ? 36 : 18;
+        ctx.shadowBlur = m.homing ? 50 : 26;
         ctx.fillStyle = m.color.core;
         ctx.beginPath();
-        ctx.arc(m.x, m.y, m.size * (m.homing ? 1.6 : 1.4), 0, Math.PI * 2);
+        ctx.arc(m.x, m.y, m.size * (m.homing ? 1.8 : 1.5) * pulse, 0, Math.PI * 2);
+        ctx.fill();
+        // Double-stamp head for extra glow intensity
+        ctx.fillStyle = `rgba(255,255,255,${m.homing ? 0.7 : 0.45})`;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.size * (m.homing ? 0.9 : 0.7), 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
 
         // White-hot core for missiles
         if (m.homing) {
-          ctx.fillStyle = "rgba(255,255,255,0.95)";
+          ctx.fillStyle = "rgba(255,255,255,1)";
           ctx.beginPath();
-          ctx.arc(m.x, m.y, m.size * 0.55, 0, Math.PI * 2);
+          ctx.arc(m.x, m.y, m.size * 0.6, 0, Math.PI * 2);
           ctx.fill();
+        }
+
+        // SPARKLE TRAIL — twinkly little particles drifting behind
+        const sparkleChance = m.homing ? 0.85 : 0.45;
+        if (Math.random() < sparkleChance) {
+          const offset = (Math.random() - 0.5) * m.size * 2;
+          const perpX = -m.vy / speed;
+          const perpY = m.vx / speed;
+          // Spawn slightly behind the head
+          const sx = m.x - (m.vx / speed) * (4 + Math.random() * 12) + perpX * offset;
+          const sy = m.y - (m.vy / speed) * (4 + Math.random() * 12) + perpY * offset;
+          // Mostly white sparkles, sometimes the meteor color
+          const sparkColor =
+            Math.random() < 0.65
+              ? { core: "#ffffff", rgb: "255,255,255", name: "white" }
+              : m.color;
+          particles.push({
+            x: sx,
+            y: sy,
+            vx: -m.vx * 0.04 + (Math.random() - 0.5) * 0.6,
+            vy: -m.vy * 0.04 + (Math.random() - 0.5) * 0.6,
+            life: 0,
+            maxLife: 25 + Math.random() * 30,
+            color: sparkColor as Color,
+            size: 0.5 + Math.random() * (m.homing ? 1.6 : 1.0),
+          });
         }
       }
 
