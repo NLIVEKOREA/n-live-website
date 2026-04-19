@@ -82,7 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Unbounded:wght@400;600;700;800;900&family=Bebas+Neue&family=Anton&family=Big+Shoulders+Display:wght@700;800;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Unbounded:wght@400;600;700;800;900&family=Bebas+Neue&family=Anton&family=Big+Shoulders+Display:wght@500;700;800;900&family=Black+Han+Sans&family=Jua&family=Saira+Stencil+One&family=Archivo+Black&family=Bowlby+One&display=swap" rel="stylesheet" />
         <meta name="naver-site-verification" content="" />
         <meta name="google-site-verification" content="" />
       </head>
