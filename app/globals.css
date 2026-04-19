@@ -639,3 +639,113 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
   .form-row{grid-template-columns:1fr}
   .contact-form{padding:32px 24px}
 }
+
+/* ============ MOBILE ≤ 768px ============ */
+@media(max-width:768px){
+  /* — Container padding tighter — */
+  .container{padding:0 20px}
+  .nav-inner{padding:0 16px;height:60px}
+
+  /* — Nav mobile polish — */
+  .nav-links{top:60px;padding:20px 20px}
+  .logo{font-size:14px;gap:8px}
+  .logo-mark{width:32px;height:32px}
+  .nav-cta{padding:8px 14px;font-size:11px;letter-spacing:.06em}
+  .lang-switch{font-size:10px;gap:0}
+  .lang-switch button{padding:5px 6px}
+  .lang-switch .divider{padding:5px 0}
+  .nav-right{gap:10px}
+
+  /* — Hero mobile — */
+  .hero{padding:100px 0 60px;min-height:auto}
+  .hero-eyebrow{font-size:11px;letter-spacing:.2em;margin-bottom:28px}
+  body.lang-ko .hero-title{font-size:clamp(36px,9vw,56px);letter-spacing:-.04em}
+  .hero-tags-label{font-size:11px;letter-spacing:.15em;margin:32px 0 14px}
+  .hero-tags-label::before{width:24px}
+  .hero-tags{gap:8px}
+  .hero-tag{padding:14px 18px;font-size:13px;gap:10px}
+  .hero-sub{font-size:14px;margin-bottom:36px}
+  .hero-actions{gap:12px}
+  .btn{padding:14px 24px;font-size:12px;letter-spacing:.08em}
+  .tag-panel{padding:20px;margin-top:16px}
+  .tag-panel-text{font-size:14px;line-height:1.65}
+
+  /* — Statement block — */
+  .statement-block{padding:64px 0}
+  body.lang-ko .statement-headline{font-size:clamp(36px,9vw,60px)}
+  .statement-block .statement-eyebrow{font-size:11px;letter-spacing:.2em;margin-bottom:28px}
+  .statement-block .statement-sub{font-size:clamp(16px,4vw,20px)}
+  .statement-block .statement-bottom{margin-top:40px;gap:24px}
+  .statement-block .btn-statement{padding:16px 28px;font-size:12px}
+
+  /* — Section headers — */
+  .section-header{margin-bottom:48px}
+  .section-header-big{margin-bottom:48px;padding:28px 0}
+  body.lang-ko .section-title{font-size:clamp(32px,8vw,52px)}
+  body.lang-ko .section-title-huge{font-size:clamp(36px,9vw,60px)}
+  .section-desc{font-size:15px}
+  .section-desc-big{font-size:clamp(15px,4vw,18px)}
+  .section-eyebrow{font-size:11px;letter-spacing:.2em;margin-bottom:20px}
+
+  /* — Audience matrix — */
+  .audience-card{padding:32px 24px;min-height:320px;gap:14px}
+  .audience-card h3{font-size:clamp(24px,6vw,32px)}
+  .aud-need{font-size:14px;padding:12px 14px}
+
+  /* — Metrics — */
+  .metrics{padding:64px 0}
+  .metrics-eyebrow{font-size:11px;margin-bottom:48px}
+  .metrics-grid{gap:16px}
+  .metric-card{padding:28px 20px}
+  .metric-num-big{font-size:clamp(56px,15vw,80px)}
+  .metric-label{font-size:clamp(16px,4vw,22px)}
+  .metric-sub{font-size:13px}
+  .metrics-bottom{gap:24px;margin-top:48px;padding-top:32px;flex-direction:column;align-items:flex-start}
+  .metrics-bottom p{font-size:14px}
+  .metrics-bottom a{padding:14px 24px;font-size:12px}
+
+  /* — Marquee — */
+  .marquee{padding:16px 0}
+  .marquee-item{font-size:clamp(20px,5vw,36px);gap:24px}
+  .pairing-marquee{padding:40px 0}
+  .pairing-item{font-size:clamp(28px,7vw,52px);gap:14px}
+  .pairing-track{gap:36px}
+
+  /* — Detail pages — */
+  .page-hero{padding:130px 0 56px}
+  body.lang-ko .page-hero h1{font-size:clamp(28px,7vw,48px)}
+  .page-hero .lead{font-size:15px}
+  .detail-section{padding:64px 0}
+  .detail-title{font-size:clamp(24px,6vw,36px)}
+  .detail-lead{font-size:15px;margin-bottom:32px}
+  .detail-item{padding:28px 20px}
+  .detail-item h4{font-size:17px}
+  .detail-item p{font-size:13px}
+  .detail-cta{padding:56px 24px;margin-top:48px}
+  .detail-cta h3{font-size:clamp(22px,5.5vw,32px)}
+
+  /* — Footer 2col → 1col — */
+  .site-footer{padding:56px 0 24px}
+  .footer-grid{grid-template-columns:1fr;gap:28px;margin-bottom:40px}
+  .footer-brand{margin-bottom:8px}
+  .footer-brand img{width:56px;height:56px}
+  .footer-tagline{font-size:12px}
+  .footer-nav h5{margin-bottom:4px}
+  .footer-nav a{font-size:12px}
+
+  /* — Footer 회사정보: 가로 → 세로 깔끔하게 — */
+  .footer-info{grid-template-columns:1fr;gap:6px;padding:24px 0;font-size:11px}
+  .footer-info>div{display:grid;grid-template-columns:56px 1fr;gap:8px;align-items:baseline}
+  .footer-info .info-label{min-width:auto;font-size:9px;letter-spacing:.15em}
+  .footer-bottom{flex-direction:column;gap:6px;padding-top:20px;font-size:10px}
+
+  /* — Contact form — */
+  .contact-form{padding:24px 16px}
+  .contact-scenarios{gap:10px}
+
+  /* — Scroll reveal — */
+  .fade-up{transform:translateY(20px)}
+
+  /* — Image placeholder — */
+  .image-placeholder{min-height:160px;padding:32px 20px}
+}
