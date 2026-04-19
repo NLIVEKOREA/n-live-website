@@ -94,67 +94,115 @@ export default function MeteorBackground() {
     const bursts: Burst[] = [];
     const stars: Star[] = [];
 
-    // Deep space starfield: tiered (distant tiny, mid, bright accents)
-    const STAR_COUNT = reduce ? 90 : 220;
+    // Deep space neon starfield: tiered (distant tiny, mid, neon accents)
+    const STAR_COUNT = reduce ? 90 : 240;
     for (let i = 0; i < STAR_COUNT; i++) {
       const tier = Math.random();
       let r: number, base: number, glow: boolean;
-      if (tier < 0.7) {
-        // distant tiny
-        r = 0.5 + Math.random() * 0.6;
-        base = 0.15 + Math.random() * 0.3;
-        glow = false;
-      } else if (tier < 0.93) {
-        // mid
-        r = 0.9 + Math.random() * 0.7;
-        base = 0.35 + Math.random() * 0.3;
-        glow = false;
-      } else {
-        // bright accents (occasionally colored)
-        r = 1.3 + Math.random() * 0.9;
+      if (tier < 0.55) {
+        // distant tiny — soft glow even on these
+        r = 0.6 + Math.random() * 0.7;
+        base = 0.3 + Math.random() * 0.35;
+        glow = true;
+      } else if (tier < 0.88) {
+        // mid — clear neon glow
+        r = 1.0 + Math.random() * 0.8;
         base = 0.55 + Math.random() * 0.3;
         glow = true;
+      } else {
+        // bright neon-sign accents
+        r = 1.6 + Math.random() * 1.1;
+        base = 0.75 + Math.random() * 0.25;
+        glow = true;
       }
-      // ~85% white, ~15% colored brand tint
-      const colored = Math.random() < 0.15;
+      // ~55% white, ~45% colored brand tint (much more neon variety)
+      const colored = Math.random() < 0.45;
       stars.push({
         x: Math.random(),
         y: Math.random(),
         r,
         base,
         twinkle: Math.random() * Math.PI * 2,
-        speed: 0.0015 + Math.random() * 0.006,
+        speed: 0.002 + Math.random() * 0.008,
         color: colored ? COLORS[Math.floor(Math.random() * COLORS.length)] : null,
         glow,
       });
     }
 
-    function spawnMeteor() {
-      // Most meteors come from the top-right, falling diagonally down-left,
-      // but mix in a few from the top-left for variety.
+    function makeMeteor(
+      x: number,
+      y: number,
+      vx: number,
+      vy: number,
+      color: Color
+    ): Meteor {
+      return {
+        x,
+        y,
+        vx,
+        vy,
+        life: 0,
+        maxLife: 360 + Math.random() * 160,
+        tail: 90 + Math.random() * 80,
+        color,
+        size: 1.5 + Math.random() * 1.4,
+        dead: false,
+      };
+    }
+
+    function pickTwoColors(): [Color, Color] {
+      const i = Math.floor(Math.random() * COLORS.length);
+      let j = Math.floor(Math.random() * COLORS.length);
+      while (j === i) j = Math.floor(Math.random() * COLORS.length);
+      return [COLORS[i], COLORS[j]];
+    }
+
+    function spawnSolo() {
+      // Random direction meteor for ambient flow
       const fromRight = Math.random() > 0.35;
       const angle = fromRight
-        ? Math.PI * 0.72 + (Math.random() - 0.5) * 0.25 // down-left
-        : Math.PI * 0.28 + (Math.random() - 0.5) * 0.25; // down-right
+        ? Math.PI * 0.72 + (Math.random() - 0.5) * 0.25
+        : Math.PI * 0.28 + (Math.random() - 0.5) * 0.25;
       const speed = 2.2 + Math.random() * 1.8;
-
       const x = fromRight
         ? width * (0.55 + Math.random() * 0.55)
         : width * (Math.random() * 0.45 - 0.05);
       const y = -40 - Math.random() * 80;
+      meteors.push(
+        makeMeteor(
+          x,
+          y,
+          Math.cos(angle) * speed,
+          Math.sin(angle) * speed,
+          COLORS[Math.floor(Math.random() * COLORS.length)]
+        )
+      );
+    }
 
-      meteors.push({
-        x,
-        y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        life: 0,
-        maxLife: 320 + Math.random() * 160,
-        tail: 90 + Math.random() * 80,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        size: 1.4 + Math.random() * 1.4,
-        dead: false,
-      });
+    function spawnConvergentPair() {
+      // Two meteors aimed to meet near a target point — guarantees a collision
+      const mx = width * (0.25 + Math.random() * 0.5);
+      const my = height * (0.28 + Math.random() * 0.4);
+      const T = 90 + Math.random() * 50; // frames until meeting
+
+      const [c1, c2] = pickTwoColors();
+      const speed = 2.3 + Math.random() * 0.9;
+
+      // Meteor A: down-right
+      const aVx = speed * (0.7 + Math.random() * 0.3);
+      const aVy = speed * (0.7 + Math.random() * 0.3);
+      // Meteor B: down-left
+      const bVx = -speed * (0.7 + Math.random() * 0.3);
+      const bVy = speed * (0.7 + Math.random() * 0.3);
+
+      meteors.push(makeMeteor(mx - aVx * T, my - aVy * T, aVx, aVy, c1));
+      meteors.push(makeMeteor(mx - bVx * T, my - bVy * T, bVx, bVy, c2));
+    }
+
+    function spawnMeteor() {
+      // ~70% of spawns are convergent pairs → ~3-4 collisions per ~10 meteors
+      if (Math.random() < 0.7) spawnConvergentPair();
+      else spawnSolo();
     }
 
     function spawnBurst(x: number, y: number, c1: Color, c2: Color) {
@@ -195,9 +243,9 @@ export default function MeteorBackground() {
     let raf = 0;
     let lastSpawn = 0;
     let lastTime = 0;
-    const SPAWN_MIN = reduce ? 4500 : 1700;
-    const SPAWN_JITTER = reduce ? 4000 : 1800;
-    const COLLISION_R2 = 18 * 18; // squared collision radius (px)
+    const SPAWN_MIN = reduce ? 4500 : 1400;
+    const SPAWN_JITTER = reduce ? 4000 : 1600;
+    const COLLISION_R2 = 36 * 36; // squared collision radius (px) — generous
 
     function tick(t: number) {
       const dt = lastTime ? Math.min(t - lastTime, 50) : 16;
@@ -205,32 +253,50 @@ export default function MeteorBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Deep-space starfield with twinkle
+      // Neon-sign starfield with strong twinkle glow
       for (const s of stars) {
         s.twinkle += s.speed * dt;
-        const alpha = s.base + Math.sin(s.twinkle) * 0.22;
-        const a = Math.max(0.05, Math.min(0.95, alpha));
+        const alpha = s.base + Math.sin(s.twinkle) * 0.3;
+        const a = Math.max(0.1, Math.min(1, alpha));
         const px = s.x * width;
         const py = s.y * height;
         const rgb = s.color ? s.color.rgb : "255,255,255";
-        if (s.glow) {
-          ctx.shadowColor = s.color ? s.color.core : "#ffffff";
-          ctx.shadowBlur = 8;
-        }
-        ctx.fillStyle = `rgba(${rgb},${a})`;
+        const glowColor = s.color ? s.color.core : "#ffffff";
+
+        // Outer halo — soft glow ring (neon tube look)
+        const haloR = s.r * 4.5;
+        const halo = ctx.createRadialGradient(px, py, 0, px, py, haloR);
+        halo.addColorStop(0, `rgba(${rgb},${a * 0.55})`);
+        halo.addColorStop(0.4, `rgba(${rgb},${a * 0.18})`);
+        halo.addColorStop(1, `rgba(${rgb},0)`);
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(px, py, haloR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bright neon core
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = s.r > 1.4 ? 16 : 10;
+        ctx.fillStyle = s.color
+          ? `rgba(${rgb},${Math.min(1, a * 1.15)})`
+          : `rgba(255,255,255,${a})`;
         ctx.beginPath();
         ctx.arc(px, py, s.r, 0, Math.PI * 2);
         ctx.fill();
-        if (s.glow) ctx.shadowBlur = 0;
+        ctx.shadowBlur = 0;
+
+        // White-hot pinpoint center for biggest stars
+        if (s.r > 1.6) {
+          ctx.fillStyle = `rgba(255,255,255,${a})`;
+          ctx.beginPath();
+          ctx.arc(px, py, s.r * 0.45, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
-      // Spawn meteors at intervals
+      // Spawn meteors at intervals (mix of solo + convergent pairs)
       if (t - lastSpawn > SPAWN_MIN + Math.random() * SPAWN_JITTER) {
         spawnMeteor();
-        // Occasionally double-spawn so collisions can happen
-        if (Math.random() > 0.55) {
-          setTimeout(() => spawnMeteor(), 120 + Math.random() * 240);
-        }
         lastSpawn = t;
       }
 
