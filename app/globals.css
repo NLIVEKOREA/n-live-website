@@ -481,97 +481,73 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 .fade-up{opacity:0;transform:translateY(30px);transition:all .9s cubic-bezier(.2,.7,.2,1)}
 .fade-up.in{opacity:1;transform:translateY(0)}
 
-/* ============ PAGE TRANSITIONS — SUBTLE EDGE BARS ============ */
-.pt{position:relative;animation:ptContent .55s cubic-bezier(.2,.7,.2,1) both}
-@keyframes ptContent{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.pt-overlay,.pt-overlay-blocks{
-  position:fixed;z-index:250;pointer-events:none;
-  background:transparent;
-}
-/* Default bar host (single thin bar) */
-.pt-overlay::before{
-  content:"";position:fixed;background:var(--pt-c,var(--amber));
-  height:3px;left:0;right:0;top:0;
-  transform:scaleX(0);transform-origin:left;
-  box-shadow:0 0 14px var(--pt-c,var(--amber)),0 0 4px var(--pt-c,var(--amber));
-  animation:ptBarH .65s cubic-bezier(.65,0,.2,1) both
-}
-@keyframes ptBarH{
-  0%{transform:scaleX(0);opacity:1}
-  55%{transform:scaleX(1);opacity:1}
-  100%{transform:scaleX(1);opacity:0}
-}
-@keyframes ptBarH-r{
-  0%{transform:scaleX(0);opacity:1}
-  55%{transform:scaleX(1);opacity:1}
-  100%{transform:scaleX(1);opacity:0}
+/* ============ PAGE TRANSITIONS — CONTENT SLIDE-IN ONLY ============ */
+/* No overlays, no bars. Just smooth content motion on mount.
+   Each variant uses a different direction so users still feel
+   "different page entered" without any flashing. */
+.pt{
+  position:relative;
+  animation-duration:.7s;
+  animation-timing-function:cubic-bezier(.2,.7,.2,1);
+  animation-fill-mode:both;
+  will-change:transform,opacity;
 }
 
-/* Wipe right — top bar L→R */
-.pt-wipe-r .pt-overlay::before{top:0;transform-origin:left;animation-name:ptBarH}
-
-/* Wipe left — top bar R→L */
-.pt-wipe-l .pt-overlay::before{top:0;transform-origin:right;animation-name:ptBarH}
-
-/* Rise — bottom bar L→R */
-.pt-rise .pt-overlay::before{top:auto;bottom:0;transform-origin:left}
-
-/* Fall — top bar L→R (default) */
-.pt-fall .pt-overlay::before{top:0;transform-origin:left}
-
-/* Iris — top + bottom mirrored bars */
-.pt-iris .pt-overlay::before{top:0;transform-origin:left}
-.pt-iris .pt-overlay::after{
-  content:"";position:fixed;background:var(--pt-c,var(--amber));
-  height:3px;left:0;right:0;bottom:0;transform:scaleX(0);transform-origin:right;
-  box-shadow:0 0 14px var(--pt-c,var(--amber));
-  animation:ptBarH .65s cubic-bezier(.65,0,.2,1) both
+/* Slide in from left */
+.pt-wipe-r{animation-name:ptSlideR}
+@keyframes ptSlideR{
+  from{opacity:0;transform:translate3d(-32px,0,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
 }
 
-/* Curtain — top bar fills from center outward */
-.pt-curtain .pt-overlay::before{
-  top:0;left:50%;right:50%;transform:scaleX(0);transform-origin:center;
-  animation:ptBarCenter .65s cubic-bezier(.65,0,.2,1) both
-}
-@keyframes ptBarCenter{
-  0%{left:50%;right:50%;transform:scaleX(0);opacity:1}
-  55%{left:0;right:0;transform:scaleX(1);opacity:1}
-  100%{left:0;right:0;transform:scaleX(1);opacity:0}
+/* Slide in from right */
+.pt-wipe-l{animation-name:ptSlideL}
+@keyframes ptSlideL{
+  from{opacity:0;transform:translate3d(32px,0,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
 }
 
-/* Diagonal — top bar L→R + right edge bar T→B */
-.pt-diagonal .pt-overlay::before{top:0;transform-origin:left}
-.pt-diagonal .pt-overlay::after{
-  content:"";position:fixed;background:var(--pt-c,var(--amber));
-  width:3px;top:0;bottom:0;right:0;transform:scaleY(0);transform-origin:top;
-  box-shadow:0 0 14px var(--pt-c,var(--amber));
-  animation:ptBarV .65s .12s cubic-bezier(.65,0,.2,1) both
-}
-@keyframes ptBarV{
-  0%{transform:scaleY(0);opacity:1}
-  55%{transform:scaleY(1);opacity:1}
-  100%{transform:scaleY(1);opacity:0}
+/* Rise from below */
+.pt-rise{animation-name:ptSlideUp;animation-duration:.75s}
+@keyframes ptSlideUp{
+  from{opacity:0;transform:translate3d(0,28px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
 }
 
-/* Blocks — single top bar split into 4 colored segments */
-.pt-overlay-blocks{
-  position:fixed;top:0;left:0;right:0;height:3px;z-index:250;
-  display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr;
-  pointer-events:none
+/* Fall from above */
+.pt-fall{animation-name:ptSlideDown}
+@keyframes ptSlideDown{
+  from{opacity:0;transform:translate3d(0,-24px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
 }
-.pt-block{
-  display:block;height:100%;
-  transform:scaleX(0);transform-origin:left;
-  animation:ptBarH .55s cubic-bezier(.65,0,.2,1) both
+
+/* Subtle zoom in */
+.pt-iris{animation-name:ptZoom;animation-duration:.75s}
+@keyframes ptZoom{
+  from{opacity:0;transform:scale3d(.97,.97,1)}
+  to{opacity:1;transform:scale3d(1,1,1)}
 }
-.pt-block:nth-child(1){background:var(--amber);box-shadow:0 0 10px var(--amber);animation-delay:0s}
-.pt-block:nth-child(2){background:var(--emerald);box-shadow:0 0 10px var(--emerald);animation-delay:.1s}
-.pt-block:nth-child(3){background:var(--azure);box-shadow:0 0 10px var(--azure);animation-delay:.2s}
-.pt-block:nth-child(4){background:var(--coral);box-shadow:0 0 10px var(--coral);animation-delay:.3s}
-.pt-blocks-multi .pt-overlay-blocks{}/* hook for back-compat */
+
+/* Squeeze in horizontally */
+.pt-curtain{animation-name:ptSqueeze;transform-origin:center top}
+@keyframes ptSqueeze{
+  from{opacity:0;transform:scale3d(.96,1,1)}
+  to{opacity:1;transform:scale3d(1,1,1)}
+}
+
+/* Diagonal slide from upper-left */
+.pt-diagonal{animation-name:ptSlideDiag}
+@keyframes ptSlideDiag{
+  from{opacity:0;transform:translate3d(-22px,-22px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+/* Subtle scale + fade for blocks variant */
+.pt-blocks{animation-name:ptZoom;animation-duration:.8s}
+
+@media(prefers-reduced-motion:reduce){
+  .pt{animation:none!important;opacity:1!important;transform:none!important}
+}
 
 /* RESPONSIVE */
 @media(max-width:960px){
