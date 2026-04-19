@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
+import PageEnter from "@/components/PageEnter";
 import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
@@ -94,7 +95,7 @@ export default function AboutPage() {
   const { lang } = useLang();
   const t = C[lang];
   return (
-    <>
+    <PageEnter variant="iris" color="#FFB627">
       <section className="page-hero">
         <div className="container page-hero-inner">
           <div className="breadcrumb">{t.crumb}</div>
@@ -139,6 +140,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-    </>
+    </PageEnter>
   );
 }

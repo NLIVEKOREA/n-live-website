@@ -1,6 +1,8 @@
+import PageEnter from "@/components/PageEnter";
+
 export default function PrivacyPage() {
   return (
-    <>
+    <PageEnter variant="wipe-r" color="#525252">
       <section className="page-hero">
         <div className="container page-hero-inner">
           <div className="breadcrumb">LEGAL · 개인정보처리방침</div>
@@ -87,6 +89,6 @@ export default function PrivacyPage() {
           </article>
         </div>
       </section>
-    </>
+    </PageEnter>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
+import PageEnter from "@/components/PageEnter";
 import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
@@ -122,7 +123,7 @@ export default function OverseasBrandsPage() {
   const { lang } = useLang();
   const t = C[lang];
   return (
-    <div className="theme-o-brand">
+    <PageEnter variant="diagonal" theme="o-brand" color="#2D7BFF">
       <section className="page-hero">
         <div className="container page-hero-inner">
           <Link href="/#services" className="back-link">{t.back}</Link>
@@ -183,6 +184,6 @@ export default function OverseasBrandsPage() {
           </div>
         </div>
       </section>
-    </div>
+    </PageEnter>
   );
 }

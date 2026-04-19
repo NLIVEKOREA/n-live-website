@@ -1,6 +1,8 @@
+import PageEnter from "@/components/PageEnter";
+
 export default function TermsPage() {
   return (
-    <>
+    <PageEnter variant="wipe-l" color="#525252">
       <section className="page-hero">
         <div className="container page-hero-inner">
           <div className="breadcrumb">LEGAL · 이용약관</div>
@@ -72,6 +74,6 @@ export default function TermsPage() {
           </article>
         </div>
       </section>
-    </>
+    </PageEnter>
   );
 }

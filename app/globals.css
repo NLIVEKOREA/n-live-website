@@ -481,6 +481,105 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 .fade-up{opacity:0;transform:translateY(30px);transition:all .9s cubic-bezier(.2,.7,.2,1)}
 .fade-up.in{opacity:1;transform:translateY(0)}
 
+/* ============ PAGE TRANSITIONS ============ */
+.pt{position:relative}
+.pt-overlay{
+  position:fixed;inset:0;z-index:250;background:var(--pt-c,#FFB627);
+  pointer-events:none;will-change:transform,clip-path,opacity;
+  animation-duration:1.15s;animation-timing-function:cubic-bezier(.77,0,.18,1);
+  animation-fill-mode:both
+}
+
+/* Wipe right — slides left → right and exits */
+.pt-wipe-r .pt-overlay{animation-name:ptWipeR}
+@keyframes ptWipeR{
+  0%{transform:translateX(-100%)}
+  45%{transform:translateX(0)}
+  100%{transform:translateX(100%)}
+}
+
+/* Wipe left — slides right → left and exits */
+.pt-wipe-l .pt-overlay{animation-name:ptWipeL}
+@keyframes ptWipeL{
+  0%{transform:translateX(100%)}
+  45%{transform:translateX(0)}
+  100%{transform:translateX(-100%)}
+}
+
+/* Rise — bottom up wipe */
+.pt-rise .pt-overlay{animation-name:ptRise}
+@keyframes ptRise{
+  0%{transform:translateY(100%)}
+  45%{transform:translateY(0)}
+  100%{transform:translateY(-100%)}
+}
+
+/* Fall — top down wipe */
+.pt-fall .pt-overlay{animation-name:ptFall}
+@keyframes ptFall{
+  0%{transform:translateY(-100%)}
+  45%{transform:translateY(0)}
+  100%{transform:translateY(100%)}
+}
+
+/* Iris — circular reveal from center */
+.pt-iris .pt-overlay{animation-name:ptIris}
+@keyframes ptIris{
+  0%{clip-path:circle(0% at 50% 50%);opacity:1}
+  35%{clip-path:circle(140% at 50% 50%);opacity:1}
+  100%{clip-path:circle(0% at 50% 50%);opacity:0}
+}
+
+/* Diagonal — sweeps from upper-left corner */
+.pt-diagonal .pt-overlay{animation-name:ptDiag;background:linear-gradient(135deg,var(--pt-c,#FFB627) 0%,var(--pt-c,#FFB627) 50%,transparent 50%);background-size:300% 300%}
+@keyframes ptDiag{
+  0%{background-position:200% 200%}
+  45%{background-position:50% 50%}
+  100%{background-position:-150% -150%}
+}
+
+/* Curtain — two halves slide apart from center */
+.pt-curtain .pt-overlay{background:transparent;animation:none}
+.pt-curtain .pt-overlay::before,
+.pt-curtain .pt-overlay::after{
+  content:"";position:absolute;top:0;bottom:0;width:50%;
+  background:var(--pt-c,#FFB627);
+  animation-duration:1.15s;animation-timing-function:cubic-bezier(.77,0,.18,1);animation-fill-mode:both
+}
+.pt-curtain .pt-overlay::before{left:0;animation-name:ptCurtainL}
+.pt-curtain .pt-overlay::after{left:50%;animation-name:ptCurtainR}
+@keyframes ptCurtainL{
+  0%{transform:translateX(-100%)}
+  40%{transform:translateX(0)}
+  100%{transform:translateX(-100%)}
+}
+@keyframes ptCurtainR{
+  0%{transform:translateX(100%)}
+  40%{transform:translateX(0)}
+  100%{transform:translateX(100%)}
+}
+
+/* Blocks — mosaic of color cells reveal */
+.pt-overlay-blocks{
+  position:fixed;inset:0;z-index:250;pointer-events:none;
+  display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(4,1fr)
+}
+.pt-block{
+  display:block;background:var(--pt-c,#FFB627);
+  animation:ptBlock 1.25s cubic-bezier(.77,0,.18,1) both
+}
+@keyframes ptBlock{
+  0%{transform:scaleY(0);transform-origin:top}
+  35%{transform:scaleY(1);transform-origin:top}
+  55%{transform:scaleY(1);transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom}
+}
+/* Multi-color block mosaic — cycles through brand palette per cell */
+.pt-blocks-multi .pt-block:nth-child(4n+1){background:var(--amber)}
+.pt-blocks-multi .pt-block:nth-child(4n+2){background:var(--emerald)}
+.pt-blocks-multi .pt-block:nth-child(4n+3){background:var(--azure)}
+.pt-blocks-multi .pt-block:nth-child(4n){background:var(--coral)}
+
 /* RESPONSIVE */
 @media(max-width:960px){
   .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:var(--white);flex-direction:column;padding:24px 32px;gap:20px;border-bottom:1px solid var(--gray-200)}

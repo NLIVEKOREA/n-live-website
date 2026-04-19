@@ -3,6 +3,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useLang } from "@/components/LangContext";
 import ContactForm from "@/components/ContactForm";
+import PageEnter from "@/components/PageEnter";
 
 function ContactInner() {
   const { t } = useLang();
@@ -10,7 +11,7 @@ function ContactInner() {
   const defaultType = params.get("type") || "general";
 
   return (
-    <>
+    <PageEnter variant="fall" color="#FFB627">
       <section className="page-hero">
         <div className="container page-hero-inner">
           <div className="breadcrumb">CONTACT · 문의</div>
@@ -42,7 +43,7 @@ function ContactInner() {
           </div>
         </div>
       </section>
-    </>
+    </PageEnter>
   );
 }
 
