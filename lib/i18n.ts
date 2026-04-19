@@ -28,8 +28,8 @@ export const MESSAGES: Messages = {
     "footer.email": "이메일",
 
     "hero.eyebrow": "Brand × Seller · Live Commerce Agency",
-    "hero.title.1": "브랜드와 셀러가 만나는,",
-    "hero.title.2": "가장 확실한 방법.",
+    "hero.title.1": "브랜드와 셀러가 만나는",
+    "hero.title.2": "가장 확실한 방법",
     "hero.tag.1": "한국 브랜드",
     "hero.tag.2": "해외 브랜드",
     "hero.tag.3": "한국 셀러·인플루언서",
@@ -86,7 +86,7 @@ export const MESSAGES: Messages = {
 
     "hero.eyebrow": "Brand × Seller · Live Commerce Agency",
     "hero.title.1": "The most reliable way",
-    "hero.title.2": "for brands and sellers to meet.",
+    "hero.title.2": "for brands and sellers to meet",
     "hero.tag.1": "Korean Brands",
     "hero.tag.2": "Overseas Brands",
     "hero.tag.3": "Korean Sellers · Influencers",
@@ -142,8 +142,8 @@ export const MESSAGES: Messages = {
     "footer.email": "邮箱",
 
     "hero.eyebrow": "品牌 × 卖家 · 直播电商代理",
-    "hero.title.1": "品牌与卖家相遇,",
-    "hero.title.2": "最确定的方式。",
+    "hero.title.1": "品牌与卖家相遇",
+    "hero.title.2": "最确定的方式",
     "hero.tag.1": "韩国品牌",
     "hero.tag.2": "海外品牌",
     "hero.tag.3": "韩国卖家 · 达人",
@@ -199,8 +199,8 @@ export const MESSAGES: Messages = {
     "footer.email": "メール",
 
     "hero.eyebrow": "ブランド × セラー · ライブコマースエージェンシー",
-    "hero.title.1": "ブランドとセラーが出会う、",
-    "hero.title.2": "最も確実な方法。",
+    "hero.title.1": "ブランドとセラーが出会う",
+    "hero.title.2": "最も確実な方法",
     "hero.tag.1": "韓国ブランド",
     "hero.tag.2": "海外ブランド",
     "hero.tag.3": "韓国セラー · インフルエンサー",

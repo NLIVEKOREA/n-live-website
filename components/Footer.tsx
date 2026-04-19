@@ -37,7 +37,7 @@ export default function Footer() {
 
         <div className="footer-info">
           <div><span className="info-label">{t("footer.company")}</span><span>엔라이브 (N-Live / 恩联)</span></div>
-          <div><span className="info-label">{t("footer.ceo")}</span><span>황영식</span></div>
+          <div><span className="info-label">{t("footer.ceo")}</span><span>나영식</span></div>
           <div><span className="info-label">{t("footer.bizno")}</span><span>235-17-02223</span></div>
           <div><span className="info-label">{t("footer.address")}</span><span>인천광역시 계양구 경명대로 1151, 301호 (임학동 · 임학빌딩)</span></div>
           <div><span className="info-label">{t("footer.email")}</span><span>won4646@naver.com</span></div>

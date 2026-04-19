@@ -66,7 +66,7 @@ export default function TermsPage() {
             <p>본 약관은 2026년 4월 19일부터 시행됩니다.</p>
 
             <p className="legal-meta">엔라이브 (N-LIVE / 恩联)<br />
-            대표자: 황영식 · 사업자번호: 235-17-02223<br />
+            대표자: 나영식 · 사업자번호: 235-17-02223<br />
             인천광역시 계양구 경명대로 1151, 301호<br />
             won4646@naver.com</p>
           </article>

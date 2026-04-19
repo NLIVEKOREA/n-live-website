@@ -66,7 +66,7 @@ export default function PrivacyPage() {
             <h2>제8조 개인정보 보호책임자</h2>
             <p>회사는 개인정보 처리에 관한 업무를 총괄하여 책임지고, 개인정보 처리와 관련된 이용자의 불만 처리 및 피해 구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
             <ul>
-              <li><strong>개인정보 보호책임자:</strong> 황영식</li>
+              <li><strong>개인정보 보호책임자:</strong> 나영식</li>
               <li><strong>이메일:</strong> won4646@naver.com</li>
               <li><strong>주소:</strong> 인천광역시 계양구 경명대로 1151, 301호</li>
             </ul>
