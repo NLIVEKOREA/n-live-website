@@ -1275,6 +1275,38 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 .role-change-btn:hover{border-color:var(--gray-400);color:var(--black);background:var(--gray-50)}
 
 /* ═══════════════════════════════════════════════════════
+   PURPOSE HUB — "무엇을 원하시나요?" 허브
+   ═══════════════════════════════════════════════════════ */
+.purpose-hub{padding:100px 0 80px;background:var(--gray-50)}
+.purpose-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray-200);border:1px solid var(--gray-200);margin-top:48px}
+.purpose-card{background:var(--white);padding:32px 28px;display:flex;gap:20px;align-items:flex-start;text-decoration:none;color:inherit;transition:all .35s ease;position:relative;overflow:hidden}
+.purpose-card::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--black);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.7,0,.2,1)}
+.purpose-card:hover{background:var(--gray-50)}
+.purpose-card:hover::after{transform:scaleX(1)}
+.pc-num{font-family:var(--display);font-size:32px;font-weight:800;color:var(--gray-200);letter-spacing:-.04em;line-height:1;flex-shrink:0;min-width:40px}
+.purpose-card:hover .pc-num{color:var(--gray-400)}
+.pc-body{flex:1}
+.pc-title{font-size:17px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;color:var(--black)}
+.pc-desc{font-size:14px;color:var(--gray-600);line-height:1.6;margin-bottom:12px}
+.pc-cta{font-size:13px;font-weight:600;color:var(--black);letter-spacing:-.01em;opacity:.6;transition:opacity .25s}
+.purpose-card:hover .pc-cta{opacity:1}
+
+/* ═══════════════════════════════════════════════════════
+   FAQ ACCORDION
+   ═══════════════════════════════════════════════════════ */
+.role-faq{padding:100px 0;background:var(--gray-50)}
+.faq-list{max-width:800px;margin:48px auto 0}
+.faq-item{border-bottom:1px solid var(--gray-200)}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;padding:24px 0;font-size:17px;font-weight:600;letter-spacing:-.02em;color:var(--black);text-align:left;cursor:pointer;transition:color .25s}
+.faq-q:hover{color:var(--gray-600)}
+.faq-toggle{font-size:22px;font-weight:300;color:var(--gray-400);flex-shrink:0;margin-left:16px}
+.faq-a{padding:0 0 24px;animation:faqFadeIn .3s ease}
+.faq-a p{font-size:15px;color:var(--gray-600);line-height:1.7}
+.faq-open .faq-q{color:var(--black)}
+.faq-open .faq-toggle{color:var(--black)}
+@keyframes faqFadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════════════════════
    ROLE FEATURES GRID (audience 보충)
    ═══════════════════════════════════════════════════════ */
 .role-features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--gray-200);border:1px solid var(--gray-200);margin-top:48px;max-width:800px;margin-left:auto;margin-right:auto}
@@ -1317,17 +1349,27 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 
 /* Mobile overrides for compact layouts */
 @media(max-width:768px){
+  .purpose-grid{grid-template-columns:1fr 1fr}
   .role-features-grid{grid-template-columns:1fr}
   .trust-proof-strip{flex-direction:column;gap:16px;align-items:flex-start;padding:20px 24px}
   .kps-grid{grid-template-columns:1fr}
   .case-insight{padding:28px 24px}
   .ci-quote{font-size:16px}
+  .faq-q{font-size:15px}
 }
 @media(max-width:600px){
   .audience-card-featured{min-height:320px}
   .audience-card-featured .aud-content{padding:28px 20px}
   .metrics-grid-compact{grid-template-columns:1fr!important;gap:20px}
   .case-highlight-grid-compact{grid-template-columns:1fr!important;gap:16px}
+  .purpose-grid{grid-template-columns:1fr}
+  .purpose-card{padding:24px 20px;gap:14px}
+  .pc-num{font-size:24px;min-width:32px}
+  .pc-title{font-size:15px}
+  .purpose-hub{padding:72px 0 60px}
+  .role-faq{padding:72px 0}
+  .faq-q{font-size:14px;padding:20px 0}
+  .faq-a p{font-size:14px}
   .role-feature-card{padding:24px 20px;gap:14px}
   .rf-num{font-size:22px;min-width:28px}
   .rf-title{font-size:15px}

@@ -20,6 +20,7 @@ export default function HomePage() {
   const [role, setRole] = useState<Role | null>(null);
   const [showSelector, setShowSelector] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const selectRole = (r: Role) => {
     setFadeOut(true);
@@ -41,28 +42,28 @@ export default function HomePage() {
   // ═══════════════════════════════════════════════════════
   const ROLE_HERO: Record<Role, Record<Lang, { title1: string; title2: string; sub: string; cta1: string; cta2: string }>> = {
     "korean-brand": {
-      ko: { title1: "당신의 브랜드를", title2: "중국 라이브에 올립니다", sub: "왕홍 500+ 매칭 · 더우인·샤오홍슈·타오바오 라이브 운영 · 통관·정산·CS까지 — 원스톱.", cta1: "중국 진출 상담 시작", cta2: "서비스 상세 보기" },
-      en: { title1: "Put your brand", title2: "on China's live stream", sub: "500+ KOL matching · Douyin/Xiaohongshu/Taobao live ops · customs, settlement, CS — all-in-one.", cta1: "Start China entry consultation", cta2: "See service details" },
-      zh: { title1: "把您的品牌", title2: "搬上中国直播间", sub: "500+ 达人匹配 · 抖音/小红书/淘宝直播运营 · 通关/结算/客服 — 一站式服务。", cta1: "开始中国市场咨询", cta2: "查看服务详情" },
-      ja: { title1: "あなたのブランドを", title2: "中国ライブに載せます", sub: "500+ KOLマッチング · 抖音/小紅書/淘宝ライブ運営 · 通関・精算・CSまでワンストップ。", cta1: "中国進出相談を始める", cta2: "サービス詳細を見る" },
+      ko: { title1: "왕홍 매칭부터 채널 운영, 라이브, 통관까지", title2: "중국 시장의 모든 루트를 연결합니다", sub: "왕홍 500+ 매칭 · 더우인/샤오홍슈/타오바오 채널 운영 · 라이브 실행 · 통관/인증/CS · 콘텐츠 현지화 · 셀러 역공급까지 — 한 팀이 실행합니다.", cta1: "우리 브랜드에 맞는 옵션 찾기 →", cta2: "전체 서비스 한눈에 보기" },
+      en: { title1: "KOL matching, channel ops, live, customs", title2: "every route to the China market", sub: "500+ KOL matching · Douyin/Xiaohongshu/Taobao channel ops · live execution · customs/certification/CS · content localization · seller supply — one team does it all.", cta1: "Find the right options for us →", cta2: "See all services at a glance" },
+      zh: { title1: "达人匹配、渠道运营、直播、通关", title2: "连接中国市场的所有通路", sub: "500+达人匹配 · 抖音/小红书/淘宝渠道运营 · 直播执行 · 通关/认证/客服 · 内容本地化 · 卖家供货 — 一个团队全程执行。", cta1: "找到适合我们品牌的方案 →", cta2: "一览全部服务" },
+      ja: { title1: "KOLマッチングからチャネル運営、ライブ、通関まで", title2: "中国市場のすべてのルートを繋ぎます", sub: "500+KOLマッチング · 抖音/小紅書/淘宝チャネル運営 · ライブ実行 · 通関/認証/CS · コンテンツ現地化 · セラー供給 — ワンチームで実行。", cta1: "自社に合うオプションを探す →", cta2: "全サービスを一覧で見る" },
     },
     "korean-seller": {
-      ko: { title1: "해외 브랜드 직공급 ×", title2: "왕홍 콜라보 라이브", sub: "브랜드 소싱 · 왕홍 콜라보 기획 · 한중 이중 콘텐츠 · 크로스보더 정산·물류까지 풀세트 지원.", cta1: "셀러 전용 상담 시작", cta2: "셀러 서비스 보기" },
-      en: { title1: "Direct brand supply ×", title2: "KOL collab live", sub: "Brand sourcing · KOL collab planning · KR-CN dual content · cross-border settlement & logistics — full stack.", cta1: "Start seller consultation", cta2: "See seller services" },
-      zh: { title1: "海外品牌直供 ×", title2: "达人联名直播", sub: "品牌货源 · 达人联名企划 · 中韩双语内容 · 跨境结算物流 — 全栈支持。", cta1: "开始卖家专属咨询", cta2: "查看卖家服务" },
-      ja: { title1: "海外ブランド直供給 ×", title2: "KOLコラボライブ", sub: "ブランドソーシング · KOLコラボ企画 · 韓中デュアルコンテンツ · クロスボーダー精算・物流までフルサポート。", cta1: "セラー専用相談を始める", cta2: "セラーサービスを見る" },
+      ko: { title1: "브랜드 소싱, 왕홍 콜라보, 해외 확장, 광고 협업", title2: "당신의 채널을 성장시킬 모든 옵션", sub: "해외 브랜드 직공급 · 왕홍 콜라보 라이브 · 해외 채널 확장 · 브랜디드 광고 수주 · 물류/정산 · 연예인 게스트 — 셀러 수익 다변화를 위한 모든 루트.", cta1: "내 채널에 맞는 옵션 찾기 →", cta2: "공급 가능 브랜드 보기" },
+      en: { title1: "Brand sourcing, KOL collabs, overseas expansion", title2: "every option to grow your channel", sub: "Direct brand supply · KOL collab lives · overseas channel expansion · branded ad deals · logistics/settlement · celebrity guests — every route for seller growth.", cta1: "Find options for my channel →", cta2: "See available brands" },
+      zh: { title1: "品牌货源、达人联名、海外扩张、广告合作", title2: "助您频道成长的所有选项", sub: "海外品牌直供 · 达人联名直播 · 海外渠道扩展 · 品牌广告合作 · 物流/结算 · 艺人嘉宾 — 卖家收益多元化的所有通路。", cta1: "查找适合我频道的方案 →", cta2: "查看可供品牌" },
+      ja: { title1: "ブランドソーシング、KOLコラボ、海外展開、広告協業", title2: "あなたのチャネルを成長させるすべてのオプション", sub: "海外ブランド直供給 · KOLコラボライブ · 海外チャネル拡張 · ブランド広告 · 物流/精算 · 芸能人ゲスト — セラー収益多角化のすべて。", cta1: "自分のチャネルに合うオプションを探す →", cta2: "供給可能ブランドを見る" },
     },
     "overseas-brand": {
-      ko: { title1: "한국 셀러브리티 100+", title2: "당신의 브랜드와 연결합니다", sub: "연예인 매칭 · KOL 캠페인 · 한국 라이브 플랫폼 운영 · 드라마 PPL까지 — 한국 시장 진출의 모든 채널.", cta1: "한국 진출 상담 시작", cta2: "서비스 상세 보기" },
-      en: { title1: "100+ Korean celebrities", title2: "connected to your brand", sub: "Celebrity matching · KOL campaigns · Korean live platform ops · drama PPL — every channel for Korean market entry.", cta1: "Start Korea entry consultation", cta2: "See service details" },
-      zh: { title1: "100+ 韩国明星", title2: "与您的品牌连接", sub: "艺人匹配 · KOL营销 · 韩国直播平台运营 · 电视剧PPL — 进入韩国市场的所有渠道。", cta1: "开始韩国市场咨询", cta2: "查看服务详情" },
-      ja: { title1: "韓国セレブリティ100+", title2: "あなたのブランドと繋ぎます", sub: "芸能人マッチング · KOLキャンペーン · 韓国ライブプラットフォーム運営 · ドラマPPLまで — 韓国市場参入のすべて。", cta1: "韓国進出相談を始める", cta2: "サービス詳細を見る" },
+      ko: { title1: "제품 소싱, 셀러 위탁, 연예인 마케팅, 라이브 진출", title2: "한국 시장의 모든 자원을 연결합니다", sub: "K-Beauty/K-Fashion 소싱 · 한국 셀러 판매 위탁 · 연예인 100+/KOL 200+ 마케팅 · 라이브 플랫폼 진출 · 드라마 PPL · 현지 파트너 — 원스톱 실행.", cta1: "우리에게 맞는 한국 진출 옵션 찾기 →", cta2: "K-브랜드 소싱 리스트 요청" },
+      en: { title1: "Product sourcing, seller delegation, celebrity marketing", title2: "every resource in the Korean market", sub: "K-Beauty/K-Fashion sourcing · Korean seller delegation · 100+ celebrity/200+ KOL marketing · live platform entry · drama PPL · local partners — all-in-one.", cta1: "Find Korea entry options for us →", cta2: "Request K-brand sourcing list" },
+      zh: { title1: "产品采购、卖家代销、艺人营销、直播进驻", title2: "连接韩国市场的所有资源", sub: "K-Beauty/K-Fashion采购 · 韩国卖家代销 · 100+艺人/200+KOL营销 · 直播平台进驻 · 电视剧PPL · 本地合作伙伴 — 一站式执行。", cta1: "找到适合我们的韩国进入方案 →", cta2: "请求K-品牌采购清单" },
+      ja: { title1: "商品ソーシング、セラー委託、芸能人マーケティング", title2: "韓国市場のすべてのリソースを繋ぎます", sub: "K-Beauty/K-Fashionソーシング · 韓国セラー販売委託 · 100+芸能人/200+KOLマーケティング · ライブ進出 · ドラマPPL · 現地パートナー — ワンストップ。", cta1: "韓国進出オプションを探す →", cta2: "K-ブランドソーシングリスト請求" },
     },
     "overseas-seller": {
-      ko: { title1: "K-Beauty · K-Fashion", title2: "직공급 + 한국 현지 지원", sub: "한국 브랜드 소싱 · 현지 촬영 지원 · 한국 연예인 게스트 연결 · 크로스보더 물류까지.", cta1: "왕홍 전용 상담 시작", cta2: "왕홍 서비스 보기" },
-      en: { title1: "K-Beauty · K-Fashion", title2: "direct supply + Korea support", sub: "Korean brand sourcing · on-site filming support · Korean celebrity guest matching · cross-border logistics.", cta1: "Start KOL consultation", cta2: "See KOL services" },
-      zh: { title1: "K-Beauty · K-Fashion", title2: "直供 + 韩国本地支持", sub: "韩国品牌货源 · 韩国本地拍摄支持 · 韩国艺人嘉宾对接 · 跨境物流全覆盖。", cta1: "开始达人专属咨询", cta2: "查看达人服务" },
-      ja: { title1: "K-Beauty · K-Fashion", title2: "直供給 + 韓国現地サポート", sub: "韓国ブランドソーシング · 現地撮影サポート · 韓国芸能人ゲスト連結 · クロスボーダー物流まで。", cta1: "KOL専用相談を始める", cta2: "KOLサービスを見る" },
+      ko: { title1: "K-브랜드 직공급, 셀러 콜라보, 연예인 게스트, 서울 촬영", title2: "한국에서 가능한 모든 협업을 연결합니다", sub: "K-Beauty/K-Fashion 직공급 · 한국 셀러 콜라보 · 연예인/인플루언서 게스트 · 서울 촬영 · 광고/캠페인 수주 · 물류 — 원스톱 지원.", cta1: "나에게 맞는 협업 옵션 찾기 →", cta2: "K-브랜드 직공급 리스트 요청" },
+      en: { title1: "K-brand supply, seller collabs, celebrity guests, Seoul filming", title2: "every collaboration possible in Korea", sub: "K-Beauty/K-Fashion direct supply · Korean seller collabs · celebrity/influencer guests · Seoul filming · ad/campaign deals · logistics — all-in-one.", cta1: "Find collaboration options for me →", cta2: "Request K-brand supply list" },
+      zh: { title1: "K-品牌直供、卖家联名、艺人嘉宾、首尔拍摄", title2: "连接在韩国可能的所有合作", sub: "K-Beauty/K-Fashion直供 · 韩国卖家联名 · 艺人/达人嘉宾 · 首尔拍摄 · 广告/营销合作 · 物流 — 一站式支持。", cta1: "查找适合我的合作方案 →", cta2: "请求K-品牌直供清单" },
+      ja: { title1: "K-ブランド直供給、セラーコラボ、芸能人ゲスト、ソウル撮影", title2: "韓国で可能なすべてのコラボを繋ぎます", sub: "K-Beauty/K-Fashion直供給 · 韓国セラーコラボ · 芸能人/インフルエンサーゲスト · ソウル撮影 · 広告/キャンペーン · 物流 — ワンストップ。", cta1: "自分に合うコラボオプションを探す →", cta2: "K-ブランド直供給リスト請求" },
     },
   };
 
@@ -294,28 +295,28 @@ export default function HomePage() {
   // ═══════════════════════════════════════════════════════
   const ROLE_FINAL_CTA: Record<Role, Record<Lang, { h: string; sub: string; btn1: string; btn2: string }>> = {
     "korean-brand": {
-      ko: { h: "중국 라이브커머스, 지금 테스트해보세요", sub: "첫 미팅 무료, 트라이얼 1회 가능. 왕홍 매칭부터 라이브 운영까지 한 팀이 실행합니다.", btn1: "왕홍 매칭 상담 시작 →", btn2: "맞춤 제안서 요청 →" },
-      en: { h: "Test China live commerce now", sub: "First meeting free, trial available. One team from KOL matching to live ops.", btn1: "Start KOL matching consultation →", btn2: "Request custom proposal →" },
-      zh: { h: "现在就测试中国直播电商", sub: "首次会议免费，可试播一次。从达人匹配到直播运营，一个团队执行。", btn1: "开始达人匹配咨询 →", btn2: "请求定制方案 →" },
-      ja: { h: "中国ライブコマース、今テストしてみませんか", sub: "初回ミーティング無料、トライアル可能。KOLマッチングからライブ運営まで一つのチームが実行。", btn1: "KOLマッチング相談開始 →", btn2: "カスタム提案書リクエスト →" },
+      ko: { h: "중국 시장, 어떤 루트든 지금 시작하세요", sub: "왕홍 매칭, 채널 운영, 라이브 실행, 통관/CS, 콘텐츠 현지화 — 필요한 옵션만 골라 시작할 수 있습니다. 첫 미팅 무료.", btn1: "우리 브랜드에 맞는 왕홍 후보 보기 →", btn2: "중국 시장 무료 전략 미팅 예약 →" },
+      en: { h: "China market — start any route now", sub: "KOL matching, channel ops, live execution, customs/CS, content — pick what you need. First meeting free.", btn1: "See KOL candidates for our brand →", btn2: "Book free China strategy meeting →" },
+      zh: { h: "中国市场，现在就开始任何通路", sub: "达人匹配、渠道运营、直播执行、通关/客服、内容 — 选择您需要的即可开始。首次会议免费。", btn1: "查看适合我们品牌的达人候选 →", btn2: "预约免费中国市场战略会议 →" },
+      ja: { h: "中国市場、どのルートでも今すぐ開始", sub: "KOLマッチング、チャネル運営、ライブ実行、通関/CS、コンテンツ — 必要なオプションだけ選んで開始。初回MTG無料。", btn1: "自社に合うKOL候補を見る →", btn2: "中国市場無料戦略MTG予約 →" },
     },
     "korean-seller": {
-      ko: { h: "해외 브랜드 소싱 + 왕홍 콜라보, 지금 시작하세요", sub: "직공급 브랜드 리스트와 왕홍 콜라보 기회를 무료 미팅에서 확인하세요.", btn1: "셀러 전용 상담 시작 →", btn2: "공급 가능 브랜드 문의 →" },
-      en: { h: "Start global brand sourcing + KOL collabs now", sub: "See direct supply brand lists and collab opportunities in a free meeting.", btn1: "Start seller consultation →", btn2: "Inquire about available brands →" },
-      zh: { h: "海外品牌货源 + 达人联名，现在开始", sub: "在免费会议中查看直供品牌清单和联名机会。", btn1: "开始卖家专属咨询 →", btn2: "咨询可供品牌 →" },
-      ja: { h: "海外ブランドソーシング + KOLコラボ、今始めましょう", sub: "直供給ブランドリストとコラボ機会を無料ミーティングで確認。", btn1: "セラー専用相談開始 →", btn2: "供給可能ブランドお問い合わせ →" },
+      ko: { h: "브랜드 소싱부터 해외 확장까지, 지금 시작하세요", sub: "직공급 브랜드, 왕홍 콜라보, 해외 채널, 광고 협업, 운영 지원 — 필요한 옵션을 골라 시작하세요. 첫 미팅 무료.", btn1: "내 채널에 맞는 공급 브랜드 보기 →", btn2: "셀러 전용 무료 미팅 예약 →" },
+      en: { h: "From brand sourcing to overseas expansion — start now", sub: "Direct supply, KOL collabs, overseas channels, ad deals, ops support — pick what you need. First meeting free.", btn1: "See supply brands for my channel →", btn2: "Book free seller meeting →" },
+      zh: { h: "从品牌货源到海外扩展，现在就开始", sub: "直供品牌、达人联名、海外渠道、广告合作、运营支持 — 选择所需即可开始。首次会议免费。", btn1: "查看适合我频道的供货品牌 →", btn2: "预约卖家专属免费会议 →" },
+      ja: { h: "ブランドソーシングから海外展開まで、今始めましょう", sub: "直供給、KOLコラボ、海外チャネル、広告協業、運営サポート — 必要なものを選んで開始。初回MTG無料。", btn1: "自分のチャネルに合う供給ブランドを見る →", btn2: "セラー専用無料MTG予約 →" },
     },
     "overseas-brand": {
-      ko: { h: "한국 셀러브리티 × 당신의 브랜드, 가능성을 확인하세요", sub: "연예인 100+, KOL 200+ 중 최적의 후보를 제안합니다. 첫 미팅 무료.", btn1: "한국 진출 상담 시작 →", btn2: "연예인 매칭 옵션 보기 →" },
-      en: { h: "Korean celebrities × your brand — discover the possibilities", sub: "We propose optimal candidates from 100+ celebrities and 200+ KOLs. First meeting free.", btn1: "Start Korea entry consultation →", btn2: "See celebrity matching options →" },
-      zh: { h: "韩国明星 × 您的品牌，确认可能性", sub: "从100+艺人和200+KOL中推荐最佳候选。首次会议免费。", btn1: "开始韩国市场咨询 →", btn2: "查看艺人匹配选项 →" },
-      ja: { h: "韓国セレブリティ × あなたのブランド、可能性を確認", sub: "100+芸能人、200+KOLから最適な候補を提案します。初回ミーティング無料。", btn1: "韓国進出相談開始 →", btn2: "芸能人マッチングオプションを見る →" },
+      ko: { h: "한국 시장 진출, 어떤 방식이든 지금 시작하세요", sub: "제품 소싱, 셀러 위탁, 연예인 마케팅, 라이브 진출, 드라마 PPL — 필요한 옵션만 골라 시작할 수 있습니다. 첫 미팅 무료.", btn1: "우리에게 맞는 한국 진출 옵션 찾기 →", btn2: "K-브랜드 소싱 리스트 요청 →" },
+      en: { h: "Korea market entry — any approach, start now", sub: "Product sourcing, seller delegation, celebrity marketing, live entry, drama PPL — pick what you need. First meeting free.", btn1: "Find Korea entry options for us →", btn2: "Request K-brand sourcing list →" },
+      zh: { h: "韩国市场进入，任何方式现在就开始", sub: "产品采购、卖家代销、艺人营销、直播进驻、电视剧PPL — 选择所需即可开始。首次会议免费。", btn1: "找到适合我们的韩国进入方案 →", btn2: "请求K-品牌采购清单 →" },
+      ja: { h: "韓国市場進出、どの方法でも今すぐ開始", sub: "商品ソーシング、セラー委託、芸能人マーケティング、ライブ進出、ドラマPPL — 必要なオプションだけ選んで開始。初回MTG無料。", btn1: "韓国進出オプションを探す →", btn2: "K-ブランドソーシングリスト請求 →" },
     },
     "overseas-seller": {
-      ko: { h: "K-뷰티 · K-패션 직공급, 한국에서 시작하세요", sub: "150+ 검증 브랜드 직공급 + 한국 현지 촬영 지원 + 연예인 게스트 연결.", btn1: "왕홍 전용 상담 시작 →", btn2: "K-브랜드 직공급 문의 →" },
-      en: { h: "K-Beauty · K-Fashion direct supply, start from Korea", sub: "150+ verified brand direct supply + Korea filming support + celebrity guest matching.", btn1: "Start KOL consultation →", btn2: "Inquire about K-brand supply →" },
-      zh: { h: "K-Beauty · K-Fashion直供，从韩国开始", sub: "150+经验证品牌直供 + 韩国本地拍摄支持 + 艺人嘉宾对接。", btn1: "开始达人专属咨询 →", btn2: "咨询K-品牌直供 →" },
-      ja: { h: "K-Beauty · K-Fashion直供給、韓国からスタート", sub: "150+検証済みブランド直供給 + 韓国現地撮影サポート + 芸能人ゲスト連結。", btn1: "KOL専用相談開始 →", btn2: "K-ブランド直供給お問い合わせ →" },
+      ko: { h: "한국에서 가능한 모든 협업, 지금 시작하세요", sub: "K-브랜드 직공급, 셀러 콜라보, 연예인 게스트, 서울 촬영, 광고 수주 — 필요한 옵션을 골라 시작하세요. 첫 미팅 무료.", btn1: "K-브랜드 직공급 리스트 요청 →", btn2: "나에게 맞는 협업 옵션 찾기 →" },
+      en: { h: "Every collaboration in Korea — start now", sub: "K-brand supply, seller collabs, celebrity guests, Seoul filming, ad deals — pick what you need. First meeting free.", btn1: "Request K-brand supply list →", btn2: "Find collaboration options for me →" },
+      zh: { h: "在韩国可能的所有合作，现在就开始", sub: "K-品牌直供、卖家联名、艺人嘉宾、首尔拍摄、广告合作 — 选择所需即可开始。首次会议免费。", btn1: "请求K-品牌直供清单 →", btn2: "查找适合我的合作方案 →" },
+      ja: { h: "韓国で可能なすべてのコラボ、今すぐ開始", sub: "K-ブランド直供給、セラーコラボ、芸能人ゲスト、ソウル撮影、広告受注 — 必要なものを選んで開始。初回MTG無料。", btn1: "K-ブランド直供給リスト請求 →", btn2: "自分に合うコラボオプションを探す →" },
     },
   };
 
@@ -518,6 +519,276 @@ export default function HomePage() {
   };
 
   // ═══════════════════════════════════════════════════════
+  // ROLE-SPECIFIC PURPOSE CARDS ("무엇을 원하시나요?" 허브)
+  // ═══════════════════════════════════════════════════════
+  type PurposeCard = { t: string; d: string; cta: string; anchor: string };
+  const ROLE_PURPOSES: Record<Role, Record<Lang, PurposeCard[]>> = {
+    "korean-brand": {
+      ko: [
+        { t: "왕홍 매칭 · 라이브 판매", d: "내 브랜드에 맞는 왕홍을 찾고, 라이브 판매까지 실행", cta: "왕홍 후보 보기 →", anchor: "#services" },
+        { t: "중국 채널 운영", d: "더우인 · 샤오홍슈 · 타오바오 숍 개설부터 광고까지", cta: "채널 전략 상담 →", anchor: "/contact" },
+        { t: "라이브커머스 풀 실행", d: "기획 → 스크립트 → 방송 → 리포트, 한 팀이 끝까지", cta: "라이브 견적 요청 →", anchor: "/contact" },
+        { t: "통관 · 인증 · CS · 정산", d: "NMPA 인증, 수출 통관, 중국어 CS, 위안화 정산 원스톱", cta: "물류 지원 문의 →", anchor: "/contact" },
+        { t: "중국 콘텐츠 현지화", d: "샤오홍슈 종초 · 더우인 숏클립 · 위챗 캠페인 제작", cta: "콘텐츠 샘플 보기 →", anchor: "/process" },
+        { t: "셀러/왕홍에게 역공급", d: "해외 셀러 · 왕홍에게 직공급하여 판매 채널 다변화", cta: "공급 등록 시작 →", anchor: "/contact" },
+      ],
+      en: [
+        { t: "KOL Matching & Live Sales", d: "Find the right KOL for your brand and execute live sales", cta: "See KOL candidates →", anchor: "#services" },
+        { t: "China Channel Operations", d: "Douyin · Xiaohongshu · Taobao shop setup to ads", cta: "Channel strategy →", anchor: "/contact" },
+        { t: "Live Commerce Full Execution", d: "Planning → script → broadcast → report, one team end-to-end", cta: "Request live quote →", anchor: "/contact" },
+        { t: "Customs · Certification · CS", d: "NMPA certification, export customs, Chinese CS, CNY settlement", cta: "Logistics inquiry →", anchor: "/contact" },
+        { t: "China Content Localization", d: "Xiaohongshu seeding · Douyin short clips · WeChat campaigns", cta: "See content samples →", anchor: "/process" },
+        { t: "Reverse Supply to Sellers/KOLs", d: "Supply your products to overseas sellers & KOLs to diversify channels", cta: "Start supply registration →", anchor: "/contact" },
+      ],
+      zh: [
+        { t: "达人匹配 · 直播销售", d: "为您的品牌找到合适的达人，执行直播销售", cta: "查看达人候选 →", anchor: "#services" },
+        { t: "中国渠道运营", d: "抖音 · 小红书 · 淘宝店铺开设到广告投放", cta: "渠道策略咨询 →", anchor: "/contact" },
+        { t: "直播电商全程执行", d: "企划 → 脚本 → 直播 → 报告，一个团队全程负责", cta: "请求直播报价 →", anchor: "/contact" },
+        { t: "通关 · 认证 · 客服 · 结算", d: "NMPA认证、出口通关、中文客服、人民币结算一站式", cta: "物流支持咨询 →", anchor: "/contact" },
+        { t: "中国内容本地化", d: "小红书种草 · 抖音短视频 · 微信营销内容制作", cta: "查看内容样本 →", anchor: "/process" },
+        { t: "向卖家/达人供货", d: "向海外卖家·达人直供您的产品，多元化销售渠道", cta: "开始供货注册 →", anchor: "/contact" },
+      ],
+      ja: [
+        { t: "KOLマッチング・ライブ販売", d: "ブランドに合ったKOLを見つけ、ライブ販売まで実行", cta: "KOL候補を見る →", anchor: "#services" },
+        { t: "中国チャネル運営", d: "抖音・小紅書・淘宝ショップ開設から広告まで", cta: "チャネル戦略相談 →", anchor: "/contact" },
+        { t: "ライブコマースフル実行", d: "企画→スクリプト→放送→レポート、ワンチームでエンドツーエンド", cta: "ライブ見積依頼 →", anchor: "/contact" },
+        { t: "通関・認証・CS・精算", d: "NMPA認証、輸出通関、中国語CS、人民元精算ワンストップ", cta: "物流サポート問い合わせ →", anchor: "/contact" },
+        { t: "中国コンテンツ現地化", d: "小紅書シーディング・抖音ショートクリップ・WeChatキャンペーン", cta: "コンテンツサンプルを見る →", anchor: "/process" },
+        { t: "セラー/KOLへ逆供給", d: "海外セラー・KOLに直供給して販売チャネルを多角化", cta: "供給登録開始 →", anchor: "/contact" },
+      ],
+    },
+    "korean-seller": {
+      ko: [
+        { t: "해외 브랜드 직공급", d: "중국 · 동남아 · 유럽 브랜드 제품을 직공급 조건으로 확보", cta: "공급 브랜드 보기 →", anchor: "#services" },
+        { t: "왕홍 콜라보 라이브", d: "중국 왕홍과 한중 동시 라이브, 콜라보 콘텐츠 제작", cta: "콜라보 기회 보기 →", anchor: "/contact" },
+        { t: "해외 판매 채널 확장", d: "더우인 · 타오바오 등 중국 채널 또는 동남아 플랫폼 진출", cta: "해외 진출 상담 →", anchor: "/contact" },
+        { t: "광고 · 브랜디드 협업", d: "브랜드로부터 광고/캠페인/협찬을 받아 수익 다변화", cta: "협업 제안 받기 →", anchor: "/contact" },
+        { t: "물류 · 정산 · 운영 지원", d: "크로스보더 배송, 해외 정산, 재고 관리 백오피스", cta: "운영 지원 문의 →", anchor: "/contact" },
+        { t: "연예인 게스트 섭외", d: "방송에 연예인 게스트를 초대하여 시청률 · 매출 극대화", cta: "게스트 옵션 보기 →", anchor: "/network" },
+      ],
+      en: [
+        { t: "Global Brand Direct Supply", d: "Secure products from China, SE Asia, Europe brands on direct terms", cta: "See available brands →", anchor: "#services" },
+        { t: "KOL Collab Live", d: "Joint KR-CN live with Chinese KOLs, collab content production", cta: "See collab opportunities →", anchor: "/contact" },
+        { t: "Overseas Channel Expansion", d: "Enter Douyin, Taobao or SE Asian platforms", cta: "Overseas expansion →", anchor: "/contact" },
+        { t: "Ad & Branded Collabs", d: "Receive ad/campaign/sponsorship deals to diversify revenue", cta: "Receive collab offers →", anchor: "/contact" },
+        { t: "Logistics · Settlement · Ops", d: "Cross-border shipping, overseas settlement, inventory management", cta: "Ops support inquiry →", anchor: "/contact" },
+        { t: "Celebrity Guest Booking", d: "Invite celebrity guests to boost viewership & revenue", cta: "See guest options →", anchor: "/network" },
+      ],
+      zh: [
+        { t: "海外品牌直供", d: "以直供条件获取中国·东南亚·欧洲品牌产品", cta: "查看可供品牌 →", anchor: "#services" },
+        { t: "达人联名直播", d: "与中国达人中韩同步直播，联名内容制作", cta: "查看联名机会 →", anchor: "/contact" },
+        { t: "海外销售渠道扩展", d: "进入抖音·淘宝等中国渠道或东南亚平台", cta: "海外扩展咨询 →", anchor: "/contact" },
+        { t: "广告·品牌合作", d: "接收品牌广告/营销/赞助，实现收益多元化", cta: "接收合作提案 →", anchor: "/contact" },
+        { t: "物流·结算·运营支持", d: "跨境配送、海外结算、库存管理后台", cta: "运营支持咨询 →", anchor: "/contact" },
+        { t: "艺人嘉宾邀约", d: "邀请艺人嘉宾提升观看量和销售额", cta: "查看嘉宾选项 →", anchor: "/network" },
+      ],
+      ja: [
+        { t: "海外ブランド直供給", d: "中国・東南アジア・欧州ブランド商品を直供給条件で確保", cta: "供給ブランドを見る →", anchor: "#services" },
+        { t: "KOLコラボライブ", d: "中国KOLと韓中同時ライブ、コラボコンテンツ制作", cta: "コラボ機会を見る →", anchor: "/contact" },
+        { t: "海外販売チャネル拡張", d: "抖音・淘宝等の中国チャネルや東南アジアプラットフォーム進出", cta: "海外展開相談 →", anchor: "/contact" },
+        { t: "広告・ブランドコラボ", d: "ブランドから広告/キャンペーン/協賛を受けて収益多角化", cta: "コラボ提案を受ける →", anchor: "/contact" },
+        { t: "物流・精算・運営サポート", d: "クロスボーダー配送、海外精算、在庫管理バックオフィス", cta: "運営サポート問い合わせ →", anchor: "/contact" },
+        { t: "芸能人ゲストブッキング", d: "放送に芸能人ゲストを招待して視聴率・売上最大化", cta: "ゲストオプションを見る →", anchor: "/network" },
+      ],
+    },
+    "overseas-brand": {
+      ko: [
+        { t: "한국 제품 소싱 · 직공급", d: "K-Beauty · K-Fashion · K-Food 검증된 제품을 직접 소싱", cta: "소싱 리스트 요청 →", anchor: "#k-product" },
+        { t: "한국 셀러 판매 위탁", d: "한국 전문 셀러에게 라이브 판매를 맡겨 한국 소비자 도달", cta: "셀러 매칭 상담 →", anchor: "/contact" },
+        { t: "연예인 · KOL 마케팅", d: "배우 · K-POP · 인플루언서 앰배서더, 협찬, PPL 집행", cta: "연예인 후보 보기 →", anchor: "/network" },
+        { t: "한국 라이브 플랫폼 진출", d: "네이버 · 쿠팡 · 그립 등 한국 라이브 플랫폼 숍 운영", cta: "플랫폼 전략 상담 →", anchor: "/contact" },
+        { t: "한국 콘텐츠 · 드라마 PPL", d: "한국 로케이션 촬영, 드라마/예능 PPL, SNS 캠페인", cta: "PPL 옵션 보기 →", anchor: "/contact" },
+        { t: "한국 현지 파트너 연결", d: "물류 · 운영 · 법률 · 마케팅 현지 실행 파트너 연결", cta: "파트너 소개 요청 →", anchor: "/contact" },
+      ],
+      en: [
+        { t: "Korean Product Sourcing", d: "Directly source verified K-Beauty · K-Fashion · K-Food products", cta: "Request sourcing list →", anchor: "#k-product" },
+        { t: "Korean Seller Delegation", d: "Delegate live sales to Korean pro sellers to reach Korean consumers", cta: "Seller matching →", anchor: "/contact" },
+        { t: "Celebrity · KOL Marketing", d: "Actor · K-POP · influencer ambassadors, sponsorship, PPL", cta: "See celebrity candidates →", anchor: "/network" },
+        { t: "Korean Live Platform Entry", d: "Naver · Coupang · Grip live platform shop operations", cta: "Platform strategy →", anchor: "/contact" },
+        { t: "Korean Content · Drama PPL", d: "Korean location filming, drama/variety PPL, SNS campaigns", cta: "See PPL options →", anchor: "/contact" },
+        { t: "Korean Local Partners", d: "Logistics · ops · legal · marketing local execution partners", cta: "Request partner intro →", anchor: "/contact" },
+      ],
+      zh: [
+        { t: "韩国产品采购 · 直供", d: "直接采购经验证的K-Beauty · K-Fashion · K-Food产品", cta: "请求采购清单 →", anchor: "#k-product" },
+        { t: "韩国卖家代销", d: "委托韩国专业卖家进行直播销售，触达韩国消费者", cta: "卖家匹配咨询 →", anchor: "/contact" },
+        { t: "艺人 · KOL营销", d: "演员 · K-POP · 达人代言、赞助、PPL执行", cta: "查看艺人候选 →", anchor: "/network" },
+        { t: "韩国直播平台进驻", d: "Naver · Coupang · Grip等韩国直播平台店铺运营", cta: "平台策略咨询 →", anchor: "/contact" },
+        { t: "韩国内容 · 电视剧PPL", d: "韩国外景拍摄、韩剧/综艺PPL、SNS营销", cta: "查看PPL选项 →", anchor: "/contact" },
+        { t: "韩国本地合作伙伴", d: "物流·运营·法务·营销本地执行伙伴对接", cta: "请求伙伴介绍 →", anchor: "/contact" },
+      ],
+      ja: [
+        { t: "韓国商品ソーシング・直供給", d: "検証済みK-Beauty・K-Fashion・K-Food商品を直接ソーシング", cta: "ソーシングリスト請求 →", anchor: "#k-product" },
+        { t: "韓国セラー販売委託", d: "韓国プロセラーにライブ販売を委託、韓国消費者にリーチ", cta: "セラーマッチング相談 →", anchor: "/contact" },
+        { t: "芸能人・KOLマーケティング", d: "俳優・K-POP・インフルエンサーアンバサダー、協賛、PPL", cta: "芸能人候補を見る →", anchor: "/network" },
+        { t: "韓国ライブプラットフォーム進出", d: "Naver・Coupang・Gripライブプラットフォームショップ運営", cta: "プラットフォーム戦略相談 →", anchor: "/contact" },
+        { t: "韓国コンテンツ・ドラマPPL", d: "韓国ロケ撮影、ドラマ/バラエティPPL、SNSキャンペーン", cta: "PPLオプションを見る →", anchor: "/contact" },
+        { t: "韓国現地パートナー連結", d: "物流・運営・法務・マーケティング現地パートナー連結", cta: "パートナー紹介依頼 →", anchor: "/contact" },
+      ],
+    },
+    "overseas-seller": {
+      ko: [
+        { t: "한국 브랜드 직공급", d: "K-Beauty · K-Fashion 검증 브랜드를 직접 공급받기", cta: "브랜드 리스트 요청 →", anchor: "#k-product" },
+        { t: "한국 셀러 콜라보", d: "한국 셀러와 합동 라이브, 크로스보더 동시 방송", cta: "콜라보 신청 →", anchor: "/contact" },
+        { t: "연예인 · KOL 게스트", d: "라이브에 한국 연예인/인플루언서 게스트 초대", cta: "게스트 매칭 상담 →", anchor: "/network" },
+        { t: "한국 현지 촬영 지원", d: "서울 스튜디오, 핫플 로케이션, 촬영팀 풀서포트", cta: "촬영 일정 문의 →", anchor: "/contact" },
+        { t: "광고 · 캠페인 수주", d: "한국/글로벌 브랜드로부터 광고 · 협찬 · 캠페인 수주", cta: "프로필 등록 →", anchor: "/contact" },
+        { t: "크로스보더 물류 풀세트", d: "한국 → 중국 배송, 통관, 반품, 정산 원스톱", cta: "물류 상담 →", anchor: "/contact" },
+      ],
+      en: [
+        { t: "Korean Brand Direct Supply", d: "Get verified K-Beauty · K-Fashion products directly", cta: "Request brand list →", anchor: "#k-product" },
+        { t: "Korean Seller Collab", d: "Joint lives with Korean sellers, cross-border simulcast", cta: "Apply for collab →", anchor: "/contact" },
+        { t: "Celebrity · KOL Guests", d: "Invite Korean celebrity/influencer guests to your live", cta: "Guest matching →", anchor: "/network" },
+        { t: "Korea Filming Support", d: "Seoul studios, trendy locations, full production support", cta: "Filming schedule →", anchor: "/contact" },
+        { t: "Ad · Campaign Deals", d: "Receive ad/sponsorship/campaign offers from KR/global brands", cta: "Register profile →", anchor: "/contact" },
+        { t: "Cross-border Logistics", d: "Korea → China shipping, customs, returns, settlement", cta: "Logistics consultation →", anchor: "/contact" },
+      ],
+      zh: [
+        { t: "韩国品牌直供", d: "直接获取经验证的K-Beauty · K-Fashion产品", cta: "请求品牌清单 →", anchor: "#k-product" },
+        { t: "韩国卖家联名", d: "与韩国卖家合作直播，跨境同步直播", cta: "申请联名 →", anchor: "/contact" },
+        { t: "艺人 · KOL嘉宾", d: "邀请韩国艺人/达人嘉宾参加直播", cta: "嘉宾匹配咨询 →", anchor: "/network" },
+        { t: "韩国本地拍摄支持", d: "首尔摄影棚、网红打卡地、拍摄团队全程支持", cta: "拍摄日程咨询 →", anchor: "/contact" },
+        { t: "广告 · 营销合作", d: "接收韩国/全球品牌的广告·赞助·营销合作", cta: "注册资料 →", anchor: "/contact" },
+        { t: "跨境物流全栈", d: "韩国 → 中国配送、通关、退货、结算一站式", cta: "物流咨询 →", anchor: "/contact" },
+      ],
+      ja: [
+        { t: "韓国ブランド直供給", d: "検証済みK-Beauty・K-Fashion商品を直接供給", cta: "ブランドリスト請求 →", anchor: "#k-product" },
+        { t: "韓国セラーコラボ", d: "韓国セラーと合同ライブ、クロスボーダー同時配信", cta: "コラボ申請 →", anchor: "/contact" },
+        { t: "芸能人・KOLゲスト", d: "ライブに韓国芸能人/インフルエンサーゲストを招待", cta: "ゲストマッチング相談 →", anchor: "/network" },
+        { t: "韓国現地撮影サポート", d: "ソウルスタジオ、ホットスポット、撮影チームフルサポート", cta: "撮影スケジュール問い合わせ →", anchor: "/contact" },
+        { t: "広告・キャンペーン受注", d: "韓国/グローバルブランドから広告・協賛・キャンペーン受注", cta: "プロフィール登録 →", anchor: "/contact" },
+        { t: "クロスボーダー物流フルセット", d: "韓国→中国配送、通関、返品、精算ワンストップ", cta: "物流相談 →", anchor: "/contact" },
+      ],
+    },
+  };
+
+  // ═══════════════════════════════════════════════════════
+  // ROLE-SPECIFIC FAQ (포지션별 5개)
+  // ═══════════════════════════════════════════════════════
+  type FaqItem = { q: string; a: string };
+  const ROLE_FAQ: Record<Role, Record<Lang, FaqItem[]>> = {
+    "korean-brand": {
+      ko: [
+        { q: "최소 주문량이나 최소 예산이 있나요?", a: "최소 물량 제한 없이 시작 가능합니다. 라이브 1회 트라이얼도 가능하며, 예산 규모에 맞춰 최적화된 왕홍과 플랫폼을 제안드립니다." },
+        { q: "왕홍 선정은 어떻게 이루어지나요?", a: "브랜드 카테고리, 목표 GMV, 타겟 소비층을 분석한 뒤 검증된 왕홍 후보 리스트를 제안합니다. 모든 왕홍은 직접 미팅을 거친 후에만 매칭됩니다." },
+        { q: "통관이나 NMPA 인증도 대행 가능한가요?", a: "네, 중국 수출에 필요한 NMPA 인증, 통관, 정품 인증, 중국어 라벨링, CS까지 원스톱으로 처리합니다." },
+        { q: "성과가 안 나오면 어떻게 되나요?", a: "위약금 없음, 사전 NDA 가능, 트라이얼 1회 무료 제공. 캠페인 후 상세 리포트와 함께 개선 전략을 제안합니다." },
+        { q: "계약 전에 왕홍 후보를 미리 볼 수 있나요?", a: "무료 컨셉 미팅에서 왕홍 후보 방향과 플랫폼 전략을 먼저 안내드립니다. 계약 전 충분한 검토가 가능합니다." },
+      ],
+      en: [
+        { q: "Is there a minimum order or budget?", a: "No minimum. You can start with a single live trial. We optimize KOL and platform recommendations based on your budget." },
+        { q: "How are KOLs selected?", a: "We analyze your brand category, target GMV, and audience, then propose verified KOL candidates. All KOLs are matched only after direct meetings." },
+        { q: "Can you handle customs and NMPA certification?", a: "Yes — NMPA certification, customs clearance, authenticity certification, Chinese labeling, and CS, all handled in-house." },
+        { q: "What if the campaign doesn't perform?", a: "No penalty, pre-NDA available, free 1-time trial. Post-campaign detailed reports with improvement strategies included." },
+        { q: "Can I preview KOL candidates before signing?", a: "Yes — in the free concept meeting, we present KOL directions and platform strategies. Full review before commitment." },
+      ],
+      zh: [
+        { q: "有最低订单量或预算要求吗？", a: "无最低限制。可从一次直播试播开始。我们根据预算推荐最优达人和平台方案。" },
+        { q: "达人是如何筛选的？", a: "分析品牌品类、目标GMV和受众后，推荐经验证的达人候选。所有达人均在亲自面谈后才匹配。" },
+        { q: "能代办通关和NMPA认证吗？", a: "可以 — NMPA认证、海关通关、正品认证、中文标签、客服，全部一站式处理。" },
+        { q: "如果效果不好怎么办？", a: "无违约金、可事前签NDA、免费试播1次。活动后提供详细报告和改进策略。" },
+        { q: "签约前能预览达人候选吗？", a: "可以 — 在免费概念会议中展示达人方向和平台策略。签约前充分评估。" },
+      ],
+      ja: [
+        { q: "最低注文量や予算はありますか？", a: "最低制限なし。ライブ1回トライアルから開始可能。予算に合わせたKOL・プラットフォームをご提案します。" },
+        { q: "KOLの選定はどう行われますか？", a: "ブランドカテゴリ、目標GMV、ターゲット層を分析し、検証済みKOL候補をご提案。全KOLは直接ミーティング後にのみマッチング。" },
+        { q: "通関やNMPA認証も代行可能ですか？", a: "はい — NMPA認証、通関、正品認証、中国語ラベリング、CSまでワンストップ対応。" },
+        { q: "成果が出なかったら？", a: "違約金なし、事前NDA可能、トライアル1回無料。キャンペーン後の詳細レポートと改善戦略をご提案。" },
+        { q: "契約前にKOL候補を見れますか？", a: "はい — 無料コンセプトMTGでKOL方向とプラットフォーム戦略を先にご案内。契約前に十分な検討が可能です。" },
+      ],
+    },
+    "korean-seller": {
+      ko: [
+        { q: "셀러 수수료는 어떻게 되나요?", a: "브랜드와 카테고리에 따라 다르며, 무료 미팅에서 공급 조건과 예상 마진을 투명하게 안내드립니다." },
+        { q: "소규모 셀러도 이용 가능한가요?", a: "네, 팔로워 규모와 관계없이 이용 가능합니다. 채널 특성에 맞는 브랜드와 협업 기회를 매칭합니다." },
+        { q: "왕홍 콜라보는 어떤 방식으로 진행되나요?", a: "공동구매형, 합동방송형, 콘텐츠 교환형 등 다양한 콜라보 유형이 있으며, 채널과 카테고리에 최적화된 방식을 제안합니다." },
+        { q: "해외 판매 경험이 없어도 되나요?", a: "물류, 통관, 정산, CS까지 저희가 풀서포트하므로 해외 판매 경험이 없어도 시작할 수 있습니다." },
+        { q: "정산 주기는 어떻게 되나요?", a: "브랜드별로 다르지만 일반적으로 월 1~2회 정산합니다. 정산 조건은 미팅에서 상세히 안내드립니다." },
+      ],
+      en: [
+        { q: "What are the seller fees?", a: "Varies by brand and category. We transparently explain supply terms and expected margins in the free meeting." },
+        { q: "Can small sellers use this?", a: "Yes, regardless of follower count. We match brands and collab opportunities suited to your channel." },
+        { q: "How do KOL collabs work?", a: "Group buying, joint broadcast, content exchange — we propose the best format for your channel and category." },
+        { q: "What if I have no overseas sales experience?", a: "We provide full support: logistics, customs, settlement, CS — you can start with zero experience." },
+        { q: "What's the settlement cycle?", a: "Typically 1-2 times per month depending on the brand. Detailed terms discussed in the meeting." },
+      ],
+      zh: [
+        { q: "卖家费用如何？", a: "因品牌和品类而异。免费会议中透明说明供货条件和预期利润。" },
+        { q: "小型卖家也能用吗？", a: "可以，不论粉丝规模。我们为您匹配适合渠道的品牌和合作机会。" },
+        { q: "达人联名如何进行？", a: "团购型、合播型、内容交换型等多种形式，推荐最适合您渠道和品类的方式。" },
+        { q: "没有海外销售经验也行吗？", a: "物流、通关、结算、客服全程支持，零经验也能开始。" },
+        { q: "结算周期是怎样的？", a: "一般每月1-2次结算，具体条件在会议中详细说明。" },
+      ],
+      ja: [
+        { q: "セラー手数料はどうなりますか？", a: "ブランドとカテゴリにより異なります。無料ミーティングで供給条件と予想マージンを透明にご案内。" },
+        { q: "小規模セラーでも利用可能？", a: "はい、フォロワー規模に関係なく利用可能。チャネル特性に合ったブランドとコラボ機会をマッチング。" },
+        { q: "KOLコラボはどう進行？", a: "共同購入型、合同放送型、コンテンツ交換型など多様。チャネルとカテゴリに最適な方式をご提案。" },
+        { q: "海外販売経験がなくても大丈夫？", a: "物流、通関、精算、CSまでフルサポート。経験ゼロでも開始可能です。" },
+        { q: "精算サイクルは？", a: "ブランドにより異なりますが一般的に月1～2回。詳細条件はミーティングでご案内。" },
+      ],
+    },
+    "overseas-brand": {
+      ko: [
+        { q: "한국 제품 소싱도 같이 가능한가요?", a: "네, 연예인/KOL 마케팅과 함께 K-Beauty/K-Fashion/K-Food 등 한국 제품을 직접 소싱하여 브랜드 포트폴리오 확장을 지원합니다." },
+        { q: "연예인 등급별 비용 차이가 큰가요?", a: "A-list부터 마이크로 인플루언서까지 폭넓은 옵션이 있으며, 예산에 맞는 최적의 조합을 제안합니다." },
+        { q: "한국 시장 진출 경험이 없어도 되나요?", a: "처음부터 끝까지 원스톱으로 실행합니다. 시장 진단, 전략 수립, 파트너 연결, 실행, 리포트까지 한 팀이 담당합니다." },
+        { q: "드라마 PPL은 어떤 옵션이 있나요?", a: "제품 노출형, 대사 삽입형, 씬 연출형 등 다양한 PPL 옵션이 있으며, 예산과 목표에 맞춰 제안합니다." },
+        { q: "계약 전에 무엇을 확인할 수 있나요?", a: "무료 미팅에서 연예인/KOL 후보 방향, 한국 시장 진단, 예상 비용과 효과를 먼저 확인하실 수 있습니다." },
+      ],
+      en: [
+        { q: "Can you also help source Korean products?", a: "Yes — alongside celebrity/KOL marketing, we source K-Beauty/K-Fashion/K-Food products directly to expand your portfolio." },
+        { q: "Is there a big cost difference by celebrity tier?", a: "We offer options from A-list to micro-influencers and propose the optimal mix for your budget." },
+        { q: "What if we have no Korea market experience?", a: "We execute end-to-end: market diagnosis, strategy, partner matching, execution, reporting — one team handles everything." },
+        { q: "What drama PPL options are available?", a: "Product placement, dialogue insertion, scene production — various options tailored to your budget and goals." },
+        { q: "What can I see before signing?", a: "In the free meeting: celebrity/KOL candidate directions, Korea market diagnosis, estimated costs and impact." },
+      ],
+      zh: [
+        { q: "也能帮忙采购韩国产品吗？", a: "可以 — 在艺人/KOL营销的同时，直接采购K-Beauty/K-Fashion/K-Food产品，扩展品牌组合。" },
+        { q: "不同艺人等级费用差异大吗？", a: "从A-list到微型达人都有选项，根据预算推荐最优组合。" },
+        { q: "没有韩国市场经验也行吗？", a: "我们从头到尾一站式执行：市场诊断、策略、伙伴对接、执行、报告 — 一个团队负责。" },
+        { q: "电视剧PPL有哪些选项？", a: "产品露出型、台词植入型、场景演绎型等多种PPL选项，根据预算和目标定制。" },
+        { q: "签约前能了解什么？", a: "免费会议中可了解：艺人/KOL候选方向、韩国市场诊断、预估费用和效果。" },
+      ],
+      ja: [
+        { q: "韓国商品のソーシングもできますか？", a: "はい — 芸能人/KOLマーケティングと並行して、K-Beauty/K-Fashion/K-Food商品を直接ソーシング、ポートフォリオ拡張を支援。" },
+        { q: "芸能人等級による費用差は大きい？", a: "A-listからマイクロインフルエンサーまで幅広いオプション。予算に合った最適な組み合わせをご提案。" },
+        { q: "韓国市場経験がなくても大丈夫？", a: "エンドツーエンドでワンストップ実行。市場診断、戦略、パートナー連結、実行、レポートまで一つのチームが担当。" },
+        { q: "ドラマPPLにはどんなオプションが？", a: "商品露出型、台詞挿入型、シーン演出型など多様なPPLオプション。予算と目標に合わせてご提案。" },
+        { q: "契約前に何を確認できますか？", a: "無料MTGで芸能人/KOL候補の方向、韓国市場診断、予想費用と効果を事前確認可能。" },
+      ],
+    },
+    "overseas-seller": {
+      ko: [
+        { q: "샘플 테스트가 가능한가요?", a: "네, 관심 브랜드의 샘플을 사전에 받아보실 수 있습니다. 샘플 비용과 배송 조건은 브랜드마다 다릅니다." },
+        { q: "한국 방문 촬영은 어떻게 진행되나요?", a: "1일/3일/7일 패키지 옵션이 있으며, 서울 스튜디오, 핫플 로케이션, 촬영팀, 편집까지 풀서포트합니다." },
+        { q: "연예인 게스트 비용이 부담되지 않나요?", a: "등급별 다양한 옵션이 있습니다. 마이크로 인플루언서부터 시작하여 ROI를 확인한 후 업그레이드할 수 있습니다." },
+        { q: "물류는 어떻게 처리되나요?", a: "한국 브랜드 → 중국/해외 배송까지 통관, 물류, 반품, 정산을 원스톱으로 처리합니다." },
+        { q: "광고/캠페인 제안은 어떻게 받나요?", a: "프로필을 등록하시면 채널 특성에 맞는 브랜드의 광고/협찬/캠페인 제안을 매칭해 드립니다." },
+      ],
+      en: [
+        { q: "Can I get sample tests?", a: "Yes, samples can be arranged before commitment. Sample costs and shipping vary by brand." },
+        { q: "How does Korea filming work?", a: "1-day/3-day/7-day packages available. Seoul studios, trendy spots, crew, editing — all included." },
+        { q: "Isn't celebrity guest cost too high?", a: "Options range across tiers. Start with micro-influencers, verify ROI, then upgrade." },
+        { q: "How is logistics handled?", a: "Korea → China/overseas: customs, shipping, returns, settlement — all handled one-stop." },
+        { q: "How do I receive ad/campaign offers?", a: "Register your profile and we match you with brand ad/sponsorship opportunities suited to your channel." },
+      ],
+      zh: [
+        { q: "可以先测试样品吗？", a: "可以，合作前可安排样品寄送。样品费用和运费因品牌而异。" },
+        { q: "韩国拍摄怎么进行？", a: "提供1天/3天/7天套餐。首尔摄影棚、网红打卡地、拍摄团队、剪辑全程支持。" },
+        { q: "艺人嘉宾费用会不会很高？", a: "各等级都有选项。可从微型达人开始，验证ROI后再升级。" },
+        { q: "物流怎么处理？", a: "韩国→中国/海外：通关、物流、退货、结算一站式处理。" },
+        { q: "如何接收广告/营销合作？", a: "注册资料后，我们为您匹配适合渠道的品牌广告/赞助机会。" },
+      ],
+      ja: [
+        { q: "サンプルテストは可能ですか？", a: "はい、契約前に関心ブランドのサンプルを受け取れます。費用と配送条件はブランドにより異なります。" },
+        { q: "韓国撮影はどう進行？", a: "1日/3日/7日パッケージあり。ソウルスタジオ、ホットスポット、撮影チーム、編集までフルサポート。" },
+        { q: "芸能人ゲスト費用は負担では？", a: "等級別に多様なオプション。マイクロインフルエンサーから始めてROI確認後アップグレード可能。" },
+        { q: "物流はどう処理されますか？", a: "韓国→中国/海外：通関、物流、返品、精算をワンストップ処理。" },
+        { q: "広告/キャンペーン提案はどう受ける？", a: "プロフィール登録後、チャネル特性に合ったブランドの広告/協賛機会をマッチングします。" },
+      ],
+    },
+  };
+
+  // ═══════════════════════════════════════════════════════
   // AUDIENCE CARDS: role → which card index to feature
   // 0=korean-brand, 1=korean-seller, 2=overseas-brand, 3=overseas-seller
   // ═══════════════════════════════════════════════════════
@@ -682,6 +953,28 @@ export default function HomePage() {
 
       {/* ══════ MARQUEE ══════ */}
       <Marquee items={marquee1} />
+
+      {/* ══════ PURPOSE HUB — "무엇을 원하시나요?" ══════ */}
+      {role && !showSelector && (
+        <section className="purpose-hub">
+          <div className="container">
+            <div className="section-eyebrow">— {lang === "ko" ? "WHAT DO YOU NEED? · 무엇을 원하시나요?" : lang === "en" ? "WHAT DO YOU NEED?" : lang === "zh" ? "您需要什么服务？" : "何をお求めですか？"}</div>
+            <h2 className="section-title section-title-huge">{lang === "ko" ? "필요한 서비스를 선택하세요" : lang === "en" ? "Select the service you need" : lang === "zh" ? "请选择您需要的服务" : "必要なサービスを選択してください"}</h2>
+            <div className="purpose-grid">
+              {ROLE_PURPOSES[role][lang].map((pc, i) => (
+                <Link href={pc.anchor} className="purpose-card" key={i}>
+                  <span className="pc-num">{String(i + 1).padStart(2, "0")}</span>
+                  <div className="pc-body">
+                    <div className="pc-title">{pc.t}</div>
+                    <p className="pc-desc">{pc.d}</p>
+                    <span className="pc-cta">{pc.cta}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ══════ STATEMENT (common — always show) ══════ */}
       <section className="statement-block">
@@ -853,9 +1146,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ══════ K-PRODUCT SHOWCASE — overseas-brand only ══════ */}
-      {role === "overseas-brand" && (
-        <section className="k-product-showcase">
+      {/* ══════ K-PRODUCT SHOWCASE — overseas-brand & overseas-seller ══════ */}
+      {(role === "overseas-brand" || role === "overseas-seller") && (
+        <section className="k-product-showcase" id="k-product">
           <div className="container">
             <div className="section-eyebrow">— {lang === "ko" ? "K-BRAND SOURCING · 한국 제품 소싱" : lang === "en" ? "K-BRAND SOURCING" : lang === "zh" ? "K-品牌产品采购" : "K-BRANDソーシング"}</div>
             <h2 className="section-title">{lang === "ko" ? "한국에서 검증된 제품을 직접 연결합니다" : lang === "en" ? "Directly sourced products verified in Korea" : lang === "zh" ? "直接对接在韩国经验证的产品" : "韓国で検証済みの商品を直接連結します"}</h2>
@@ -871,6 +1164,27 @@ export default function HomePage() {
             </div>
             <div className="kps-bottom">
               <Link href="/contact" className="btn btn-primary">{lang === "ko" ? "K-브랜드 소싱 상담 →" : lang === "en" ? "K-Brand sourcing consultation →" : lang === "zh" ? "K-品牌采购咨询 →" : "K-ブランドソーシング相談 →"}</Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ══════ FAQ — role-specific ══════ */}
+      {role && !showSelector && (
+        <section className="role-faq">
+          <div className="container">
+            <div className="section-eyebrow">— {lang === "ko" ? "FAQ · 자주 묻는 질문" : lang === "en" ? "FREQUENTLY ASKED" : lang === "zh" ? "常见问题" : "よくある質問"}</div>
+            <h2 className="section-title">{lang === "ko" ? "궁금한 점이 있으신가요?" : lang === "en" ? "Have questions?" : lang === "zh" ? "有疑问吗？" : "ご質問はありますか？"}</h2>
+            <div className="faq-list">
+              {ROLE_FAQ[role][lang].map((faq, i) => (
+                <div className={`faq-item ${openFaq === i ? "faq-open" : ""}`} key={i}>
+                  <button className="faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)} type="button">
+                    <span>{faq.q}</span>
+                    <span className="faq-toggle">{openFaq === i ? "−" : "+"}</span>
+                  </button>
+                  {openFaq === i && <div className="faq-a"><p>{faq.a}</p></div>}
+                </div>
+              ))}
             </div>
           </div>
         </section>
