@@ -444,7 +444,11 @@ body{font-weight:450}
 /* CASE CARDS */
 .case-cards-wrap{overflow-x:auto;margin:0 -20px;padding:0 20px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .case-cards{display:flex;gap:20px;padding-bottom:16px;min-width:max-content}
-.case-card{flex:0 0 320px;background:var(--white);border:1px solid var(--gray-200);padding:32px 28px;display:flex;flex-direction:column;gap:12px;transition:all .3s ease;position:relative;overflow:hidden}
+.case-card{flex:0 0 320px;background:var(--white);border:1px solid var(--gray-200);padding:0;display:flex;flex-direction:column;transition:all .3s ease;position:relative;overflow:hidden}
+.case-img{position:relative;width:100%;height:180px;overflow:hidden}
+.case-img img{transition:transform .4s ease}
+.case-card:hover .case-img img{transform:scale(1.05)}
+.case-body{padding:24px 28px 28px;display:flex;flex-direction:column;gap:12px}
 .case-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:var(--card-accent,var(--amber))}
 .case-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
 .case-num{font-family:'Unbounded',sans-serif;font-size:11px;letter-spacing:.2em;color:var(--gray-400);font-weight:700}
