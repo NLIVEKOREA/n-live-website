@@ -13,32 +13,32 @@ export default function HomePage() {
   // Tag interactive panels — what each audience can do with us
   const TAGS: Record<Lang, Array<{ label: string; pitch: string; href: string }>> = {
     ko: [
-      { label: "한국 브랜드", pitch: "한국 브랜드라면 — 검증된 중국 왕홍 1,500+ 매칭 + 샤오홍슈·더우인·타오바오 라이브 운영 + 통관·정품·CS까지. 중국 진출에 필요한 모든 인프라를 단일 창구로 제공합니다.", href: "/for-korean-brands" },
-      { label: "해외 브랜드", pitch: "해외 브랜드라면 — 한국 정상급 연예인 200+, 한국 KOL 1,500+, 한국 라이브 플랫폼 운영, 드라마 PPL까지. 한국 시장 진출의 모든 채널을 한 곳에서.", href: "/for-overseas-brands" },
+      { label: "한국 브랜드", pitch: "한국 브랜드라면 — 검증된 중국 왕홍 500+ 매칭 + 샤오홍슈·더우인·타오바오 라이브 운영 + 통관·정품·CS까지. 중국 진출에 필요한 모든 인프라를 단일 창구로 제공합니다.", href: "/for-korean-brands" },
+      { label: "해외 브랜드", pitch: "해외 브랜드라면 — 한국 정상급 연예인 100+, 한국 KOL 500+, 한국 라이브 플랫폼 운영, 드라마 PPL까지. 한국 시장 진출의 모든 채널을 한 곳에서.", href: "/for-overseas-brands" },
       { label: "한국 셀러·인플루언서", pitch: "한국 셀러·인플루언서라면 — 중국 왕홍과 콜라보 라이브, 해외 브랜드 직공급, 한중 이중 콘텐츠 기획, 크로스보더 정산·물류까지 풀세트 지원합니다.", href: "/for-korean-sellers" },
       { label: "중국 왕홍", pitch: "중국 왕홍이라면 — K-Beauty·K-Fashion·잡화 직공급, 한국 현지 촬영 지원, 한국 연예인·KOL 콜라보 게스트 연결까지 모두 가능합니다.", href: "/for-overseas-sellers" },
-      { label: "한국 연예인", pitch: "한국 연예인 자원을 찾으신다면 — 정상급 200+ 협업 풀, 기본 협찬·프리미엄·유가·SNS·드라마 PPL 5단계 옵션을 단일 창구로 매칭합니다.", href: "/network" },
+      { label: "한국 연예인", pitch: "한국 연예인 자원을 찾으신다면 — 정상급 100+ 협업 풀, 기본 협찬·프리미엄·유가·SNS·드라마 PPL 5단계 옵션을 단일 창구로 매칭합니다.", href: "/network" },
     ],
     en: [
-      { label: "Korean Brands", pitch: "If you're a Korean brand — verified 1,500+ Chinese wanghong matching + Xiaohongshu/Douyin/Taobao live operations + customs, authentication, and CS. Every channel for entering China through one window.", href: "/for-korean-brands" },
-      { label: "Global Brands", pitch: "If you're a global brand — 200+ top-tier Korean celebrities, 1,500+ Korean KOLs, Korean live platform operations, drama PPL. Every channel for Korean market entry, in one place.", href: "/for-overseas-brands" },
+      { label: "Korean Brands", pitch: "If you're a Korean brand — verified 500+ Chinese wanghong matching + Xiaohongshu/Douyin/Taobao live operations + customs, authentication, and CS. Every channel for entering China through one window.", href: "/for-korean-brands" },
+      { label: "Global Brands", pitch: "If you're a global brand — 100+ top-tier Korean celebrities, 500+ Korean KOLs, Korean live platform operations, drama PPL. Every channel for Korean market entry, in one place.", href: "/for-overseas-brands" },
       { label: "Korean Sellers · Influencers", pitch: "If you're a Korean seller or influencer — Chinese wanghong collab lives, direct global brand sourcing, Korea-China dual content planning, cross-border settlement & logistics. Full-stack support.", href: "/for-korean-sellers" },
       { label: "Chinese Wanghong", pitch: "If you're a Chinese wanghong — K-Beauty/K-Fashion/accessory direct supply, Korean on-site filming support, Korean celebrity & KOL collaboration guest matching. All available.", href: "/for-overseas-sellers" },
-      { label: "Korean Celebrities", pitch: "Looking for Korean celebrity resources — 200+ top-tier collaboration pool, 5-tier options from basic sponsorship to drama PPL, all matched through a single window.", href: "/network" },
+      { label: "Korean Celebrities", pitch: "Looking for Korean celebrity resources — 100+ top-tier collaboration pool, 5-tier options from basic sponsorship to drama PPL, all matched through a single window.", href: "/network" },
     ],
     zh: [
-      { label: "韩国品牌", pitch: "如果您是韩国品牌 — 经验证的 1,500+ 中国达人匹配 + 小红书/抖音/淘宝直播运营 + 通关、正品、客服。进入中国所需的所有基础设施,通过单一窗口提供。", href: "/for-korean-brands" },
-      { label: "海外品牌", pitch: "如果您是海外品牌 — 200+ 韩国顶级艺人、1,500+ 韩国 KOL、韩国直播平台运营、电视剧 PPL。进入韩国市场的所有渠道,集于一处。", href: "/for-overseas-brands" },
+      { label: "韩国品牌", pitch: "如果您是韩国品牌 — 经验证的 500+ 中国达人匹配 + 小红书/抖音/淘宝直播运营 + 通关、正品、客服。进入中国所需的所有基础设施,通过单一窗口提供。", href: "/for-korean-brands" },
+      { label: "海外品牌", pitch: "如果您是海外品牌 — 100+ 韩国顶级艺人、500+ 韩国 KOL、韩国直播平台运营、电视剧 PPL。进入韩国市场的所有渠道,集于一处。", href: "/for-overseas-brands" },
       { label: "韩国卖家 · 达人", pitch: "如果您是韩国卖家或达人 — 中国达人联名直播、海外品牌直供、中韩双语内容企划、跨境结算与物流。全栈支持。", href: "/for-korean-sellers" },
       { label: "中国达人", pitch: "如果您是中国达人 — K-Beauty/K-Fashion/配饰直供、韩国本地拍摄支持、韩国艺人·KOL 联名嘉宾对接。全部可用。", href: "/for-overseas-sellers" },
-      { label: "韩国艺人", pitch: "寻找韩国艺人资源 — 200+ 顶级合作池、从基础置换到电视剧 PPL 五档选项,通过单一窗口匹配。", href: "/network" },
+      { label: "韩国艺人", pitch: "寻找韩国艺人资源 — 100+ 顶级合作池、从基础置换到电视剧 PPL 五档选项,通过单一窗口匹配。", href: "/network" },
     ],
     ja: [
-      { label: "韓国ブランド", pitch: "韓国ブランドなら — 検証済み 1,500+ 中国KOLマッチング + 小紅書/抖音/淘宝ライブ運営 + 通関、正規品認証、CSまで。中国進出に必要なすべてのインフラを単一窓口で。", href: "/for-korean-brands" },
-      { label: "海外ブランド", pitch: "海外ブランドなら — 200+ 韓国トップクラス芸能人、1,500+ 韓国KOL、韓国ライブプラットフォーム運営、ドラマPPLまで。韓国市場参入のすべてのチャネルを一つの場所で。", href: "/for-overseas-brands" },
+      { label: "韓国ブランド", pitch: "韓国ブランドなら — 検証済み 500+ 中国KOLマッチング + 小紅書/抖音/淘宝ライブ運営 + 通関、正規品認証、CSまで。中国進出に必要なすべてのインフラを単一窓口で。", href: "/for-korean-brands" },
+      { label: "海外ブランド", pitch: "海外ブランドなら — 100+ 韓国トップクラス芸能人、500+ 韓国KOL、韓国ライブプラットフォーム運営、ドラマPPLまで。韓国市場参入のすべてのチャネルを一つの場所で。", href: "/for-overseas-brands" },
       { label: "韓国セラー · インフルエンサー", pitch: "韓国セラー・インフルエンサーなら — 中国KOLとのコラボライブ、海外ブランド直供給、韓中二重コンテンツ企画、クロスボーダー精算・物流までフルスタックサポート。", href: "/for-korean-sellers" },
       { label: "中国KOL", pitch: "中国KOLなら — K-Beauty/K-Fashion/アクセサリー直供給、韓国現地撮影サポート、韓国芸能人・KOLコラボゲスト連結まですべて可能。", href: "/for-overseas-sellers" },
-      { label: "韓国芸能人", pitch: "韓国芸能人リソースをお探しなら — トップクラス 200+ コラボプール、基本協賛から有償・SNS・ドラマPPLまで5段階のオプションを単一窓口でマッチング。", href: "/network" },
+      { label: "韓国芸能人", pitch: "韓国芸能人リソースをお探しなら — トップクラス 100+ コラボプール、基本協賛から有償・SNS・ドラマPPLまで5段階のオプションを単一窓口でマッチング。", href: "/network" },
     ],
   };
 
@@ -115,7 +115,7 @@ export default function HomePage() {
     "N-LIVE · 恩联 · 엔라이브",
   ];
   const marquee2 = [
-    "1,500+ KOL", "200+ TOP-TIER", "200+ 정상급 연예인", "200+ 顶级艺人",
+    "500+ KOL", "100+ TOP-TIER", "100+ 정상급 연예인", "100+ 顶级艺人",
     "샤오홍슈 · 더우인 · 타오바오", "XIAOHONGSHU · DOUYIN · TAOBAO", "小红书 · 抖音 · 淘宝",
     "한류 × 왕홍", "HALLYU × WANGHONG", "韩流 × 达人",
     "BRAND × FACTORY DIRECT", "브랜드 · 공장 다이렉트", "品牌 · 工厂直供",

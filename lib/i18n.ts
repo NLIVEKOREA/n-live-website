@@ -154,7 +154,7 @@ export const MESSAGES: Messages = {
     "ip.report": "Sample report area — to be added",
   },
   zh: {
-    "brand": "N-LIVE 恩联",
+    "brand": "N-LIVE",
     "nav.about": "公司介绍",
     "nav.services": "服务",
     "nav.network": "资源网络",

@@ -13,7 +13,7 @@ const C: Record<Lang, any> = {
       { t: "양방향 크로스보더 구조", d: "한국 → 해외, 해외 → 한국. 양쪽 시장을 동시에 운영하며 어느 방향의 파트너십이든 설계할 수 있습니다." },
       { t: "중간 단계 없는 직거래", d: "벤더·유통사를 거치지 않는 브랜드·공장 다이렉트. 파트너에게 투명한 공급망과 최적 단가." },
       { t: "라이브커머스 현장 경험", d: "한국 라이브커머스 현장에서 축적한 트래픽 운영·콘텐츠 기획·쇼호스트 운영 노하우." },
-      { t: "검증된 왕홍·연예인 네트워크", d: "중국 왕홍 1,500+ 풀과 한국 정상급 연예인 200+. 기본 협찬부터 유가 협업까지 전 스펙트럼." },
+      { t: "검증된 왕홍·연예인 네트워크", d: "중국 왕홍 500+ 풀과 한국 정상급 연예인 100+. 기본 협찬부터 유가 협업까지 전 스펙트럼." },
     ],
     eb2: "COMPANY INFO", st2: "회사 정보",
     info: [
@@ -34,7 +34,7 @@ const C: Record<Lang, any> = {
       { t: "Bi-Directional Cross-Border Architecture", d: "Korea → global, global → Korea. We operate both markets simultaneously and can design partnerships in either direction." },
       { t: "Direct Deals — No Intermediaries", d: "Brand and factory direct, with no vendors or distributors. Transparent supply chain and optimal pricing for partners." },
       { t: "Live Commerce Field Experience", d: "Traffic operations, content planning, and show-host operations know-how accumulated in the Korean live commerce field." },
-      { t: "Verified Wanghong · Celebrity Network", d: "1,500+ Chinese wanghong pool and 200+ top-tier Korean celebrities. Full spectrum from basic sponsorship to paid endorsement." },
+      { t: "Verified Wanghong · Celebrity Network", d: "500+ Chinese wanghong pool and 100+ top-tier Korean celebrities. Full spectrum from basic sponsorship to paid endorsement." },
     ],
     eb2: "COMPANY INFO", st2: "Company Information",
     info: [
@@ -55,7 +55,7 @@ const C: Record<Lang, any> = {
       { t: "双向跨境架构", d: "韩国→海外,海外→韩国。同时运营两个市场,可设计任一方向的合作。" },
       { t: "无中介直接交易", d: "品牌与工厂直接对接,无供应商或经销商。为合作伙伴提供透明供应链和最优价格。" },
       { t: "直播电商现场经验", d: "在韩国直播电商现场积累的流量运营、内容策划、主播运营 know-how。" },
-      { t: "经验证的达人 · 艺人网络", d: "1,500+ 中国达人池与 200+ 韩国顶级艺人。从基础置换到付费合作的全方位覆盖。" },
+      { t: "经验证的达人 · 艺人网络", d: "500+ 中国达人池与 100+ 韩国顶级艺人。从基础置换到付费合作的全方位覆盖。" },
     ],
     eb2: "公司信息", st2: "公司信息",
     info: [
@@ -76,7 +76,7 @@ const C: Record<Lang, any> = {
       { t: "双方向クロスボーダー構造", d: "韓国→海外、海外→韓国。両市場を同時に運営し、どちら方向のパートナーシップでも設計できます。" },
       { t: "中間段階のない直接取引", d: "ベンダー・流通を介さない、ブランド・工場との直接取引。パートナーに透明なサプライチェーンと最適価格を。" },
       { t: "ライブコマース現場経験", d: "韓国ライブコマースの現場で蓄積したトラフィック運営、コンテンツ企画、ショーホスト運営のノウハウ。" },
-      { t: "検証済みKOL・芸能人ネットワーク", d: "中国KOL 1,500+プールと韓国トップクラス芸能人 200+。基本協賛から有償コラボまでの全スペクトラム。" },
+      { t: "検証済みKOL・芸能人ネットワーク", d: "中国KOL 500+プールと韓国トップクラス芸能人 100+。基本協賛から有償コラボまでの全スペクトラム。" },
     ],
     eb2: "COMPANY INFO", st2: "会社情報",
     info: [

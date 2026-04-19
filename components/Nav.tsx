@@ -18,12 +18,14 @@ export default function Nav() {
 
   return (
     <nav className="nav">
+      {/* Row 1: Logo + desktop nav + lang + CTA */}
       <div className="nav-inner">
         <Link href="/" className="logo">
           <span className="logo-mark"><Image src="/logo.svg" alt="N-LIVE" width={40} height={40} /></span>
-          <span>{t("brand")}</span>
+          <span className="logo-text">{t("brand")}</span>
         </Link>
 
+        {/* Desktop nav links (hidden on mobile) */}
         <div className={`nav-links ${menuOpen ? "open" : ""}`}>
           <Link href="/about" onClick={() => setMenuOpen(false)}>{t("nav.about")}</Link>
           <div className="nav-dropdown" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
@@ -52,10 +54,20 @@ export default function Nav() {
             ))}
           </div>
           <Link href="/contact" className="nav-cta">{t("nav.cta")}</Link>
+          {/* Hamburger — desktop only fallback, hidden on mobile */}
           <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
             <span /><span /><span />
           </button>
         </div>
+      </div>
+
+      {/* Row 2: Mobile-only menu bar (always visible on mobile) */}
+      <div className="nav-mobile-bar">
+        <Link href="/about">{t("nav.about")}</Link>
+        <Link href="/for-korean-brands">{t("nav.services")}</Link>
+        <Link href="/network">{t("nav.network")}</Link>
+        <Link href="/process">{t("nav.process")}</Link>
+        <Link href="/contact">{t("nav.contact")}</Link>
       </div>
     </nav>
   );

@@ -12,8 +12,8 @@ const C: Record<Lang, any> = {
     eb1: "이 서비스로 얻는 것", st1: "한류 자원 풀 × 한국 시장 운영",
     sl1: "한국 연예인 마케팅은 경로가 복잡합니다. 사무소·MCN·에이전시가 파편화돼 있어 외부 브랜드가 직접 접근하기 어렵습니다. 엔라이브는 이 경로를 단순화합니다.",
     items: [
-      { n: "01 / CELEBRITY", t: "한국 정상급 연예인 200+", d: "배우·K-POP·가수·방송인 협업 풀. 기본 협찬부터 유가 협업·드라마 PPL까지 5단계 옵션." },
-      { n: "02 / KOL", t: "한국 KOL 1,500+ 네트워크", d: "Instagram·YouTube·샤오홍슈까지 카테고리별 전문 크리에이터. 브랜드 카테고리에 맞는 매칭 시스템." },
+      { n: "01 / CELEBRITY", t: "한국 정상급 연예인 100+", d: "배우·K-POP·가수·방송인 협업 풀. 기본 협찬부터 유가 협업·드라마 PPL까지 5단계 옵션." },
+      { n: "02 / KOL", t: "한국 KOL 200+ 네트워크", d: "Instagram·YouTube·샤오홍슈까지 카테고리별 전문 크리에이터. 브랜드 카테고리에 맞는 매칭 시스템." },
       { n: "03 / PPL", t: "방송 · 드라마 PPL", d: "지상파·OTT·웹드라마 PPL 운영. 장기 노출을 통한 브랜드 고급화 전략." },
       { n: "04 / LIVE COMMERCE", t: "한국 라이브커머스 진입", d: "Grip · 네이버쇼핑라이브 · 카카오쇼핑라이브 · 쿠팡라이브. 플랫폼별 입점과 라이브 운영 대행." },
       { n: "05 / LOCALIZATION", t: "한국 시장 현지화", d: "한국 소비자 감각에 맞춘 브랜드 포지셔닝·패키지·카피 재설계. 진출 초기 첫인상의 중요성." },
@@ -23,7 +23,7 @@ const C: Record<Lang, any> = {
     sl2: "예산과 브랜드 단계에 맞춰 조합할 수 있는 다섯 가지 한국 연예인·KOL 마케팅 모델입니다.",
     stages: [
       { t: "기본 협찬", d: "쇼룸 입고 · 스타일리스트 노출 · 미디어 촬영 · SNS 자연 노출." },
-      { t: "프리미엄 협찬", d: "정상급 연예인 200명 풀 · 브랜드 고급 이미지 구축." },
+      { t: "프리미엄 협찬", d: "정상급 연예인 100명 풀 · 브랜드 고급 이미지 구축." },
       { t: "유가 협업", d: "연예인 지정 · 메시지 통제 · 신제품 런칭 · 이슈 메이킹." },
       { t: "SNS · YouTube PPL", d: "Instagram · YouTube 콘텐츠 · 팬덤 직격 · 글로벌 확산." },
       { t: "방송 · 드라마 PPL", d: "드라마 · 예능 · OTT 노출 · 장기 노출 · 브랜드 고급화." },
@@ -40,8 +40,8 @@ const C: Record<Lang, any> = {
     eb1: "WHAT YOU GET", st1: "Hallyu Resource Pool × Korean Market Operations",
     sl1: "Korean celebrity marketing is a complex path. Agencies, MCNs, and management companies are fragmented, making direct access hard for external brands. N-LIVE simplifies this path.",
     items: [
-      { n: "01 / CELEBRITY", t: "200+ Top-Tier Korean Celebrities", d: "Actors, K-POP, singers, broadcasters — collaboration pool. Five-tier options from basic sponsorship to paid endorsement and drama PPL." },
-      { n: "02 / KOL", t: "1,500+ Korean KOL Network", d: "Category-specialized creators across Instagram, YouTube, and Xiaohongshu. Matching system aligned with your brand category." },
+      { n: "01 / CELEBRITY", t: "100+ Top-Tier Korean Celebrities", d: "Actors, K-POP, singers, broadcasters — collaboration pool. Five-tier options from basic sponsorship to paid endorsement and drama PPL." },
+      { n: "02 / KOL", t: "200+ Korean KOL Network", d: "Category-specialized creators across Instagram, YouTube, and Xiaohongshu. Matching system aligned with your brand category." },
       { n: "03 / PPL", t: "Broadcast · Drama PPL", d: "Terrestrial, OTT, and web drama PPL operations. Brand premiumization through long-term exposure." },
       { n: "04 / LIVE COMMERCE", t: "Korean Live Commerce Entry", d: "Grip, Naver Shopping Live, Kakao Shopping Live, Coupang Live. Platform-specific listing and live operations on your behalf." },
       { n: "05 / LOCALIZATION", t: "Korean Market Localization", d: "Brand positioning, packaging, and copy redesigned for Korean consumer sensibility. The importance of first impressions in early entry." },
@@ -68,8 +68,8 @@ const C: Record<Lang, any> = {
     eb1: "您将获得", st1: "韩流资源池 × 韩国市场运营",
     sl1: "韩国艺人营销路径复杂。事务所、MCN、经纪公司碎片化,外部品牌难以直接接触。恩联简化了这条路径。",
     items: [
-      { n: "01 / 艺人", t: "200+ 韩国顶级艺人", d: "演员、K-POP、歌手、主持人合作池。从基础置换到付费合作、电视剧 PPL,五档可选。" },
-      { n: "02 / KOL", t: "1,500+ 韩国 KOL 网络", d: "Instagram、YouTube、小红书等品类专业创作者。与品牌品类匹配的系统。" },
+      { n: "01 / 艺人", t: "100+ 韩国顶级艺人", d: "演员、K-POP、歌手、主持人合作池。从基础置换到付费合作、电视剧 PPL,五档可选。" },
+      { n: "02 / KOL", t: "200+ 韩国 KOL 网络", d: "Instagram、YouTube、小红书等品类专业创作者。与品牌品类匹配的系统。" },
       { n: "03 / PPL", t: "电视 · 电视剧 PPL", d: "无线台、OTT、网剧 PPL 运营。通过长期曝光实现品牌高端化。" },
       { n: "04 / 直播电商", t: "韩国直播电商入驻", d: "Grip、Naver Shopping Live、Kakao Shopping Live、Coupang Live。各平台入驻与直播运营代理。" },
       { n: "05 / 本地化", t: "韩国市场本地化", d: "符合韩国消费者审美的品牌定位、包装、文案重新设计。进入初期第一印象的重要性。" },
@@ -96,8 +96,8 @@ const C: Record<Lang, any> = {
     eb1: "得られるもの", st1: "韓流リソースプール × 韓国市場運営",
     sl1: "韓国の芸能人マーケティングは経路が複雑です。事務所・MCN・エージェンシーが断片化しており、外部ブランドが直接アクセスするのは困難です。N-LIVEはこの経路を簡素化します。",
     items: [
-      { n: "01 / CELEBRITY", t: "韓国トップクラス芸能人 200+", d: "俳優、K-POP、歌手、放送人のコラボプール。基本協賛から有償コラボ、ドラマPPLまで5段階のオプション。" },
-      { n: "02 / KOL", t: "韓国KOL 1,500+ ネットワーク", d: "Instagram、YouTube、小紅書まで、カテゴリ専門のクリエイター。ブランドカテゴリに合わせたマッチングシステム。" },
+      { n: "01 / CELEBRITY", t: "韓国トップクラス芸能人 100+", d: "俳優、K-POP、歌手、放送人のコラボプール。基本協賛から有償コラボ、ドラマPPLまで5段階のオプション。" },
+      { n: "02 / KOL", t: "韓国KOL 200+ ネットワーク", d: "Instagram、YouTube、小紅書まで、カテゴリ専門のクリエイター。ブランドカテゴリに合わせたマッチングシステム。" },
       { n: "03 / PPL", t: "放送 · ドラマPPL", d: "地上波、OTT、ウェブドラマPPLの運営。長期露出によるブランド高級化戦略。" },
       { n: "04 / LIVE COMMERCE", t: "韓国ライブコマース参入", d: "Grip、Naver Shopping Live、Kakao Shopping Live、Coupang Live。プラットフォーム別の入店とライブ運営代行。" },
       { n: "05 / LOCALIZATION", t: "韓国市場ローカライズ", d: "韓国消費者の感性に合わせたブランドポジショニング・パッケージ・コピーの再設計。進出初期の第一印象の重要性。" },
