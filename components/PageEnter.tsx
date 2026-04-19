@@ -37,26 +37,15 @@ export default function PageEnter({
     ? ({ ["--pt-c" as string]: color } as React.CSSProperties)
     : undefined;
 
-  // Special "blocks" variant renders a mosaic of color cells
+  // "blocks" variant — slim 4-segment colored bar at top (one per brand)
   if (variant === "blocks") {
-    const rows = 4;
-    const cols = 8;
-    const cells = [];
-    for (let i = 0; i < rows * cols; i++) {
-      cells.push(
-        <span
-          key={i}
-          className="pt-block"
-          style={{
-            animationDelay: `${(i % cols) * 0.04 + Math.floor(i / cols) * 0.04}s`,
-          }}
-        />
-      );
-    }
     return (
       <div className={`pt pt-blocks ${themeClass} ${className}`} style={style}>
         <div className="pt-overlay-blocks" aria-hidden="true">
-          {cells}
+          <span className="pt-block" />
+          <span className="pt-block" />
+          <span className="pt-block" />
+          <span className="pt-block" />
         </div>
         {children}
       </div>
