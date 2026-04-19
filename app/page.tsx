@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLang } from "@/components/LangContext";
 import Marquee from "@/components/Marquee";
 import MeteorBackground from "@/components/MeteorBackground";
@@ -16,29 +16,18 @@ export default function HomePage() {
   const [showSelector, setShowSelector] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
 
-  // Load saved role from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem("nlive-role") as Role | null;
-    if (saved && ["korean-brand", "korean-seller", "overseas-brand", "overseas-seller"].includes(saved)) {
-      setRole(saved);
-      setShowSelector(false);
-    }
-  }, []);
-
   const selectRole = (r: Role) => {
     setFadeOut(true);
     setTimeout(() => {
       setRole(r);
       setShowSelector(false);
       setFadeOut(false);
-      localStorage.setItem("nlive-role", r);
     }, 400);
   };
 
   const changeRole = () => {
     setShowSelector(true);
     setRole(null);
-    localStorage.removeItem("nlive-role");
   };
 
   // Role-specific hero content per language
