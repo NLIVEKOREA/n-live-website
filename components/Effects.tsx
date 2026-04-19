@@ -48,8 +48,9 @@ export default function Effects() {
         }
       });
     }, { threshold: 0.12 });
-    // Skip hero-content children (they have their own keyframe entrance)
-    document.querySelectorAll("section:not(.hero) > .container > *, .audience-matrix > *").forEach((el) => {
+    // Skip hero & page-hero children — both have their own entrance animations
+    // (hero = home keyframe entrance; page-hero = .pt wrapper slide-in)
+    document.querySelectorAll("section:not(.hero):not(.page-hero) > .container > *, .audience-matrix > *").forEach((el) => {
       el.classList.add("fade-up");
       io.observe(el);
     });
