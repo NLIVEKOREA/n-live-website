@@ -19,6 +19,7 @@ export default function MeteorBackground() {
     const ctx: CanvasRenderingContext2D = ctx2d;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     // Brand palette — MAX fluorescent for meteors only
     // (Site palette stays warmer; canvas uses pumped neon for visibility)
@@ -101,7 +102,7 @@ export default function MeteorBackground() {
     const stars: Star[] = [];
 
     // Deep space neon starfield: tiered (distant tiny, mid, neon accents)
-    const STAR_COUNT = reduce ? 90 : 240;
+    const STAR_COUNT = reduce ? 90 : isMobile ? 80 : 240;
     for (let i = 0; i < STAR_COUNT; i++) {
       const tier = Math.random();
       let r: number, base: number, glow: boolean;
@@ -362,8 +363,8 @@ export default function MeteorBackground() {
         }
       }
 
-      // Spawn meteors at intervals (mix of solo + convergent pairs)
-      if (t - lastSpawn > SPAWN_MIN + Math.random() * SPAWN_JITTER) {
+      // Spawn meteors at intervals (skip entirely on mobile — stars only)
+      if (!isMobile && t - lastSpawn > SPAWN_MIN + Math.random() * SPAWN_JITTER) {
         spawnMeteor();
         lastSpawn = t;
       }
