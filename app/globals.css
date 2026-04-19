@@ -76,6 +76,7 @@ img{display:block}
 .nav-mobile-lang{padding:5px 10px;font-size:11px;font-weight:600;color:var(--gray-400);border:1px solid var(--gray-200);background:var(--white);transition:all .2s;white-space:nowrap}
 .nav-mobile-lang.active{color:var(--white);background:var(--heritage);border-color:var(--heritage)}
 .nav-mobile-lang:hover{color:var(--black);border-color:var(--gray-400)}
+.nav-mobile-bar{display:none}
 /* Logo text: truncate on mobile when CJK characters cause overflow */
 .logo-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
