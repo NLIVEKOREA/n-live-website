@@ -46,6 +46,7 @@ export default function MeteorBackground() {
     type Color = (typeof COLORS)[number];
 
     interface Meteor {
+      id: number;
       x: number;
       y: number;
       vx: number;
@@ -56,6 +57,9 @@ export default function MeteorBackground() {
       color: Color;
       size: number;
       dead: boolean;
+      homing: boolean;
+      maxSpeed: number;
+      targetId: number | null;
     }
 
     interface Particle {
@@ -76,6 +80,7 @@ export default function MeteorBackground() {
       maxLife: number;
       c1: Color;
       c2: Color;
+      mega: boolean;
     }
 
     interface Star {
@@ -129,6 +134,7 @@ export default function MeteorBackground() {
       });
     }
 
+    let nextId = 1;
     function makeMeteor(
       x: number,
       y: number,
@@ -137,6 +143,7 @@ export default function MeteorBackground() {
       color: Color
     ): Meteor {
       return {
+        id: nextId++,
         x,
         y,
         vx,
@@ -147,6 +154,9 @@ export default function MeteorBackground() {
         color,
         size: 1.5 + Math.random() * 1.4,
         dead: false,
+        homing: false,
+        maxSpeed: Math.hypot(vx, vy),
+        targetId: null,
       };
     }
 
@@ -199,43 +209,100 @@ export default function MeteorBackground() {
       meteors.push(makeMeteor(mx - bVx * T, my - bVy * T, bVx, bVy, c2));
     }
 
+    function spawnHomingPair() {
+      // A regular "target" meteor + a fast oversized homing missile
+      // that actively tracks the target and triggers a MEGA burst.
+      const [c1, c2] = pickTwoColors();
+
+      // Target: normal speed, falling diagonally
+      const targetSpeed = 1.6 + Math.random() * 0.6;
+      const tAngle = Math.PI * 0.45 + (Math.random() - 0.5) * 0.5;
+      const targetX = width * (0.2 + Math.random() * 0.6);
+      const targetY = -40 - Math.random() * 60;
+      const target = makeMeteor(
+        targetX,
+        targetY,
+        Math.cos(tAngle) * targetSpeed,
+        Math.sin(tAngle) * targetSpeed,
+        c1
+      );
+      meteors.push(target);
+
+      // Homing missile: fast, big, glows hard, comes from a side edge
+      const fromLeft = Math.random() > 0.5;
+      const missileSpeed = 6.5 + Math.random() * 1.5;
+      const startX = fromLeft ? -80 : width + 80;
+      const startY = Math.random() * height * 0.55;
+      const dx0 = targetX - startX;
+      const dy0 = targetY - startY;
+      const d0 = Math.hypot(dx0, dy0) || 1;
+      const missile = makeMeteor(
+        startX,
+        startY,
+        (dx0 / d0) * missileSpeed,
+        (dy0 / d0) * missileSpeed,
+        c2
+      );
+      missile.homing = true;
+      missile.targetId = target.id;
+      missile.maxSpeed = missileSpeed;
+      missile.size = 3.4 + Math.random() * 0.9; // much bigger
+      missile.tail = 180 + Math.random() * 80; // longer trail
+      missile.maxLife = 500;
+      meteors.push(missile);
+    }
+
     function spawnMeteor() {
-      // ~70% of spawns are convergent pairs → ~3-4 collisions per ~10 meteors
-      if (Math.random() < 0.7) spawnConvergentPair();
+      // 20% homing missile + target pair (guaranteed mega collision)
+      // 56% convergent pair (normal collisions, ~70% of remaining 80%)
+      // 24% solo (ambient flow)
+      const r = Math.random();
+      if (r < 0.2) spawnHomingPair();
+      else if (r < 0.76) spawnConvergentPair();
       else spawnSolo();
     }
 
-    function spawnBurst(x: number, y: number, c1: Color, c2: Color) {
-      bursts.push({ x, y, life: 0, maxLife: 70, c1, c2 });
+    function spawnBurst(x: number, y: number, c1: Color, c2: Color, mega = false) {
+      bursts.push({
+        x,
+        y,
+        life: 0,
+        maxLife: mega ? 160 : 70,
+        c1,
+        c2,
+        mega,
+      });
 
-      const N = 28;
+      const N = mega ? 56 : 28;
+      const speedMul = mega ? 2.2 : 1;
       for (let i = 0; i < N; i++) {
-        const a = (Math.PI * 2 * i) / N + Math.random() * 0.2;
-        const sp = 2.4 + Math.random() * 3.4;
+        const a = (Math.PI * 2 * i) / N + Math.random() * 0.25;
+        const sp = (2.4 + Math.random() * 3.4) * speedMul;
         particles.push({
           x,
           y,
           vx: Math.cos(a) * sp,
           vy: Math.sin(a) * sp,
           life: 0,
-          maxLife: 70 + Math.random() * 40,
+          maxLife: (mega ? 130 : 70) + Math.random() * (mega ? 80 : 40),
           color: i % 2 === 0 ? c1 : c2,
-          size: 1.4 + Math.random() * 2.2,
+          size: (mega ? 2.0 : 1.4) + Math.random() * (mega ? 3.2 : 2.2),
         });
       }
       // Inner sparkles
-      for (let i = 0; i < 14; i++) {
+      const innerN = mega ? 30 : 14;
+      for (let i = 0; i < innerN; i++) {
         const a = Math.random() * Math.PI * 2;
-        const sp = 0.6 + Math.random() * 1.6;
+        const sp = (0.6 + Math.random() * 1.6) * (mega ? 1.6 : 1);
         particles.push({
           x,
           y,
           vx: Math.cos(a) * sp,
           vy: Math.sin(a) * sp,
           life: 0,
-          maxLife: 100 + Math.random() * 60,
+          maxLife: (mega ? 180 : 100) + Math.random() * 60,
           color: Math.random() > 0.5 ? c1 : c2,
-          size: 0.8 + Math.random() * 1.2,
+          size: (mega ? 1.4 : 0.8) + Math.random() * (mega ? 2.0 : 1.2),
         });
       }
     }
@@ -310,8 +377,17 @@ export default function MeteorBackground() {
           if (a.color.name === b.color.name) continue; // only different colors collide
           const dx = a.x - b.x;
           const dy = a.y - b.y;
-          if (dx * dx + dy * dy < COLLISION_R2) {
-            spawnBurst((a.x + b.x) / 2, (a.y + b.y) / 2, a.color, b.color);
+          // Homing missiles get a much larger collision radius for guaranteed hit
+          const homingHit = a.homing || b.homing;
+          const r2 = homingHit ? 80 * 80 : COLLISION_R2;
+          if (dx * dx + dy * dy < r2) {
+            spawnBurst(
+              (a.x + b.x) / 2,
+              (a.y + b.y) / 2,
+              a.color,
+              b.color,
+              homingHit // homing collision = MEGA burst
+            );
             a.dead = true;
             b.dead = true;
             break;
@@ -326,14 +402,41 @@ export default function MeteorBackground() {
           meteors.splice(i, 1);
           continue;
         }
+
+        // Homing steering — chase the target
+        if (m.homing && m.targetId !== null) {
+          let target: Meteor | null = null;
+          for (const x of meteors) {
+            if (x.id === m.targetId && !x.dead) {
+              target = x;
+              break;
+            }
+          }
+          if (target) {
+            const dx = target.x - m.x;
+            const dy = target.y - m.y;
+            const d = Math.hypot(dx, dy) || 1;
+            const desVx = (dx / d) * m.maxSpeed;
+            const desVy = (dy / d) * m.maxSpeed;
+            // Steering: lerp velocity toward desired
+            m.vx += (desVx - m.vx) * 0.12;
+            m.vy += (desVy - m.vy) * 0.12;
+            const sp = Math.hypot(m.vx, m.vy);
+            if (sp > m.maxSpeed) {
+              m.vx = (m.vx / sp) * m.maxSpeed;
+              m.vy = (m.vy / sp) * m.maxSpeed;
+            }
+          }
+        }
+
         m.x += m.vx;
         m.y += m.vy;
         m.life++;
         if (
           m.life > m.maxLife ||
           m.y > height + 80 ||
-          m.x < -120 ||
-          m.x > width + 120
+          m.x < -200 ||
+          m.x > width + 200
         ) {
           meteors.splice(i, 1);
           continue;
@@ -346,8 +449,8 @@ export default function MeteorBackground() {
         // Trail gradient
         const grad = ctx.createLinearGradient(tx, ty, m.x, m.y);
         grad.addColorStop(0, `rgba(${m.color.rgb},0)`);
-        grad.addColorStop(0.55, `rgba(${m.color.rgb},0.35)`);
-        grad.addColorStop(1, `rgba(${m.color.rgb},0.95)`);
+        grad.addColorStop(0.5, `rgba(${m.color.rgb},${m.homing ? 0.55 : 0.35})`);
+        grad.addColorStop(1, `rgba(${m.color.rgb},${m.homing ? 1 : 0.95})`);
         ctx.strokeStyle = grad;
         ctx.lineWidth = m.size;
         ctx.lineCap = "round";
@@ -356,17 +459,37 @@ export default function MeteorBackground() {
         ctx.lineTo(m.x, m.y);
         ctx.stroke();
 
+        if (m.homing) {
+          // Outer aura ring for missiles
+          const aura = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.size * 6);
+          aura.addColorStop(0, `rgba(${m.color.rgb},0.55)`);
+          aura.addColorStop(0.4, `rgba(${m.color.rgb},0.22)`);
+          aura.addColorStop(1, `rgba(${m.color.rgb},0)`);
+          ctx.fillStyle = aura;
+          ctx.beginPath();
+          ctx.arc(m.x, m.y, m.size * 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
         // Head with glow
         ctx.shadowColor = m.color.core;
-        ctx.shadowBlur = 18;
+        ctx.shadowBlur = m.homing ? 36 : 18;
         ctx.fillStyle = m.color.core;
         ctx.beginPath();
-        ctx.arc(m.x, m.y, m.size * 1.4, 0, Math.PI * 2);
+        ctx.arc(m.x, m.y, m.size * (m.homing ? 1.6 : 1.4), 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
+
+        // White-hot core for missiles
+        if (m.homing) {
+          ctx.fillStyle = "rgba(255,255,255,0.95)";
+          ctx.beginPath();
+          ctx.arc(m.x, m.y, m.size * 0.55, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
-      // Update + draw bursts (impact rings)
+      // Update + draw bursts (impact rings + flash + shockwave)
       for (let i = bursts.length - 1; i >= 0; i--) {
         const b = bursts[i];
         b.life++;
@@ -376,14 +499,17 @@ export default function MeteorBackground() {
         }
         const p = b.life / b.maxLife;
         const eased = 1 - Math.pow(1 - p, 3);
-        const r1 = eased * 90;
-        const r2 = eased * 60;
-        const alpha = (1 - p) * 0.7;
 
-        ctx.lineWidth = 2;
+        const baseR = b.mega ? 260 : 90;
+        const baseR2 = b.mega ? 180 : 60;
+        const r1 = eased * baseR;
+        const r2 = eased * baseR2;
+        const alpha = (1 - p) * (b.mega ? 0.85 : 0.7);
+
+        ctx.lineWidth = b.mega ? 3.5 : 2;
         ctx.strokeStyle = `rgba(${b.c1.rgb},${alpha})`;
         ctx.shadowColor = b.c1.core;
-        ctx.shadowBlur = 22;
+        ctx.shadowBlur = b.mega ? 38 : 22;
         ctx.beginPath();
         ctx.arc(b.x, b.y, r1, 0, Math.PI * 2);
         ctx.stroke();
@@ -394,16 +520,30 @@ export default function MeteorBackground() {
         ctx.arc(b.x, b.y, r2, 0, Math.PI * 2);
         ctx.stroke();
 
+        // MEGA gets a 3rd huge shockwave ring
+        if (b.mega) {
+          ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.55})`;
+          ctx.lineWidth = 1.5;
+          ctx.shadowBlur = 24;
+          ctx.shadowColor = "#ffffff";
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, eased * 340, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
         // Bright core flash early
-        if (p < 0.2) {
-          const flashAlpha = (1 - p / 0.2) * 0.9;
-          const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, 30);
+        const flashWindow = b.mega ? 0.35 : 0.2;
+        if (p < flashWindow) {
+          const flashAlpha = (1 - p / flashWindow) * (b.mega ? 1 : 0.9);
+          const flashR = b.mega ? 110 : 30;
+          const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, flashR);
           grad.addColorStop(0, `rgba(255,255,255,${flashAlpha})`);
-          grad.addColorStop(0.5, `rgba(${b.c1.rgb},${flashAlpha * 0.6})`);
+          grad.addColorStop(0.4, `rgba(${b.c1.rgb},${flashAlpha * 0.75})`);
+          grad.addColorStop(0.8, `rgba(${b.c2.rgb},${flashAlpha * 0.4})`);
           grad.addColorStop(1, `rgba(${b.c2.rgb},0)`);
           ctx.fillStyle = grad;
           ctx.beginPath();
-          ctx.arc(b.x, b.y, 30, 0, Math.PI * 2);
+          ctx.arc(b.x, b.y, flashR, 0, Math.PI * 2);
           ctx.fill();
         }
         ctx.shadowBlur = 0;
