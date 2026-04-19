@@ -1246,4 +1246,38 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
   .pr-guarantee-grid{grid-template-columns:1fr;gap:10px}
   .pr-report-items{grid-template-columns:1fr}
   .nw-cta-buttons,.pr-cta-buttons{flex-direction:column;align-items:center}
+  .audience-matrix-single{grid-template-columns:1fr}
+  .audience-card-featured{min-height:280px}
+  .metrics-grid-compact{grid-template-columns:1fr}
+  .case-highlight-grid-compact{grid-template-columns:1fr}
+}
+
+/* ═══════════════════════════════════════════════════════
+   ROLE-FILTERED COMPACT LAYOUTS
+   ═══════════════════════════════════════════════════════ */
+
+/* Audience: single featured card */
+.audience-matrix-single{grid-template-columns:1fr;gap:0;background:none;border:none;max-width:800px;margin:48px auto 0}
+.audience-card-featured{min-height:480px;border:1px solid var(--gray-200);border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.06)}
+.audience-card-featured:hover{transform:translateY(-6px);box-shadow:0 16px 56px rgba(0,0,0,.1)}
+.audience-card-featured::before{height:5px}
+.audience-card-featured .aud-content{padding:40px 36px}
+.audience-card-featured h3{font-size:clamp(32px,4vw,48px)}
+
+/* Metrics: 2-col compact */
+.metrics-grid-compact{grid-template-columns:repeat(2,1fr)!important;gap:32px;max-width:720px}
+
+/* Case highlights: 2-col compact */
+.case-highlight-grid-compact{grid-template-columns:repeat(2,1fr)!important;gap:20px;max-width:720px;margin-left:auto;margin-right:auto}
+
+/* Role change button */
+.role-change-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;font-size:13px;font-weight:600;letter-spacing:.02em;border:1px solid var(--gray-200);border-radius:100px;background:var(--white);color:var(--gray-600);cursor:pointer;transition:all .25s ease}
+.role-change-btn:hover{border-color:var(--gray-400);color:var(--black);background:var(--gray-50)}
+
+/* Mobile overrides for compact layouts */
+@media(max-width:600px){
+  .audience-card-featured{min-height:320px}
+  .audience-card-featured .aud-content{padding:28px 20px}
+  .metrics-grid-compact{grid-template-columns:1fr!important;gap:20px}
+  .case-highlight-grid-compact{grid-template-columns:1fr!important;gap:16px}
 }

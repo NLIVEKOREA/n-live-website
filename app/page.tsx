@@ -9,6 +9,11 @@ import type { Lang } from "@/lib/i18n";
 
 type Role = "korean-brand" | "korean-seller" | "overseas-brand" | "overseas-seller";
 
+/* ────────────────────────────────────────────────────────
+   ROLE-BASED FUNNEL: 역할 선택 후 모든 섹션이 해당 역할에
+   맞는 정보만 우선 노출, 불필요한 정보는 숨기거나 축소
+   ──────────────────────────────────────────────────────── */
+
 export default function HomePage() {
   const { t, lang } = useLang();
   const [activeTag, setActiveTag] = useState<number | null>(null);
@@ -28,37 +33,50 @@ export default function HomePage() {
   const changeRole = () => {
     setShowSelector(true);
     setRole(null);
+    setActiveTag(null);
   };
 
-  // Role-specific hero content per language
-  const ROLE_HERO: Record<Role, Record<Lang, { title1: string; title2: string; sub: string; cta: string }>> = {
+  // ═══════════════════════════════════════════════════════
+  // ROLE-SPECIFIC HERO
+  // ═══════════════════════════════════════════════════════
+  const ROLE_HERO: Record<Role, Record<Lang, { title1: string; title2: string; sub: string; cta1: string; cta2: string }>> = {
     "korean-brand": {
-      ko: { title1: "당신의 브랜드를", title2: "중국 라이브에 올립니다", sub: "왕홍 500+ 매칭 · 더우인·샤오홍슈·타오바오 라이브 운영 · 통관·정산·CS까지 — 원스톱.", cta: "중국 진출 상담 시작" },
-      en: { title1: "Put your brand", title2: "on China's live stream", sub: "500+ KOL matching · Douyin/Xiaohongshu/Taobao live ops · customs, settlement, CS — all-in-one.", cta: "Start China entry consultation" },
-      zh: { title1: "把您的品牌", title2: "搬上中国直播间", sub: "500+ 达人匹配 · 抖音/小红书/淘宝直播运营 · 通关/结算/客服 — 一站式服务。", cta: "开始中国市场咨询" },
-      ja: { title1: "あなたのブランドを", title2: "中国ライブに載せます", sub: "500+ KOLマッチング · 抖音/小紅書/淘宝ライブ運営 · 通関・精算・CSまでワンストップ。", cta: "中国進出相談を始める" },
+      ko: { title1: "당신의 브랜드를", title2: "중국 라이브에 올립니다", sub: "왕홍 500+ 매칭 · 더우인·샤오홍슈·타오바오 라이브 운영 · 통관·정산·CS까지 — 원스톱.", cta1: "중국 진출 상담 시작", cta2: "서비스 상세 보기" },
+      en: { title1: "Put your brand", title2: "on China's live stream", sub: "500+ KOL matching · Douyin/Xiaohongshu/Taobao live ops · customs, settlement, CS — all-in-one.", cta1: "Start China entry consultation", cta2: "See service details" },
+      zh: { title1: "把您的品牌", title2: "搬上中国直播间", sub: "500+ 达人匹配 · 抖音/小红书/淘宝直播运营 · 通关/结算/客服 — 一站式服务。", cta1: "开始中国市场咨询", cta2: "查看服务详情" },
+      ja: { title1: "あなたのブランドを", title2: "中国ライブに載せます", sub: "500+ KOLマッチング · 抖音/小紅書/淘宝ライブ運営 · 通関・精算・CSまでワンストップ。", cta1: "中国進出相談を始める", cta2: "サービス詳細を見る" },
     },
     "korean-seller": {
-      ko: { title1: "해외 브랜드 직공급 ×", title2: "왕홍 콜라보 라이브", sub: "브랜드 소싱 · 왕홍 콜라보 기획 · 한중 이중 콘텐츠 · 크로스보더 정산·물류까지 풀세트 지원.", cta: "셀러 전용 상담 시작" },
-      en: { title1: "Direct brand supply ×", title2: "KOL collab live", sub: "Brand sourcing · KOL collab planning · KR-CN dual content · cross-border settlement & logistics — full stack.", cta: "Start seller consultation" },
-      zh: { title1: "海外品牌直供 ×", title2: "达人联名直播", sub: "品牌货源 · 达人联名企划 · 中韩双语内容 · 跨境结算物流 — 全栈支持。", cta: "开始卖家专属咨询" },
-      ja: { title1: "海外ブランド直供給 ×", title2: "KOLコラボライブ", sub: "ブランドソーシング · KOLコラボ企画 · 韓中デュアルコンテンツ · クロスボーダー精算・物流までフルサポート。", cta: "セラー専用相談を始める" },
+      ko: { title1: "해외 브랜드 직공급 ×", title2: "왕홍 콜라보 라이브", sub: "브랜드 소싱 · 왕홍 콜라보 기획 · 한중 이중 콘텐츠 · 크로스보더 정산·물류까지 풀세트 지원.", cta1: "셀러 전용 상담 시작", cta2: "셀러 서비스 보기" },
+      en: { title1: "Direct brand supply ×", title2: "KOL collab live", sub: "Brand sourcing · KOL collab planning · KR-CN dual content · cross-border settlement & logistics — full stack.", cta1: "Start seller consultation", cta2: "See seller services" },
+      zh: { title1: "海外品牌直供 ×", title2: "达人联名直播", sub: "品牌货源 · 达人联名企划 · 中韩双语内容 · 跨境结算物流 — 全栈支持。", cta1: "开始卖家专属咨询", cta2: "查看卖家服务" },
+      ja: { title1: "海外ブランド直供給 ×", title2: "KOLコラボライブ", sub: "ブランドソーシング · KOLコラボ企画 · 韓中デュアルコンテンツ · クロスボーダー精算・物流までフルサポート。", cta1: "セラー専用相談を始める", cta2: "セラーサービスを見る" },
     },
     "overseas-brand": {
-      ko: { title1: "한국 셀러브리티 100+", title2: "당신의 브랜드와 연결합니다", sub: "연예인 매칭 · KOL 캠페인 · 한국 라이브 플랫폼 운영 · 드라마 PPL까지 — 한국 시장 진출의 모든 채널.", cta: "한국 진출 상담 시작" },
-      en: { title1: "100+ Korean celebrities", title2: "connected to your brand", sub: "Celebrity matching · KOL campaigns · Korean live platform ops · drama PPL — every channel for Korean market entry.", cta: "Start Korea entry consultation" },
-      zh: { title1: "100+ 韩国明星", title2: "与您的品牌连接", sub: "艺人匹配 · KOL营销 · 韩国直播平台运营 · 电视剧PPL — 进入韩国市场的所有渠道。", cta: "开始韩国市场咨询" },
-      ja: { title1: "韓国セレブリティ100+", title2: "あなたのブランドと繋ぎます", sub: "芸能人マッチング · KOLキャンペーン · 韓国ライブプラットフォーム運営 · ドラマPPLまで — 韓国市場参入のすべて。", cta: "韓国進出相談を始める" },
+      ko: { title1: "한국 셀러브리티 100+", title2: "당신의 브랜드와 연결합니다", sub: "연예인 매칭 · KOL 캠페인 · 한국 라이브 플랫폼 운영 · 드라마 PPL까지 — 한국 시장 진출의 모든 채널.", cta1: "한국 진출 상담 시작", cta2: "서비스 상세 보기" },
+      en: { title1: "100+ Korean celebrities", title2: "connected to your brand", sub: "Celebrity matching · KOL campaigns · Korean live platform ops · drama PPL — every channel for Korean market entry.", cta1: "Start Korea entry consultation", cta2: "See service details" },
+      zh: { title1: "100+ 韩国明星", title2: "与您的品牌连接", sub: "艺人匹配 · KOL营销 · 韩国直播平台运营 · 电视剧PPL — 进入韩国市场的所有渠道。", cta1: "开始韩国市场咨询", cta2: "查看服务详情" },
+      ja: { title1: "韓国セレブリティ100+", title2: "あなたのブランドと繋ぎます", sub: "芸能人マッチング · KOLキャンペーン · 韓国ライブプラットフォーム運営 · ドラマPPLまで — 韓国市場参入のすべて。", cta1: "韓国進出相談を始める", cta2: "サービス詳細を見る" },
     },
     "overseas-seller": {
-      ko: { title1: "K-Beauty · K-Fashion", title2: "직공급 + 한국 현지 지원", sub: "한국 브랜드 소싱 · 현지 촬영 지원 · 한국 연예인 게스트 연결 · 크로스보더 물류까지.", cta: "왕홍 전용 상담 시작" },
-      en: { title1: "K-Beauty · K-Fashion", title2: "direct supply + Korea support", sub: "Korean brand sourcing · on-site filming support · Korean celebrity guest matching · cross-border logistics.", cta: "Start KOL consultation" },
-      zh: { title1: "K-Beauty · K-Fashion", title2: "直供 + 韩国本地支持", sub: "韩国品牌货源 · 韩国本地拍摄支持 · 韩国艺人嘉宾对接 · 跨境物流全覆盖。", cta: "开始达人专属咨询" },
-      ja: { title1: "K-Beauty · K-Fashion", title2: "直供給 + 韓国現地サポート", sub: "韓国ブランドソーシング · 現地撮影サポート · 韓国芸能人ゲスト連結 · クロスボーダー物流まで。", cta: "KOL専用相談を始める" },
+      ko: { title1: "K-Beauty · K-Fashion", title2: "직공급 + 한국 현지 지원", sub: "한국 브랜드 소싱 · 현지 촬영 지원 · 한국 연예인 게스트 연결 · 크로스보더 물류까지.", cta1: "왕홍 전용 상담 시작", cta2: "왕홍 서비스 보기" },
+      en: { title1: "K-Beauty · K-Fashion", title2: "direct supply + Korea support", sub: "Korean brand sourcing · on-site filming support · Korean celebrity guest matching · cross-border logistics.", cta1: "Start KOL consultation", cta2: "See KOL services" },
+      zh: { title1: "K-Beauty · K-Fashion", title2: "直供 + 韩国本地支持", sub: "韩国品牌货源 · 韩国本地拍摄支持 · 韩国艺人嘉宾对接 · 跨境物流全覆盖。", cta1: "开始达人专属咨询", cta2: "查看达人服务" },
+      ja: { title1: "K-Beauty · K-Fashion", title2: "直供給 + 韓国現地サポート", sub: "韓国ブランドソーシング · 現地撮影サポート · 韓国芸能人ゲスト連結 · クロスボーダー物流まで。", cta1: "KOL専用相談を始める", cta2: "KOLサービスを見る" },
     },
   };
 
-  // Role selector — trilingual labels (KO / EN / ZH shown simultaneously)
+  // Role → detail page link
+  const ROLE_DETAIL: Record<Role, string> = {
+    "korean-brand": "/for-korean-brands",
+    "korean-seller": "/for-korean-sellers",
+    "overseas-brand": "/for-overseas-brands",
+    "overseas-seller": "/for-overseas-sellers",
+  };
+
+  // ═══════════════════════════════════════════════════════
+  // ROLE SELECTOR CARDS (trilingual)
+  // ═══════════════════════════════════════════════════════
   const ROLE_CARDS: Record<Role, { ko: string; en: string; zh: string; tag: string }> = {
     "korean-brand":   { ko: "한국 브랜드",           en: "Korean Brand",              zh: "韩国品牌",     tag: "BRAND → CHINA" },
     "korean-seller":  { ko: "한국 셀러 · 인플루언서", en: "Korean Seller · Influencer", zh: "韩国卖家 · 达人", tag: "SELLER × KOL" },
@@ -66,35 +84,287 @@ export default function HomePage() {
     "overseas-seller":{ ko: "해외 셀러 · 왕홍",      en: "Global Seller · KOL",       zh: "海外卖家 · 达人", tag: "K-SUPPLY" },
   };
 
-  // Tag interactive panels — what each audience can do with us
-  const TAGS: Record<Lang, Array<{ label: string; pitch: string; href: string }>> = {
+  // ═══════════════════════════════════════════════════════
+  // ROLE-SPECIFIC METRICS (each role sees only 2 relevant)
+  // ═══════════════════════════════════════════════════════
+  type MetricItem = { n: string; label: string; sub: string };
+  const ALL_METRICS: Record<Lang, MetricItem[]> = {
     ko: [
-      { label: "한국 브랜드", pitch: "한국 브랜드라면 — 검증된 중국 왕홍 500+ 매칭 + 샤오홍슈·더우인·타오바오 라이브 운영 + 통관·정품·CS까지. 중국 진출에 필요한 모든 인프라를 단일 창구로 제공합니다.", href: "/for-korean-brands" },
-      { label: "해외 브랜드", pitch: "해외 브랜드라면 — 한국 정상급 연예인 100+, 한국 KOL 500+, 한국 라이브 플랫폼 운영, 드라마 PPL까지. 한국 시장 진출의 모든 채널을 한 곳에서.", href: "/for-overseas-brands" },
-      { label: "한국 셀러·인플루언서", pitch: "한국 셀러·인플루언서라면 — 중국 왕홍과 콜라보 라이브, 해외 브랜드 직공급, 한중 이중 콘텐츠 기획, 크로스보더 정산·물류까지 풀세트 지원합니다.", href: "/for-korean-sellers" },
-      { label: "중국 왕홍", pitch: "중국 왕홍이라면 — K-Beauty·K-Fashion·잡화 직공급, 한국 현지 촬영 지원, 한국 연예인·KOL 콜라보 게스트 연결까지 모두 가능합니다.", href: "/for-overseas-sellers" },
-      { label: "한국 연예인", pitch: "한국 연예인 자원을 찾으신다면 — 정상급 100+ 협업 풀, 기본 협찬·프리미엄·유가·SNS·드라마 PPL 5단계 옵션을 단일 창구로 매칭합니다.", href: "/network" },
+      { n: "150+", label: "검증 협력 브랜드", sub: "K-Beauty·K-Fashion·잡화·헬스 등" },
+      { n: "500+", label: "한·중 라이브커머스 셀러", sub: "검증된 라이브 운영 셀러 풀" },
+      { n: "200+", label: "한국 유명 인플루언서", sub: "메가 KOL부터 마이크로까지 전 등급" },
+      { n: "100+", label: "한국 정상급 연예인", sub: "배우·K-POP·가수·방송인" },
     ],
     en: [
-      { label: "Korean Brands", pitch: "If you're a Korean brand — verified 500+ Chinese wanghong matching + Xiaohongshu/Douyin/Taobao live operations + customs, authentication, and CS. Every channel for entering China through one window.", href: "/for-korean-brands" },
-      { label: "Global Brands", pitch: "If you're a global brand — 100+ top-tier Korean celebrities, 500+ Korean KOLs, Korean live platform operations, drama PPL. Every channel for Korean market entry, in one place.", href: "/for-overseas-brands" },
-      { label: "Korean Sellers · Influencers", pitch: "If you're a Korean seller or influencer — Chinese wanghong collab lives, direct global brand sourcing, Korea-China dual content planning, cross-border settlement & logistics. Full-stack support.", href: "/for-korean-sellers" },
-      { label: "Chinese Wanghong", pitch: "If you're a Chinese wanghong — K-Beauty/K-Fashion/accessory direct supply, Korean on-site filming support, Korean celebrity & KOL collaboration guest matching. All available.", href: "/for-overseas-sellers" },
-      { label: "Korean Celebrities", pitch: "Looking for Korean celebrity resources — 100+ top-tier collaboration pool, 5-tier options from basic sponsorship to drama PPL, all matched through a single window.", href: "/network" },
+      { n: "150+", label: "Verified Partner Brands", sub: "K-Beauty · K-Fashion · accessories · wellness" },
+      { n: "500+", label: "K-CN Live Commerce Sellers", sub: "Verified live-operating seller pool" },
+      { n: "200+", label: "Korean Influencers", sub: "Mega-KOL to micro across all tiers" },
+      { n: "100+", label: "Top Korean Celebrities", sub: "Actors · K-POP · singers · broadcasters" },
     ],
     zh: [
-      { label: "韩国品牌", pitch: "如果您是韩国品牌 — 经验证的 500+ 中国达人匹配 + 小红书/抖音/淘宝直播运营 + 通关、正品、客服。进入中国所需的所有基础设施,通过单一窗口提供。", href: "/for-korean-brands" },
-      { label: "海外品牌", pitch: "如果您是海外品牌 — 100+ 韩国顶级艺人、500+ 韩国 KOL、韩国直播平台运营、电视剧 PPL。进入韩国市场的所有渠道,集于一处。", href: "/for-overseas-brands" },
-      { label: "韩国卖家 · 达人", pitch: "如果您是韩国卖家或达人 — 中国达人联名直播、海外品牌直供、中韩双语内容企划、跨境结算与物流。全栈支持。", href: "/for-korean-sellers" },
-      { label: "中国达人", pitch: "如果您是中国达人 — K-Beauty/K-Fashion/配饰直供、韩国本地拍摄支持、韩国艺人·KOL 联名嘉宾对接。全部可用。", href: "/for-overseas-sellers" },
-      { label: "韩国艺人", pitch: "寻找韩国艺人资源 — 100+ 顶级合作池、从基础置换到电视剧 PPL 五档选项,通过单一窗口匹配。", href: "/network" },
+      { n: "150+", label: "经验证的合作品牌", sub: "美妆 · 服装 · 配饰 · 健康等" },
+      { n: "500+", label: "中韩直播电商卖家", sub: "经验证的直播运营卖家池" },
+      { n: "200+", label: "韩国知名达人", sub: "从头部 KOL 到中腰部全覆盖" },
+      { n: "100+", label: "韩国顶级艺人", sub: "演员 · K-POP · 歌手 · 主持人" },
     ],
     ja: [
-      { label: "韓国ブランド", pitch: "韓国ブランドなら — 検証済み 500+ 中国KOLマッチング + 小紅書/抖音/淘宝ライブ運営 + 通関、正規品認証、CSまで。中国進出に必要なすべてのインフラを単一窓口で。", href: "/for-korean-brands" },
-      { label: "海外ブランド", pitch: "海外ブランドなら — 100+ 韓国トップクラス芸能人、500+ 韓国KOL、韓国ライブプラットフォーム運営、ドラマPPLまで。韓国市場参入のすべてのチャネルを一つの場所で。", href: "/for-overseas-brands" },
-      { label: "韓国セラー · インフルエンサー", pitch: "韓国セラー・インフルエンサーなら — 中国KOLとのコラボライブ、海外ブランド直供給、韓中二重コンテンツ企画、クロスボーダー精算・物流までフルスタックサポート。", href: "/for-korean-sellers" },
-      { label: "中国KOL", pitch: "中国KOLなら — K-Beauty/K-Fashion/アクセサリー直供給、韓国現地撮影サポート、韓国芸能人・KOLコラボゲスト連結まですべて可能。", href: "/for-overseas-sellers" },
-      { label: "韓国芸能人", pitch: "韓国芸能人リソースをお探しなら — トップクラス 100+ コラボプール、基本協賛から有償・SNS・ドラマPPLまで5段階のオプションを単一窓口でマッチング。", href: "/network" },
+      { n: "150+", label: "検証済みパートナーブランド", sub: "K-Beauty · K-Fashion · アクセサリー · ヘルス等" },
+      { n: "500+", label: "韓中ライブコマースセラー", sub: "検証済みライブ運営セラープール" },
+      { n: "200+", label: "韓国有名インフルエンサー", sub: "メガKOLからマイクロまで全等級" },
+      { n: "100+", label: "韓国トップクラス芸能人", sub: "俳優 · K-POP · 歌手 · 放送人" },
+    ],
+  };
+
+  // Which metric indices are relevant per role (indices: 0=brands, 1=sellers, 2=influencers, 3=celebrities)
+  const ROLE_METRIC_IDX: Record<Role, number[]> = {
+    "korean-brand": [1, 2],       // 셀러(판매), 인플루언서(KOL) — 이들이 내 상품을 팔아준다
+    "korean-seller": [0, 1],      // 브랜드(소싱), 셀러(네트워크)
+    "overseas-brand": [2, 3],     // 인플루언서, 연예인 — 한국 시장 영향력
+    "overseas-seller": [0, 3],    // 브랜드(K-제품 소싱), 연예인(게스트)
+  };
+
+  // ═══════════════════════════════════════════════════════
+  // ROLE-SPECIFIC CASE HIGHLIGHTS
+  // ═══════════════════════════════════════════════════════
+  type CaseItem = { num: string; brand: string; desc: string; cat: string };
+  const ALL_CASES: Record<Lang, CaseItem[]> = {
+    ko: [
+      { num: "183억 원", brand: "더후 × 댠댠", desc: "단일 라이브 매출 — 한국 방문 3일, 4회 라이브", cat: "m-amber" },
+      { num: "4시간 전량 매진", brand: "메디큐브", desc: "더우인 라이브에서 1.2만개 기획세트 전량 소진", cat: "m-emerald" },
+      { num: "매출 50% 증가", brand: "Dior × 지수", desc: "BLACKPINK 지수 앰배서더 발탁 후 한국 매출 급증", cat: "m-azure" },
+      { num: "2,000억 원", brand: "왕홍 댠댠 한국 방문", desc: "3일간 총 매출 — K-뷰티 집중 판매", cat: "m-coral" },
+    ],
+    en: [
+      { num: "₩18.3B", brand: "Whoo × Dandan", desc: "Single live revenue — 3-day Korea visit, 4 broadcasts", cat: "m-amber" },
+      { num: "Sold out in 4hrs", brand: "Medicube", desc: "12,000 curated sets sold out on Douyin live", cat: "m-emerald" },
+      { num: "+50% revenue", brand: "Dior × Jisoo", desc: "Korea revenue surged after BLACKPINK Jisoo ambassadorship", cat: "m-azure" },
+      { num: "₩200B", brand: "Dandan Korea Visit", desc: "3-day total — focused K-Beauty sales", cat: "m-coral" },
+    ],
+    zh: [
+      { num: "183亿韩元", brand: "后 × 丹丹", desc: "单场直播销售额 — 访韩3天4场直播", cat: "m-amber" },
+      { num: "4小时全部售罄", brand: "Medicube", desc: "抖音直播1.2万套策划套装全部售罄", cat: "m-emerald" },
+      { num: "销售额增长50%", brand: "Dior × 智秀", desc: "BLACKPINK智秀任大使后韩国销售额激增", cat: "m-azure" },
+      { num: "10亿元人民币", brand: "达人丹丹访韩", desc: "3天总销售额 — K-Beauty集中销售", cat: "m-coral" },
+    ],
+    ja: [
+      { num: "183億ウォン", brand: "后 × ダンダン", desc: "単一ライブ売上 — 訪韓3日間4回ライブ", cat: "m-amber" },
+      { num: "4時間で完売", brand: "Medicube", desc: "抖音ライブで1.2万セット完売", cat: "m-emerald" },
+      { num: "売上50%増加", brand: "Dior × ジス", desc: "BLACKPINKジスアンバサダー就任後、韓国売上急増", cat: "m-azure" },
+      { num: "2,000億ウォン", brand: "KOLダンダン訪韓", desc: "3日間の総売上 — K-Beauty集中販売", cat: "m-coral" },
+    ],
+  };
+
+  // Cases: 0=더후×댠댠(중국라이브), 1=메디큐브(더우인), 2=Dior×지수(연예인), 3=댠댠방문(왕홍소싱)
+  const ROLE_CASE_IDX: Record<Role, number[]> = {
+    "korean-brand": [0, 1],       // 중국 라이브 판매 성과
+    "korean-seller": [0, 1],      // 라이브 판매, 매진 사례
+    "overseas-brand": [2, 0],     // 연예인 캠페인 + 라이브 매출
+    "overseas-seller": [3, 0],    // K-뷰티 소싱 + 왕홍 실적
+  };
+
+  // ═══════════════════════════════════════════════════════
+  // ROLE-SPECIFIC PROCESS STEPS
+  // ═══════════════════════════════════════════════════════
+  type StepItem = { n: string; t: string; d: string };
+  const ROLE_STEPS: Record<Role, Record<Lang, StepItem[]>> = {
+    "korean-brand": {
+      ko: [
+        { n: "01", t: "문의 접수", d: "브랜드 카테고리 · 목표 · 예산 → 48시간 이내 전담 매니저 회신" },
+        { n: "02", t: "무료 컨셉 미팅", d: "비대면 30분 · 중국 시장 진단 · 타겟 플랫폼 · 왕홍 전략 제안" },
+        { n: "03", t: "왕홍 매칭 · 제안서", d: "검증된 왕홍 후보 리스트 · 플랫폼 전략 · 예상 GMV · 견적" },
+        { n: "04", t: "중국 라이브 실행", d: "더우인/샤오홍슈/타오바오 라이브 운영 · 통관 · 정산 · CS 원스톱" },
+        { n: "05", t: "성과 리포트", d: "왕홍별 GMV · 플랫폼별 전환율 · 다음 캠페인 로드맵" },
+      ],
+      en: [
+        { n: "01", t: "Inquiry", d: "Brand category · goals · budget → dedicated manager reply within 48hrs" },
+        { n: "02", t: "Free Concept Meeting", d: "30min remote · China market diagnosis · target platform · KOL strategy" },
+        { n: "03", t: "KOL Matching & Proposal", d: "Verified KOL candidates · platform strategy · projected GMV · quote" },
+        { n: "04", t: "China Live Execution", d: "Douyin/Xiaohongshu/Taobao live ops · customs · settlement · CS" },
+        { n: "05", t: "Performance Report", d: "Per-KOL GMV · per-platform conversion · next campaign roadmap" },
+      ],
+      zh: [
+        { n: "01", t: "咨询受理", d: "品牌品类·目标·预算 → 48小时内专属经理回复" },
+        { n: "02", t: "免费概念会议", d: "线上30分钟 · 中国市场诊断 · 目标平台 · 达人策略" },
+        { n: "03", t: "达人匹配·方案", d: "经验证达人候选 · 平台策略 · 预期GMV · 报价" },
+        { n: "04", t: "中国直播执行", d: "抖音/小红书/淘宝直播运营 · 通关 · 结算 · 客服" },
+        { n: "05", t: "成果报告", d: "达人别GMV · 平台别转化率 · 下一期路线图" },
+      ],
+      ja: [
+        { n: "01", t: "問い合わせ", d: "ブランドカテゴリ・目標・予算 → 48時間以内に専任マネージャー返信" },
+        { n: "02", t: "無料コンセプトMTG", d: "オンライン30分 · 中国市場診断 · ターゲットプラットフォーム · KOL戦略" },
+        { n: "03", t: "KOLマッチング・提案書", d: "検証済みKOL候補 · プラットフォーム戦略 · 予想GMV · 見積" },
+        { n: "04", t: "中国ライブ実行", d: "抖音/小紅書/淘宝ライブ運営 · 通関 · 精算 · CS" },
+        { n: "05", t: "成果レポート", d: "KOL別GMV · プラットフォーム別転換率 · 次期ロードマップ" },
+      ],
+    },
+    "korean-seller": {
+      ko: [
+        { n: "01", t: "문의 접수", d: "취급 카테고리 · 판매 채널 · 희망 브랜드군 → 48시간 이내 회신" },
+        { n: "02", t: "무료 컨셉 미팅", d: "비대면 30분 · 공급 가능 브랜드 · 콜라보 기회 · 수익 구조 설명" },
+        { n: "03", t: "브랜드 매칭 · 제안서", d: "카테고리 적합 브랜드 리스트 · 왕홍 콜라보 기획 · 공급 조건" },
+        { n: "04", t: "콜라보 라이브 실행", d: "왕홍 콜라보 기획 · 한중 콘텐츠 제작 · 물류 · 크로스보더 정산" },
+        { n: "05", t: "성과 공유", d: "판매 데이터 · 브랜드 피드백 · 추가 공급 및 확장 제안" },
+      ],
+      en: [
+        { n: "01", t: "Inquiry", d: "Category · sales channel · target brands → reply within 48hrs" },
+        { n: "02", t: "Free Concept Meeting", d: "30min remote · available brands · collab opportunities · revenue structure" },
+        { n: "03", t: "Brand Matching & Proposal", d: "Category-fit brand list · KOL collab plan · supply terms" },
+        { n: "04", t: "Collab Live Execution", d: "KOL collab planning · KR-CN content · logistics · cross-border settlement" },
+        { n: "05", t: "Performance Sharing", d: "Sales data · brand feedback · expansion proposals" },
+      ],
+      zh: [
+        { n: "01", t: "咨询受理", d: "品类·销售渠道·目标品牌 → 48小时内回复" },
+        { n: "02", t: "免费概念会议", d: "线上30分钟 · 可供品牌 · 联名机会 · 收益结构" },
+        { n: "03", t: "品牌匹配·方案", d: "品类适配品牌清单 · 达人联名企划 · 供货条件" },
+        { n: "04", t: "联名直播执行", d: "达人联名企划 · 中韩内容制作 · 物流 · 跨境结算" },
+        { n: "05", t: "成果共享", d: "销售数据 · 品牌反馈 · 扩展提案" },
+      ],
+      ja: [
+        { n: "01", t: "問い合わせ", d: "カテゴリ · 販売チャネル · 希望ブランド → 48時間以内返信" },
+        { n: "02", t: "無料コンセプトMTG", d: "オンライン30分 · 供給可能ブランド · コラボ機会 · 収益構造" },
+        { n: "03", t: "ブランドマッチング・提案書", d: "カテゴリ適合ブランドリスト · KOLコラボ企画 · 供給条件" },
+        { n: "04", t: "コラボライブ実行", d: "KOLコラボ企画 · 韓中コンテンツ · 物流 · クロスボーダー精算" },
+        { n: "05", t: "成果共有", d: "販売データ · ブランドフィードバック · 拡張提案" },
+      ],
+    },
+    "overseas-brand": {
+      ko: [
+        { n: "01", t: "문의 접수", d: "브랜드 · 한국 진출 목표 · 희망 채널(연예인/KOL/라이브) → 48시간 회신" },
+        { n: "02", t: "무료 컨셉 미팅", d: "비대면 30분 · 한국 시장 진단 · 셀러브리티/KOL 후보 방향 제안" },
+        { n: "03", t: "연예인·KOL 매칭 제안서", d: "연예인/KOL 후보 리스트 · 캠페인 옵션(협찬~PPL) · 예상 효과 · 견적" },
+        { n: "04", t: "한국 캠페인 실행", d: "연예인 섭외 → 콘텐츠/라이브 제작 → 한국 플랫폼 운영" },
+        { n: "05", t: "성과 리포트", d: "캠페인 노출 · 매출 · 브랜드 인지 변화 · 다음 단계 로드맵" },
+      ],
+      en: [
+        { n: "01", t: "Inquiry", d: "Brand · Korea entry goals · preferred channel (celebrity/KOL/live) → 48hr reply" },
+        { n: "02", t: "Free Concept Meeting", d: "30min remote · Korea market diagnosis · celebrity/KOL candidate direction" },
+        { n: "03", t: "Celebrity & KOL Proposal", d: "Talent candidates · campaign options (sponsorship~PPL) · projected impact · quote" },
+        { n: "04", t: "Korea Campaign Execution", d: "Talent booking → content/live production → Korean platform ops" },
+        { n: "05", t: "Performance Report", d: "Campaign reach · revenue · brand awareness shift · next-stage roadmap" },
+      ],
+      zh: [
+        { n: "01", t: "咨询受理", d: "品牌·韩国市场目标·希望渠道(艺人/KOL/直播) → 48小时回复" },
+        { n: "02", t: "免费概念会议", d: "线上30分钟 · 韩国市场诊断 · 艺人/KOL候选方向" },
+        { n: "03", t: "艺人·KOL匹配方案", d: "艺人/KOL候选 · 营销选项(置换~PPL) · 预期效果 · 报价" },
+        { n: "04", t: "韩国营销执行", d: "艺人邀约 → 内容/直播制作 → 韩国平台运营" },
+        { n: "05", t: "成果报告", d: "营销曝光 · 销售额 · 品牌认知变化 · 下阶段路线图" },
+      ],
+      ja: [
+        { n: "01", t: "問い合わせ", d: "ブランド · 韓国進出目標 · 希望チャネル(芸能人/KOL/ライブ) → 48時間返信" },
+        { n: "02", t: "無料コンセプトMTG", d: "オンライン30分 · 韓国市場診断 · 芸能人/KOL候補の方向提案" },
+        { n: "03", t: "芸能人・KOL提案書", d: "タレント候補 · キャンペーンオプション(協賛～PPL) · 予想効果 · 見積" },
+        { n: "04", t: "韓国キャンペーン実行", d: "タレントブッキング → コンテンツ/ライブ制作 → 韓国プラットフォーム運営" },
+        { n: "05", t: "成果レポート", d: "キャンペーンリーチ · 売上 · ブランド認知変化 · 次段階ロードマップ" },
+      ],
+    },
+    "overseas-seller": {
+      ko: [
+        { n: "01", t: "문의 접수", d: "관심 카테고리 · 채널 · 팔로워 규모 · 라이브 여부 → 48시간 회신" },
+        { n: "02", t: "무료 컨셉 미팅", d: "비대면 30분 · 공급 가능 K-브랜드 소개 · 한국 촬영 가능 여부 확인" },
+        { n: "03", t: "브랜드 직공급 제안서", d: "K-뷰티/패션 직공급 브랜드 리스트 · 샘플 · 가격 · 물류 조건" },
+        { n: "04", t: "한국 현지 지원 실행", d: "한국 브랜드 직공급 → 현지 촬영 지원 → 연예인 게스트 연결" },
+        { n: "05", t: "성과 · 재공급", d: "판매 데이터 · 재공급 스케줄 · 추가 브랜드 확장" },
+      ],
+      en: [
+        { n: "01", t: "Inquiry", d: "Category · channel · follower size · live status → reply within 48hrs" },
+        { n: "02", t: "Free Concept Meeting", d: "30min remote · available K-brands · Korea filming support options" },
+        { n: "03", t: "Direct Supply Proposal", d: "K-Beauty/Fashion brand list · samples · pricing · logistics terms" },
+        { n: "04", t: "Korea Support Execution", d: "K-brand direct supply → on-site filming → celebrity guest matching" },
+        { n: "05", t: "Results & Resupply", d: "Sales data · resupply schedule · brand expansion" },
+      ],
+      zh: [
+        { n: "01", t: "咨询受理", d: "关注品类·渠道·粉丝规模·是否直播 → 48小时回复" },
+        { n: "02", t: "免费概念会议", d: "线上30分钟 · 可供K-品牌介绍 · 韩国拍摄支持确认" },
+        { n: "03", t: "直供方案", d: "K-Beauty/Fashion品牌清单 · 样品 · 价格 · 物流条件" },
+        { n: "04", t: "韩国本地支持", d: "K-品牌直供 → 韩国本地拍摄 → 艺人嘉宾对接" },
+        { n: "05", t: "成果·复购", d: "销售数据 · 复购计划 · 品牌扩展" },
+      ],
+      ja: [
+        { n: "01", t: "問い合わせ", d: "関心カテゴリ · チャネル · フォロワー規模 · ライブ有無 → 48時間返信" },
+        { n: "02", t: "無料コンセプトMTG", d: "オンライン30分 · 供給可能K-ブランド紹介 · 韓国撮影サポート確認" },
+        { n: "03", t: "直供給提案書", d: "K-Beauty/Fashionブランドリスト · サンプル · 価格 · 物流条件" },
+        { n: "04", t: "韓国現地サポート実行", d: "K-ブランド直供給 → 現地撮影サポート → 芸能人ゲスト連結" },
+        { n: "05", t: "成果・再供給", d: "販売データ · 再供給スケジュール · ブランド拡張" },
+      ],
+    },
+  };
+
+  // ═══════════════════════════════════════════════════════
+  // ROLE-SPECIFIC FINAL CTA
+  // ═══════════════════════════════════════════════════════
+  const ROLE_FINAL_CTA: Record<Role, Record<Lang, { h: string; sub: string; btn1: string; btn2: string }>> = {
+    "korean-brand": {
+      ko: { h: "중국 라이브커머스, 지금 테스트해보세요", sub: "첫 미팅 무료, 트라이얼 1회 가능. 왕홍 매칭부터 라이브 운영까지 한 팀이 실행합니다.", btn1: "왕홍 매칭 상담 시작 →", btn2: "맞춤 제안서 요청 →" },
+      en: { h: "Test China live commerce now", sub: "First meeting free, trial available. One team from KOL matching to live ops.", btn1: "Start KOL matching consultation →", btn2: "Request custom proposal →" },
+      zh: { h: "现在就测试中国直播电商", sub: "首次会议免费，可试播一次。从达人匹配到直播运营，一个团队执行。", btn1: "开始达人匹配咨询 →", btn2: "请求定制方案 →" },
+      ja: { h: "中国ライブコマース、今テストしてみませんか", sub: "初回ミーティング無料、トライアル可能。KOLマッチングからライブ運営まで一つのチームが実行。", btn1: "KOLマッチング相談開始 →", btn2: "カスタム提案書リクエスト →" },
+    },
+    "korean-seller": {
+      ko: { h: "해외 브랜드 소싱 + 왕홍 콜라보, 지금 시작하세요", sub: "직공급 브랜드 리스트와 왕홍 콜라보 기회를 무료 미팅에서 확인하세요.", btn1: "셀러 전용 상담 시작 →", btn2: "공급 가능 브랜드 문의 →" },
+      en: { h: "Start global brand sourcing + KOL collabs now", sub: "See direct supply brand lists and collab opportunities in a free meeting.", btn1: "Start seller consultation →", btn2: "Inquire about available brands →" },
+      zh: { h: "海外品牌货源 + 达人联名，现在开始", sub: "在免费会议中查看直供品牌清单和联名机会。", btn1: "开始卖家专属咨询 →", btn2: "咨询可供品牌 →" },
+      ja: { h: "海外ブランドソーシング + KOLコラボ、今始めましょう", sub: "直供給ブランドリストとコラボ機会を無料ミーティングで確認。", btn1: "セラー専用相談開始 →", btn2: "供給可能ブランドお問い合わせ →" },
+    },
+    "overseas-brand": {
+      ko: { h: "한국 셀러브리티 × 당신의 브랜드, 가능성을 확인하세요", sub: "연예인 100+, KOL 200+ 중 최적의 후보를 제안합니다. 첫 미팅 무료.", btn1: "한국 진출 상담 시작 →", btn2: "연예인 매칭 옵션 보기 →" },
+      en: { h: "Korean celebrities × your brand — discover the possibilities", sub: "We propose optimal candidates from 100+ celebrities and 200+ KOLs. First meeting free.", btn1: "Start Korea entry consultation →", btn2: "See celebrity matching options →" },
+      zh: { h: "韩国明星 × 您的品牌，确认可能性", sub: "从100+艺人和200+KOL中推荐最佳候选。首次会议免费。", btn1: "开始韩国市场咨询 →", btn2: "查看艺人匹配选项 →" },
+      ja: { h: "韓国セレブリティ × あなたのブランド、可能性を確認", sub: "100+芸能人、200+KOLから最適な候補を提案します。初回ミーティング無料。", btn1: "韓国進出相談開始 →", btn2: "芸能人マッチングオプションを見る →" },
+    },
+    "overseas-seller": {
+      ko: { h: "K-뷰티 · K-패션 직공급, 한국에서 시작하세요", sub: "150+ 검증 브랜드 직공급 + 한국 현지 촬영 지원 + 연예인 게스트 연결.", btn1: "왕홍 전용 상담 시작 →", btn2: "K-브랜드 직공급 문의 →" },
+      en: { h: "K-Beauty · K-Fashion direct supply, start from Korea", sub: "150+ verified brand direct supply + Korea filming support + celebrity guest matching.", btn1: "Start KOL consultation →", btn2: "Inquire about K-brand supply →" },
+      zh: { h: "K-Beauty · K-Fashion直供，从韩国开始", sub: "150+经验证品牌直供 + 韩国本地拍摄支持 + 艺人嘉宾对接。", btn1: "开始达人专属咨询 →", btn2: "咨询K-品牌直供 →" },
+      ja: { h: "K-Beauty · K-Fashion直供給、韓国からスタート", sub: "150+検証済みブランド直供給 + 韓国現地撮影サポート + 芸能人ゲスト連結。", btn1: "KOL専用相談開始 →", btn2: "K-ブランド直供給お問い合わせ →" },
+    },
+  };
+
+  // ═══════════════════════════════════════════════════════
+  // AUDIENCE CARDS: role → which card index to feature
+  // 0=korean-brand, 1=korean-seller, 2=overseas-brand, 3=overseas-seller
+  // ═══════════════════════════════════════════════════════
+  const ROLE_AUD_IDX: Record<Role, number> = {
+    "korean-brand": 0, "korean-seller": 1, "overseas-brand": 2, "overseas-seller": 3,
+  };
+
+  const AUD_CARDS = [
+    { href: "/for-korean-brands", cls: "k-brand", img: "/images/k-brand.jpg", alt: "K-Beauty products", flagKo: "KOREA", typeKo: "BRAND", tKey: "1" },
+    { href: "/for-korean-sellers", cls: "k-seller", img: "/images/k-seller.jpg", alt: "Live streaming seller", flagKo: "KOREA", typeKo: "SELLER · INFLUENCER", tKey: "2" },
+    { href: "/for-overseas-brands", cls: "o-brand", img: "/images/o-brand.jpg", alt: "Global fashion brand", flagKo: "GLOBAL", typeKo: "BRAND", tKey: "3" },
+    { href: "/for-overseas-sellers", cls: "o-seller", img: "/images/o-seller.jpg", alt: "Wanghong live commerce", flagKo: "GLOBAL", typeKo: "SELLER · WANGHONG", tKey: "4" },
+  ];
+
+  // ═══════════════════════════════════════════════════════
+  // COMMON DATA (used when no role is selected)
+  // ═══════════════════════════════════════════════════════
+  const TAGS: Record<Lang, Array<{ label: string; pitch: string; href: string }>> = {
+    ko: [
+      { label: "한국 브랜드", pitch: "한국 브랜드라면 — 검증된 중국 왕홍 500+ 매칭 + 샤오홍슈·더우인·타오바오 라이브 운영 + 통관·정품·CS까지.", href: "/for-korean-brands" },
+      { label: "해외 브랜드", pitch: "해외 브랜드라면 — 한국 정상급 연예인 100+, 한국 KOL 500+, 한국 라이브 플랫폼 운영, 드라마 PPL까지.", href: "/for-overseas-brands" },
+      { label: "한국 셀러·인플루언서", pitch: "한국 셀러·인플루언서라면 — 중국 왕홍과 콜라보 라이브, 해외 브랜드 직공급, 크로스보더 정산·물류까지 풀세트.", href: "/for-korean-sellers" },
+      { label: "중국 왕홍", pitch: "중국 왕홍이라면 — K-Beauty·K-Fashion 직공급, 한국 현지 촬영 지원, 한국 연예인 게스트 연결까지.", href: "/for-overseas-sellers" },
+      { label: "한국 연예인", pitch: "한국 연예인 자원을 찾으신다면 — 정상급 100+ 협업 풀, 5단계 옵션을 단일 창구로 매칭합니다.", href: "/network" },
+    ],
+    en: [
+      { label: "Korean Brands", pitch: "Verified 500+ Chinese KOL matching + Douyin/Xiaohongshu/Taobao live ops + customs, CS.", href: "/for-korean-brands" },
+      { label: "Global Brands", pitch: "100+ Korean celebrities, 500+ KOLs, Korean live platform ops, drama PPL.", href: "/for-overseas-brands" },
+      { label: "Korean Sellers", pitch: "Chinese KOL collab lives, global brand sourcing, cross-border settlement & logistics.", href: "/for-korean-sellers" },
+      { label: "Chinese KOL", pitch: "K-Beauty/Fashion direct supply, Korean filming, celebrity guest matching.", href: "/for-overseas-sellers" },
+      { label: "Korean Celebrities", pitch: "100+ top-tier collaboration pool, 5-tier options through a single window.", href: "/network" },
+    ],
+    zh: [
+      { label: "韩国品牌", pitch: "500+中国达人匹配 + 小红书/抖音/淘宝直播运营 + 通关客服。", href: "/for-korean-brands" },
+      { label: "海外品牌", pitch: "100+韩国艺人、500+KOL、韩国直播平台运营、电视剧PPL。", href: "/for-overseas-brands" },
+      { label: "韩国卖家", pitch: "中国达人联名直播、海外品牌直供、跨境结算与物流。", href: "/for-korean-sellers" },
+      { label: "中国达人", pitch: "K-Beauty/Fashion直供、韩国本地拍摄、韩国艺人嘉宾对接。", href: "/for-overseas-sellers" },
+      { label: "韩国艺人", pitch: "100+顶级合作池、五档选项通过单一窗口匹配。", href: "/network" },
+    ],
+    ja: [
+      { label: "韓国ブランド", pitch: "500+ 中国KOLマッチング + 小紅書/抖音/淘宝ライブ運営 + 通関CSまで。", href: "/for-korean-brands" },
+      { label: "海外ブランド", pitch: "100+ 韓国芸能人、500+ KOL、韓国ライブプラットフォーム運営、ドラマPPL。", href: "/for-overseas-brands" },
+      { label: "韓国セラー", pitch: "中国KOLコラボライブ、海外ブランド直供給、クロスボーダー精算・物流。", href: "/for-korean-sellers" },
+      { label: "中国KOL", pitch: "K-Beauty/Fashion直供給、韓国現地撮影、韓国芸能人ゲスト連結。", href: "/for-overseas-sellers" },
+      { label: "韓国芸能人", pitch: "100+ コラボプール、5段階オプションを単一窓口でマッチング。", href: "/network" },
     ],
   };
 
@@ -105,87 +375,38 @@ export default function HomePage() {
     ja: { eyebrow: "なぜ N-LIVE か", h: "紹介だけの会社では<br>ありません", s: "KOLを見つけて終わるエージェンシーではありません。マッチングからライブ運営、物流、精算、CSまで — 一つのチームが最後まで実行します。", cta: "実行プロセスを見る" },
   };
 
-  const METRICS: Record<Lang, { eyebrow: string; nums: Array<{ n: string; label: string; sub: string; amber?: boolean }>; desc: string; cta: string }> = {
-    ko: {
-      eyebrow: "검증된 네트워크 · 실시간 매칭",
-      nums: [
-        { n: "150+", label: "검증 협력 브랜드", sub: "K-Beauty·K-Fashion·잡화·헬스 등" },
-        { n: "500+", label: "한·중 라이브커머스 셀러", sub: "검증된 라이브 운영 셀러 풀" },
-        { n: "200+", label: "한국 유명 인플루언서", sub: "메가 KOL부터 마이크로까지 전 등급" },
-        { n: "100+", label: "한국 정상급 연예인", sub: "배우·K-POP·가수·방송인" },
-      ],
-      desc: "규모보다 검증을 우선합니다. 모든 파트너는 직접 미팅을 거친 후에만 매칭됩니다.",
-      cta: "네트워크 자세히 보기 →",
-    },
-    en: {
-      eyebrow: "VERIFIED NETWORK · REAL-TIME MATCHING",
-      nums: [
-        { n: "150+", label: "Verified Partner Brands", sub: "K-Beauty · K-Fashion · accessories · wellness" },
-        { n: "500+", label: "K-CN Live Commerce Sellers", sub: "Verified live-operating seller pool" },
-        { n: "200+", label: "Korean Influencers", sub: "Mega-KOL to micro across all tiers" },
-        { n: "100+", label: "Top Korean Celebrities", sub: "Actors · K-POP · singers · broadcasters" },
-      ],
-      desc: "Verification before scale. Every partner is matched only after a direct meeting.",
-      cta: "See network →",
-    },
-    zh: {
-      eyebrow: "经验证的网络 · 实时匹配",
-      nums: [
-        { n: "150+", label: "经验证的合作品牌", sub: "美妆 · 服装 · 配饰 · 健康等" },
-        { n: "500+", label: "中韩直播电商卖家", sub: "经验证的直播运营卖家池" },
-        { n: "200+", label: "韩国知名达人", sub: "从头部 KOL 到中腰部全覆盖" },
-        { n: "100+", label: "韩国顶级艺人", sub: "演员 · K-POP · 歌手 · 主持人" },
-      ],
-      desc: "验证优先于规模。每一位合作方都经过直接面谈后才会匹配。",
-      cta: "查看网络 →",
-    },
-    ja: {
-      eyebrow: "検証済みネットワーク · リアルタイムマッチング",
-      nums: [
-        { n: "150+", label: "検証済みパートナーブランド", sub: "K-Beauty · K-Fashion · アクセサリー · ヘルス等" },
-        { n: "500+", label: "韓中ライブコマースセラー", sub: "検証済みライブ運営セラープール" },
-        { n: "200+", label: "韓国有名インフルエンサー", sub: "メガKOLからマイクロまで全等級" },
-        { n: "100+", label: "韓国トップクラス芸能人", sub: "俳優 · K-POP · 歌手 · 放送人" },
-      ],
-      desc: "規模より検証を優先します。すべてのパートナーは直接ミーティングを経た後にのみマッチングされます。",
-      cta: "ネットワーク詳細 →",
-    },
-  };
-
+  const METRIC_CATS = ["m-amber", "m-emerald", "m-azure", "m-coral"] as const;
+  const TAG_CATS = ["k-brand", "o-brand", "k-seller", "o-seller", "k-brand"] as const;
   const tags = TAGS[lang];
   const stmt = STMT[lang];
-  const m = METRICS[lang];
+  const heroContent = role ? ROLE_HERO[role][lang] : null;
+  const currentRoleLabel = role ? ROLE_CARDS[role].ko : "";
 
-  // Map each tag index to a color category for hero glow + tag-panel theming
-  const TAG_CATS = ["k-brand", "o-brand", "k-seller", "o-seller", "k-brand"] as const;
-  // Cycle metric cards through the 4-audience neon palette
-  const METRIC_CATS = ["m-amber", "m-emerald", "m-azure", "m-coral"] as const;
+  // Role-filtered data
+  const filteredMetrics = role
+    ? ROLE_METRIC_IDX[role].map(i => ALL_METRICS[lang][i])
+    : ALL_METRICS[lang];
+  const filteredCases = role
+    ? ROLE_CASE_IDX[role].map(i => ALL_CASES[lang][i])
+    : ALL_CASES[lang];
+  const processSteps = role
+    ? ROLE_STEPS[role][lang]
+    : ROLE_STEPS["korean-brand"][lang]; // fallback
+  const finalCta = role
+    ? ROLE_FINAL_CTA[role][lang]
+    : null;
 
-  // Multi-language marquee items (한·중·영 mixed)
+  // Marquees (common)
   const marquee1 = [
     "KOREA × GLOBAL", "한국 × 해외", "韩国 × 海外",
     "BRAND × SELLER", "브랜드 × 셀러", "品牌 × 卖家",
     "LIVE COMMERCE", "라이브커머스", "直播电商",
-    "WANGHONG NETWORK", "왕홍 네트워크", "达人网络",
-    "K-BEAUTY · K-FASHION", "DIRECT MATCHING", "직거래 매칭", "直供匹配",
     "N-LIVE · 恩联 · 엔라이브",
   ];
-  const marquee2 = [
-    "500+ KOL", "100+ TOP-TIER", "100+ 정상급 연예인", "100+ 顶级艺人",
-    "샤오홍슈 · 더우인 · 타오바오", "XIAOHONGSHU · DOUYIN · TAOBAO", "小红书 · 抖音 · 淘宝",
-    "한류 × 왕홍", "HALLYU × WANGHONG", "韩流 × 达人",
-    "BRAND × FACTORY DIRECT", "브랜드 · 공장 다이렉트", "品牌 · 工厂直供",
-  ];
-
-  // Get role-specific hero content or fallback to generic
-  const heroContent = role ? ROLE_HERO[role][lang] : null;
-
-  // Current role label for the "change role" badge
-  const currentRoleLabel = role ? ROLE_CARDS[role].ko : "";
 
   return (
     <>
-      {/* ROLE SELECTOR OVERLAY */}
+      {/* ══════ ROLE SELECTOR OVERLAY ══════ */}
       {showSelector && (
         <div className={`role-selector-overlay ${fadeOut ? "fade-out" : ""}`}>
           <MeteorBackground />
@@ -200,12 +421,7 @@ export default function HomePage() {
             </h1>
             <div className="role-selector-grid">
               {(["korean-brand", "korean-seller", "overseas-brand", "overseas-seller"] as Role[]).map((r) => (
-                <button
-                  key={r}
-                  className={`role-selector-card ${r}`}
-                  onClick={() => selectRole(r)}
-                  type="button"
-                >
+                <button key={r} className={`role-selector-card ${r}`} onClick={() => selectRole(r)} type="button">
                   <span className="rsc-tag">{ROLE_CARDS[r].tag}</span>
                   <span className="rsc-ko">{ROLE_CARDS[r].ko}</span>
                   <span className="rsc-intl">{ROLE_CARDS[r].en} &nbsp;/&nbsp; {ROLE_CARDS[r].zh}</span>
@@ -217,11 +433,10 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* HERO */}
+      {/* ══════ HERO ══════ */}
       <section className={`hero ${!showSelector && role ? "hero-entered" : ""}`}>
         <MeteorBackground />
         <div className="container hero-content">
-          {/* Role badge + change button */}
           {role && !showSelector && (
             <button className="hero-role-badge" onClick={changeRole} type="button">
               <span className="hrb-dot" />
@@ -236,43 +451,41 @@ export default function HomePage() {
             <span className="line-mask"><span className="line-inner"><em>{heroContent ? heroContent.title2 : t("hero.title.2")}</em></span></span>
           </h1>
 
-          <div className="hero-tags-label">{t("hero.tag.label")}</div>
-          <div className="hero-tags">
-            {tags.map((tag, i) => (
-              <button
-                key={i}
-                className={`hero-tag ${activeTag === i ? "active" : ""}`}
-                data-cat={TAG_CATS[i] || "k-brand"}
-                onClick={() => setActiveTag(activeTag === i ? null : i)}
-                type="button"
-              >
-                {tag.label}
-                <span className="hero-tag-arrow">{activeTag === i ? "−" : "+"}</span>
-              </button>
-            ))}
-          </div>
-
-          {activeTag !== null && (
-            <div className="tag-panel" key={activeTag} data-cat={TAG_CATS[activeTag] || "k-brand"}>
-              <p className="tag-panel-text">{tags[activeTag].pitch}</p>
-              <Link href={tags[activeTag].href} className="tag-panel-cta">
-                {lang === "ko" ? "자세히 보기" : lang === "en" ? "Learn more" : lang === "zh" ? "查看详情" : "詳細を見る"} →
-              </Link>
-            </div>
+          {/* Tag buttons: ONLY show when NO role is selected */}
+          {!role && (
+            <>
+              <div className="hero-tags-label">{t("hero.tag.label")}</div>
+              <div className="hero-tags">
+                {tags.map((tag, i) => (
+                  <button key={i} className={`hero-tag ${activeTag === i ? "active" : ""}`} data-cat={TAG_CATS[i] || "k-brand"} onClick={() => setActiveTag(activeTag === i ? null : i)} type="button">
+                    {tag.label}
+                    <span className="hero-tag-arrow">{activeTag === i ? "−" : "+"}</span>
+                  </button>
+                ))}
+              </div>
+              {activeTag !== null && (
+                <div className="tag-panel" key={activeTag} data-cat={TAG_CATS[activeTag] || "k-brand"}>
+                  <p className="tag-panel-text">{tags[activeTag].pitch}</p>
+                  <Link href={tags[activeTag].href} className="tag-panel-cta">
+                    {lang === "ko" ? "자세히 보기" : lang === "en" ? "Learn more" : lang === "zh" ? "查看详情" : "詳細を見る"} →
+                  </Link>
+                </div>
+              )}
+            </>
           )}
 
           <p className="hero-sub">{heroContent ? heroContent.sub : t("hero.sub")}</p>
           <div className="hero-actions">
-            <Link href="/contact" className="btn btn-primary">{heroContent ? heroContent.cta : t("hero.cta1")} →</Link>
-            <Link href="#services" className="btn btn-outline">{t("hero.cta2")}</Link>
+            <Link href="/contact" className="btn btn-primary">{heroContent ? heroContent.cta1 : t("hero.cta1")} →</Link>
+            <Link href={role ? ROLE_DETAIL[role] : "#services"} className="btn btn-outline">{heroContent ? heroContent.cta2 : t("hero.cta2")}</Link>
           </div>
         </div>
       </section>
 
-      {/* MARQUEE 1 — multilingual */}
+      {/* ══════ MARQUEE ══════ */}
       <Marquee items={marquee1} />
 
-      {/* BIG STATEMENT BLOCK */}
+      {/* ══════ STATEMENT (common — always show) ══════ */}
       <section className="statement-block">
         <div className="container">
           <div className="statement-eyebrow">— {stmt.eyebrow}</div>
@@ -284,67 +497,68 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4-AUDIENCE MATRIX */}
+      {/* ══════ AUDIENCE CARDS — role-filtered ══════ */}
       <section className="audience" id="services">
         <div className="container">
-          <div className="section-header section-header-big">
-            <div className="section-eyebrow">— {lang === "ko" ? "FOUR AXES · 네 가지 축" : lang === "en" ? "FOUR AXES" : lang === "zh" ? "四大轴向" : "FOUR AXES · 4つの軸"}</div>
-            <h2 className="section-title section-title-huge" dangerouslySetInnerHTML={{ __html: t("aud.title") }} />
-            <p className="section-desc section-desc-big">{t("aud.desc")}</p>
-          </div>
-
-          <div className="audience-matrix">
-            <Link href="/for-korean-brands" className="audience-card k-brand">
-              <div className="aud-img"><Image src="/images/k-brand.jpg" alt="K-Beauty products" fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
-              <div className="aud-overlay" />
-              <div className="aud-content">
-                <div className="aud-tag"><span className="aud-flag">KOREA</span><span className="aud-type">BRAND</span></div>
-                <h3>{t("aud.1.t")}</h3>
-                <p className="aud-need">{t("aud.1.n")}</p>
-                <span className="aud-detail-link">{t("aud.detail")}</span>
+          {!role ? (
+            <>
+              {/* No role: show all 4 cards equally */}
+              <div className="section-header section-header-big">
+                <div className="section-eyebrow">— {lang === "ko" ? "FOUR AXES · 네 가지 축" : lang === "en" ? "FOUR AXES" : lang === "zh" ? "四大轴向" : "FOUR AXES · 4つの軸"}</div>
+                <h2 className="section-title section-title-huge" dangerouslySetInnerHTML={{ __html: t("aud.title") }} />
+                <p className="section-desc section-desc-big">{t("aud.desc")}</p>
               </div>
-            </Link>
-            <Link href="/for-korean-sellers" className="audience-card k-seller">
-              <div className="aud-img"><Image src="/images/k-seller.jpg" alt="Live streaming seller" fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
-              <div className="aud-overlay" />
-              <div className="aud-content">
-                <div className="aud-tag"><span className="aud-flag">KOREA</span><span className="aud-type">SELLER · INFLUENCER</span></div>
-                <h3>{t("aud.2.t")}</h3>
-                <p className="aud-need">{t("aud.2.n")}</p>
-                <span className="aud-detail-link">{t("aud.detail")}</span>
+              <div className="audience-matrix">
+                {AUD_CARDS.map((card, i) => (
+                  <Link href={card.href} className={`audience-card ${card.cls}`} key={i}>
+                    <div className="aud-img"><Image src={card.img} alt={card.alt} fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
+                    <div className="aud-overlay" />
+                    <div className="aud-content">
+                      <div className="aud-tag"><span className="aud-flag">{card.flagKo}</span><span className="aud-type">{card.typeKo}</span></div>
+                      <h3>{t(`aud.${card.tKey}.t`)}</h3>
+                      <p className="aud-need">{t(`aud.${card.tKey}.n`)}</p>
+                      <span className="aud-detail-link">{t("aud.detail")}</span>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </Link>
-            <Link href="/for-overseas-brands" className="audience-card o-brand">
-              <div className="aud-img"><Image src="/images/o-brand.jpg" alt="Global fashion brand" fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
-              <div className="aud-overlay" />
-              <div className="aud-content">
-                <div className="aud-tag"><span className="aud-flag">GLOBAL</span><span className="aud-type">BRAND</span></div>
-                <h3>{t("aud.3.t")}</h3>
-                <p className="aud-need">{t("aud.3.n")}</p>
-                <span className="aud-detail-link">{t("aud.detail")}</span>
+            </>
+          ) : (
+            <>
+              {/* Role selected: show ONLY my card as featured */}
+              <div className="section-header section-header-big">
+                <div className="section-eyebrow">— {lang === "ko" ? "YOUR SERVICE · 맞춤 서비스" : lang === "en" ? "YOUR SERVICE" : lang === "zh" ? "您的专属服务" : "YOUR SERVICE · あなた専用"}</div>
+                <h2 className="section-title section-title-huge">{lang === "ko" ? "이 서비스가 당신을 위한 것입니다" : lang === "en" ? "This service is built for you" : lang === "zh" ? "这是为您量身打造的服务" : "このサービスはあなたのためのものです"}</h2>
               </div>
-            </Link>
-            <Link href="/for-overseas-sellers" className="audience-card o-seller">
-              <div className="aud-img"><Image src="/images/o-seller.jpg" alt="Wanghong live commerce" fill sizes="(max-width:768px) 100vw, 50vw" style={{ objectFit: "cover" }} /></div>
-              <div className="aud-overlay" />
-              <div className="aud-content">
-                <div className="aud-tag"><span className="aud-flag">GLOBAL</span><span className="aud-type">SELLER · WANGHONG</span></div>
-                <h3>{t("aud.4.t")}</h3>
-                <p className="aud-need">{t("aud.4.n")}</p>
-                <span className="aud-detail-link">{t("aud.detail")}</span>
+              <div className="audience-matrix audience-matrix-single">
+                {(() => {
+                  const idx = ROLE_AUD_IDX[role];
+                  const card = AUD_CARDS[idx];
+                  return (
+                    <Link href={card.href} className={`audience-card ${card.cls} audience-card-featured`}>
+                      <div className="aud-img"><Image src={card.img} alt={card.alt} fill sizes="100vw" style={{ objectFit: "cover" }} /></div>
+                      <div className="aud-overlay" />
+                      <div className="aud-content">
+                        <div className="aud-tag"><span className="aud-flag">{card.flagKo}</span><span className="aud-type">{card.typeKo}</span></div>
+                        <h3>{t(`aud.${card.tKey}.t`)}</h3>
+                        <p className="aud-need">{t(`aud.${card.tKey}.n`)}</p>
+                        <span className="aud-detail-link">{t("aud.detail")} →</span>
+                      </div>
+                    </Link>
+                  );
+                })()}
               </div>
-            </Link>
-          </div>
+            </>
+          )}
         </div>
       </section>
 
-      {/* BIG METRICS — with labels */}
+      {/* ══════ METRICS — role-filtered (2 or 4) ══════ */}
       <section className="metrics topo-bg section-grain">
         <div className="container">
-          <div className="metrics-eyebrow">— {m.eyebrow}</div>
-
-          <div className="metrics-grid">
-            {m.nums.map((item, i) => (
+          <div className="metrics-eyebrow">— {lang === "ko" ? "검증된 네트워크" : lang === "en" ? "VERIFIED NETWORK" : lang === "zh" ? "经验证的网络" : "検証済みネットワーク"}</div>
+          <div className={`metrics-grid ${role ? "metrics-grid-compact" : ""}`}>
+            {filteredMetrics.map((item, i) => (
               <div className={`metric-card ${METRIC_CATS[i % METRIC_CATS.length]}`} key={i}>
                 <div className="metric-num-big">{item.n}</div>
                 <div className="metric-label">{item.label}</div>
@@ -352,41 +566,20 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-
           <div className="metrics-bottom">
-            <p>{m.desc}</p>
-            <Link href="/network">{m.cta}</Link>
+            <p>{lang === "ko" ? "모든 파트너는 직접 미팅을 거친 후에만 매칭됩니다." : lang === "en" ? "Every partner is matched only after a direct meeting." : lang === "zh" ? "每位合作方均在亲自面谈后才进行匹配。" : "すべてのパートナーは直接ミーティングを経た後にのみマッチングされます。"}</p>
+            <Link href="/network">{lang === "ko" ? "네트워크 자세히 보기 →" : lang === "en" ? "See network →" : lang === "zh" ? "查看网络 →" : "ネットワーク詳細 →"}</Link>
           </div>
         </div>
       </section>
 
-      {/* PAIRING MARQUEE — 3x for seamless loop */}
-      <div className="pairing-marquee">
-        <div className="pairing-track">
-          {[0,1,2].map(r => [
-            <div key={`b${r}`} className="pairing-item"><span>K-BEAUTY</span><span className="x">×</span><span className="creator">@샤오홍슈</span></div>,
-            <div key={`f${r}`} className="pairing-item"><span>K-FASHION</span><span className="x">×</span><span className="creator">@더우인</span></div>,
-            <div key={`c${r}`} className="pairing-item"><span>K-CELEB</span><span className="x">×</span><span className="creator">@타오바오</span></div>,
-            <div key={`w${r}`} className="pairing-item"><span>WANGHONG</span><span className="x">×</span><span className="creator">@KR-LIVE</span></div>,
-          ])}
-        </div>
-      </div>
-
-      {/* MARQUEE 2 — multilingual */}
-      <Marquee items={marquee2} />
-
-      {/* CASE HIGHLIGHTS — proven results */}
+      {/* ══════ CASE HIGHLIGHTS — role-filtered ══════ */}
       <section className="case-highlights">
         <div className="container">
           <div className="section-eyebrow">— {lang === "ko" ? "PROVEN RESULTS · 검증된 성과" : lang === "en" ? "PROVEN RESULTS" : lang === "zh" ? "验证的成果" : "PROVEN RESULTS · 検証された成果"}</div>
           <h2 className="section-title section-title-huge">{lang === "ko" ? "숫자로 증명합니다" : lang === "en" ? "Backed by numbers" : lang === "zh" ? "用数字证明" : "数字で証明します"}</h2>
-          <div className="case-highlight-grid">
-            {[
-              { num: lang === "ko" ? "183억 원" : lang === "zh" ? "183亿韩元" : lang === "ja" ? "183億ウォン" : "₩18.3B", brand: lang === "ko" ? "더후 × 댠댠" : lang === "zh" ? "后 × 丹丹" : lang === "ja" ? "后 × ダンダン" : "Whoo × Dandan", desc: lang === "ko" ? "단일 라이브 매출 — 한국 방문 3일, 4회 라이브" : lang === "zh" ? "单场直播销售额 — 访韩3天4场直播" : lang === "ja" ? "単一ライブ売上 — 訪韓3日間4回ライブ" : "Single live revenue — 3-day Korea visit, 4 broadcasts", cat: "m-amber" },
-              { num: lang === "ko" ? "4시간 전량 매진" : lang === "zh" ? "4小时全部售罄" : lang === "ja" ? "4時間で完売" : "Sold out in 4hrs", brand: lang === "ko" ? "메디큐브" : "Medicube", desc: lang === "ko" ? "더우인 라이브에서 1.2만개 기획세트 전량 소진" : lang === "zh" ? "抖音直播1.2万套策划套装全部售罄" : lang === "ja" ? "抖音ライブで1.2万セット完売" : "12,000 curated sets sold out on Douyin live", cat: "m-emerald" },
-              { num: lang === "ko" ? "매출 50% 증가" : lang === "zh" ? "销售额增长50%" : lang === "ja" ? "売上50%増加" : "+50% revenue", brand: lang === "ko" ? "Dior × 지수" : lang === "zh" ? "Dior × 智秀" : lang === "ja" ? "Dior × ジス" : "Dior × Jisoo", desc: lang === "ko" ? "BLACKPINK 지수 앰배서더 발탁 후 한국 매출 급증" : lang === "zh" ? "BLACKPINK智秀任大使后韩国销售额激增" : lang === "ja" ? "BLACKPINKジスアンバサダー就任後、韓国売上急増" : "Korea revenue surged after BLACKPINK Jisoo ambassadorship", cat: "m-azure" },
-              { num: lang === "ko" ? "2,000억 원" : lang === "zh" ? "10亿元人民币" : lang === "ja" ? "2,000億ウォン" : "₩200B", brand: lang === "ko" ? "왕홍 댠댠 한국 방문" : lang === "zh" ? "达人丹丹访韩" : lang === "ja" ? "KOLダンダン訪韓" : "Dandan Korea Visit", desc: lang === "ko" ? "3일간 총 매출 — K-뷰티 집중 판매" : lang === "zh" ? "3天总销售额 — K-Beauty集中销售" : lang === "ja" ? "3日間の総売上 — K-Beauty集中販売" : "3-day total — focused K-Beauty sales", cat: "m-coral" },
-            ].map((c, i) => (
+          <div className={`case-highlight-grid ${role ? "case-highlight-grid-compact" : ""}`}>
+            {filteredCases.map((c, i) => (
               <div className={`case-highlight-card ${c.cat}`} key={i}>
                 <div className="ch-num">{c.num}</div>
                 <div className="ch-brand">{c.brand}</div>
@@ -394,26 +587,20 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <p className="case-highlight-note">{lang === "ko" ? "위 사례는 공개 보도 기반입니다. 프로젝트별 상세 데이터는 NDA 체결 후 공유드립니다." : lang === "zh" ? "以上案例基于公开报道。项目详细数据可在签署NDA后共享。" : lang === "ja" ? "上記事例は公開報道に基づいています。プロジェクト別の詳細データはNDA締結後に共有いたします。" : "Cases above are based on public reporting. Detailed project data is shared after NDA signing."}</p>
+          <p className="case-highlight-note">{lang === "ko" ? "위 사례는 공개 보도 기반입니다. 프로젝트별 상세 데이터는 NDA 체결 후 공유드립니다." : lang === "zh" ? "以上案例基于公开报道。项目详细数据可在签署NDA后共享。" : lang === "ja" ? "上記事例は公開報道に基づいています。" : "Cases above are based on public reporting."}</p>
           <div style={{ textAlign: "center", marginTop: "32px" }}>
             <Link href="/contact" className="btn btn-primary">{lang === "ko" ? "내 브랜드에 맞는 사례 듣기 →" : lang === "zh" ? "了解适合我品牌的案例 →" : lang === "ja" ? "自社ブランドに合う事例を聞く →" : "Hear cases for my brand →"}</Link>
           </div>
         </div>
       </section>
 
-      {/* TRUST & PROCESS */}
+      {/* ══════ TRUST & PROCESS — role-specific steps ══════ */}
       <section className="trust-process">
         <div className="container">
           <div className="section-eyebrow">— {lang === "ko" ? "HOW WE WORK · 이렇게 진행됩니다" : lang === "en" ? "HOW WE WORK" : lang === "zh" ? "我们的工作方式" : "HOW WE WORK · 進め方"}</div>
           <h2 className="section-title">{lang === "ko" ? "문의부터 실행까지, 5단계" : lang === "en" ? "From inquiry to execution — 5 steps" : lang === "zh" ? "从咨询到执行，5步搞定" : "問い合わせから実行まで5ステップ"}</h2>
           <div className="trust-steps">
-            {[
-              { n: "01", t: lang === "ko" ? "문의 접수" : lang === "zh" ? "咨询受理" : lang === "ja" ? "問い合わせ受付" : "Inquiry", d: lang === "ko" ? "48시간 이내 회신 · 한/중/영 대응" : lang === "zh" ? "48小时内回复 · 中/韩/英对应" : lang === "ja" ? "48時間以内返信 · 韓/中/英対応" : "Reply within 48hrs · KO/ZH/EN" },
-              { n: "02", t: lang === "ko" ? "무료 컨셉 미팅" : lang === "zh" ? "免费概念会议" : lang === "ja" ? "無料コンセプトMTG" : "Free Concept Meeting", d: lang === "ko" ? "비대면 30분 · 브랜드·목표·예산 파악" : lang === "zh" ? "线上30分钟 · 了解品牌/目标/预算" : lang === "ja" ? "オンライン30分 · ブランド/目標/予算把握" : "Remote 30min · brand/goal/budget" },
-              { n: "03", t: lang === "ko" ? "맞춤 제안서" : lang === "zh" ? "定制方案" : lang === "ja" ? "カスタム提案書" : "Custom Proposal", d: lang === "ko" ? "파트너 후보 · 플랫폼 · 예상 성과 · 견적" : lang === "zh" ? "合作候选 · 平台 · 预期成果 · 报价" : lang === "ja" ? "パートナー候補 · プラットフォーム · 予想成果 · 見積" : "Partner candidates · platform · projections · quote" },
-              { n: "04", t: lang === "ko" ? "계약·실행" : lang === "zh" ? "签约·执行" : lang === "ja" ? "契約・実行" : "Contract & Execute", d: lang === "ko" ? "왕홍 매칭 → 라이브 기획 → 운영 → 정산" : lang === "zh" ? "达人匹配 → 直播企划 → 运营 → 结算" : lang === "ja" ? "KOLマッチング → ライブ企画 → 運営 → 精算" : "KOL matching → live planning → ops → settlement" },
-              { n: "05", t: lang === "ko" ? "성과 리포트" : lang === "zh" ? "成果报告" : lang === "ja" ? "成果レポート" : "Performance Report", d: lang === "ko" ? "실시간 데이터 공유 + 다음 단계 제안" : lang === "zh" ? "实时数据共享 + 下一步建议" : lang === "ja" ? "リアルタイムデータ共有 + 次のステップ提案" : "Real-time data + next steps" },
-            ].map((s, i) => (
+            {processSteps.map((s, i) => (
               <div className="trust-step" key={i}>
                 <div className="ts-num">{s.n}</div>
                 <div className="ts-body">
@@ -437,14 +624,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FINAL CTA */}
+      {/* ══════ FINAL CTA — role-specific ══════ */}
       <section className="final-cta">
         <div className="container">
-          <h2 className="final-cta-title">{lang === "ko" ? "지금 시작하지 않으면, 경쟁사가 먼저 합니다" : lang === "en" ? "If you don't start now, your competitors will" : lang === "zh" ? "现在不开始，竞争对手就先行一步" : "今始めなければ、競合が先に動きます"}</h2>
-          <p className="final-cta-sub">{lang === "ko" ? "첫 미팅은 무료, 리스크는 제로. 30분이면 가능성을 확인할 수 있습니다." : lang === "en" ? "First meeting is free, zero risk. 30 minutes to discover the opportunity." : lang === "zh" ? "首次会议免费，零风险。30分钟即可确认可能性。" : "初回ミーティング無料、リスクゼロ。30分で可能性を確認できます。"}</p>
+          <h2 className="final-cta-title">
+            {finalCta ? finalCta.h : (lang === "ko" ? "지금 시작하지 않으면, 경쟁사가 먼저 합니다" : lang === "en" ? "If you don't start now, your competitors will" : lang === "zh" ? "现在不开始，竞争对手就先行一步" : "今始めなければ、競合が先に動きます")}
+          </h2>
+          <p className="final-cta-sub">
+            {finalCta ? finalCta.sub : (lang === "ko" ? "첫 미팅은 무료, 리스크는 제로. 30분이면 가능성을 확인할 수 있습니다." : lang === "en" ? "First meeting is free, zero risk. 30 minutes to discover the opportunity." : lang === "zh" ? "首次会议免费，零风险。30分钟即可确认可能性。" : "初回ミーティング無料、リスクゼロ。30分で可能性を確認できます。")}
+          </p>
           <div className="final-cta-buttons">
-            <Link href="/contact" className="btn btn-primary">{lang === "ko" ? "맞춤 제안서 요청 →" : lang === "en" ? "Request custom proposal →" : lang === "zh" ? "定制方案咨询 →" : "カスタム提案書リクエスト →"}</Link>
-            <Link href="/contact" className="btn btn-outline">{lang === "ko" ? "무료 컨셉 미팅 예약 →" : lang === "en" ? "Book free concept meeting →" : lang === "zh" ? "预约免费概念会议 →" : "無料コンセプトMTG予約 →"}</Link>
+            <Link href="/contact" className="btn btn-primary">
+              {finalCta ? finalCta.btn1 : (lang === "ko" ? "맞춤 제안서 요청 →" : lang === "en" ? "Request custom proposal →" : lang === "zh" ? "定制方案咨询 →" : "カスタム提案書リクエスト →")}
+            </Link>
+            <Link href="/contact" className="btn btn-outline">
+              {finalCta ? finalCta.btn2 : (lang === "ko" ? "무료 컨셉 미팅 예약 →" : lang === "en" ? "Book free concept meeting →" : lang === "zh" ? "预约免费概念会议 →" : "無料コンセプトMTG予約 →")}
+            </Link>
           </div>
         </div>
       </section>
