@@ -43,55 +43,55 @@ export default function HomePage() {
   };
 
   const STMT: Record<Lang, { eyebrow: string; h: string; s: string; cta: string }> = {
-    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "라이브커머스의<br>모든 연결<br>엔라이브에서", s: "엔라이브는 브랜드와 셀러 사이에 존재하는 모든 거리를 0으로 만드는 에이전시입니다. 검증된 네트워크, 직접 매칭, 단일 창구 — 그것이 엔라이브가 만드는 차이입니다.", cta: "프로세스 보기" },
-    en: { eyebrow: "OUR PROMISE", h: "Every connection<br>in live commerce<br>at N-LIVE", s: "N-LIVE is the agency that collapses every distance between brands and sellers to zero. Verified network, direct matching, single window — this is the difference N-LIVE makes.", cta: "See process" },
-    zh: { eyebrow: "我们的承诺", h: "直播电商的<br>所有连接<br>在恩联", s: "恩联是将品牌与卖家之间的所有距离归零的代理机构。经验证的网络、直接匹配、单一窗口 — 这就是恩联创造的差异。", cta: "查看流程" },
-    ja: { eyebrow: "OUR PROMISE", h: "ライブコマースの<br>すべての繋がりを<br>N-LIVEで", s: "N-LIVEはブランドとセラーの間に存在するすべての距離をゼロにするエージェンシーです。検証済みネットワーク、直接マッチング、単一窓口 — これがN-LIVEが作る違いです。", cta: "プロセスを見る" },
+    ko: { eyebrow: "OUR PROMISE · 엔라이브의 약속", h: "라이브커머스의<br>모든 연결<br>엔라이브에서", s: "브랜드와 셀러 사이의 거리를 줄입니다. 검증된 네트워크, 직접 매칭, 한 창구 — 엔라이브가 다른 점입니다.", cta: "프로세스 보기" },
+    en: { eyebrow: "OUR PROMISE", h: "Every connection<br>in live commerce<br>at N-LIVE", s: "We close the gap between brands and sellers. Verified network, direct matching, single window — that's the N-LIVE difference.", cta: "See process" },
+    zh: { eyebrow: "我们的承诺", h: "直播电商的<br>所有连接<br>在恩联", s: "缩短品牌与卖家之间的距离。经验证的网络、直接匹配、单一窗口 — 这就是恩联的不同。", cta: "查看流程" },
+    ja: { eyebrow: "OUR PROMISE", h: "ライブコマースの<br>すべての繋がりを<br>N-LIVEで", s: "ブランドとセラーの距離を縮めます。検証済みネットワーク、直接マッチング、単一窓口 — それがN-LIVEの違いです。", cta: "プロセスを見る" },
   };
 
   const METRICS: Record<Lang, { eyebrow: string; nums: Array<{ n: string; label: string; sub: string; amber?: boolean }>; desc: string; cta: string }> = {
     ko: {
       eyebrow: "검증된 네트워크 · 실시간 매칭",
       nums: [
-        { n: "1,500+", label: "중국 왕홍", sub: "콘텐츠·커머스 통합 풀", amber: true },
-        { n: "200+", label: "한국 정상급 연예인", sub: "배우·K-POP·가수·방송인" },
-        { n: "5+", label: "라이브 플랫폼 운영", sub: "샤오홍슈·더우인·타오바오·Grip·네이버" },
-        { n: "100+", label: "검증 협력 브랜드", sub: "K-Beauty·K-Fashion·잡화", amber: true },
+        { n: "150+", label: "검증 협력 브랜드", sub: "K-Beauty·K-Fashion·잡화·헬스 등" },
+        { n: "500+", label: "한·중 라이브커머스 셀러", sub: "검증된 라이브 운영 셀러 풀" },
+        { n: "200+", label: "한국 유명 인플루언서", sub: "메가 KOL부터 마이크로까지 전 등급" },
+        { n: "100+", label: "한국 정상급 연예인", sub: "배우·K-POP·가수·방송인" },
       ],
-      desc: "엔라이브는 단순히 큰 네트워크가 아니라, 직접 검증한 네트워크를 운영합니다. 모든 매칭은 데이터와 현장 경험을 기반으로 이루어집니다.",
+      desc: "숫자보다 중요한 건 검증입니다. 모든 파트너는 직접 만나보고 합을 맞춰본 곳들입니다.",
       cta: "네트워크 자세히 보기 →",
     },
     en: {
       eyebrow: "VERIFIED NETWORK · REAL-TIME MATCHING",
       nums: [
-        { n: "1,500+", label: "Chinese Wanghongs", sub: "Content + commerce integrated pool", amber: true },
-        { n: "200+", label: "Top Korean Celebrities", sub: "Actors · K-POP · singers · broadcasters" },
-        { n: "5+", label: "Live Platforms", sub: "Xiaohongshu · Douyin · Taobao · Grip · Naver" },
-        { n: "100+", label: "Verified Partner Brands", sub: "K-Beauty · K-Fashion · accessories", amber: true },
+        { n: "150+", label: "Verified Partner Brands", sub: "K-Beauty · K-Fashion · accessories · wellness" },
+        { n: "500+", label: "K-CN Live Commerce Sellers", sub: "Verified live-operating seller pool" },
+        { n: "200+", label: "Korean Influencers", sub: "Mega-KOL to micro across all tiers" },
+        { n: "100+", label: "Top Korean Celebrities", sub: "Actors · K-POP · singers · broadcasters" },
       ],
-      desc: "N-LIVE doesn't just have a big network — we operate a verified one. Every match is grounded in data and field experience.",
+      desc: "Numbers matter less than verification. Every partner here is one we've worked with directly.",
       cta: "See network →",
     },
     zh: {
       eyebrow: "经验证的网络 · 实时匹配",
       nums: [
-        { n: "1,500+", label: "中国达人", sub: "内容 + 商业整合池", amber: true },
-        { n: "200+", label: "韩国顶级艺人", sub: "演员 · K-POP · 歌手 · 主持人" },
-        { n: "5+", label: "直播平台运营", sub: "小红书 · 抖音 · 淘宝 · Grip · Naver" },
-        { n: "100+", label: "经验证的合作品牌", sub: "K-Beauty · K-Fashion · 配饰", amber: true },
+        { n: "150+", label: "经验证的合作品牌", sub: "美妆 · 服装 · 配饰 · 健康等" },
+        { n: "500+", label: "中韩直播电商卖家", sub: "经验证的直播运营卖家池" },
+        { n: "200+", label: "韩国知名达人", sub: "从头部 KOL 到中腰部全覆盖" },
+        { n: "100+", label: "韩国顶级艺人", sub: "演员 · K-POP · 歌手 · 主持人" },
       ],
-      desc: "恩联不仅拥有庞大的网络,更运营一个经过验证的网络。每一次匹配都建立在数据和现场经验之上。",
+      desc: "比数字更重要的是验证。这里的每一位合作方,都是我们亲自对接过的。",
       cta: "查看网络 →",
     },
     ja: {
       eyebrow: "検証済みネットワーク · リアルタイムマッチング",
       nums: [
-        { n: "1,500+", label: "中国KOL", sub: "コンテンツ + コマース統合プール", amber: true },
-        { n: "200+", label: "韓国トップクラス芸能人", sub: "俳優 · K-POP · 歌手 · 放送人" },
-        { n: "5+", label: "ライブプラットフォーム運営", sub: "小紅書 · 抖音 · 淘宝 · Grip · Naver" },
-        { n: "100+", label: "検証済みパートナーブランド", sub: "K-Beauty · K-Fashion · アクセサリー", amber: true },
+        { n: "150+", label: "検証済みパートナーブランド", sub: "K-Beauty · K-Fashion · アクセサリー · ヘルス等" },
+        { n: "500+", label: "韓中ライブコマースセラー", sub: "検証済みライブ運営セラープール" },
+        { n: "200+", label: "韓国有名インフルエンサー", sub: "メガKOLからマイクロまで全等級" },
+        { n: "100+", label: "韓国トップクラス芸能人", sub: "俳優 · K-POP · 歌手 · 放送人" },
       ],
-      desc: "N-LIVEは単に大きなネットワークではなく、直接検証したネットワークを運営しています。すべてのマッチングはデータと現場経験に基づいています。",
+      desc: "数より大切なのは検証です。ここに並ぶパートナーはすべて、直接対面して相性を確かめた相手です。",
       cta: "ネットワーク詳細 →",
     },
   };
