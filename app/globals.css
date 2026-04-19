@@ -16,6 +16,7 @@ body{
   font-family:'Pretendard','Inter','Noto Sans JP','Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;
   color:var(--black);background:var(--white);line-height:1.6;font-weight:400;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  word-break:keep-all;overflow-wrap:break-word;
 }
 body.lang-ja{font-family:'Noto Sans JP','Pretendard',sans-serif}
 body.lang-zh{font-family:'Noto Sans SC','Pretendard',sans-serif}

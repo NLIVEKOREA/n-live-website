@@ -35,7 +35,7 @@ export default function ContactForm({ defaultType = "general" }: { defaultType?:
   const [type, setType] = useState(defaultType);
 
   return (
-    <form action="https://formsubmit.co/won4646@naver.com" method="POST" className="contact-form">
+    <form action="https://formsubmit.co/2a5dd71f8ca4ac226e47f8dd17bd3416" method="POST" className="contact-form">
       <input type="hidden" name="_subject" value="[N-LIVE 홈페이지] 신규 파트너십 문의" />
       <input type="hidden" name="_captcha" value="false" />
       <input type="hidden" name="_template" value="table" />
