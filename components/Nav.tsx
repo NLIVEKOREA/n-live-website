@@ -48,7 +48,7 @@ export default function Nav() {
               <span key={l}>
                 {i > 0 && <span className="divider">·</span>}
                 <button onClick={() => setLang(l)} className={lang === l ? "active" : ""}>
-                  {l === "ko" ? "KO" : l === "zh" ? "중문" : l === "en" ? "EN" : "JP"}
+                  {l === "ko" ? "KO" : l === "zh" ? "中文" : l === "en" ? "EN" : "JP"}
                 </button>
               </span>
             ))}
@@ -59,17 +59,19 @@ export default function Nav() {
           </button>
         </div>
 
-        {/* Mobile right: 문의하기 + 영어/중문 버튼 */}
+        {/* Mobile right: 문의하기 + 언어 토글 (1개 버튼) */}
         <div className="nav-mobile-right">
           <Link href="/contact" className="nav-mobile-cta">문의하기</Link>
           <button
-            onClick={() => setLang(lang === "en" ? "ko" : "en")}
-            className={`nav-mobile-lang ${lang === "en" ? "active" : ""}`}
-          >영어</button>
-          <button
-            onClick={() => setLang(lang === "zh" ? "ko" : "zh")}
-            className={`nav-mobile-lang ${lang === "zh" ? "active" : ""}`}
-          >중문</button>
+            className="nav-mobile-lang"
+            onClick={() => {
+              const cycle: Lang[] = ["ko", "en", "zh", "ja"];
+              const next = cycle[(cycle.indexOf(lang) + 1) % cycle.length];
+              setLang(next);
+            }}
+          >
+            {lang === "ko" ? "English / 中文" : lang === "en" ? "中文 / 한국어" : lang === "zh" ? "한국어 / English" : "한국어 / English"}
+          </button>
         </div>
       </div>
 

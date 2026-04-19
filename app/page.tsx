@@ -241,17 +241,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PAIRING MARQUEE */}
+      {/* PAIRING MARQUEE — 3x for seamless loop */}
       <div className="pairing-marquee">
         <div className="pairing-track">
-          <div className="pairing-item"><span>K-BEAUTY</span><span className="x">×</span><span className="creator">@샤오홍슈</span></div>
-          <div className="pairing-item"><span>K-FASHION</span><span className="x">×</span><span className="creator">@더우인</span></div>
-          <div className="pairing-item"><span>K-CELEB</span><span className="x">×</span><span className="creator">@타오바오</span></div>
-          <div className="pairing-item"><span>WANGHONG</span><span className="x">×</span><span className="creator">@KR-LIVE</span></div>
-          <div className="pairing-item"><span>K-BEAUTY</span><span className="x">×</span><span className="creator">@샤오홍슈</span></div>
-          <div className="pairing-item"><span>K-FASHION</span><span className="x">×</span><span className="creator">@더우인</span></div>
-          <div className="pairing-item"><span>K-CELEB</span><span className="x">×</span><span className="creator">@타오바오</span></div>
-          <div className="pairing-item"><span>WANGHONG</span><span className="x">×</span><span className="creator">@KR-LIVE</span></div>
+          {[0,1,2].map(r => [
+            <div key={`b${r}`} className="pairing-item"><span>K-BEAUTY</span><span className="x">×</span><span className="creator">@샤오홍슈</span></div>,
+            <div key={`f${r}`} className="pairing-item"><span>K-FASHION</span><span className="x">×</span><span className="creator">@더우인</span></div>,
+            <div key={`c${r}`} className="pairing-item"><span>K-CELEB</span><span className="x">×</span><span className="creator">@타오바오</span></div>,
+            <div key={`w${r}`} className="pairing-item"><span>WANGHONG</span><span className="x">×</span><span className="creator">@KR-LIVE</span></div>,
+          ])}
         </div>
       </div>
 
