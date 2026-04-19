@@ -481,87 +481,95 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 .fade-up{opacity:0;transform:translateY(30px);transition:all .9s cubic-bezier(.2,.7,.2,1)}
 .fade-up.in{opacity:1;transform:translateY(0)}
 
-/* ============ PAGE TRANSITIONS — DRAMATIC CONTENT SLIDE ============ */
-/* Animation is applied to the page-hero (first visible block) AND the
-   wrapper itself, so the motion is unmissable. Big displacement + scale +
-   blur combination so there's no way to confuse it with "no animation". */
+/* ============ PAGE-HERO ENTRANCE — per-element cascade (home-hero style) ============ */
+/* Each child of page-hero animates separately with stagger, similar to
+   how the home hero entrance reveals eyebrow → title → tags → sub.
+   Each page gets its own H1 reveal style (line-mask, clip, blur, scale). */
 
-/* Wrapper-level fade so the entire page fades up together */
-.pt{
-  animation:ptWrap 2.8s cubic-bezier(.2,.7,.2,1) both;
-}
-@keyframes ptWrap{
-  from{opacity:0}
-  to{opacity:1}
-}
-
-/* Per-variant direction is applied to the FIRST visible block.
-   This is normally the page-hero — but works for any first child. */
-.pt > .page-hero,
-.pt > section:first-child{
-  animation-duration:3s;
-  animation-timing-function:cubic-bezier(.2,.7,.2,1);
+/* Common stagger for back-link / breadcrumb / lead — universal */
+.pt .page-hero .back-link,
+.pt .page-hero .breadcrumb,
+.pt .page-hero h1,
+.pt .page-hero .lead{
   animation-fill-mode:both;
+  animation-timing-function:cubic-bezier(.7,0,.18,1);
+}
+.pt .page-hero .back-link{animation:heroFadeUp .8s .15s both}
+.pt .page-hero .breadcrumb{animation:heroFadeUp .8s .35s both}
+.pt .page-hero .lead{animation:heroFadeUp 1s 1.7s both}
+@keyframes heroFadeUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
-.pt-wipe-r > .page-hero,
-.pt-wipe-r > section:first-child{animation-name:ptInR}
-@keyframes ptInR{
-  from{opacity:0;transform:translate3d(-90px,0,0) scale(.97);filter:blur(6px)}
-  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+/* H1 — variant-specific reveal. Starts at delay .55s, runs ~1.5s */
+.pt .page-hero h1{animation-duration:1.5s;animation-delay:.55s;display:block}
+
+/* wipe-r → "rise up" line-mask style (matches home hero) */
+.pt-wipe-r .page-hero h1{animation-name:heroH1Up}
+@keyframes heroH1Up{
+  from{opacity:0;transform:translateY(60px);clip-path:inset(0 0 100% 0)}
+  to{opacity:1;transform:translateY(0);clip-path:inset(0 0 0 0)}
 }
 
-.pt-wipe-l > .page-hero,
-.pt-wipe-l > section:first-child{animation-name:ptInL}
-@keyframes ptInL{
-  from{opacity:0;transform:translate3d(90px,0,0) scale(.97);filter:blur(6px)}
-  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+/* rise → wipe in from left */
+.pt-rise .page-hero h1{animation-name:heroH1L}
+@keyframes heroH1L{
+  from{opacity:0;transform:translateX(-90px);clip-path:inset(0 100% 0 0)}
+  to{opacity:1;transform:translateX(0);clip-path:inset(0 0 0 0)}
 }
 
-.pt-rise > .page-hero,
-.pt-rise > section:first-child{animation-name:ptInUp}
-@keyframes ptInUp{
-  from{opacity:0;transform:translate3d(0,80px,0) scale(.97);filter:blur(6px)}
-  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+/* wipe-l → wipe in from right */
+.pt-wipe-l .page-hero h1{animation-name:heroH1R}
+@keyframes heroH1R{
+  from{opacity:0;transform:translateX(90px);clip-path:inset(0 0 0 100%)}
+  to{opacity:1;transform:translateX(0);clip-path:inset(0 0 0 0)}
 }
 
-.pt-fall > .page-hero,
-.pt-fall > section:first-child{animation-name:ptInDown}
-@keyframes ptInDown{
-  from{opacity:0;transform:translate3d(0,-70px,0) scale(.97);filter:blur(6px)}
-  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+/* fall → drop from above */
+.pt-fall .page-hero h1{animation-name:heroH1Down}
+@keyframes heroH1Down{
+  from{opacity:0;transform:translateY(-60px);clip-path:inset(100% 0 0 0)}
+  to{opacity:1;transform:translateY(0);clip-path:inset(0 0 0 0)}
 }
 
-.pt-iris > .page-hero,
-.pt-iris > section:first-child{animation-name:ptInZoom}
-@keyframes ptInZoom{
-  from{opacity:0;transform:scale(.92);filter:blur(8px)}
+/* iris → reveal from center outward (horizontal split) */
+.pt-iris .page-hero h1{animation-name:heroH1HCenter;animation-duration:1.7s}
+@keyframes heroH1HCenter{
+  from{opacity:0;clip-path:inset(0 50% 0 50%);transform:scale(.96)}
+  to{opacity:1;clip-path:inset(0 0 0 0);transform:scale(1)}
+}
+
+/* curtain → reveal from middle outward (vertical split) */
+.pt-curtain .page-hero h1{animation-name:heroH1VCenter;animation-duration:1.7s;transform-origin:center}
+@keyframes heroH1VCenter{
+  from{opacity:0;clip-path:inset(50% 0 50% 0);transform:scaleY(.6)}
+  to{opacity:1;clip-path:inset(0 0 0 0);transform:scaleY(1)}
+}
+
+/* diagonal → blur reveal (dramatic out-of-focus → focus) */
+.pt-diagonal .page-hero h1{animation-name:heroH1Blur;animation-duration:1.9s}
+@keyframes heroH1Blur{
+  from{opacity:0;filter:blur(28px);transform:scale(1.08) translateY(16px)}
+  to{opacity:1;filter:blur(0);transform:scale(1) translateY(0)}
+}
+
+/* blocks → bouncy scale-up */
+.pt-blocks .page-hero h1{animation-name:heroH1Scale;animation-timing-function:cubic-bezier(.34,1.56,.64,1);animation-duration:1.5s}
+@keyframes heroH1Scale{
+  from{opacity:0;transform:scale(.7);filter:blur(6px)}
   to{opacity:1;transform:scale(1);filter:blur(0)}
 }
 
-.pt-curtain > .page-hero,
-.pt-curtain > section:first-child{animation-name:ptInSqueeze;transform-origin:center top}
-@keyframes ptInSqueeze{
-  from{opacity:0;transform:scaleX(.85);filter:blur(6px)}
-  to{opacity:1;transform:scaleX(1);filter:blur(0)}
-}
-
-.pt-diagonal > .page-hero,
-.pt-diagonal > section:first-child{animation-name:ptInDiag}
-@keyframes ptInDiag{
-  from{opacity:0;transform:translate3d(-70px,-50px,0) scale(.96);filter:blur(6px)}
-  to{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
-}
-
-.pt-blocks > .page-hero,
-.pt-blocks > section:first-child{animation-name:ptInZoom;animation-duration:3s}
-
-/* Honor reduced-motion but with a gentle short fade — never nothing */
+/* Reduced motion — quick fade only */
 @media(prefers-reduced-motion:reduce){
-  .pt,.pt > .page-hero,.pt > section:first-child{
-    animation-duration:.6s!important;
-    animation-name:ptWrap!important;
-    transform:none!important;filter:none!important;
+  .pt .page-hero .back-link,
+  .pt .page-hero .breadcrumb,
+  .pt .page-hero h1,
+  .pt .page-hero .lead{
+    animation:heroFadeUp .35s both!important;
+    clip-path:none!important;
+    filter:none!important;
   }
 }
 
