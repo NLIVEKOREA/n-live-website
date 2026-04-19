@@ -9,7 +9,7 @@ const LABELS: Record<string, Record<string, string>> = {
     agree: "개인정보 수집 및 이용에 동의합니다. 수집된 정보는 문의 회신 목적 외에는 사용되지 않습니다.",
     submit: "문의 보내기 →", note: "* 영업일 기준 48시간 이내 won4646@naver.com 으로 회신 드립니다.",
     select: "선택", kr: "한국", cn: "중국", jp: "일본", etc: "기타" },
-  en: { type: "Inquiry Type", kbrand: "Korean Brand", kseller: "Korean Seller·Influencer", obrand: "Overseas Brand", oseller: "Overseas Seller·KOL", general: "General",
+  en: { type: "Inquiry Type", kbrand: "Korean Brand", kseller: "Korean Seller·Influencer", obrand: "Global Brand", oseller: "Global Seller·KOL", general: "General",
     name: "Name", company: "Company", email: "Email", phone: "Phone (WeChat/Tel)", country: "Country", message: "Message",
     msgPh: "Please share your brand, product, goals, and timeline.",
     agree: "I agree to the collection and use of personal information for inquiry response purposes only.",

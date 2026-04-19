@@ -32,12 +32,12 @@ const C: Record<Lang, any> = {
   en: {
     back: "← Back to all services", crumb: "KOREA · SELLER · INFLUENCER",
     h1: "The next stage of live commerce — cross-border content and products.",
-    lead: "\"Domestic lives are running well, but I want to collaborate with overseas KOLs or sell overseas brands on my channel.\" N-LIVE connects Korean sellers and influencers to overseas wanghong collaborations and overseas brand sourcing — through a single window.",
+    lead: "\"Domestic lives are running well, but I want to collaborate with global KOLs or sell global brands on my channel.\" N-LIVE connects Korean sellers and influencers to global wanghong collaborations and global brand sourcing — through a single window.",
     eb1: "WHAT YOU GET", st1: "Expand Collaboration and Source Products — Both Directions",
-    sl1: "The biggest barriers for Korean sellers and influencers are the lack of direct connections to overseas wanghongs and the absence of stable channels for sourcing overseas products. N-LIVE solves both through one window.",
+    sl1: "The biggest barriers for Korean sellers and influencers are the lack of direct connections to global wanghongs and the absence of stable channels for sourcing global products. N-LIVE solves both through one window.",
     items: [
       { n: "01 / COLLAB", t: "Chinese Wanghong · Zhubo Collaborations", d: "Simultaneous Korea–China lives, wanghong guest broadcasts, cross-channel promotions. Targeting fandoms in both countries at once." },
-      { n: "02 / SOURCING", t: "Direct Overseas Brand Matching", d: "Matching Chinese and overseas brands exclusively for Korean live commerce. Secure scarce products in Korea to differentiate your shows." },
+      { n: "02 / SOURCING", t: "Direct Global Brand Matching", d: "Matching Chinese and global brands exclusively for Korean live commerce. Secure scarce products in Korea to differentiate your shows." },
       { n: "03 / CONTENT", t: "Dual Korea–China Content Planning", d: "Distribute Korean live shorts to Xiaohongshu and Douyin in China — or reverse-direction repurposing. Double the lifespan of your content assets." },
       { n: "04 / OPERATIONS", t: "Cross-Border Settlement · Logistics", d: "We handle FX, customs, and payment issues. Sellers focus on broadcasts and content; N-LIVE runs everything else." },
       { n: "05 / MATCHING", t: "Category-Optimized Matching", d: "We curate wanghongs and brands tailored to your specialty category — beauty, fashion, lifestyle, and more." },
@@ -46,7 +46,7 @@ const C: Record<Lang, any> = {
     eb2: "OUR APPROACH", st2: "Seller Onboarding Process",
     stages: [
       { t: "Channel · Category Diagnostics", d: "We design the optimal collaboration format based on your current channel, primary category, and average viewership / conversion / GMV data." },
-      { t: "Wanghong · Brand Matching", d: "We propose Chinese wanghongs and overseas brands matching your positioning. We start with trial broadcasts." },
+      { t: "Wanghong · Brand Matching", d: "We propose Chinese wanghongs and global brands matching your positioning. We start with trial broadcasts." },
       { t: "Stabilize · Repeat", d: "We solidify high-performing combinations into regular collaboration structures and progressively expand to bigger wanghongs and tier-A brands." },
     ],
     eb3: "REFERENCE CASES", st3: "Selected Execution Cases", pending: "COMING SOON",

@@ -27,10 +27,10 @@ const C: Record<Lang, any> = {
   },
   en: {
     crumb: "COMPANY · ABOUT", h1: "N-LIVE · 엔라이브 · 恩联",
-    lead: "A cross-border agency that directly connects brands, influencers, sellers, and wanghongs across Korea and overseas. Built on live commerce field experience and networks in both countries — we operate not one-way export, but two-way business architecture.",
+    lead: "A cross-border agency that directly connects brands, influencers, sellers, and wanghongs across Korea and global. Built on live commerce field experience and networks in both countries — we operate not one-way export, but two-way business architecture.",
     eb1: "CORE VALUES", st1: "Four Competitive Edges of N-LIVE",
     items: [
-      { t: "Bi-Directional Cross-Border Architecture", d: "Korea → overseas, overseas → Korea. We operate both markets simultaneously and can design partnerships in either direction." },
+      { t: "Bi-Directional Cross-Border Architecture", d: "Korea → global, global → Korea. We operate both markets simultaneously and can design partnerships in either direction." },
       { t: "Direct Deals — No Intermediaries", d: "Brand and factory direct, with no vendors or distributors. Transparent supply chain and optimal pricing for partners." },
       { t: "Live Commerce Field Experience", d: "Traffic operations, content planning, and show-host operations know-how accumulated in the Korean live commerce field." },
       { t: "Verified Wanghong · Celebrity Network", d: "1,500+ Chinese wanghong pool and 200+ top-tier Korean celebrities. Full spectrum from basic sponsorship to paid endorsement." },

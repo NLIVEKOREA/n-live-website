@@ -5,7 +5,7 @@ import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
   ko: {
-    back: "← 전체 서비스로", crumb: "OVERSEAS · SELLER · WANGHONG",
+    back: "← 전체 서비스로", crumb: "GLOBAL · SELLER · WANGHONG",
     h1: "한국 브랜드, 한국 콘텐츠 — 현장 지원.",
     lead: "\"한국 브랜드를 내 채널에서 판매하고 싶거나, 한국에서 직접 콘텐츠를 만들고 싶다.\" 엔라이브는 해외 왕홍·셀러에게 한국 상품 직공급과 한국 현지 운영 지원을 제공합니다.",
     eb1: "이 서비스로 얻는 것", st1: "한국 상품 직공급 + 현지 제작 지원",
@@ -30,11 +30,11 @@ const C: Record<Lang, any> = {
     ctaB: "이 서비스 문의하기 →",
   },
   en: {
-    back: "← Back to all services", crumb: "OVERSEAS · SELLER · WANGHONG",
+    back: "← Back to all services", crumb: "GLOBAL · SELLER · WANGHONG",
     h1: "Korean products, Korean content — on-the-ground support.",
-    lead: "\"I want to sell Korean brands on my channel, or produce content directly in Korea.\" N-LIVE provides overseas wanghongs and sellers with direct Korean product sourcing and on-the-ground operational support in Korea.",
+    lead: "\"I want to sell Korean brands on my channel, or produce content directly in Korea.\" N-LIVE provides global wanghongs and sellers with direct Korean product sourcing and on-the-ground operational support in Korea.",
     eb1: "WHAT YOU GET", st1: "Direct Korean Product Supply + On-Site Production Support",
-    sl1: "When overseas wanghongs and sellers handle Korean products, they usually go through multiple layers of brokers and vendors. N-LIVE connects directly with brands and factories, securing both margin and authenticity.",
+    sl1: "When global wanghongs and sellers handle Korean products, they usually go through multiple layers of brokers and vendors. N-LIVE connects directly with brands and factories, securing both margin and authenticity.",
     items: [
       { n: "01 / K-BEAUTY", t: "K-Beauty Direct Supply", d: "Skincare, makeup, derma, and functional cosmetics — full category. Supplied at direct-from-brand pricing." },
       { n: "02 / K-FASHION", t: "K-Fashion · Accessories Direct Supply", d: "Designer brands, SPA, streetwear, four-season hits. Bags, jewelry, shoes — full range." },

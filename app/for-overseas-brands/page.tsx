@@ -5,7 +5,7 @@ import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
   ko: {
-    back: "← 전체 서비스로", crumb: "OVERSEAS · BRAND",
+    back: "← 전체 서비스로", crumb: "GLOBAL · BRAND",
     h1: "한류 스타, 한국 KOL, 한국 시장 — 한 창구로.",
     lead: "\"한국 연예인·KOL을 활용한 마케팅을 하고 싶거나, 한국 시장에 본격 진출하고 싶다.\" 엔라이브는 해외 브랜드에게 한국 아티스트·KOL 자원과 한국 라이브커머스 운영을 원스톱으로 제공합니다.",
     eb1: "이 서비스로 얻는 것", st1: "한류 자원 풀 × 한국 시장 운영",
@@ -33,9 +33,9 @@ const C: Record<Lang, any> = {
     ctaB: "이 서비스 문의하기 →",
   },
   en: {
-    back: "← Back to all services", crumb: "OVERSEAS · BRAND",
+    back: "← Back to all services", crumb: "GLOBAL · BRAND",
     h1: "K-Stars, Korean KOLs, the Korean market — one window.",
-    lead: "\"We want to leverage Korean celebrities or KOLs for marketing, or enter the Korean market in earnest.\" N-LIVE provides overseas brands with one-stop access to Korean artist and KOL resources and Korean live commerce operations.",
+    lead: "\"We want to leverage Korean celebrities or KOLs for marketing, or enter the Korean market in earnest.\" N-LIVE provides global brands with one-stop access to Korean artist and KOL resources and Korean live commerce operations.",
     eb1: "WHAT YOU GET", st1: "Hallyu Resource Pool × Korean Market Operations",
     sl1: "Korean celebrity marketing is a complex path. Agencies, MCNs, and management companies are fragmented, making direct access hard for external brands. N-LIVE simplifies this path.",
     items: [

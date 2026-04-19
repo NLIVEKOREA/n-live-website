@@ -25,7 +25,7 @@ const C: Record<Lang, any> = {
   en: {
     crumb: "PROCESS · Execution Framework",
     h1: "Partnership Execution Framework.",
-    lead: "Whether it's Korean brands entering China or overseas wanghongs sourcing Korean products — N-LIVE designs and executes partnerships through the same staged structure.",
+    lead: "Whether it's Korean brands entering China or global wanghongs sourcing Korean products — N-LIVE designs and executes partnerships through the same staged structure.",
     eb1: "3-STAGE FRAMEWORK", st1: "Diagnose → Execute → Scale — Three-Stage Operations",
     stages: [
       { n: "01 / STRATEGY", t: "Strategy Design", d: "We diagnose the partner's market, product, and competitive situation, then define target positioning and KPIs. Channel, budget, and stage-by-stage execution plan all designed and agreed before kickoff.", b: ["Market · product · competitive diagnostics", "Target positioning · KPI definition", "Channel · budget · stage design"] },

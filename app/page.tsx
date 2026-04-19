@@ -20,8 +20,8 @@ export default function HomePage() {
     ],
     en: [
       { label: "Korean Brands", pitch: "If you're a Korean brand — verified 1,500+ Chinese wanghong matching + Xiaohongshu/Douyin/Taobao live operations + customs, authentication, and CS. Every channel for entering China through one window.", href: "/for-korean-brands" },
-      { label: "Overseas Brands", pitch: "If you're an overseas brand — 200+ top-tier Korean celebrities, 1,500+ Korean KOLs, Korean live platform operations, drama PPL. Every channel for Korean market entry, in one place.", href: "/for-overseas-brands" },
-      { label: "Korean Sellers · Influencers", pitch: "If you're a Korean seller or influencer — Chinese wanghong collab lives, direct overseas brand sourcing, Korea-China dual content planning, cross-border settlement & logistics. Full-stack support.", href: "/for-korean-sellers" },
+      { label: "Global Brands", pitch: "If you're a global brand — 200+ top-tier Korean celebrities, 1,500+ Korean KOLs, Korean live platform operations, drama PPL. Every channel for Korean market entry, in one place.", href: "/for-overseas-brands" },
+      { label: "Korean Sellers · Influencers", pitch: "If you're a Korean seller or influencer — Chinese wanghong collab lives, direct global brand sourcing, Korea-China dual content planning, cross-border settlement & logistics. Full-stack support.", href: "/for-korean-sellers" },
       { label: "Chinese Wanghong", pitch: "If you're a Chinese wanghong — K-Beauty/K-Fashion/accessory direct supply, Korean on-site filming support, Korean celebrity & KOL collaboration guest matching. All available.", href: "/for-overseas-sellers" },
       { label: "Korean Celebrities", pitch: "Looking for Korean celebrity resources — 200+ top-tier collaboration pool, 5-tier options from basic sponsorship to drama PPL, all matched through a single window.", href: "/network" },
     ],
@@ -101,7 +101,7 @@ export default function HomePage() {
 
   // Multi-language marquee items (한·중·영 mixed)
   const marquee1 = [
-    "KOREA × OVERSEAS", "한국 × 해외", "韩国 × 海外",
+    "KOREA × GLOBAL", "한국 × 해외", "韩国 × 海外",
     "BRAND × SELLER", "브랜드 × 셀러", "品牌 × 卖家",
     "LIVE COMMERCE", "라이브커머스", "直播电商",
     "WANGHONG NETWORK", "왕홍 네트워크", "达人网络",
@@ -196,13 +196,13 @@ export default function HomePage() {
               <span className="aud-detail-link">{t("aud.detail")}</span>
             </Link>
             <Link href="/for-overseas-brands" className="audience-card o-brand">
-              <div className="aud-tag"><span className="aud-flag">OVERSEAS</span><span className="aud-type">BRAND</span></div>
+              <div className="aud-tag"><span className="aud-flag">GLOBAL</span><span className="aud-type">BRAND</span></div>
               <h3>{t("aud.3.t")}</h3>
               <p className="aud-need">{t("aud.3.n")}</p>
               <span className="aud-detail-link">{t("aud.detail")}</span>
             </Link>
             <Link href="/for-overseas-sellers" className="audience-card o-seller">
-              <div className="aud-tag"><span className="aud-flag">OVERSEAS</span><span className="aud-type">SELLER · WANGHONG</span></div>
+              <div className="aud-tag"><span className="aud-flag">GLOBAL</span><span className="aud-type">SELLER · WANGHONG</span></div>
               <h3>{t("aud.4.t")}</h3>
               <p className="aud-need">{t("aud.4.n")}</p>
               <span className="aud-detail-link">{t("aud.detail")}</span>

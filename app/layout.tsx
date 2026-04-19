@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     description:
       "브랜드와 셀러, 국경 너머 직접 연결. 한국과 해외의 브랜드·인플루언서·왕홍을 잇는 크로스보더 에이전시 — 엔라이브.",
     images: [
-      { url: "/og.png", width: 1200, height: 630, alt: "엔라이브 N-LIVE — Korea × Overseas Brand & Influencer Agency" },
+      { url: "/og.png", width: 1200, height: 630, alt: "엔라이브 N-LIVE — Korea × Global Brand & Influencer Agency" },
     ],
   },
   twitter: {
