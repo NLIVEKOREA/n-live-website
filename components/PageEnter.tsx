@@ -1,31 +1,34 @@
 "use client";
 import { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 
 type Variant =
-  | "wipe-r"     // content slides in from left
-  | "wipe-l"     // content slides in from right
-  | "rise"       // content slides up from below
-  | "fall"       // content slides down from above
-  | "iris"       // content zooms in subtly
-  | "curtain"    // content squeezes in horizontally
-  | "diagonal"   // content slides in from upper-left
-  | "blocks";    // content scales + fades
+  | "wipe-r"
+  | "wipe-l"
+  | "rise"
+  | "fall"
+  | "iris"
+  | "curtain"
+  | "diagonal"
+  | "blocks";
 
 type Theme = "k-brand" | "k-seller" | "o-brand" | "o-seller";
 
 interface Props {
   variant: Variant;
-  color?: string;     // kept for API back-compat (no longer rendered)
+  color?: string;
   theme?: Theme;
   children: ReactNode;
   className?: string;
 }
 
 /**
- * Wraps a page so the content animates in smoothly on mount.
- * Pure content motion — no overlays, no flashing bars.
- * Each variant uses a different direction so users still get a
- * subtle sense of "different page".
+ * Wraps a page in an animated div. Uses pathname as React key so the
+ * wrapper REMOUNTS on every route change — that's what re-fires the
+ * CSS animation under Next.js App Router client navigation.
+ *
+ * Without the key, the .pt div is preserved across client navigations
+ * (since the layout doesn't change) and CSS animation won't replay.
  */
 export default function PageEnter({
   variant,
@@ -33,9 +36,14 @@ export default function PageEnter({
   children,
   className = "",
 }: Props) {
+  const pathname = usePathname();
   const themeClass = theme ? `theme-${theme}` : "";
+
   return (
-    <div className={`pt pt-${variant} ${themeClass} ${className}`}>
+    <div
+      key={pathname}
+      className={`pt pt-${variant} ${themeClass} ${className}`}
+    >
       {children}
     </div>
   );
