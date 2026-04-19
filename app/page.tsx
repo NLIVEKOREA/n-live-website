@@ -1,15 +1,108 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLang } from "@/components/LangContext";
 import Marquee from "@/components/Marquee";
 import MeteorBackground from "@/components/MeteorBackground";
 import type { Lang } from "@/lib/i18n";
 
+type Role = "korean-brand" | "korean-seller" | "overseas-brand" | "overseas-seller";
+
 export default function HomePage() {
   const { t, lang } = useLang();
   const [activeTag, setActiveTag] = useState<number | null>(null);
+  const [role, setRole] = useState<Role | null>(null);
+  const [showSelector, setShowSelector] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
+
+  // Load saved role from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("nlive-role") as Role | null;
+    if (saved && ["korean-brand", "korean-seller", "overseas-brand", "overseas-seller"].includes(saved)) {
+      setRole(saved);
+      setShowSelector(false);
+    }
+  }, []);
+
+  const selectRole = (r: Role) => {
+    setFadeOut(true);
+    setTimeout(() => {
+      setRole(r);
+      setShowSelector(false);
+      setFadeOut(false);
+      localStorage.setItem("nlive-role", r);
+    }, 400);
+  };
+
+  const changeRole = () => {
+    setShowSelector(true);
+    setRole(null);
+    localStorage.removeItem("nlive-role");
+  };
+
+  // Role-specific hero content per language
+  const ROLE_HERO: Record<Role, Record<Lang, { title1: string; title2: string; sub: string; cta: string }>> = {
+    "korean-brand": {
+      ko: { title1: "당신의 브랜드를", title2: "중국 라이브에 올립니다", sub: "왕홍 500+ 매칭 · 더우인·샤오홍슈·타오바오 라이브 운영 · 통관·정산·CS까지 — 원스톱.", cta: "중국 진출 상담 시작" },
+      en: { title1: "Put your brand", title2: "on China's live stream", sub: "500+ KOL matching · Douyin/Xiaohongshu/Taobao live ops · customs, settlement, CS — all-in-one.", cta: "Start China entry consultation" },
+      zh: { title1: "把您的品牌", title2: "搬上中国直播间", sub: "500+ 达人匹配 · 抖音/小红书/淘宝直播运营 · 通关/结算/客服 — 一站式服务。", cta: "开始中国市场咨询" },
+      ja: { title1: "あなたのブランドを", title2: "中国ライブに載せます", sub: "500+ KOLマッチング · 抖音/小紅書/淘宝ライブ運営 · 通関・精算・CSまでワンストップ。", cta: "中国進出相談を始める" },
+    },
+    "korean-seller": {
+      ko: { title1: "해외 브랜드 직공급 ×", title2: "왕홍 콜라보 라이브", sub: "브랜드 소싱 · 왕홍 콜라보 기획 · 한중 이중 콘텐츠 · 크로스보더 정산·물류까지 풀세트 지원.", cta: "셀러 전용 상담 시작" },
+      en: { title1: "Direct brand supply ×", title2: "KOL collab live", sub: "Brand sourcing · KOL collab planning · KR-CN dual content · cross-border settlement & logistics — full stack.", cta: "Start seller consultation" },
+      zh: { title1: "海外品牌直供 ×", title2: "达人联名直播", sub: "品牌货源 · 达人联名企划 · 中韩双语内容 · 跨境结算物流 — 全栈支持。", cta: "开始卖家专属咨询" },
+      ja: { title1: "海外ブランド直供給 ×", title2: "KOLコラボライブ", sub: "ブランドソーシング · KOLコラボ企画 · 韓中デュアルコンテンツ · クロスボーダー精算・物流までフルサポート。", cta: "セラー専用相談を始める" },
+    },
+    "overseas-brand": {
+      ko: { title1: "한국 셀러브리티 100+", title2: "당신의 브랜드와 연결합니다", sub: "연예인 매칭 · KOL 캠페인 · 한국 라이브 플랫폼 운영 · 드라마 PPL까지 — 한국 시장 진출의 모든 채널.", cta: "한국 진출 상담 시작" },
+      en: { title1: "100+ Korean celebrities", title2: "connected to your brand", sub: "Celebrity matching · KOL campaigns · Korean live platform ops · drama PPL — every channel for Korean market entry.", cta: "Start Korea entry consultation" },
+      zh: { title1: "100+ 韩国明星", title2: "与您的品牌连接", sub: "艺人匹配 · KOL营销 · 韩国直播平台运营 · 电视剧PPL — 进入韩国市场的所有渠道。", cta: "开始韩国市场咨询" },
+      ja: { title1: "韓国セレブリティ100+", title2: "あなたのブランドと繋ぎます", sub: "芸能人マッチング · KOLキャンペーン · 韓国ライブプラットフォーム運営 · ドラマPPLまで — 韓国市場参入のすべて。", cta: "韓国進出相談を始める" },
+    },
+    "overseas-seller": {
+      ko: { title1: "K-Beauty · K-Fashion", title2: "직공급 + 한국 현지 지원", sub: "한국 브랜드 소싱 · 현지 촬영 지원 · 한국 연예인 게스트 연결 · 크로스보더 물류까지.", cta: "왕홍 전용 상담 시작" },
+      en: { title1: "K-Beauty · K-Fashion", title2: "direct supply + Korea support", sub: "Korean brand sourcing · on-site filming support · Korean celebrity guest matching · cross-border logistics.", cta: "Start KOL consultation" },
+      zh: { title1: "K-Beauty · K-Fashion", title2: "直供 + 韩国本地支持", sub: "韩国品牌货源 · 韩国本地拍摄支持 · 韩国艺人嘉宾对接 · 跨境物流全覆盖。", cta: "开始达人专属咨询" },
+      ja: { title1: "K-Beauty · K-Fashion", title2: "直供給 + 韓国現地サポート", sub: "韓国ブランドソーシング · 現地撮影サポート · 韓国芸能人ゲスト連結 · クロスボーダー物流まで。", cta: "KOL専用相談を始める" },
+    },
+  };
+
+  // Role selector labels per language
+  const ROLE_LABELS: Record<Lang, Record<Role, { title: string; desc: string; icon: string }>> = {
+    ko: {
+      "korean-brand": { title: "한국 브랜드", desc: "중국 라이브커머스 진출", icon: "🏢" },
+      "korean-seller": { title: "한국 셀러 · 인플루언서", desc: "해외 브랜드 소싱 & 왕홍 콜라보", icon: "🎙️" },
+      "overseas-brand": { title: "해외 브랜드", desc: "한국 시장 진출 & 셀러브리티 매칭", icon: "🌏" },
+      "overseas-seller": { title: "해외 셀러 · 왕홍", desc: "K-뷰티/패션 직공급 & 한국 촬영", icon: "📱" },
+    },
+    en: {
+      "korean-brand": { title: "Korean Brand", desc: "Enter China via live commerce", icon: "🏢" },
+      "korean-seller": { title: "Korean Seller · Influencer", desc: "Brand sourcing & KOL collab", icon: "🎙️" },
+      "overseas-brand": { title: "Global Brand", desc: "Enter Korea & celebrity matching", icon: "🌏" },
+      "overseas-seller": { title: "Global Seller · KOL", desc: "K-Beauty/Fashion direct supply", icon: "📱" },
+    },
+    zh: {
+      "korean-brand": { title: "韩国品牌", desc: "通过直播电商进入中国", icon: "🏢" },
+      "korean-seller": { title: "韩国卖家 · 达人", desc: "品牌货源 & 达人联名", icon: "🎙️" },
+      "overseas-brand": { title: "海外品牌", desc: "进入韩国 & 明星匹配", icon: "🌏" },
+      "overseas-seller": { title: "海外卖家 · 达人", desc: "K-Beauty/Fashion直供", icon: "📱" },
+    },
+    ja: {
+      "korean-brand": { title: "韓国ブランド", desc: "ライブコマースで中国進出", icon: "🏢" },
+      "korean-seller": { title: "韓国セラー · インフルエンサー", desc: "ブランドソーシング & KOLコラボ", icon: "🎙️" },
+      "overseas-brand": { title: "海外ブランド", desc: "韓国進出 & セレブリティマッチング", icon: "🌏" },
+      "overseas-seller": { title: "海外セラー · KOL", desc: "K-Beauty/Fashion直供給", icon: "📱" },
+    },
+  };
+
+  const SELECTOR_TITLE: Record<Lang, { eyebrow: string; title: string; sub: string }> = {
+    ko: { eyebrow: "N-LIVE 엔라이브", title: "어떤 입장에서 오셨나요?", sub: "맞춤형 서비스를 안내해드립니다" },
+    en: { eyebrow: "N-LIVE", title: "What brings you here?", sub: "We'll tailor our services to your needs" },
+    zh: { eyebrow: "N-LIVE 恩联", title: "您以什么身份访问？", sub: "为您推荐定制化服务" },
+    ja: { eyebrow: "N-LIVE エンライブ", title: "どのお立場ですか？", sub: "お客様に最適なサービスをご案内します" },
+  };
 
   // Tag interactive panels — what each audience can do with us
   const TAGS: Record<Lang, Array<{ label: string; pitch: string; href: string }>> = {
@@ -122,16 +215,60 @@ export default function HomePage() {
     "BRAND × FACTORY DIRECT", "브랜드 · 공장 다이렉트", "品牌 · 工厂直供",
   ];
 
+  // Get role-specific hero content or fallback to generic
+  const heroContent = role ? ROLE_HERO[role][lang] : null;
+  const selectorText = SELECTOR_TITLE[lang];
+  const roleLabels = ROLE_LABELS[lang];
+
+  // Current role label for the "change role" badge
+  const currentRoleLabel = role ? roleLabels[role].title : "";
+
   return (
     <>
+      {/* ROLE SELECTOR OVERLAY */}
+      {showSelector && (
+        <div className={`role-selector-overlay ${fadeOut ? "fade-out" : ""}`}>
+          <div className="role-selector-inner">
+            <div className="role-selector-logo">
+              <Image src="/logo.svg" alt="N-LIVE" width={48} height={48} />
+              <span>{selectorText.eyebrow}</span>
+            </div>
+            <h1 className="role-selector-title">{selectorText.title}</h1>
+            <p className="role-selector-sub">{selectorText.sub}</p>
+            <div className="role-selector-grid">
+              {(["korean-brand", "korean-seller", "overseas-brand", "overseas-seller"] as Role[]).map((r) => (
+                <button
+                  key={r}
+                  className={`role-selector-card ${r}`}
+                  onClick={() => selectRole(r)}
+                  type="button"
+                >
+                  <span className="rsc-icon">{roleLabels[r].icon}</span>
+                  <span className="rsc-title">{roleLabels[r].title}</span>
+                  <span className="rsc-desc">{roleLabels[r].desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* HERO */}
       <section className="hero">
         <MeteorBackground />
         <div className="container hero-content">
+          {/* Role badge + change button */}
+          {role && !showSelector && (
+            <button className="hero-role-badge" onClick={changeRole} type="button">
+              {currentRoleLabel}
+              <span className="hero-role-change">{lang === "ko" ? "변경" : lang === "en" ? "Change" : lang === "zh" ? "更换" : "変更"}</span>
+            </button>
+          )}
+
           <div className="hero-eyebrow">{t("hero.eyebrow")}</div>
           <h1 className="hero-title">
-            <span className="line-mask"><span className="line-inner">{t("hero.title.1")}</span></span>
-            <span className="line-mask"><span className="line-inner"><em>{t("hero.title.2")}</em></span></span>
+            <span className="line-mask"><span className="line-inner">{heroContent ? heroContent.title1 : t("hero.title.1")}</span></span>
+            <span className="line-mask"><span className="line-inner"><em>{heroContent ? heroContent.title2 : t("hero.title.2")}</em></span></span>
           </h1>
 
           <div className="hero-tags-label">{t("hero.tag.label")}</div>
@@ -159,9 +296,9 @@ export default function HomePage() {
             </div>
           )}
 
-          <p className="hero-sub">{t("hero.sub")}</p>
+          <p className="hero-sub">{heroContent ? heroContent.sub : t("hero.sub")}</p>
           <div className="hero-actions">
-            <Link href="/contact" className="btn btn-primary">{t("hero.cta1")} →</Link>
+            <Link href="/contact" className="btn btn-primary">{heroContent ? heroContent.cta : t("hero.cta1")} →</Link>
             <Link href="#services" className="btn btn-outline">{t("hero.cta2")}</Link>
           </div>
         </div>
