@@ -49,24 +49,6 @@ function ContactInner() {
             <span>{t("contact.promises.2")}</span>
             <span>{t("contact.promises.3")}</span>
           </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginTop: 60 }}>
-            <div className="detail-item">
-              <div className="detail-item-num">EMAIL</div>
-              <h4>won4646@naver.com</h4>
-              <p>영업일 48시간 이내 회신</p>
-            </div>
-            <div className="detail-item">
-              <div className="detail-item-num">ADDRESS</div>
-              <h4>인천광역시 계양구 경명대로 1151</h4>
-              <p>301호 (임학동 · 임학빌딩)</p>
-            </div>
-            <div className="detail-item">
-              <div className="detail-item-num">BUSINESS NO.</div>
-              <h4>235-17-02223</h4>
-              <p>엔라이브 (N-Live / 恩联)</p>
-            </div>
-          </div>
         </div>
       </section>
     </PageEnter>

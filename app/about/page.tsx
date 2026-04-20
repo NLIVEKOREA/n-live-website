@@ -122,17 +122,6 @@ export default function AboutPage() {
 
       <section className="detail-section gray">
         <div className="container">
-          <div className="detail-eyebrow">{t.eb2}</div>
-          <h2 className="detail-title">{t.st2}</h2>
-          <div className="detail-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
-            {t.info.map((info: any, i: number) => (
-              <div className="detail-item" key={i}>
-                <div className="detail-item-num">{info.l}</div>
-                <h4>{info.t}</h4>
-                <p>{info.d}</p>
-              </div>
-            ))}
-          </div>
           <div className="detail-cta">
             <h3>{t.ctaH}</h3>
             <p>{t.ctaP}</p>
