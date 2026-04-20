@@ -589,6 +589,16 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 body.lang-ko .interest-section .section-title{font-family:var(--display-ko);font-weight:400;letter-spacing:-.04em}
 .interest-section .section-desc{font-size:16px;color:var(--gray-600);max-width:640px;line-height:1.7;margin-bottom:60px}
 .interest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+/* 2x2 큰 사각형 그리드 (1-4번 카드) */
+.interest-grid-main{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:20px}
+.interest-card-big{min-height:240px;padding:40px 36px!important}
+.interest-card-big h3{font-size:clamp(22px,2.6vw,30px)!important;margin:8px 0 14px!important}
+.interest-card-big p{font-size:15px!important;margin:0 0 20px!important}
+.interest-card-big .interest-cta{font-size:13px!important;padding-top:18px!important}
+@media(max-width:720px){
+  .interest-grid-main{grid-template-columns:1fr}
+  .interest-card-big{min-height:auto}
+}
 .interest-card{
   text-align:left;padding:32px 28px;border:1.5px solid var(--gray-200);background:var(--white);
   display:flex;flex-direction:column;gap:12px;cursor:pointer;
@@ -622,8 +632,48 @@ body.lang-ko .interest-card h3{font-weight:700}
 .interest-card[data-interest="live-ops"]::after{background:var(--coral)}
 .interest-card[data-interest="live-ops"].active .interest-tag,
 .interest-card[data-interest="live-ops"].active .interest-cta{color:var(--coral-deep)}
-.interest-card[data-interest="market-entry"]:hover,
-.interest-card[data-interest="market-entry"].active{border-color:var(--heritage);box-shadow:0 16px 40px rgba(155,58,44,.16)}
+.interest-card[data-interest="korea-entry"]:hover,
+.interest-card[data-interest="korea-entry"].active{border-color:var(--heritage);box-shadow:0 16px 40px rgba(155,58,44,.18)}
+.interest-card[data-interest="korea-entry"]::after{background:var(--heritage)}
+.interest-card[data-interest="korea-entry"].active .interest-tag,
+.interest-card[data-interest="korea-entry"].active .interest-cta{color:var(--heritage)}
+.interest-card[data-interest="overseas-entry"]:hover,
+.interest-card[data-interest="overseas-entry"].active{border-color:#7B3FD1;box-shadow:0 16px 40px rgba(123,63,209,.18)}
+.interest-card[data-interest="overseas-entry"]::after{background:#7B3FD1}
+.interest-card[data-interest="overseas-entry"].active .interest-tag,
+.interest-card[data-interest="overseas-entry"].active .interest-cta{color:#6B2FC0}
+
+/* NLINK 하단 와이드 바 (COMING SOON) */
+.interest-card-wide{
+  width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:32px;
+  padding:28px 36px;border:1.5px dashed var(--gray-200);background:var(--gray-50);
+  font-family:inherit;color:inherit;cursor:pointer;position:relative;overflow:hidden;
+  transition:all .35s cubic-bezier(.7,0,.2,1);text-align:left
+}
+.interest-card-wide:hover{border-color:var(--gray-400);border-style:solid;background:var(--white);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.06)}
+.interest-card-wide.active{border-color:var(--black);border-style:solid;background:var(--black);color:var(--white)}
+.interest-card-wide .icw-left{display:flex;flex-direction:column;gap:6px;min-width:220px}
+.interest-card-wide .icw-tag{
+  display:inline-block;align-self:flex-start;
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:10px;letter-spacing:.24em;
+  padding:4px 10px;background:var(--amber);color:var(--black);text-transform:uppercase
+}
+.interest-card-wide.active .icw-tag{background:var(--white);color:var(--black)}
+.interest-card-wide .icw-left h3{font-size:clamp(18px,1.8vw,22px);font-weight:800;letter-spacing:-.01em;margin:0}
+.interest-card-wide .icw-mid p{font-size:14px;color:var(--gray-600);line-height:1.6;margin:0}
+.interest-card-wide.active .icw-mid p{color:rgba(255,255,255,.75)}
+.interest-card-wide .icw-right{flex-shrink:0}
+.interest-card-wide .icw-cta{
+  font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gray-400);white-space:nowrap
+}
+.interest-card-wide:hover .icw-cta{color:var(--black)}
+.interest-card-wide.active .icw-cta{color:var(--amber)}
+@media(max-width:720px){
+  .interest-card-wide{grid-template-columns:1fr;gap:14px;padding:24px 20px}
+  .interest-card-wide .icw-left{min-width:0}
+  .interest-card-wide .icw-right{text-align:left}
+}
 
 /* WHY N-LIVE (4 pillars) */
 .why-section{padding:120px 0;background:var(--gray-50);transition:background .4s,border .4s}

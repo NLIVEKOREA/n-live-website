@@ -6,7 +6,7 @@ import Marquee from "@/components/Marquee";
 import MeteorBackground from "@/components/MeteorBackground";
 import type { Lang } from "@/lib/i18n";
 
-type Interest = "sourcing" | "matching" | "marketing" | "live-ops" | "market-entry";
+type Interest = "sourcing" | "matching" | "korea-entry" | "overseas-entry" | "nlink";
 
 /* ────────────────────────────────────────────────────────
    COMMON MAIN + INTEREST-BASED QUICK BRANCHING
@@ -64,91 +64,91 @@ export default function HomePage() {
   type InterestCard = { title: string; desc: string; cta: string; tag: string };
   const INTEREST_CARDS: Record<Lang, Record<Interest, InterestCard>> = {
     ko: {
-      "sourcing":     { title: "상품 · 브랜드 소싱",             desc: "검증된 한국/해외 브랜드를 직공급 조건으로 연결합니다.",       cta: "소싱 가능 브랜드 보기 →",   tag: "SOURCING" },
-      "matching":     { title: "셀러 · 왕홍 매칭",               desc: "카테고리와 목표에 맞는 한·중 셀러·왕홍을 제안합니다.",          cta: "매칭 후보 요청하기 →",     tag: "MATCHING" },
-      "marketing":    { title: "인플루언서 · 연예인 마케팅",      desc: "한국 인플루언서 200+ · 정상급 연예인 100+ 캠페인을 운영합니다.", cta: "캠페인 옵션 상담 →",      tag: "MARKETING" },
-      "live-ops":     { title: "라이브커머스 운영",              desc: "샤오홍슈 · 더우인 · 타오바오 · 네이버 · 그립 실전 운영.",       cta: "라이브 운영 상담 →",      tag: "LIVE OPS" },
-      "market-entry": { title: "한국 / 중국 시장 진출",          desc: "통관 · 정품 · CS · 현지 파트너까지 양방향 진출 원스톱 실행.",  cta: "진출 전략 미팅 신청 →",   tag: "MARKET ENTRY" },
+      "sourcing":        { title: "상품 · 브랜드 소싱",   desc: "국내 / 해외 — 검증된 브랜드를 직공급 조건으로 연결합니다.", cta: "소싱 가능 브랜드 보기 →", tag: "SOURCING" },
+      "matching":        { title: "셀러 매칭",            desc: "국내 / 해외 — 카테고리와 목표에 맞는 셀러를 제안합니다.",    cta: "매칭 후보 요청하기 →",   tag: "MATCHING" },
+      "korea-entry":     { title: "한국시장 진출",        desc: "한국 셀러브리티 · KOL · 라이브 · PPL까지 원스톱 실행.",       cta: "한국 진출 미팅 신청 →",  tag: "KOREA ENTRY" },
+      "overseas-entry":  { title: "해외시장 진출",        desc: "왕홍 매칭 · 현지 플랫폼 · 통관 · CS까지 원스톱 실행.",        cta: "해외 진출 미팅 신청 →",  tag: "OVERSEAS ENTRY" },
+      "nlink":           { title: "NLINK 어플리케이션 입점", desc: "K-브랜드와 해외 셀러/왕홍을 직접 연결하는 오픈 플랫폼.",    cta: "오픈 소식 받기 →",       tag: "COMING SOON" },
     },
     en: {
-      "sourcing":     { title: "Product & Brand Sourcing",       desc: "Verified Korean/global brands connected under direct-supply terms.",   cta: "See available brands →",        tag: "SOURCING" },
-      "matching":     { title: "Seller · KOL Matching",          desc: "Korean/Chinese sellers and KOLs matched to your category and goals.",   cta: "Request matching candidates →", tag: "MATCHING" },
-      "marketing":    { title: "Influencer · Celebrity Marketing", desc: "200+ Korean influencers · 100+ top celebrities — full campaign execution.", cta: "Discuss campaign options →",   tag: "MARKETING" },
-      "live-ops":     { title: "Live Commerce Operations",       desc: "Hands-on ops on Xiaohongshu · Douyin · Taobao · Naver · Grip.",        cta: "Talk about live ops →",         tag: "LIVE OPS" },
-      "market-entry": { title: "Korea / China Market Entry",     desc: "Customs · authentication · CS · local partners — two-way, one-stop.",  cta: "Book market entry meeting →",   tag: "MARKET ENTRY" },
+      "sourcing":        { title: "Product & Brand Sourcing", desc: "Domestic / overseas — verified brands under direct-supply terms.",  cta: "See available brands →",       tag: "SOURCING" },
+      "matching":        { title: "Seller Matching",          desc: "Domestic / overseas — sellers matched to your category and goals.", cta: "Request matching candidates →", tag: "MATCHING" },
+      "korea-entry":     { title: "Korea Market Entry",       desc: "Korean celebrities · KOL · live · PPL — one-stop execution.",        cta: "Book Korea entry meeting →",   tag: "KOREA ENTRY" },
+      "overseas-entry":  { title: "Overseas Market Entry",    desc: "Wanghong matching · local platforms · customs · CS — one-stop.",    cta: "Book overseas entry meeting →", tag: "OVERSEAS ENTRY" },
+      "nlink":           { title: "NLINK App (launching soon)", desc: "Open platform directly connecting K-brands with overseas sellers/KOLs.", cta: "Get launch updates →",   tag: "COMING SOON" },
     },
     zh: {
-      "sourcing":     { title: "产品 · 品牌采购",                desc: "经验证的韩国/海外品牌,按直供条件对接。",                       cta: "查看可供品牌 →",              tag: "SOURCING" },
-      "matching":     { title: "卖家 · 达人匹配",                desc: "根据您的品类与目标,匹配中韩卖家与达人。",                      cta: "申请匹配候选 →",              tag: "MATCHING" },
-      "marketing":    { title: "达人 · 艺人营销",                desc: "韩国达人200+ · 顶级艺人100+ 的全链路营销。",                    cta: "咨询营销方案 →",              tag: "MARKETING" },
-      "live-ops":     { title: "直播电商运营",                    desc: "小红书 · 抖音 · 淘宝 · Naver · Grip 的实战运营。",              cta: "咨询直播运营 →",              tag: "LIVE OPS" },
-      "market-entry": { title: "韩国 / 中国市场进入",            desc: "通关 · 正品 · 客服 · 本地合作 — 双向一站式进入。",              cta: "预约市场进入会议 →",           tag: "MARKET ENTRY" },
+      "sourcing":        { title: "产品 · 品牌采购",          desc: "国内 / 海外 — 按直供条件对接经验证品牌。",                 cta: "查看可供品牌 →",    tag: "SOURCING" },
+      "matching":        { title: "卖家匹配",                  desc: "国内 / 海外 — 根据品类与目标匹配卖家。",                    cta: "申请匹配候选 →",    tag: "MATCHING" },
+      "korea-entry":     { title: "韩国市场进入",              desc: "韩国艺人 · KOL · 直播 · PPL 一站式执行。",                   cta: "预约韩国进入会议 →", tag: "KOREA ENTRY" },
+      "overseas-entry":  { title: "海外市场进入",              desc: "达人匹配 · 本地平台 · 通关 · 客服一站式。",                  cta: "预约海外进入会议 →", tag: "OVERSEAS ENTRY" },
+      "nlink":           { title: "NLINK 应用入驻",            desc: "直接连接 K-品牌与海外卖家/达人的开放平台。",                cta: "接收开放信息 →",    tag: "即将上线" },
     },
     ja: {
-      "sourcing":     { title: "商品 · ブランドソーシング",       desc: "検証済みの韓国/海外ブランドを直供給条件で連結します。",         cta: "ソーシング可能ブランドを見る →", tag: "SOURCING" },
-      "matching":     { title: "セラー · KOLマッチング",          desc: "カテゴリと目標に合う韓中のセラー・KOLをご提案します。",          cta: "マッチング候補をリクエスト →",   tag: "MATCHING" },
-      "marketing":    { title: "インフルエンサー · 芸能人マーケ",  desc: "韓国インフルエンサー200+ · トップ芸能人100+ のキャンペーン運営。", cta: "キャンペーンオプション相談 →", tag: "MARKETING" },
-      "live-ops":     { title: "ライブコマース運営",               desc: "小紅書 · 抖音 · 淘宝 · Naver · Grip の実戦運営。",               cta: "ライブ運営相談 →",             tag: "LIVE OPS" },
-      "market-entry": { title: "韓国 / 中国市場進出",             desc: "通関 · 正規品 · CS · 現地パートナーまで双方向ワンストップ。",    cta: "進出戦略MTG予約 →",          tag: "MARKET ENTRY" },
+      "sourcing":        { title: "商品 · ブランドソーシング",  desc: "国内 / 海外 — 検証済みブランドを直供給条件で連結。",              cta: "ソーシング可能ブランドを見る →", tag: "SOURCING" },
+      "matching":        { title: "セラーマッチング",           desc: "国内 / 海外 — カテゴリと目標に合うセラーをご提案。",               cta: "マッチング候補をリクエスト →",   tag: "MATCHING" },
+      "korea-entry":     { title: "韓国市場進出",               desc: "韓国芸能人 · KOL · ライブ · PPLまでワンストップ実行。",            cta: "韓国進出MTG予約 →",            tag: "KOREA ENTRY" },
+      "overseas-entry":  { title: "海外市場進出",               desc: "KOLマッチング · 現地プラットフォーム · 通関 · CSワンストップ。",  cta: "海外進出MTG予約 →",            tag: "OVERSEAS ENTRY" },
+      "nlink":           { title: "NLINK アプリ入居",           desc: "K-ブランドと海外セラー/KOLを直接つなぐオープンプラットフォーム。", cta: "オープン情報を受け取る →",     tag: "COMING SOON" },
     },
   };
 
-  // 관심사 → 스크롤 타겟 섹션 ID
+  // 관심사 → 스크롤 타겟 섹션 ID (nlink은 스크롤 없음)
   const INTEREST_TARGET: Record<Interest, string> = {
-    "sourcing":     "#why",
-    "matching":     "#network",
-    "marketing":    "#network",
-    "live-ops":     "#process",
-    "market-entry": "#process",
+    "sourcing":       "#why",
+    "matching":       "#network",
+    "korea-entry":    "#process",
+    "overseas-entry": "#process",
+    "nlink":          "#interest",
   };
 
   // 관심사별 메트릭 카드 우선순위 (0=brands, 1=sellers, 2=influencers, 3=celebs)
   const INTEREST_METRIC_ORDER: Record<Interest, number[]> = {
-    "sourcing":     [0, 1, 2, 3],
-    "matching":     [1, 2, 0, 3],
-    "marketing":    [3, 2, 0, 1],
-    "live-ops":     [1, 2, 3, 0],
-    "market-entry": [0, 3, 1, 2],
+    "sourcing":       [0, 1, 2, 3],
+    "matching":       [1, 2, 0, 3],
+    "korea-entry":    [3, 2, 0, 1],
+    "overseas-entry": [1, 0, 2, 3],
+    "nlink":          [0, 1, 2, 3],
   };
 
   // 관심사별 사례 우선순위
   const INTEREST_CASE_ORDER: Record<Interest, number[]> = {
-    "sourcing":     [3, 0, 1, 2],
-    "matching":     [0, 1, 3, 2],
-    "marketing":    [2, 0, 1, 3],
-    "live-ops":     [1, 0, 2, 3],
-    "market-entry": [0, 3, 2, 1],
+    "sourcing":       [3, 0, 1, 2],
+    "matching":       [0, 1, 3, 2],
+    "korea-entry":    [2, 0, 1, 3],
+    "overseas-entry": [0, 3, 1, 2],
+    "nlink":          [0, 1, 2, 3],
   };
 
   // 관심사별 최종 CTA
   const INTEREST_FINAL_CTA: Record<Lang, Record<Interest, { h: string; sub: string; btn: string }>> = {
     ko: {
-      "sourcing":     { h: "검증된 브랜드 리스트, 지금 요청하세요.",     sub: "150+ 브랜드 중 카테고리 적합 후보를 48시간 내 회신드립니다.",         btn: "브랜드 소싱 리스트 요청 →" },
-      "matching":     { h: "맞춤 셀러·왕홍 후보, 지금 요청하세요.",      sub: "카테고리·예산·목표를 알려주시면 48시간 내 후보 리스트를 보내드립니다.", btn: "매칭 후보 요청 →" },
-      "marketing":    { h: "캠페인 전략, 무료 미팅에서 설계합니다.",     sub: "비대면 30분 · 연예인/KOL 방향 · 캠페인 옵션 · 예상 효과까지.",         btn: "무료 캠페인 미팅 예약 →" },
-      "live-ops":     { h: "라이브 운영, 어떤 플랫폼이든 바로 시작.",    sub: "샤오홍슈 · 더우인 · 타오바오 · 네이버 · 그립 실행 상담 예약.",        btn: "라이브 운영 상담 →" },
-      "market-entry": { h: "한국·중국 진출, 전략 미팅으로 시작합니다.",  sub: "시장 진단 · 채널 · 파트너 · 예산까지 30분 미팅에서 정리합니다.",      btn: "무료 진출 전략 미팅 예약 →" },
+      "sourcing":       { h: "검증된 브랜드 리스트, 지금 요청하세요.",   sub: "150+ 브랜드 중 카테고리 적합 후보를 48시간 내 회신드립니다.",     btn: "브랜드 소싱 리스트 요청 →" },
+      "matching":       { h: "맞춤 셀러 후보, 지금 요청하세요.",          sub: "카테고리·예산·목표를 알려주시면 48시간 내 후보 리스트를 보내드립니다.", btn: "매칭 후보 요청 →" },
+      "korea-entry":    { h: "한국시장 진출, 전략 미팅으로 시작합니다.", sub: "연예인/KOL/라이브/PPL — 30분 비대면 미팅에서 방향을 정리합니다.",  btn: "한국 진출 미팅 예약 →" },
+      "overseas-entry": { h: "해외시장 진출, 전략 미팅으로 시작합니다.", sub: "왕홍/플랫폼/통관/CS — 30분 비대면 미팅에서 방향을 정리합니다.",    btn: "해외 진출 미팅 예약 →" },
+      "nlink":          { h: "NLINK 오픈 소식을 가장 먼저 받아보세요.",  sub: "K-브랜드와 해외 셀러/왕홍을 직접 연결하는 입점 플랫폼 — 런칭 예정.", btn: "오픈 알림 신청 →" },
     },
     en: {
-      "sourcing":     { h: "Request a verified brand list now.",       sub: "From 150+ brands, we'll send category-fit candidates within 48 hours.", btn: "Request brand sourcing list →" },
-      "matching":     { h: "Request matched seller/KOL candidates.",    sub: "Tell us your category, budget, and goals — candidate list within 48 hours.", btn: "Request matching candidates →" },
-      "marketing":    { h: "Design your campaign in a free meeting.",   sub: "30 min remote — celebrity/KOL direction, campaign options, projected impact.", btn: "Book free campaign meeting →" },
-      "live-ops":     { h: "Live ops, on any platform, starts now.",    sub: "Book a consultation for Xiaohongshu, Douyin, Taobao, Naver, or Grip.",        btn: "Talk about live ops →" },
-      "market-entry": { h: "Korea/China entry starts with strategy.",   sub: "Market diagnosis, channels, partners, budget — organized in a 30-min meeting.", btn: "Book free entry strategy meeting →" },
+      "sourcing":       { h: "Request a verified brand list now.",         sub: "From 150+ brands, we'll send category-fit candidates within 48 hours.",   btn: "Request brand sourcing list →" },
+      "matching":       { h: "Request matched seller candidates.",          sub: "Tell us your category, budget, and goals — candidate list within 48 hours.", btn: "Request matching candidates →" },
+      "korea-entry":    { h: "Korea market entry starts with strategy.",    sub: "Celebrity/KOL/live/PPL — 30-min remote meeting to align direction.",       btn: "Book Korea entry meeting →" },
+      "overseas-entry": { h: "Overseas market entry starts with strategy.", sub: "Wanghong/platforms/customs/CS — 30-min remote meeting to align direction.", btn: "Book overseas entry meeting →" },
+      "nlink":          { h: "Be the first to know when NLINK launches.",   sub: "The open platform directly connecting K-brands with overseas sellers/KOLs — launching soon.", btn: "Get launch updates →" },
     },
     zh: {
-      "sourcing":     { h: "经验证的品牌清单,立即索取。",                sub: "从150+品牌中,48小时内发送符合品类的候选清单。",                     btn: "申请品牌采购清单 →" },
-      "matching":     { h: "匹配卖家/达人候选,立即索取。",                sub: "告知品类·预算·目标,48小时内发送候选清单。",                       btn: "申请匹配候选 →" },
-      "marketing":    { h: "在免费会议中设计您的营销方案。",              sub: "线上30分钟 · 艺人/KOL方向 · 营销选项 · 预期效果。",                  btn: "预约免费营销会议 →" },
-      "live-ops":     { h: "直播运营,任何平台立即开始。",                 sub: "预约小红书/抖音/淘宝/Naver/Grip的运营咨询。",                       btn: "咨询直播运营 →" },
-      "market-entry": { h: "中韩市场进入,从战略会议开始。",               sub: "市场诊断 · 渠道 · 合作伙伴 · 预算 — 在30分钟会议中完成梳理。",      btn: "预约免费进入战略会议 →" },
+      "sourcing":       { h: "经验证的品牌清单,立即索取。",                sub: "从150+品牌中,48小时内发送符合品类的候选清单。",               btn: "申请品牌采购清单 →" },
+      "matching":       { h: "匹配卖家候选,立即索取。",                    sub: "告知品类·预算·目标,48小时内发送候选清单。",                  btn: "申请匹配候选 →" },
+      "korea-entry":    { h: "韩国市场进入,从战略会议开始。",              sub: "艺人/KOL/直播/PPL — 30分钟线上会议梳理方向。",                btn: "预约韩国进入会议 →" },
+      "overseas-entry": { h: "海外市场进入,从战略会议开始。",              sub: "达人/平台/通关/客服 — 30分钟线上会议梳理方向。",              btn: "预约海外进入会议 →" },
+      "nlink":          { h: "抢先收到 NLINK 上线通知。",                  sub: "直接连接 K-品牌与海外卖家/达人的入驻平台 — 即将上线。",        btn: "申请上线通知 →" },
     },
     ja: {
-      "sourcing":     { h: "検証済みブランドリスト、今すぐリクエスト。",  sub: "150+ブランドから、カテゴリ適合候補を48時間以内にご返信。",            btn: "ブランドソーシングリスト請求 →" },
-      "matching":     { h: "マッチしたセラー/KOL候補をリクエスト。",       sub: "カテゴリ・予算・目標をお伝えください。候補リストを48時間以内に送信。", btn: "マッチング候補をリクエスト →" },
-      "marketing":    { h: "キャンペーン戦略を無料MTGで設計します。",      sub: "オンライン30分 · 芸能人/KOL方向 · キャンペーンオプション · 予想効果。", btn: "無料キャンペーンMTG予約 →" },
-      "live-ops":     { h: "ライブ運営、どのプラットフォームでも今すぐ。", sub: "小紅書・抖音・淘宝・Naver・Gripの運営相談を予約。",                    btn: "ライブ運営相談 →" },
-      "market-entry": { h: "韓国・中国進出は戦略MTGから。",                sub: "市場診断・チャネル・パートナー・予算を30分MTGで整理。",               btn: "無料進出戦略MTG予約 →" },
+      "sourcing":       { h: "検証済みブランドリスト、今すぐリクエスト。", sub: "150+ブランドから、カテゴリ適合候補を48時間以内にご返信。",          btn: "ブランドソーシングリスト請求 →" },
+      "matching":       { h: "マッチしたセラー候補をリクエスト。",         sub: "カテゴリ・予算・目標をお伝えください。候補リストを48時間以内に送信。", btn: "マッチング候補をリクエスト →" },
+      "korea-entry":    { h: "韓国市場進出は戦略MTGから。",                sub: "芸能人/KOL/ライブ/PPL — 30分オンラインMTGで方向性を整理。",          btn: "韓国進出MTG予約 →" },
+      "overseas-entry": { h: "海外市場進出は戦略MTGから。",                sub: "KOL/プラットフォーム/通関/CS — 30分オンラインMTGで方向性を整理。",   btn: "海外進出MTG予約 →" },
+      "nlink":          { h: "NLINKローンチを最速でお知らせ。",            sub: "K-ブランドと海外セラー/KOLを直接つなぐ入居プラットフォーム — ローンチ予定。", btn: "オープン通知を申請 →" },
     },
   };
 
@@ -257,29 +257,24 @@ export default function HomePage() {
       ja: { 2: "直供給可能ブランドリスト・サンプル・価格・物流条件を提案書1枚で。" },
     },
     "matching": {
-      ko: { 2: "검증된 셀러/왕홍 후보 · 이력 · 레퍼런스 · 예상 견적을 함께 공유드립니다." },
-      en: { 2: "Verified seller/KOL candidates — history, references, and quotes included." },
-      zh: { 2: "经验证的卖家/达人候选 · 履历 · 参考 · 报价一并提供。" },
-      ja: { 2: "検証済みセラー/KOL候補・実績・レファレンス・見積を一括共有。" },
+      ko: { 2: "검증된 셀러 후보 · 이력 · 레퍼런스 · 예상 견적을 함께 공유드립니다." },
+      en: { 2: "Verified seller candidates — history, references, and quotes included." },
+      zh: { 2: "经验证的卖家候选 · 履历 · 参考 · 报价一并提供。" },
+      ja: { 2: "検証済みセラー候補・実績・レファレンス・見積を一括共有。" },
     },
-    "marketing": {
-      ko: { 3: "연예인/KOL 섭외 · 콘텐츠/라이브 제작 · 광고 캠페인 집행까지 운영." },
-      en: { 3: "Talent booking, content/live production, ad campaign delivery — end-to-end." },
-      zh: { 3: "艺人/KOL邀约·内容/直播制作·广告投放,端到端执行。" },
-      ja: { 3: "芸能人/KOLブッキング・コンテンツ/ライブ制作・広告キャンペーン実施まで。" },
+    "korea-entry": {
+      ko: { 1: "비대면 30분 · 한국 시장 진단 · 연예인/KOL 방향 · 채널/라이브 전략까지 정리합니다." },
+      en: { 1: "30 min remote — Korea market diagnosis, celebrity/KOL direction, channel/live strategy." },
+      zh: { 1: "线上30分钟 · 韩国市场诊断 · 艺人/KOL方向 · 渠道/直播策略梳理。" },
+      ja: { 1: "オンライン30分 — 韓国市場診断・芸能人/KOL方向・チャネル/ライブ戦略を整理。" },
     },
-    "live-ops": {
-      ko: { 3: "플랫폼 셋업 · 라이브 운영 · 통관 · 정산 · CS 원스톱 실행." },
-      en: { 3: "Platform setup, live operations, customs, settlement, CS — all-in-one." },
-      zh: { 3: "平台搭建·直播运营·通关·结算·客服一站式。" },
-      ja: { 3: "プラットフォーム設定・ライブ運営・通関・精算・CSワンストップ。" },
+    "overseas-entry": {
+      ko: { 1: "비대면 30분 · 해외 시장 진단 · 왕홍/플랫폼 방향 · 통관/CS 전략까지 정리합니다." },
+      en: { 1: "30 min remote — overseas market diagnosis, wanghong/platform direction, customs/CS strategy." },
+      zh: { 1: "线上30分钟 · 海外市场诊断 · 达人/平台方向 · 通关/客服策略梳理。" },
+      ja: { 1: "オンライン30分 — 海外市場診断・KOL/プラットフォーム方向・通関/CS戦略を整理。" },
     },
-    "market-entry": {
-      ko: { 1: "비대면 30분 · 시장 진단 · 채널/파트너 방향 · 예산 범위 · 리스크까지 정리합니다." },
-      en: { 1: "30 min remote — market diagnosis, channel/partner direction, budget range, risks." },
-      zh: { 1: "线上30分钟 · 市场诊断 · 渠道/合作伙伴方向 · 预算 · 风险一次性梳理。" },
-      ja: { 1: "オンライン30分 — 市場診断・チャネル/パートナー方向・予算・リスクを整理。" },
-    },
+    "nlink": { ko: {}, en: {}, zh: {}, ja: {} },
   };
 
   // ═══════════════════════════════════════════════════════
@@ -468,15 +463,15 @@ export default function HomePage() {
           <div className="section-eyebrow">— {is.eyebrow}</div>
           <h2 className="section-title">{is.question}</h2>
           <p className="section-desc">{is.hint}</p>
-          <div className="interest-grid">
-            {(Object.keys(interestCards) as Interest[]).map((id) => {
+          <div className="interest-grid interest-grid-main">
+            {(["sourcing", "matching", "korea-entry", "overseas-entry"] as Interest[]).map((id) => {
               const c = interestCards[id];
               const isActive = interest === id;
               return (
                 <button
                   key={id}
                   type="button"
-                  className={`interest-card ${isActive ? "active" : ""}`}
+                  className={`interest-card interest-card-big ${isActive ? "active" : ""}`}
                   data-interest={id}
                   onClick={() => selectInterest(id)}
                 >
@@ -488,6 +483,25 @@ export default function HomePage() {
               );
             })}
           </div>
+
+          {/* 5번째 — 하단 와이드 바 (NLINK COMING SOON) */}
+          <button
+            type="button"
+            className={`interest-card-wide ${interest === "nlink" ? "active" : ""}`}
+            data-interest="nlink"
+            onClick={() => selectInterest("nlink")}
+          >
+            <div className="icw-left">
+              <div className="icw-tag">{interestCards["nlink"].tag}</div>
+              <h3>{interestCards["nlink"].title}</h3>
+            </div>
+            <div className="icw-mid">
+              <p>{interestCards["nlink"].desc}</p>
+            </div>
+            <div className="icw-right">
+              <span className="icw-cta">{interestCards["nlink"].cta}</span>
+            </div>
+          </button>
         </div>
       </section>
 
