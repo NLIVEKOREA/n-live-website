@@ -1937,6 +1937,7 @@ body.lang-zh .final-cta h3,body.lang-ja .final-cta h3{font-family:'Pretendard','
 .xhs-strip{
   display:block;width:100%;
   position:relative;overflow:hidden;
+  margin-top:72px; /* sit directly below the fixed .nav (72px desktop) */
   background:
     linear-gradient(90deg,
       #0A0A0A 0%,
@@ -1946,8 +1947,12 @@ body.lang-zh .final-cta h3,body.lang-ja .final-cta h3{font-family:'Pretendard','
   color:var(--white);text-decoration:none;
   border-top:1px solid rgba(255,182,39,.32);
   border-bottom:1px solid rgba(255,182,39,.32);
-  transition:background .3s ease
+  transition:background .3s ease;
+  z-index:50
 }
+/* Pull hero up so its top padding (already 120px) visually absorbs the strip —
+   avoids an awkward double-gap between strip and first hero content. */
+.xhs-strip + .hero{padding-top:60px}
 .xhs-strip::before{
   content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:linear-gradient(120deg,transparent 20%,rgba(255,182,39,.18) 50%,transparent 80%);
@@ -1985,8 +1990,13 @@ body.lang-zh .final-cta h3,body.lang-ja .final-cta h3{font-family:'Pretendard','
 }
 .xhs-strip:hover .xhs-strip-arrow{transform:translateX(6px)}
 
+@media(max-width:768px){
+  /* Mobile nav = 48px top row + 36px mobile bar = 84px total */
+  .xhs-strip{margin-top:84px}
+  .xhs-strip + .hero{padding-top:48px}
+}
 @media(max-width:640px){
-  .xhs-strip-inner{padding:14px 20px;gap:10px;flex-wrap:wrap}
+  .xhs-strip-inner{padding:14px 20px;gap:10px;flex-wrap:wrap;justify-content:center}
   .xhs-strip-label{font-size:13px}
   .xhs-strip-text{font-size:13px}
   .xhs-strip-arrow{font-size:14px}
