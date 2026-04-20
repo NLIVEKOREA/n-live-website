@@ -523,8 +523,9 @@ export default function HomePage() {
 
       {/* WHY N-LIVE */}
       <section id="why" className={`why-section why-hero ${interest === "sourcing" ? "highlight" : ""}`}>
-        <div className="why-hero-bg" aria-hidden="true" />
-        <div className="why-hero-overlay" aria-hidden="true" />
+        <div className="why-hero-bg" aria-hidden="true">
+          <div className="why-hero-overlay" aria-hidden="true" />
+        </div>
         <div className="container why-hero-content">
           <div className="section-eyebrow">— {WHY_LABELS[lang]}</div>
           <h2 className="section-title">{why.title}</h2>
