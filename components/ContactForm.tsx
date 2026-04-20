@@ -215,6 +215,11 @@ export default function ContactForm({ defaultType = "general" }: { defaultType?:
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
+    // Apps Script's e.parameter parses URL-encoded bodies most reliably.
+    const body = new URLSearchParams();
+    formData.forEach((v, k) => {
+      if (typeof v === "string") body.append(k, v);
+    });
     setStatus("sending");
     try {
       // Apps Script doesn't send CORS headers — use no-cors so the POST succeeds.
@@ -222,7 +227,7 @@ export default function ContactForm({ defaultType = "general" }: { defaultType?:
       await fetch(ENDPOINT, {
         method: "POST",
         mode: "no-cors",
-        body: formData,
+        body,
       });
       setStatus("success");
       form.reset();
