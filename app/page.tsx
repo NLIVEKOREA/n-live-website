@@ -523,7 +523,7 @@ export default function HomePage() {
       </section>
 
       {/* NETWORK / METRICS — 관심사별 순서 변경 */}
-      <section id="network" className={`metrics topo-bg section-grain ${interest === "matching" || interest === "marketing" ? "highlight" : ""}`}>
+      <section id="network" className={`metrics topo-bg section-grain ${interest === "matching" || interest === "korea-entry" ? "highlight" : ""}`}>
         <div className="container">
           <div className="metrics-eyebrow">— {NET_LABELS[lang]}</div>
           <div className="metrics-grid">
@@ -556,7 +556,7 @@ export default function HomePage() {
       </section>
 
       {/* PROCESS */}
-      <section id="process" className={`process-section ${interest === "live-ops" || interest === "market-entry" ? "highlight" : ""}`}>
+      <section id="process" className={`process-section ${interest === "korea-entry" || interest === "overseas-entry" ? "highlight" : ""}`}>
         <div className="container">
           <div className="section-eyebrow">— {PROCESS_LABELS[lang]}</div>
           <h2 className="section-title">{PROCESS_TITLE[lang]}</h2>
