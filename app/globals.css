@@ -654,14 +654,119 @@ body.lang-ko .cf-step-label{font-weight:700}
 }
 .contact-form-v2 .form-check{margin-top:28px;font-size:12.5px}
 .contact-form-v2 .form-note{margin-top:18px;font-size:11.5px;color:var(--gray-400)}
+.contact-form-v2 .form-submit:disabled{
+  opacity:.6;cursor:not-allowed;transform:none;
+  box-shadow:0 4px 12px rgba(255,182,39,.15)
+}
+.contact-form-v2 .form-error{
+  margin-top:14px;padding:12px 16px;
+  background:rgba(214,64,69,.06);border:1px solid rgba(214,64,69,.25);
+  color:var(--heritage);font-size:13px;letter-spacing:.02em;line-height:1.5;
+  text-align:center
+}
+
+/* ──────────────── THANK-YOU STATE ──────────────── */
+.contact-form-v2.cf-thankyou{
+  text-align:center;
+  padding:80px 48px 72px;
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse 600px 300px at 50% 0%, rgba(255,182,39,.08), transparent 70%),
+    var(--white);
+  border-top:1px solid rgba(255,182,39,.35);
+  animation:cfThankIn .6s cubic-bezier(.2,.7,.2,1) both
+}
+.contact-form-v2.cf-thankyou::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--amber),transparent)
+}
+@keyframes cfThankIn{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.cf-thank-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 14px;margin-bottom:36px;
+  background:var(--black);color:var(--amber);
+  font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  border-radius:999px
+}
+.cf-thank-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--amber);
+  box-shadow:0 0 0 0 rgba(255,182,39,.7);
+  animation:cfThankPulse 2s ease-out infinite
+}
+@keyframes cfThankPulse{
+  0%{box-shadow:0 0 0 0 rgba(255,182,39,.55)}
+  70%{box-shadow:0 0 0 10px rgba(255,182,39,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,182,39,0)}
+}
+.cf-thank-check{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:96px;height:96px;margin-bottom:28px;
+  color:var(--amber);
+  background:#0A0A0A;border-radius:50%;
+  box-shadow:0 12px 40px rgba(0,0,0,.18),0 0 0 6px rgba(255,182,39,.08)
+}
+.cf-thank-check svg{animation:cfThankDraw .7s .15s cubic-bezier(.2,.7,.2,1) both}
+@keyframes cfThankDraw{
+  from{opacity:0;transform:scale(.7)}
+  to{opacity:1;transform:scale(1)}
+}
+.cf-thank-title{
+  font-size:clamp(26px,3.6vw,38px);font-weight:900;letter-spacing:-.025em;
+  margin-bottom:18px;color:var(--black);line-height:1.25
+}
+body.lang-ko .cf-thank-title{font-family:var(--display-ko);font-weight:400;letter-spacing:-.03em}
+.cf-thank-desc{
+  font-size:15px;color:var(--gray-700);line-height:1.75;
+  max-width:460px;margin:0 auto 14px;white-space:pre-line
+}
+.cf-thank-sub{
+  font-size:13px;color:var(--gray-500);line-height:1.7;
+  max-width:440px;margin:0 auto 44px;
+  padding-top:18px;border-top:1px solid var(--gray-100)
+}
+.cf-thank-actions{
+  display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap
+}
+.cf-thank-home{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:16px 32px;
+  background:var(--black);color:var(--white);
+  font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--black);text-decoration:none;
+  transition:all .25s cubic-bezier(.2,.7,.2,1)
+}
+.cf-thank-home:hover{
+  background:var(--amber);color:var(--black);border-color:var(--amber);
+  transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,182,39,.28)
+}
+.cf-thank-again{
+  padding:16px 28px;
+  background:transparent;color:var(--gray-600);
+  font-size:12.5px;font-weight:600;letter-spacing:.1em;
+  border:1px solid var(--gray-200);
+  transition:all .2s
+}
+.cf-thank-again:hover{
+  color:var(--black);border-color:var(--black);background:var(--gray-50)
+}
 
 @media(max-width:900px){
   .contact-form-v2{padding:40px 28px}
   .cf-type-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .contact-form-v2.cf-thankyou{padding:60px 28px 56px}
+  .cf-thank-check{width:80px;height:80px;margin-bottom:22px}
+  .cf-thank-check svg{width:46px;height:46px}
 }
 @media(max-width:540px){
   .cf-type-grid{grid-template-columns:1fr}
   .contact-form-v2{padding:28px 20px}
+  .contact-form-v2.cf-thankyou{padding:48px 22px 44px}
+  .cf-thank-actions{flex-direction:column;gap:10px;width:100%}
+  .cf-thank-home,.cf-thank-again{width:100%;justify-content:center}
 }
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .form-group{margin-bottom:20px}

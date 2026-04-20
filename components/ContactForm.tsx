@@ -20,6 +20,8 @@ type LabelPack = {
   additionalMsg: string; msgPh: string;
   agree: string; submit: string; nlinkSubmit: string; note: string;
   required: string; optional: string;
+  sending: string; thankBadge: string; thankTitle: string; thankDesc: string; thankDesc2: string;
+  thankHome: string; thankAnother: string; errorMsg: string;
 };
 
 const LABELS: Record<string, LabelPack> = {
@@ -52,6 +54,14 @@ const LABELS: Record<string, LabelPack> = {
     submit: "문의 보내기 →", nlinkSubmit: "오픈 알림 신청 →",
     note: "* 영업일 48시간 이내 won4646@naver.com 으로 회신 드립니다. 첫 미팅(비대면 30분)은 무료입니다.",
     required: "*", optional: "선택",
+    sending: "전송 중...",
+    thankBadge: "RECEIVED · 접수 완료",
+    thankTitle: "문의해주셔서 감사합니다.",
+    thankDesc: "내용을 정성껏 검토한 뒤,\n영업일 48시간 이내 담당자가 직접 회신드리겠습니다.",
+    thankDesc2: "첫 미팅(비대면 30분)은 무료이며, 조건이 맞지 않으면 솔직하게 말씀드립니다.",
+    thankHome: "메인으로 돌아가기",
+    thankAnother: "다른 문의 남기기",
+    errorMsg: "전송 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
   },
   en: {
     step1: "What brings you here", step2: "Project details", step3: "Contact",
@@ -80,6 +90,14 @@ const LABELS: Record<string, LabelPack> = {
     submit: "Send inquiry →", nlinkSubmit: "Request launch alerts →",
     note: "* We'll reply within 48 business hours via won4646@naver.com. First 30-min remote meeting is free.",
     required: "*", optional: "optional",
+    sending: "Sending...",
+    thankBadge: "RECEIVED",
+    thankTitle: "Thank you for reaching out.",
+    thankDesc: "We'll review your inquiry carefully\nand reply within 48 business hours.",
+    thankDesc2: "The first 30-min remote meeting is on us — and we'll tell you honestly if we're not the right fit.",
+    thankHome: "Back to home",
+    thankAnother: "Submit another inquiry",
+    errorMsg: "Something went wrong. Please try again in a moment.",
   },
   zh: {
     step1: "咨询主题", step2: "项目信息", step3: "联系方式",
@@ -108,6 +126,14 @@ const LABELS: Record<string, LabelPack> = {
     submit: "发送咨询 →", nlinkSubmit: "申请上线通知 →",
     note: "* 工作日 48 小时内通过 won4646@naver.com 回复。首次线上 30 分钟会议免费。",
     required: "*", optional: "选填",
+    sending: "发送中...",
+    thankBadge: "已接收",
+    thankTitle: "感谢您的咨询。",
+    thankDesc: "我们将仔细审阅您的需求,\n并在工作日 48 小时内由专员亲自回复。",
+    thankDesc2: "首次线上 30 分钟会议免费。如条件不符,我们会坦诚相告。",
+    thankHome: "返回首页",
+    thankAnother: "继续提交其他咨询",
+    errorMsg: "发送失败,请稍后再试。",
   },
   ja: {
     step1: "お問い合わせ内容", step2: "プロジェクト情報", step3: "連絡先",
@@ -136,6 +162,14 @@ const LABELS: Record<string, LabelPack> = {
     submit: "送信 →", nlinkSubmit: "ローンチ通知を申請 →",
     note: "* 営業日48時間以内に won4646@naver.com よりご返信します。初回MTG(30分オンライン)は無料。",
     required: "*", optional: "任意",
+    sending: "送信中...",
+    thankBadge: "受付完了",
+    thankTitle: "お問い合わせいただき、ありがとうございます。",
+    thankDesc: "内容を丁寧に確認のうえ、\n営業日48時間以内に担当者より直接ご返信いたします。",
+    thankDesc2: "初回MTG(30分オンライン)は無料です。条件が合わない場合は率直にお伝えします。",
+    thankHome: "ホームに戻る",
+    thankAnother: "別の問い合わせを送る",
+    errorMsg: "送信中にエラーが発生しました。しばらくしてから再度お試しください。",
   },
 };
 
@@ -151,6 +185,8 @@ const TYPE_KEY: Record<InquiryType, { labelKey: keyof LabelPack; descKey: keyof 
   "nlink":          { labelKey: "nlink",    descKey: "nlinkDesc" },
   "general":        { labelKey: "general",  descKey: "generalDesc" },
 };
+
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbzV4Qlf4And0KT4i34dPtDhuhgD6EhXeRQflvCQ9E3OtD6dK510ZHVSt1upRhbbspklOw/exec";
 
 export default function ContactForm({ defaultType = "general" }: { defaultType?: string }) {
   const { lang } = useLang();
@@ -169,13 +205,70 @@ export default function ContactForm({ defaultType = "general" }: { defaultType?:
     "general": "general",
   };
   const [type, setType] = useState<InquiryType>((mapped[defaultType] || "general") as InquiryType);
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const isNlink = type === "nlink";
   const showBusinessFields = type !== "nlink" && type !== "general";
   const isSellerChannel = type === "matching" || type === "sourcing";
 
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    setStatus("sending");
+    try {
+      // Apps Script doesn't send CORS headers — use no-cors so the POST succeeds.
+      // We can't read the response, but Apps Script will still process the data.
+      await fetch(ENDPOINT, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData,
+      });
+      setStatus("success");
+      form.reset();
+      // 스크롤을 폼 상단으로
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: window.scrollY - 100, behavior: "smooth" });
+      }
+    } catch (err) {
+      setStatus("error");
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div className="contact-form contact-form-v2 cf-thankyou">
+        <div className="cf-thank-badge">
+          <span className="cf-thank-dot" />
+          {l.thankBadge}
+        </div>
+        <div className="cf-thank-check">
+          <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+            <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
+            <path d="M18 33 L28 43 L47 22" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <h3 className="cf-thank-title">{l.thankTitle}</h3>
+        <p className="cf-thank-desc">{l.thankDesc}</p>
+        <p className="cf-thank-sub">{l.thankDesc2}</p>
+        <div className="cf-thank-actions">
+          <a href="/" className="cf-thank-home">
+            ← {l.thankHome}
+          </a>
+          <button
+            type="button"
+            className="cf-thank-again"
+            onClick={() => setStatus("idle")}
+          >
+            {l.thankAnother}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <form action="https://script.google.com/macros/s/AKfycbzV4Qlf4And0KT4i34dPtDhuhgD6EhXeRQflvCQ9E3OtD6dK510ZHVSt1upRhbbspklOw/exec" method="POST" className="contact-form contact-form-v2">
+    <form onSubmit={handleSubmit} className="contact-form contact-form-v2">
       <input type="hidden" name="inquiry_type" value={type} />
 
       {/* STEP 1 — 문의 유형 선택 (아이콘 카드) */}
@@ -301,9 +394,16 @@ export default function ContactForm({ defaultType = "general" }: { defaultType?:
         <span>{l.agree}</span>
       </label>
 
-      <button type="submit" className="form-submit">
-        {isNlink ? l.nlinkSubmit : l.submit}
+      <button
+        type="submit"
+        className="form-submit"
+        disabled={status === "sending"}
+      >
+        {status === "sending" ? l.sending : (isNlink ? l.nlinkSubmit : l.submit)}
       </button>
+      {status === "error" && (
+        <p className="form-error">{l.errorMsg}</p>
+      )}
       <p className="form-note">{l.note}</p>
     </form>
   );
