@@ -675,11 +675,53 @@ body.lang-ko .interest-card h3{font-weight:700}
   .interest-card-wide .icw-right{text-align:left}
 }
 
-/* WHY N-LIVE (4 pillars + team photo) */
-.why-lead{font-size:17px;color:var(--gray-600);line-height:1.75;max-width:780px;margin:0 0 48px;letter-spacing:-.005em}
-.why-photo{margin-bottom:64px;min-height:380px}
-.why-photo .ip-tag{font-size:12px;letter-spacing:.3em}
-.why-photo .ip-caption{font-size:13px;margin-top:6px}
+/* WHY N-LIVE — HERO-MODE (단체사진 배경 풀 블리드) */
+.why-hero{
+  position:relative;padding:160px 0 140px;
+  background:#0A0A0A;color:var(--white);overflow:hidden
+}
+.why-hero-bg{
+  position:absolute;inset:0;
+  background-image:url('/team-photo.jpg');
+  background-size:cover;background-position:center 30%;
+  background-repeat:no-repeat;
+  z-index:0;
+  filter:saturate(.95) contrast(1.02)
+}
+.why-hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:
+    linear-gradient(180deg, rgba(10,10,10,.55) 0%, rgba(10,10,10,.72) 55%, rgba(10,10,10,.92) 100%),
+    linear-gradient(90deg, rgba(10,10,10,.4) 0%, rgba(10,10,10,.15) 40%, rgba(10,10,10,.15) 60%, rgba(10,10,10,.4) 100%)
+}
+.why-hero-content{position:relative;z-index:2}
+.why-hero .section-eyebrow{color:var(--amber);margin-bottom:20px}
+.why-hero .section-title{color:var(--white);margin-bottom:24px}
+.why-hero .why-lead{
+  font-size:18px;color:rgba(255,255,255,.85);line-height:1.75;
+  max-width:720px;margin:0 0 72px;letter-spacing:-.005em
+}
+.why-hero .why-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px
+}
+.why-hero .why-item{
+  background:rgba(10,10,10,.55);backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.12);
+  padding:28px 24px;transition:all .3s
+}
+.why-hero .why-item:hover{border-color:var(--amber);background:rgba(10,10,10,.72);transform:translateY(-3px)}
+.why-hero .why-num{color:var(--amber);font-size:11px;letter-spacing:.28em;margin-bottom:14px}
+.why-hero .why-item h4{color:var(--white);font-size:17px;line-height:1.35;margin:0 0 10px;letter-spacing:-.01em}
+.why-hero .why-item p{color:rgba(255,255,255,.72);font-size:13px;line-height:1.7}
+@media(max-width:960px){
+  .why-hero{padding:100px 0 80px}
+  .why-hero .why-grid{grid-template-columns:repeat(2,1fr)}
+  .why-hero-bg{background-position:center 20%}
+}
+@media(max-width:640px){
+  .why-hero .why-grid{grid-template-columns:1fr}
+}
 
 /* Metrics hero layout — 결과형 라벨 중심, 숫자는 보조 */
 .metrics-title{font-size:clamp(32px,4.5vw,54px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin:0 0 48px;color:var(--white)}

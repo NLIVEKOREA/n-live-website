@@ -522,16 +522,13 @@ export default function HomePage() {
       </section>
 
       {/* WHY N-LIVE */}
-      <section id="why" className={`why-section ${interest === "sourcing" ? "highlight" : ""}`}>
-        <div className="container">
+      <section id="why" className={`why-section why-hero ${interest === "sourcing" ? "highlight" : ""}`}>
+        <div className="why-hero-bg" aria-hidden="true" />
+        <div className="why-hero-overlay" aria-hidden="true" />
+        <div className="container why-hero-content">
           <div className="section-eyebrow">— {WHY_LABELS[lang]}</div>
           <h2 className="section-title">{why.title}</h2>
           <p className="why-lead">{why.lead}</p>
-
-          <div className="why-photo image-placeholder tall">
-            <div className="ip-tag">TEAM PHOTO</div>
-            <div className="ip-caption">{why.photoCaption}</div>
-          </div>
 
           <div className="why-grid">
             {why.items.map((item, i) => (
