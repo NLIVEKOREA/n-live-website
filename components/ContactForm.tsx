@@ -175,11 +175,7 @@ export default function ContactForm({ defaultType = "general" }: { defaultType?:
   const isSellerChannel = type === "matching" || type === "sourcing";
 
   return (
-    <form action="https://formsubmit.co/2a5dd71f8ca4ac226e47f8dd17bd3416" method="POST" className="contact-form contact-form-v2">
-      <input type="hidden" name="_subject" value="[N-LIVE 홈페이지] 신규 파트너십 문의" />
-      <input type="hidden" name="_captcha" value="false" />
-      <input type="hidden" name="_template" value="table" />
-      <input type="hidden" name="_autoresponse" value="N-LIVE 엔라이브 문의가 정상 접수되었습니다. 영업일 기준 48시간 이내 회신 드리겠습니다." />
+    <form action="https://script.google.com/macros/s/AKfycbzV4Qlf4And0KT4i34dPtDhuhgD6EhXeRQflvCQ9E3OtD6dK510ZHVSt1upRhbbspklOw/exec" method="POST" className="contact-form contact-form-v2">
       <input type="hidden" name="inquiry_type" value={type} />
 
       {/* STEP 1 — 문의 유형 선택 (아이콘 카드) */}
