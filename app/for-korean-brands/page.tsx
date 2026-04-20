@@ -7,9 +7,9 @@ import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
   ko: {
-    back: "← 전체 서비스로", crumb: "KOREA · BRAND",
-    h1: "한국 브랜드의 중국 진출, 엔라이브가 채널을 엽니다.",
-    lead: "\"좋은 상품은 있는데 중국에서 파는 법을 모르겠다.\" 한국 브랜드가 중국 시장에서 실질적인 성과를 내는 데 필요한 것은 상품이 아닌 검증된 채널입니다. 엔라이브는 왕홍 매칭부터 플랫폼 운영, 통관까지 직접 운영합니다.",
+    back: "← 전체 서비스로", crumb: "OVERSEAS ENTRY · 해외시장 진출",
+    h1: "해외시장 진출 — 왕홍 매칭 · 라이브 · 통관, 원스톱.",
+    lead: "한국 브랜드의 해외(중국) 시장 진출을 위한 통합 실행. 검증된 왕홍 500+ 매칭, 더우인 · 샤오홍슈 · 타오바오 라이브 운영, 통관 · 정산 · CS까지 — 한 팀에서 직접 실행합니다.",
     eb1: "이 서비스로 얻는 것", st1: "검증된 중국 채널 × 원스톱 운영",
     sl1: "중간 에이전시, 브로커, 벤더를 거치지 않고 브랜드가 왕홍·플랫폼과 직접 연결됩니다. 파편화된 외주 대신 단일 창구에서 중국 시장 전체를 관리합니다.",
     items: [
@@ -41,9 +41,9 @@ const C: Record<Lang, any> = {
     ctaB: "중국 진출 상담 신청 →",
   },
   en: {
-    back: "← Back to all services", crumb: "KOREA · BRAND",
-    h1: "Korean brands entering China — N-LIVE opens the channels.",
-    lead: "\"We have great products, but don't know how to sell in China.\" What Korean brands need to deliver real results in China isn't more product — it's verified channels. N-LIVE operates everything directly: wanghong matching, platform ops, customs, and more.",
+    back: "← Back to all services", crumb: "OVERSEAS ENTRY · Overseas Market Entry",
+    h1: "Overseas Market Entry — wanghong matching, live, customs — one stop.",
+    lead: "Integrated execution for Korean brands entering overseas (China) markets. 500+ verified wanghong matching, Douyin / Xiaohongshu / Taobao live operations, customs / settlement / CS — all executed by one team.",
     eb1: "WHAT YOU GET", st1: "Verified Chinese Channels × One-Stop Operations",
     sl1: "No intermediary agencies, brokers, or vendors. Brands connect directly with wanghongs and platforms. Manage your entire China market presence through a single window instead of fragmented outsourcing.",
     items: [
@@ -75,9 +75,9 @@ const C: Record<Lang, any> = {
     ctaB: "Request China entry consultation →",
   },
   zh: {
-    back: "← 返回全部服务", crumb: "韩国 · 品牌",
-    h1: "韩国品牌进入中国市场,恩联打开渠道。",
-    lead: "\"商品很好,但不知道怎么在中国卖。\" 韩国品牌要在中国市场取得实质性成果,所需的不是更多商品,而是经过验证的渠道。恩联从达人匹配到平台运营、通关,全部直接运营。",
+    back: "← 返回全部服务", crumb: "OVERSEAS ENTRY · 海外市场进入",
+    h1: "海外市场进入 — 达人匹配 · 直播 · 通关,一站式。",
+    lead: "为韩国品牌进入海外(中国)市场提供整合执行。500+经验证达人匹配、抖音 · 小红书 · 淘宝直播运营、通关 · 结算 · 客服 — 由一个团队直接执行。",
     eb1: "您将获得", st1: "经验证的中国渠道 × 一站式运营",
     sl1: "无需中介机构、经纪人或供应商,品牌直接对接达人与平台。通过单一窗口管理整个中国市场,而非碎片化外包。",
     items: [
@@ -109,9 +109,9 @@ const C: Record<Lang, any> = {
     ctaB: "申请中国进入咨询 →",
   },
   ja: {
-    back: "← 全サービスへ戻る", crumb: "韓国 · ブランド",
-    h1: "韓国ブランドの中国進出 — N-LIVEがチャネルを開きます。",
-    lead: "「商品は良いが、中国での売り方がわからない。」韓国ブランドが中国市場で実質的な成果を出すために必要なのは、商品ではなく検証済みのチャネルです。N-LIVEはKOLマッチング、プラットフォーム運営、通関まで直接運営します。",
+    back: "← 全サービスへ戻る", crumb: "OVERSEAS ENTRY · 海外市場進出",
+    h1: "海外市場進出 — KOLマッチング · ライブ · 通関、ワンストップ。",
+    lead: "韓国ブランドの海外(中国)市場進出のための統合実行。500+検証済みKOLマッチング、抖音 · 小紅書 · 淘宝ライブ運営、通関 · 精算 · CSまで — 一つのチームで直接実行します。",
     eb1: "得られるもの", st1: "検証済み中国チャネル × ワンストップ運営",
     sl1: "中間エージェンシー、ブローカー、ベンダーを介さず、ブランドが直接KOLとプラットフォームに接続。断片化された外注ではなく、単一窓口で中国市場全体を管理します。",
     items: [

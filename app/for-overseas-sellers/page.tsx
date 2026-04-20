@@ -7,9 +7,9 @@ import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
   ko: {
-    back: "← 전체 서비스로", crumb: "GLOBAL · SELLER · WANGHONG",
-    h1: "한국 브랜드, 한국 콘텐츠 — 현장 지원.",
-    lead: "\"한국 브랜드를 내 채널에서 판매하고 싶거나, 한국에서 직접 콘텐츠를 만들고 싶다.\" 엔라이브는 해외 왕홍·셀러에게 한국 상품 직공급과 한국 현지 운영 지원을 제공합니다.",
+    back: "← 전체 서비스로", crumb: "SOURCING · 상품 · 브랜드 소싱",
+    h1: "상품 · 브랜드 소싱 — 국내와 해외, 한 곳에서.",
+    lead: "셀러·왕홍이 찾는 검증된 한국/해외 브랜드를 직공급 조건으로 매칭합니다. K-Beauty · K-Fashion · 잡화 · 헬스 등 150+ 브랜드 풀에서 카테고리 적합 후보를 48시간 내 제안드립니다.",
     eb1: "이 서비스로 얻는 것", st1: "한국 상품 직공급 + 현지 제작 지원",
     sl1: "해외 왕홍·셀러가 한국 상품을 다루려면 보통 브로커·벤더를 여러 단계 거치게 됩니다. 엔라이브는 브랜드·공장과 직접 연결해 마진과 정품성을 동시에 확보합니다.",
     items: [
@@ -40,9 +40,9 @@ const C: Record<Lang, any> = {
     ctaB: "K-브랜드 소싱 문의 →",
   },
   en: {
-    back: "← Back to all services", crumb: "GLOBAL · SELLER · WANGHONG",
-    h1: "Korean products, Korean content — on-the-ground support.",
-    lead: "\"I want to sell Korean brands on my channel, or produce content directly in Korea.\" N-LIVE provides global wanghongs and sellers with direct Korean product sourcing and on-the-ground operational support in Korea.",
+    back: "← Back to all services", crumb: "SOURCING · Product · Brand Sourcing",
+    h1: "Product · Brand Sourcing — domestic and overseas, in one place.",
+    lead: "We match sellers and wanghongs with verified Korean/global brands under direct-supply terms. From our 150+ brand pool (K-Beauty, K-Fashion, accessories, wellness), we propose category-fit candidates within 48 hours.",
     eb1: "WHAT YOU GET", st1: "Direct Korean Product Supply + On-Site Production Support",
     sl1: "When global wanghongs and sellers handle Korean products, they usually go through multiple layers of brokers and vendors. N-LIVE connects directly with brands and factories, securing both margin and authenticity.",
     items: [
@@ -74,8 +74,8 @@ const C: Record<Lang, any> = {
   },
   zh: {
     back: "← 返回全部服务", crumb: "海外 · 卖家 · 达人",
-    h1: "韩国品牌、韩国内容 — 现场支持。",
-    lead: "\"想在自己的频道销售韩国品牌,或在韩国直接制作内容。\" 恩联为海外达人和卖家提供韩国商品直供与韩国本地运营支持。",
+    h1: "产品 · 品牌采购 — 国内与海外,同一个窗口。",
+    lead: "为卖家和达人匹配经验证的韩国/海外品牌,按直供条件对接。从150+品牌池(美妆·服装·配饰·健康)中,48小时内提供符合品类的候选清单。",
     eb1: "您将获得", st1: "韩国商品直供 + 本地制作支持",
     sl1: "海外达人和卖家若要操作韩国商品,通常需要经过多层经纪人和供应商。恩联直接连接品牌和工厂,同时确保利润和正品性。",
     items: [
@@ -107,8 +107,8 @@ const C: Record<Lang, any> = {
   },
   ja: {
     back: "← 全サービスへ戻る", crumb: "海外 · セラー · KOL",
-    h1: "韓国ブランド、韓国コンテンツ — 現地サポート。",
-    lead: "「韓国ブランドを自分のチャネルで販売したい、または韓国で直接コンテンツを制作したい。」N-LIVEは海外KOL・セラーに、韓国商品の直供給と韓国現地での運営サポートを提供します。",
+    h1: "商品 · ブランドソーシング — 国内と海外、一つの場所で。",
+    lead: "セラー・KOLが求める検証済みの韓国/海外ブランドを直供給条件でマッチング。150+ブランドプール(K-Beauty · K-Fashion · アクセサリー · ヘルス)から、カテゴリ適合候補を48時間以内にご提案します。",
     eb1: "得られるもの", st1: "韓国商品直供給 + 現地制作サポート",
     sl1: "海外KOL・セラーが韓国商品を扱うには、通常複数層のブローカー・ベンダーを経由します。N-LIVEはブランド・工場と直接連携し、マージンと正規品性を同時に確保します。",
     items: [

@@ -93,13 +93,13 @@ export default function HomePage() {
     },
   };
 
-  // 관심사 → 스크롤 타겟 섹션 ID (nlink은 스크롤 없음)
-  const INTEREST_TARGET: Record<Interest, string> = {
-    "sourcing":       "#why",
-    "matching":       "#network",
-    "korea-entry":    "#process",
-    "overseas-entry": "#process",
-    "nlink":          "#interest",
+  // 관심사 → 연결될 서비스 상세 페이지 URL (nlink은 coming soon — 스크롤만)
+  const INTEREST_URL: Record<Interest, string | null> = {
+    "sourcing":       "/for-overseas-sellers",
+    "matching":       "/for-korean-sellers",
+    "korea-entry":    "/for-overseas-brands",
+    "overseas-entry": "/for-korean-brands",
+    "nlink":          null,
   };
 
   // 관심사별 메트릭 카드 우선순위 (0=brands, 1=sellers, 2=influencers, 3=celebs)
@@ -383,13 +383,19 @@ export default function HomePage() {
 
   const finalCTA = interest ? INTEREST_FINAL_CTA[lang][interest] : null;
 
-  // 인터레스트 선택 시 해당 섹션으로 스크롤
+  // 인터레스트 선택 시 해당 서비스 상세 페이지로 이동 (nlink는 제자리 + 스크롤)
   const selectInterest = (id: Interest) => {
     setInterest(id);
-    setTimeout(() => {
-      const target = document.querySelector(INTEREST_TARGET[id]);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
+    const url = INTEREST_URL[id];
+    if (url) {
+      // 해당 서비스 상세 페이지로 이동
+      window.location.href = url;
+    } else {
+      // nlink: Coming Soon — 현재 섹션 유지
+      setTimeout(() => {
+        document.querySelector("#interest")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
   };
 
   // 공통 i18n

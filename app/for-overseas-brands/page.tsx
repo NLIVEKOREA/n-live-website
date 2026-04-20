@@ -7,9 +7,9 @@ import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
   ko: {
-    back: "← 전체 서비스로", crumb: "GLOBAL · BRAND",
-    h1: "한류 스타, 한국 KOL, 한국 시장 — 한 창구로.",
-    lead: "\"한국 연예인·KOL을 활용한 마케팅을 하고 싶거나, 한국 시장에 본격 진출하고 싶다.\" 엔라이브는 해외 브랜드에게 한국 아티스트·KOL 자원과 한국 라이브커머스 운영을 원스톱으로 제공합니다.",
+    back: "← 전체 서비스로", crumb: "KOREA ENTRY · 한국시장 진출",
+    h1: "한국시장 진출 — 셀러브리티 · KOL · 라이브 · PPL, 원스톱.",
+    lead: "해외 브랜드의 한국 진출을 위한 통합 실행. 한국 정상급 연예인 100+, 인플루언서 200+, 한국 라이브 플랫폼 운영, 드라마 PPL까지 — 단일 창구에서 설계하고 직접 실행합니다.",
     eb1: "이 서비스로 얻는 것", st1: "한류 자원 풀 × 한국 시장 운영",
     sl1: "한국 연예인 마케팅은 경로가 복잡합니다. 사무소·MCN·에이전시가 파편화돼 있어 외부 브랜드가 직접 접근하기 어렵습니다. 엔라이브는 이 경로를 단순화합니다.",
     items: [
@@ -43,9 +43,9 @@ const C: Record<Lang, any> = {
     ctaB: "한국 진출 상담 신청 →",
   },
   en: {
-    back: "← Back to all services", crumb: "GLOBAL · BRAND",
-    h1: "K-Stars, Korean KOLs, the Korean market — one window.",
-    lead: "\"We want to leverage Korean celebrities or KOLs for marketing, or enter the Korean market in earnest.\" N-LIVE provides global brands with one-stop access to Korean artist and KOL resources and Korean live commerce operations.",
+    back: "← Back to all services", crumb: "KOREA ENTRY · Korea Market Entry",
+    h1: "Korea Market Entry — celebrities, KOLs, live, PPL — one stop.",
+    lead: "Integrated execution for global brands entering Korea. 100+ top-tier celebrities, 200+ influencers, Korean live platform operations, and drama PPL — all designed and directly executed through a single window.",
     eb1: "WHAT YOU GET", st1: "Hallyu Resource Pool × Korean Market Operations",
     sl1: "Korean celebrity marketing is a complex path. Agencies, MCNs, and management companies are fragmented, making direct access hard for external brands. N-LIVE simplifies this path.",
     items: [
@@ -79,9 +79,9 @@ const C: Record<Lang, any> = {
     ctaB: "Request Korea entry consultation →",
   },
   zh: {
-    back: "← 返回全部服务", crumb: "海外 · 品牌",
-    h1: "韩流明星、韩国 KOL、韩国市场 — 一个窗口。",
-    lead: "\"想利用韩国艺人或 KOL 进行营销,或正式进入韩国市场。\" 恩联为海外品牌提供韩国艺人与 KOL 资源、韩国直播电商运营的一站式服务。",
+    back: "← 返回全部服务", crumb: "KOREA ENTRY · 韩国市场进入",
+    h1: "韩国市场进入 — 艺人 · KOL · 直播 · PPL,一站式。",
+    lead: "为海外品牌进入韩国市场提供整合执行。韩国顶级艺人100+、达人200+、韩国直播平台运营、电视剧PPL — 在单一窗口设计并直接执行。",
     eb1: "您将获得", st1: "韩流资源池 × 韩国市场运营",
     sl1: "韩国艺人营销路径复杂。事务所、MCN、经纪公司碎片化,外部品牌难以直接接触。恩联简化了这条路径。",
     items: [
@@ -115,9 +115,9 @@ const C: Record<Lang, any> = {
     ctaB: "申请韩国进入咨询 →",
   },
   ja: {
-    back: "← 全サービスへ戻る", crumb: "海外 · ブランド",
-    h1: "韓流スター、韓国KOL、韓国市場 — 一つの窓口で。",
-    lead: "「韓国芸能人やKOLを活用したマーケティングをしたい、または韓国市場に本格的に進出したい。」N-LIVEは海外ブランドに、韓国アーティスト・KOLリソースと韓国ライブコマース運営をワンストップで提供します。",
+    back: "← 全サービスへ戻る", crumb: "KOREA ENTRY · 韓国市場進出",
+    h1: "韓国市場進出 — 芸能人 · KOL · ライブ · PPL、ワンストップ。",
+    lead: "海外ブランドの韓国進出のための統合実行。韓国トップクラス芸能人100+、インフルエンサー200+、韓国ライブプラットフォーム運営、ドラマPPLまで — 単一窓口で設計し、直接実行します。",
     eb1: "得られるもの", st1: "韓流リソースプール × 韓国市場運営",
     sl1: "韓国の芸能人マーケティングは経路が複雑です。事務所・MCN・エージェンシーが断片化しており、外部ブランドが直接アクセスするのは困難です。N-LIVEはこの経路を簡素化します。",
     items: [

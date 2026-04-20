@@ -7,9 +7,9 @@ import type { Lang } from "@/lib/i18n";
 
 const C: Record<Lang, any> = {
   ko: {
-    back: "← 전체 서비스로", crumb: "KOREA · SELLER · INFLUENCER",
-    h1: "라이브의 다음 단계 — 국경을 넘는 콘텐츠와 상품.",
-    lead: "\"국내 라이브는 돌아가는데, 해외 왕홍이랑 협업하거나 해외 상품을 라이브에 올리고 싶다.\" 엔라이브는 한국 셀러·인플루언서에게 해외 왕홍 콜라보와 해외 브랜드 상품을 동시에 연결하는 창구입니다.",
+    back: "← 전체 서비스로", crumb: "MATCHING · 셀러 매칭",
+    h1: "셀러 매칭 — 국내와 해외, 검증된 풀에서.",
+    lead: "500+ 검증된 한·중 라이브커머스 셀러 풀에서 카테고리·예산·목표에 맞는 파트너를 제안합니다. 브랜드는 판매 채널을, 셀러는 상품과 콜라보 기회를 — 48시간 내 후보 리스트로 회신드립니다.",
     eb1: "이 서비스로 얻는 것", st1: "협업 확장과 상품 조달, 두 방향을 동시에",
     sl1: "한국 셀러·인플루언서에게 가장 큰 장벽은 해외 왕홍과 직접 연결되지 않는 것, 그리고 해외 상품을 안정적으로 조달하는 채널이 없는 것입니다. 엔라이브는 두 가지를 단일 창구로 풀어드립니다.",
     items: [
@@ -39,9 +39,9 @@ const C: Record<Lang, any> = {
     ctaB: "셀러 파트너십 신청 →",
   },
   en: {
-    back: "← Back to all services", crumb: "KOREA · SELLER · INFLUENCER",
-    h1: "The next stage of live commerce — cross-border content and products.",
-    lead: "\"Domestic lives are running well, but I want to collaborate with global KOLs or sell global brands on my channel.\" N-LIVE connects Korean sellers and influencers to global wanghong collaborations and global brand sourcing — through a single window.",
+    back: "← Back to all services", crumb: "MATCHING · Seller Matching",
+    h1: "Seller Matching — from a verified domestic and overseas pool.",
+    lead: "From a pool of 500+ verified K-CN live commerce sellers, we propose partners that fit your category, budget, and goals. Brands get sales channels; sellers get products and collab opportunities — with a candidate list within 48 hours.",
     eb1: "WHAT YOU GET", st1: "Expand Collaboration and Source Products — Both Directions",
     sl1: "The biggest barriers for Korean sellers and influencers are the lack of direct connections to global wanghongs and the absence of stable channels for sourcing global products. N-LIVE solves both through one window.",
     items: [
@@ -71,9 +71,9 @@ const C: Record<Lang, any> = {
     ctaB: "Apply for seller partnership →",
   },
   zh: {
-    back: "← 返回全部服务", crumb: "韩国 · 卖家 · 达人",
-    h1: "直播的下一阶段 — 跨越国境的内容与商品。",
-    lead: "\"国内直播运转得不错,但想与海外达人合作,或在自己的直播间销售海外商品。\" 恩联通过单一窗口,为韩国卖家和达人同时连接海外达人合作与海外品牌商品。",
+    back: "← 返回全部服务", crumb: "MATCHING · 卖家匹配",
+    h1: "卖家匹配 — 国内与海外,来自经验证的资源池。",
+    lead: "从500+经验证的中韩直播电商卖家资源池中,为您匹配符合品类、预算与目标的合作伙伴。品牌获得销售渠道,卖家获得商品与联名机会 — 48小时内回复候选清单。",
     eb1: "您将获得", st1: "拓展合作与商品采购,双向同时",
     sl1: "韩国卖家和达人最大的障碍是无法与海外达人直接连接,以及缺乏稳定采购海外商品的渠道。恩联通过单一窗口同时解决两个问题。",
     items: [
@@ -103,9 +103,9 @@ const C: Record<Lang, any> = {
     ctaB: "申请卖家合作 →",
   },
   ja: {
-    back: "← 全サービスへ戻る", crumb: "韓国 · セラー · インフルエンサー",
-    h1: "ライブの次のステージ — 国境を越えるコンテンツと商品。",
-    lead: "「国内のライブは回っているが、海外KOLとコラボしたり、海外商品を自分のライブで販売したい。」N-LIVEは韓国セラー・インフルエンサーに、海外KOLコラボと海外ブランド商品を同時につなぐ窓口です。",
+    back: "← 全サービスへ戻る", crumb: "MATCHING · セラーマッチング",
+    h1: "セラーマッチング — 国内と海外、検証済みプールから。",
+    lead: "500+の検証済み韓中ライブコマースセラープールから、カテゴリ・予算・目標に合うパートナーをご提案。ブランドは販売チャネル、セラーは商品とコラボ機会 — 候補リストを48時間以内にご返信します。",
     eb1: "得られるもの", st1: "コラボ拡大と商品調達、両方向を同時に",
     sl1: "韓国セラー・インフルエンサーにとって最大の障壁は、海外KOLと直接つながらないこと、そして海外商品を安定的に調達するチャネルがないことです。N-LIVEはこの両方を単一窓口で解決します。",
     items: [

@@ -30,10 +30,10 @@ export default function Nav() {
           <div className="nav-dropdown" onMouseEnter={() => setServicesOpen(true)} onMouseLeave={() => setServicesOpen(false)}>
             <button className="nav-dropdown-trigger" onClick={() => setServicesOpen(!servicesOpen)}>{t("nav.services")} ▾</button>
             <div className={`nav-dropdown-menu ${servicesOpen ? "open" : ""}`}>
-              <Link href="/for-korean-brands" onClick={() => setMenuOpen(false)}>{t("nav.services.kbrand")}</Link>
+              <Link href="/for-overseas-sellers" onClick={() => setMenuOpen(false)}>{t("nav.services.oseller")}</Link>
               <Link href="/for-korean-sellers" onClick={() => setMenuOpen(false)}>{t("nav.services.kseller")}</Link>
               <Link href="/for-overseas-brands" onClick={() => setMenuOpen(false)}>{t("nav.services.obrand")}</Link>
-              <Link href="/for-overseas-sellers" onClick={() => setMenuOpen(false)}>{t("nav.services.oseller")}</Link>
+              <Link href="/for-korean-brands" onClick={() => setMenuOpen(false)}>{t("nav.services.kbrand")}</Link>
             </div>
           </div>
           <Link href="/network" onClick={() => setMenuOpen(false)}>{t("nav.network")}</Link>
