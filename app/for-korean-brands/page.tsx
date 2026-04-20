@@ -38,7 +38,7 @@ const C: Record<Lang, any> = {
     ],
     pmsg: "위 사례는 공개 보도 기반입니다. 엔라이브 자체 캠페인 자료는 NDA 체결 후 공유드립니다.",
     ctaH: "중국 시장 진출을 검토 중이신가요?", ctaP: "브랜드·상품·목표를 알려주시면 맞춤 전략을 회신드립니다.",
-    ctaB: "중국 진출 상담 신청 →",
+    ctaB: "해외 진출 상담 신청 →",
   },
   en: {
     back: "← Back to all services", crumb: "OVERSEAS ENTRY · Overseas Market Entry",
@@ -72,7 +72,7 @@ const C: Record<Lang, any> = {
     ],
     pmsg: "Above cases are based on public reports. N-LIVE's own campaign data is shared after NDA signing.",
     ctaH: "Considering entering the Chinese market?", ctaP: "Share your brand, product, and goals — we'll respond with a tailored strategy.",
-    ctaB: "Request China entry consultation →",
+    ctaB: "Request overseas entry consultation →",
   },
   zh: {
     back: "← 返回全部服务", crumb: "OVERSEAS ENTRY · 海外市场进入",
@@ -106,7 +106,7 @@ const C: Record<Lang, any> = {
     ],
     pmsg: "以上案例基于公开报道。恩联自有项目资料在签署NDA后分享。",
     ctaH: "正在考虑进入中国市场?", ctaP: "告诉我们您的品牌、产品和目标,我们将以定制战略回复。",
-    ctaB: "申请中国进入咨询 →",
+    ctaB: "申请海外进入咨询 →",
   },
   ja: {
     back: "← 全サービスへ戻る", crumb: "OVERSEAS ENTRY · 海外市場進出",
@@ -140,7 +140,7 @@ const C: Record<Lang, any> = {
     ],
     pmsg: "上記事例は公開報道に基づいています。N-LIVE自体のキャンペーン資料はNDA締結後に共有いたします。",
     ctaH: "中国市場への進出をご検討中ですか?", ctaP: "ブランド、商品、目標をお知らせいただければ、カスタム戦略を返信いたします。",
-    ctaB: "中国進出のご相談 →",
+    ctaB: "海外進出のご相談 →",
   },
 };
 
