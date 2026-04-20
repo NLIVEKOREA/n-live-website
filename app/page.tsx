@@ -158,59 +158,59 @@ export default function HomePage() {
   type MetricItem = { n: string; label: string; sub: string };
   const ALL_METRICS: Record<Lang, MetricItem[]> = {
     ko: [
-      { n: "150+", label: "검증 협력 브랜드", sub: "K-Beauty · K-Fashion · 잡화 · 헬스 등" },
-      { n: "500+", label: "한·중 라이브커머스 셀러", sub: "검증된 라이브 운영 셀러 풀" },
-      { n: "200+", label: "한국 유명 인플루언서", sub: "메가 KOL부터 마이크로까지 전 등급" },
-      { n: "100+", label: "한국 정상급 연예인", sub: "배우 · K-POP · 가수 · 방송인" },
+      { n: "150+", label: "한국 제품 · 브랜드 소싱 연결", sub: "K-Beauty · K-Fashion · 잡화 · 헬스 카테고리에서 검증 협력 브랜드 150+ 풀 매칭" },
+      { n: "500+", label: "한·중 셀러 · 왕홍 매칭", sub: "검증된 라이브 운영 셀러 500+ 풀에서 카테고리 적합 후보 제안" },
+      { n: "200+", label: "인플루언서 · KOL 마케팅", sub: "메가 KOL부터 마이크로까지 한국 인플루언서 200+ 캠페인 운영" },
+      { n: "100+", label: "한국 정상급 연예인 캠페인", sub: "배우 · K-POP · 가수 · 방송인 100+ 협업 풀 · PPL · 광고" },
     ],
     en: [
-      { n: "150+", label: "Verified Partner Brands", sub: "K-Beauty · K-Fashion · accessories · wellness" },
-      { n: "500+", label: "K-CN Live Commerce Sellers", sub: "Verified live-operating seller pool" },
-      { n: "200+", label: "Korean Influencers", sub: "Mega-KOL to micro across all tiers" },
-      { n: "100+", label: "Top Korean Celebrities", sub: "Actors · K-POP · singers · broadcasters" },
+      { n: "150+", label: "Korean Product · Brand Sourcing", sub: "Matched from 150+ verified brands across K-Beauty, K-Fashion, accessories, and wellness." },
+      { n: "500+", label: "K-CN Seller · Wanghong Matching",   sub: "Category-fit candidates proposed from 500+ verified live-operating sellers." },
+      { n: "200+", label: "Influencer · KOL Campaigns",        sub: "200+ Korean influencers — mega KOL to micro — with full campaign operations." },
+      { n: "100+", label: "Top Korean Celebrity Campaigns",    sub: "100+ actors, K-POP artists, singers, and broadcasters — PPL, ads, collabs." },
     ],
     zh: [
-      { n: "150+", label: "经验证的合作品牌", sub: "美妆 · 服装 · 配饰 · 健康等" },
-      { n: "500+", label: "中韩直播电商卖家", sub: "经验证的直播运营卖家池" },
-      { n: "200+", label: "韩国知名达人", sub: "从头部 KOL 到中腰部全覆盖" },
-      { n: "100+", label: "韩国顶级艺人", sub: "演员 · K-POP · 歌手 · 主持人" },
+      { n: "150+", label: "韩国产品 · 品牌采购对接", sub: "从美妆、服装、配饰、健康等品类的150+经验证品牌中匹配。" },
+      { n: "500+", label: "中韩卖家 · 达人匹配",      sub: "从500+经验证直播运营卖家中,提供符合品类的候选。" },
+      { n: "200+", label: "达人 · KOL营销",           sub: "200+韩国达人(头部到中腰部)全覆盖,全链路活动运营。" },
+      { n: "100+", label: "韩国顶级艺人营销",         sub: "100+演员、K-POP、歌手、主持人 — PPL、广告、联名。" },
     ],
     ja: [
-      { n: "150+", label: "検証済みパートナーブランド", sub: "K-Beauty · K-Fashion · アクセサリー · ヘルス等" },
-      { n: "500+", label: "韓中ライブコマースセラー", sub: "検証済みライブ運営セラープール" },
-      { n: "200+", label: "韓国有名インフルエンサー", sub: "メガKOLからマイクロまで全等級" },
-      { n: "100+", label: "韓国トップクラス芸能人", sub: "俳優 · K-POP · 歌手 · 放送人" },
+      { n: "150+", label: "韓国商品 · ブランドソーシング連結", sub: "K-Beauty、K-Fashion、アクセサリー、ヘルスの150+検証済みブランドからマッチング。" },
+      { n: "500+", label: "韓中セラー · KOLマッチング",          sub: "500+検証済みライブ運営セラープールからカテゴリ適合候補をご提案。" },
+      { n: "200+", label: "インフルエンサー · KOLマーケティング", sub: "メガKOLからマイクロまで韓国インフルエンサー200+キャンペーン運営。" },
+      { n: "100+", label: "韓国トップクラス芸能人キャンペーン",   sub: "俳優、K-POP、歌手、放送人100+ — PPL、広告、コラボ。" },
     ],
   };
 
   // ═══════════════════════════════════════════════════════
   // COMMON CASE HIGHLIGHTS
   // ═══════════════════════════════════════════════════════
-  type CaseItem = { num: string; brand: string; desc: string; cat: string };
+  type CaseItem = { type: string; num: string; brand: string; desc: string; cat: string };
   const ALL_CASES: Record<Lang, CaseItem[]> = {
     ko: [
-      { num: "183억 원",        brand: "더후 × 댠댠",          desc: "단일 라이브 매출 — 한국 방문 3일, 4회 라이브",            cat: "m-amber" },
-      { num: "4시간 전량 매진",  brand: "메디큐브",             desc: "더우인 라이브에서 1.2만개 기획세트 전량 소진",             cat: "m-emerald" },
-      { num: "매출 50% 증가",    brand: "Dior × 지수",          desc: "BLACKPINK 지수 앰배서더 발탁 후 한국 매출 급증",          cat: "m-azure" },
-      { num: "2,000억 원",       brand: "왕홍 댠댠 한국 방문",  desc: "3일간 총 매출 — K-뷰티 집중 판매",                       cat: "m-coral" },
+      { type: "판매 성과",   num: "183억 원",        brand: "더후 × 댠댠",         desc: "한국 방문 3일간 4회 라이브, 단일 방송 기준 매출 183억 원",            cat: "m-amber" },
+      { type: "판매 성과",   num: "4시간 전량 매진",  brand: "메디큐브 × 더우인",    desc: "더우인 라이브에서 1.2만개 기획세트 전량 소진",                         cat: "m-emerald" },
+      { type: "마케팅 성과", num: "매출 50% 증가",    brand: "Dior × 지수",         desc: "BLACKPINK 지수 앰배서더 발탁 후 한국 매출 급증 — 연예인 캠페인 효과", cat: "m-azure" },
+      { type: "연결 성과",   num: "2,000억 원",       brand: "왕홍 댠댠 한국 방문", desc: "3일간 K-뷰티 집중 판매 — 해외 왕홍과 한국 브랜드의 연결 규모",        cat: "m-coral" },
     ],
     en: [
-      { num: "₩18.3B",           brand: "Whoo × Dandan",        desc: "Single live revenue — 3-day Korea visit, 4 broadcasts",   cat: "m-amber" },
-      { num: "Sold out in 4hrs", brand: "Medicube",             desc: "12,000 curated sets sold out on Douyin live",             cat: "m-emerald" },
-      { num: "+50% revenue",     brand: "Dior × Jisoo",         desc: "Korea revenue surged after BLACKPINK Jisoo ambassadorship", cat: "m-azure" },
-      { num: "₩200B",            brand: "Dandan Korea Visit",   desc: "3-day total — focused K-Beauty sales",                   cat: "m-coral" },
+      { type: "Sales",       num: "₩18.3B",           brand: "Whoo × Dandan",       desc: "4 lives over a 3-day Korea visit — ₩18.3B in single-broadcast revenue.", cat: "m-amber" },
+      { type: "Sales",       num: "Sold out in 4hrs", brand: "Medicube × Douyin",   desc: "12,000 curated sets fully sold out on a Douyin live.",                    cat: "m-emerald" },
+      { type: "Marketing",   num: "+50% revenue",     brand: "Dior × Jisoo",        desc: "Korea revenue surged after BLACKPINK Jisoo's ambassadorship — a celebrity campaign effect.", cat: "m-azure" },
+      { type: "Connection",  num: "₩200B",            brand: "Dandan Korea Visit",  desc: "3-day total — the scale of connecting an overseas wanghong with Korean brands.", cat: "m-coral" },
     ],
     zh: [
-      { num: "183亿韩元",        brand: "后 × 丹丹",            desc: "单场直播销售额 — 访韩3天4场直播",                       cat: "m-amber" },
-      { num: "4小时全部售罄",    brand: "Medicube",             desc: "抖音直播1.2万套策划套装全部售罄",                       cat: "m-emerald" },
-      { num: "销售额增长50%",    brand: "Dior × 智秀",          desc: "BLACKPINK智秀任大使后韩国销售额激增",                   cat: "m-azure" },
-      { num: "10亿元人民币",     brand: "达人丹丹访韩",         desc: "3天总销售额 — K-Beauty集中销售",                       cat: "m-coral" },
+      { type: "销售成果",     num: "183亿韩元",        brand: "后 × 丹丹",           desc: "访韩3天4场直播 — 单场销售额183亿韩元。",                              cat: "m-amber" },
+      { type: "销售成果",     num: "4小时全部售罄",    brand: "Medicube × 抖音",     desc: "抖音直播1.2万套策划套装全部售罄。",                                  cat: "m-emerald" },
+      { type: "营销成果",     num: "销售额增长50%",    brand: "Dior × 智秀",         desc: "BLACKPINK智秀任大使后韩国销售额激增 — 艺人营销效果。",                cat: "m-azure" },
+      { type: "连接成果",     num: "10亿元人民币",     brand: "达人丹丹访韩",        desc: "3天K-Beauty集中销售 — 海外达人与韩国品牌连接的规模。",                cat: "m-coral" },
     ],
     ja: [
-      { num: "183億ウォン",       brand: "后 × ダンダン",        desc: "単一ライブ売上 — 訪韓3日間4回ライブ",                    cat: "m-amber" },
-      { num: "4時間で完売",       brand: "Medicube",             desc: "抖音ライブで1.2万セット完売",                           cat: "m-emerald" },
-      { num: "売上50%増加",       brand: "Dior × ジス",          desc: "BLACKPINKジスアンバサダー就任後、韓国売上急増",           cat: "m-azure" },
-      { num: "2,000億ウォン",     brand: "KOLダンダン訪韓",      desc: "3日間の総売上 — K-Beauty集中販売",                      cat: "m-coral" },
+      { type: "販売成果",     num: "183億ウォン",      brand: "后 × ダンダン",       desc: "訪韓3日間4回ライブ — 単一放送基準で売上183億ウォン。",                cat: "m-amber" },
+      { type: "販売成果",     num: "4時間で完売",      brand: "Medicube × 抖音",     desc: "抖音ライブで1.2万セットの企画セットが完売。",                         cat: "m-emerald" },
+      { type: "マーケティング", num: "売上50%増加",     brand: "Dior × ジス",        desc: "BLACKPINKジスのアンバサダー就任後、韓国売上が急増 — 芸能人キャンペーン効果。", cat: "m-azure" },
+      { type: "繋がり成果",   num: "2,000億ウォン",    brand: "KOLダンダン訪韓",     desc: "3日間のK-Beauty集中販売 — 海外KOLと韓国ブランドを繋いだ規模。",       cat: "m-coral" },
     ],
   };
 
@@ -280,45 +280,53 @@ export default function HomePage() {
   // ═══════════════════════════════════════════════════════
   // WHY N-LIVE (4 pillars) — 공통
   // ═══════════════════════════════════════════════════════
-  const WHY: Record<Lang, { eyebrow: string; title: string; items: { t: string; d: string }[] }> = {
+  const WHY: Record<Lang, { eyebrow: string; title: string; lead: string; photoCaption: string; items: { t: string; d: string }[] }> = {
     ko: {
       eyebrow: "WHY N-LIVE · 왜 엔라이브인가",
       title: "한 팀이 실행합니다",
+      lead: "외주 에이전시가 아닌, 실제로 현장에서 움직이는 실행팀입니다. 매칭부터 운영, 성과 후속까지 같은 사람이 책임지고 이어갑니다.",
+      photoCaption: "엔라이브 실행팀",
       items: [
-        { t: "검증된 한·중 네트워크",       d: "브랜드 150+ · 셀러 500+ · 인플루언서 200+ · 연예인 100+ 모두 직접 미팅을 거친 풀." },
-        { t: "벤더 없는 직접 매칭",         d: "중간 에이전시 없이 브랜드·셀러·플랫폼을 직접 연결합니다." },
-        { t: "실행 범위 원스톱",            d: "매칭부터 라이브 · 통관 · 정산 · CS까지 한 팀이 수행." },
-        { t: "실적 기반 리포트 · 재운영",   d: "데이터 기반 성과 리포트 · 다음 캠페인 확장 설계." },
+        { t: "필요한 파트너를 더 빠르게 찾습니다",      d: "검증된 풀에서 카테고리·예산·목표에 맞는 후보를 48시간 내 제안합니다. 시장 조사부터 시작할 필요가 없습니다." },
+        { t: "중간 단계를 줄여 실행 속도를 높입니다",   d: "벤더·브로커를 거치지 않고 브랜드·셀러·플랫폼과 직접 매칭. 커뮤니케이션 한 단계가 줄어드는 만큼 빠르게 움직입니다." },
+        { t: "연결에서 끝나지 않고 운영까지 이어집니다", d: "매칭 후 콘텐츠 기획·라이브 운영·통관·정산·CS까지 같은 팀이 수행합니다. 공을 넘기는 일이 없습니다." },
+        { t: "한 번으로 끝나지 않습니다",               d: "성과 데이터를 기반으로 다음 캠페인·반복 협업·카테고리 확장을 함께 설계합니다. 첫 실행이 두 번째, 세 번째로 이어지는 구조." },
       ],
     },
     en: {
       eyebrow: "WHY N-LIVE",
       title: "One team executes everything",
+      lead: "Not an outsourced agency — an execution team actually moving on the ground. The same people own matching, operations, and follow-through.",
+      photoCaption: "The N-LIVE execution team",
       items: [
-        { t: "Verified Korea-China Network",    d: "150+ brands · 500+ sellers · 200+ influencers · 100+ celebrities — all directly met." },
-        { t: "Direct Matching, No Middlemen",   d: "Brands, sellers, and platforms connected without intermediary agencies." },
-        { t: "Full-Stack Execution",            d: "Matching to live, customs, settlement, CS — all by one team." },
-        { t: "Performance Report & Repeat",     d: "Data-driven reports and expansion plans for next campaigns." },
+        { t: "Find the right partner, faster",        d: "We propose category, budget, and goal-fit candidates within 48 hours — you don't start from market research." },
+        { t: "Fewer steps, faster execution",          d: "No vendors or brokers. We connect brands, sellers, and platforms directly — one less communication layer means we move quicker." },
+        { t: "Connection isn't the finish line",       d: "The same team runs content, live ops, customs, settlement, and CS after matching. Nothing gets handed off." },
+        { t: "Doesn't end with one campaign",           d: "Based on performance data, we co-design the next campaign, repeat collaborations, and category expansion. First execution becomes the second and third." },
       ],
     },
     zh: {
       eyebrow: "WHY N-LIVE · 为什么选恩联",
       title: "一个团队全程执行",
+      lead: "不是外包代理,而是真正在现场运作的执行团队。从匹配到运营、成果跟进,由同一批人负责完成。",
+      photoCaption: "恩联执行团队",
       items: [
-        { t: "经验证的中韩网络",               d: "品牌150+ · 卖家500+ · 达人200+ · 艺人100+,全部经过直接对接。" },
-        { t: "无中介直接匹配",                 d: "品牌、卖家、平台无需中介代理直接对接。" },
-        { t: "全链路一站式执行",               d: "从匹配到直播、通关、结算、客服,一个团队完成。" },
-        { t: "基于业绩的报告与复投",           d: "数据驱动的报告 · 下一期扩展方案设计。" },
+        { t: "更快找到合适的合作伙伴",          d: "从经验证的资源池中,48小时内提供符合品类、预算与目标的候选 — 您不需要从市场调研开始。" },
+        { t: "减少中间环节,提升执行速度",      d: "不经过供应商或经纪人,直接对接品牌、卖家、平台 — 少一层沟通,就能更快行动。" },
+        { t: "不止于连接,还要负责运营",        d: "匹配后,同一个团队负责内容、直播、通关、结算、客服 — 没有任何交接。" },
+        { t: "不是一次性合作",                   d: "基于成果数据,共同设计下一期活动、重复合作与品类扩展 — 第一次执行延续为第二次、第三次。" },
       ],
     },
     ja: {
       eyebrow: "WHY N-LIVE · なぜN-LIVEか",
       title: "1チームで実行します",
+      lead: "外注エージェンシーではなく、実際に現場で動く実行チームです。マッチングから運営、成果のフォローまで、同じメンバーが責任を持って繋ぎます。",
+      photoCaption: "N-LIVE実行チーム",
       items: [
-        { t: "検証済み韓中ネットワーク",          d: "ブランド150+ · セラー500+ · インフルエンサー200+ · 芸能人100+、すべて直接対面。" },
-        { t: "中間業者なしの直接マッチング",      d: "ブランド・セラー・プラットフォームを中間エージェンシーなしで直接接続。" },
-        { t: "フルスタック実行",                  d: "マッチングからライブ、通関、精算、CSまで1チームで。" },
-        { t: "パフォーマンス報告・リピート",      d: "データドリブンのレポート、次のキャンペーン拡張設計。" },
+        { t: "必要なパートナーをより早く見つけます",     d: "検証済みプールから、カテゴリ・予算・目標に合う候補を48時間以内にご提案。市場調査から始める必要はありません。" },
+        { t: "中間ステップを減らし、実行速度を上げます", d: "ベンダー・ブローカーを介さず、ブランド・セラー・プラットフォームと直接マッチング。コミュニケーションが1段階減るぶん早く動けます。" },
+        { t: "繋ぐだけで終わらず、運営まで続きます",     d: "マッチング後、コンテンツ・ライブ運営・通関・精算・CSまで同じチームが実行。引き継ぎはありません。" },
+        { t: "1回で終わりません",                         d: "成果データに基づき、次のキャンペーン・反復コラボ・カテゴリ拡張を共同で設計。初回の実行が2回目、3回目に続く構造です。" },
       ],
     },
   };
@@ -408,8 +416,10 @@ export default function HomePage() {
   const is = INTEREST_SECTION[lang];
 
   const WHY_LABELS: Record<Lang, string> = { ko: "WHY N-LIVE", en: "WHY N-LIVE", zh: "WHY N-LIVE", ja: "WHY N-LIVE" };
-  const NET_LABELS: Record<Lang, string> = { ko: "VERIFIED NETWORK · 검증된 네트워크", en: "VERIFIED NETWORK", zh: "经验证的网络", ja: "検証済みネットワーク" };
-  const CASES_LABELS: Record<Lang, string> = { ko: "PROVEN RESULTS · 검증된 성과", en: "PROVEN RESULTS", zh: "验证的成果", ja: "検証された成果" };
+  const NET_LABELS: Record<Lang, string> = { ko: "WHAT WE CONNECT · 엔라이브가 연결하는 실행", en: "WHAT WE CONNECT", zh: "恩联连接的实行", ja: "WHAT WE CONNECT · N-LIVEが繋ぐ実行" };
+  const NET_TITLE: Record<Lang, string> = { ko: "이런 연결이 가능합니다", en: "These are the connections we enable", zh: "我们能实现的连接", ja: "こうした繋がりが可能です" };
+  const CASES_LABELS: Record<Lang, string> = { ko: "RESULTS · 엔라이브가 만드는 결과", en: "RESULTS", zh: "我们创造的结果", ja: "RESULTS · N-LIVEが生む結果" };
+  const CASES_TITLE: Record<Lang, string> = { ko: "판매 · 마케팅 · 연결에서 실제로 나온 결과", en: "Actual outcomes across sales, marketing, and connections", zh: "销售 · 营销 · 连接中实际产生的结果", ja: "販売 · マーケティング · 繋がりから生まれた実際の結果" };
   const PROCESS_LABELS: Record<Lang, string> = { ko: "HOW WE WORK · 진행 방식", en: "HOW WE WORK", zh: "我们的工作方式", ja: "進め方" };
   const PROCESS_TITLE: Record<Lang, string> = { ko: "문의부터 실행까지, 5단계", en: "From inquiry to execution — 5 steps", zh: "从咨询到执行 5 步", ja: "問い合わせから実行まで5ステップ" };
   const FAQ_LABELS: Record<Lang, string> = { ko: "FAQ · 자주 묻는 질문", en: "FREQUENTLY ASKED", zh: "常见问题", ja: "よくある質問" };
@@ -421,10 +431,10 @@ export default function HomePage() {
     ja: "上記事例は公開報道に基づきます。プロジェクト詳細はNDA締結後に共有します。",
   };
   const CTA_DEFAULT: Record<Lang, { h: string; sub: string; btn: string }> = {
-    ko: { h: "시작하실 준비가 되셨나요?", sub: "첫 30분 비대면 미팅은 무료입니다. 관심 분야와 목표만 알려주세요.", btn: "문의하기 →" },
-    en: { h: "Ready to start?", sub: "The first 30-min remote meeting is free. Just tell us your focus and goals.", btn: "Contact us →" },
-    zh: { h: "准备好开始了吗?", sub: "首次30分钟线上会议免费。请告知您的关注领域与目标。", btn: "联系我们 →" },
-    ja: { h: "始める準備はできましたか?", sub: "初回30分オンラインMTGは無料。関心分野と目標をお知らせください。", btn: "お問い合わせ →" },
+    ko: { h: "맞춤 협업 가능성, 30분이면 정리됩니다.", sub: "지금 상황과 목표를 알려주시면 — 브랜드 매칭·셀러 매칭·캠페인·라이브 중 실행 가능한 옵션을 미팅에서 정리드립니다. 첫 미팅 무료.", btn: "맞춤 협업 가능성 확인하기 →" },
+    en: { h: "See what's possible — in one 30-min meeting.", sub: "Tell us your situation and goals. We'll map out which options — brand/seller matching, campaigns, live — are actually executable. First meeting free.", btn: "Check custom collaboration fit →" },
+    zh: { h: "30分钟梳理,您的合作可行性一次看清。", sub: "告诉我们现在的情况与目标 — 我们在会议中整理品牌匹配、卖家匹配、营销、直播中实际可行的方案。首次会议免费。", btn: "确认定制合作可能性 →" },
+    ja: { h: "カスタム協業の可能性、30分で整理します。", sub: "現状と目標をお知らせいただければ、ブランド/セラーマッチング・キャンペーン・ライブのうち実行可能なオプションをミーティングで整理します。初回無料。", btn: "カスタム協業の可能性を確認する →" },
   };
   const ctaBlock = finalCTA || CTA_DEFAULT[lang];
 
@@ -516,6 +526,13 @@ export default function HomePage() {
         <div className="container">
           <div className="section-eyebrow">— {WHY_LABELS[lang]}</div>
           <h2 className="section-title">{why.title}</h2>
+          <p className="why-lead">{why.lead}</p>
+
+          <div className="why-photo image-placeholder tall">
+            <div className="ip-tag">TEAM PHOTO</div>
+            <div className="ip-caption">{why.photoCaption}</div>
+          </div>
+
           <div className="why-grid">
             {why.items.map((item, i) => (
               <div className="why-item" key={i}>
@@ -532,12 +549,13 @@ export default function HomePage() {
       <section id="network" className={`metrics topo-bg section-grain ${interest === "matching" || interest === "korea-entry" ? "highlight" : ""}`}>
         <div className="container">
           <div className="metrics-eyebrow">— {NET_LABELS[lang]}</div>
+          <h2 className="metrics-title">{NET_TITLE[lang]}</h2>
           <div className="metrics-grid">
             {orderedMetrics.map((m, i) => (
               <div className={`metric-card ${["m-amber", "m-emerald", "m-azure", "m-coral"][metricOrder[i]]} ${i === 0 && interest ? "metric-priority" : ""}`} key={metricOrder[i]}>
-                <div className="metric-num-big">{m.n}</div>
-                <div className="metric-label">{m.label}</div>
+                <div className="metric-label metric-label-hero">{m.label}</div>
                 <div className="metric-sub">{m.sub}</div>
+                <div className="metric-badge">{m.n}</div>
               </div>
             ))}
           </div>
@@ -548,9 +566,11 @@ export default function HomePage() {
       <section id="cases" className="case-highlights">
         <div className="container">
           <div className="section-eyebrow">— {CASES_LABELS[lang]}</div>
+          <h2 className="cases-title">{CASES_TITLE[lang]}</h2>
           <div className="case-row">
             {orderedCases.map((c, i) => (
               <div className={`case-pill ${c.cat} ${i === 0 && interest ? "case-priority" : ""}`} key={caseOrder[i]}>
+                <div className="case-type">{c.type}</div>
                 <div className="case-num-big">{c.num}</div>
                 <div className="case-brand">{c.brand}</div>
                 <p className="case-desc">{c.desc}</p>

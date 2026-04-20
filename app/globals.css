@@ -675,6 +675,44 @@ body.lang-ko .interest-card h3{font-weight:700}
   .interest-card-wide .icw-right{text-align:left}
 }
 
+/* WHY N-LIVE (4 pillars + team photo) */
+.why-lead{font-size:17px;color:var(--gray-600);line-height:1.75;max-width:780px;margin:0 0 48px;letter-spacing:-.005em}
+.why-photo{margin-bottom:64px;min-height:380px}
+.why-photo .ip-tag{font-size:12px;letter-spacing:.3em}
+.why-photo .ip-caption{font-size:13px;margin-top:6px}
+
+/* Metrics hero layout — 결과형 라벨 중심, 숫자는 보조 */
+.metrics-title{font-size:clamp(32px,4.5vw,54px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin:0 0 48px;color:var(--white)}
+body.lang-ko .metrics-title{font-family:var(--display-ko);font-weight:400}
+body.lang-zh .metrics-title,body.lang-ja .metrics-title{font-family:'Pretendard','Noto Sans JP','Noto Sans SC',sans-serif;font-weight:900}
+.metric-card{position:relative}
+.metric-label-hero{
+  font-size:clamp(19px,2vw,24px);font-weight:800;letter-spacing:-.015em;line-height:1.3;
+  color:var(--white);margin-bottom:14px
+}
+.metric-card .metric-sub{font-size:14px;line-height:1.7;color:rgba(255,255,255,.62)}
+.metric-badge{
+  position:absolute;top:32px;right:32px;
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:14px;letter-spacing:.06em;
+  padding:5px 10px;border:1px solid var(--m-color);color:var(--m-color);
+  background:rgba(255,255,255,.03)
+}
+
+/* Cases type tag */
+.cases-title{font-size:clamp(32px,4.5vw,54px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin:0 0 48px;color:var(--white)}
+body.lang-ko .cases-title{font-family:var(--display-ko);font-weight:400}
+body.lang-zh .cases-title,body.lang-ja .cases-title{font-family:'Pretendard','Noto Sans JP','Noto Sans SC',sans-serif;font-weight:900}
+.case-type{
+  display:inline-block;
+  font-family:'Unbounded',sans-serif;font-size:10px;letter-spacing:.24em;font-weight:700;
+  color:rgba(255,255,255,.5);text-transform:uppercase;
+  margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.12)
+}
+.case-pill.m-amber   .case-type{color:rgba(255,182,39,.75);border-bottom-color:rgba(255,182,39,.3)}
+.case-pill.m-emerald .case-type{color:rgba(0,214,122,.75);border-bottom-color:rgba(0,214,122,.3)}
+.case-pill.m-azure   .case-type{color:rgba(122,168,255,.75);border-bottom-color:rgba(122,168,255,.3)}
+.case-pill.m-coral   .case-type{color:rgba(255,77,58,.75);border-bottom-color:rgba(255,77,58,.3)}
+
 /* WHY N-LIVE (4 pillars) */
 .why-section{padding:120px 0;background:var(--gray-50);transition:background .4s,border .4s}
 .why-section.highlight{background:rgba(255,182,39,.04);border-top:3px solid var(--amber);border-bottom:3px solid var(--amber)}
