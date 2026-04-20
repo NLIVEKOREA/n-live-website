@@ -443,70 +443,24 @@ export default function HomePage() {
     "N-LIVE · 恩联 · 엔라이브",
   ];
 
-  // ═══════════════════════════════════════════════════════
-  // XIAOHONGSHU CREATOR RECRUITMENT (상시 모집)
-  // ═══════════════════════════════════════════════════════
-  const XHS: Record<Lang, { ribbonBadge: string; ribbonText: string; bandBadge: string; bandEyebrow: string; bandTitle: string; bandDesc: string; bandBullets: string[]; bandBtn: string; bandNote: string }> = {
-    ko: {
-      ribbonBadge: "NOW RECRUITING",
-      ribbonText: "샤오홍슈 체험단 상시 모집 — 신청하기",
-      bandBadge: "CREATOR CAMPAIGN · 상시 모집 중",
-      bandEyebrow: "샤오홍슈에서 오셨나요?",
-      bandTitle: "샤오홍슈 체험단 신청",
-      bandDesc: "K-브랜드 제품을 무상 체험하고, 콘텐츠 제작비를 받아가세요. 엔라이브가 직접 운영하는 샤오홍슈 크리에이터 프로그램입니다.",
-      bandBullets: ["제품 무상 제공", "콘텐츠 제작비 지급", "장기 협업 기회"],
-      bandBtn: "체험단 신청하러 가기 →",
-      bandNote: "팔로워 수 무관 · 진정성 있는 운영자 우대 · 국내 거주자",
-    },
-    en: {
-      ribbonBadge: "NOW RECRUITING",
-      ribbonText: "Xiaohongshu creator program — apply now",
-      bandBadge: "CREATOR CAMPAIGN · Ongoing recruitment",
-      bandEyebrow: "Came from Xiaohongshu?",
-      bandTitle: "Apply to the Xiaohongshu creator campaign",
-      bandDesc: "Experience K-brand products for free and earn paid content fees. A Xiaohongshu creator program run directly by N-LIVE.",
-      bandBullets: ["Free product samples", "Paid content fees", "Long-term partnership"],
-      bandBtn: "Apply to the campaign →",
-      bandNote: "Follower count doesn't matter · authentic creators preferred · Korea residents",
-    },
-    zh: {
-      ribbonBadge: "正在招募",
-      ribbonText: "小红书达人体验 — 立即申请",
-      bandBadge: "CREATOR CAMPAIGN · 常年招募中",
-      bandEyebrow: "您是从小红书过来的吗?",
-      bandTitle: "申请小红书达人体验",
-      bandDesc: "免费体验韩国品牌产品,获得内容创作费。由恩联(N-LIVE)直接运营的小红书达人项目。",
-      bandBullets: ["免费产品体验", "内容创作费", "长期合作机会"],
-      bandBtn: "申请达人体验 →",
-      bandNote: "粉丝量不限 · 优先真实创作者 · 限韩国本地达人",
-    },
-    ja: {
-      ribbonBadge: "募集中",
-      ribbonText: "小紅書クリエイター募集 — 応募する",
-      bandBadge: "CREATOR CAMPAIGN · 常時募集中",
-      bandEyebrow: "小紅書から来られましたか?",
-      bandTitle: "小紅書クリエイター募集に応募",
-      bandDesc: "Kブランド製品を無償体験し、コンテンツ制作費をお支払いします。N-LIVEが直接運営する小紅書クリエイタープログラムです。",
-      bandBullets: ["製品の無償提供", "コンテンツ制作費支給", "長期協業の機会"],
-      bandBtn: "応募ページへ →",
-      bandNote: "フォロワー数不問 · 真摯なクリエイター優遇 · 韓国在住者",
-    },
-  };
-  const xhs = XHS[lang];
 
   return (
     <>
+      {/* 샤오홍슈 체험단 진입 배너 — 네비게이션 바로 아래 (중국어 전용) */}
+      <Link href="/campaign" className="xhs-strip" aria-label="小红书体验官招募">
+        <div className="xhs-strip-inner">
+          <span className="xhs-strip-dot" aria-hidden="true" />
+          <span className="xhs-strip-label">小红书体验官招募中</span>
+          <span className="xhs-strip-sep" aria-hidden="true" />
+          <span className="xhs-strip-text">点这里进来报名</span>
+          <span className="xhs-strip-arrow" aria-hidden="true">→</span>
+        </div>
+      </Link>
+
       {/* HERO — 공통 */}
       <section className="hero">
         <MeteorBackground />
         <div className="container hero-content">
-          <Link href="/campaign" className="xhs-ribbon">
-            <span className="xhs-ribbon-dot" />
-            <span className="xhs-ribbon-label">{xhs.ribbonBadge}</span>
-            <span className="xhs-ribbon-divider" />
-            <span className="xhs-ribbon-text">{xhs.ribbonText}</span>
-            <span className="xhs-ribbon-arrow">→</span>
-          </Link>
           <div className="hero-eyebrow">{hero.eyebrow}</div>
           <h1 className="hero-title">
             <span className="line-mask"><span className="line-inner">{hero.title1}</span></span>
@@ -573,37 +527,6 @@ export default function HomePage() {
               <span className="icw-cta">{interestCards["nlink"].cta}</span>
             </div>
           </button>
-        </div>
-      </section>
-
-      {/* XIAOHONGSHU CREATOR RECRUITMENT BAND */}
-      <section className="xhs-band" id="xhs-campaign">
-        <div className="xhs-band-grid" aria-hidden="true" />
-        <div className="container xhs-band-inner">
-          <div className="xhs-band-left">
-            <div className="xhs-band-badge">
-              <span className="xhs-band-dot" />
-              {xhs.bandBadge}
-            </div>
-            <div className="xhs-band-eyebrow">{xhs.bandEyebrow}</div>
-            <h2 className="xhs-band-title">{xhs.bandTitle}</h2>
-            <p className="xhs-band-desc">{xhs.bandDesc}</p>
-            <ul className="xhs-band-bullets">
-              {xhs.bandBullets.map((b, i) => (
-                <li key={i}>
-                  <span className="xhs-band-check" aria-hidden>◆</span>
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="xhs-band-right">
-            <Link href="/campaign" className="xhs-band-btn">
-              <span>{xhs.bandBtn}</span>
-              <span className="xhs-band-btn-glow" aria-hidden="true" />
-            </Link>
-            <p className="xhs-band-note">{xhs.bandNote}</p>
-          </div>
         </div>
       </section>
 

@@ -1921,179 +1921,76 @@ body.lang-zh .final-cta h3,body.lang-ja .final-cta h3{font-family:'Pretendard','
 }
 
 /* ════════════════════════════════════════════════════════
-   XIAOHONGSHU CREATOR CAMPAIGN — HERO RIBBON + BAND
+   XIAOHONGSHU CREATOR CAMPAIGN — FULL-WIDTH STRIP BANNER
+   (네비게이션 바로 아래 · 중국어 전용)
    ════════════════════════════════════════════════════════ */
-
-/* ── Hero ribbon (히어로 상단 배지) ── */
-.xhs-ribbon{
-  display:inline-flex;align-items:center;gap:12px;
-  padding:8px 18px 8px 14px;margin-bottom:28px;
-  background:rgba(255,182,39,.08);
-  border:1px solid rgba(255,182,39,.4);
-  border-radius:999px;
-  color:#FFB627;text-decoration:none;
-  font-size:12px;letter-spacing:.08em;
-  transition:all .25s cubic-bezier(.2,.7,.2,1);
-  position:relative;backdrop-filter:blur(8px);
-  animation:xhsRibbonFadeIn .9s .4s both
-}
-@keyframes xhsRibbonFadeIn{
-  from{opacity:0;transform:translateY(-6px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.xhs-ribbon:hover{
-  background:rgba(255,182,39,.18);
-  border-color:#FFB627;
-  transform:translateY(-1px);
-  box-shadow:0 8px 24px rgba(255,182,39,.25)
-}
-.xhs-ribbon-dot{
-  width:7px;height:7px;border-radius:50%;background:#FFB627;
-  box-shadow:0 0 8px #FFB627;
-  animation:xhsPulse 1.8s ease-out infinite
-}
 @keyframes xhsPulse{
   0%{box-shadow:0 0 0 0 rgba(255,182,39,.65),0 0 8px #FFB627}
   70%{box-shadow:0 0 0 8px rgba(255,182,39,0),0 0 8px #FFB627}
   100%{box-shadow:0 0 0 0 rgba(255,182,39,0),0 0 8px #FFB627}
 }
-.xhs-ribbon-label{font-weight:800;letter-spacing:.22em;font-size:10.5px}
-.xhs-ribbon-divider{width:1px;height:12px;background:rgba(255,182,39,.35)}
-.xhs-ribbon-text{font-weight:500;color:rgba(255,255,255,.9);font-size:13px;letter-spacing:.02em}
-body.lang-ko .xhs-ribbon-text{letter-spacing:0}
-.xhs-ribbon-arrow{
-  color:#FFB627;font-size:14px;margin-left:2px;
-  transition:transform .2s
-}
-.xhs-ribbon:hover .xhs-ribbon-arrow{transform:translateX(3px)}
-
-@media(max-width:640px){
-  .xhs-ribbon{flex-wrap:nowrap;padding:7px 14px 7px 11px;gap:8px;font-size:11px}
-  .xhs-ribbon-divider{display:none}
-  .xhs-ribbon-text{font-size:12px}
-}
-
-/* ── Full-width recruitment band (관심분야 섹션 직후) ── */
-.xhs-band{
-  position:relative;
-  padding:96px 0;
-  background:
-    radial-gradient(ellipse 700px 340px at 20% 30%, rgba(255,182,39,.14), transparent 70%),
-    radial-gradient(ellipse 500px 260px at 88% 72%, rgba(10,10,10,.6), transparent 70%),
-    #0A0A0A;
-  color:var(--white);
-  overflow:hidden;
-  border-top:1px solid rgba(255,182,39,.12);
-  border-bottom:1px solid rgba(255,182,39,.12)
-}
-.xhs-band::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent 0%,#FFB627 50%,transparent 100%);
-  opacity:.45
-}
-.xhs-band-grid{
-  position:absolute;inset:0;pointer-events:none;opacity:.18;
-  background-image:
-    linear-gradient(rgba(255,182,39,.08) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,182,39,.08) 1px,transparent 1px);
-  background-size:56px 56px;
-  mask-image:radial-gradient(ellipse at center,black 40%,transparent 75%);
-  -webkit-mask-image:radial-gradient(ellipse at center,black 40%,transparent 75%)
-}
-.xhs-band-inner{
-  position:relative;z-index:1;
-  display:grid;grid-template-columns:1.35fr .9fr;gap:80px;align-items:center
-}
-.xhs-band-left{max-width:640px}
-.xhs-band-badge{
-  display:inline-flex;align-items:center;gap:9px;
-  padding:7px 14px;margin-bottom:28px;
-  background:rgba(255,182,39,.14);
-  border:1px solid rgba(255,182,39,.45);
-  color:#FFB627;font-size:10.5px;font-weight:800;letter-spacing:.22em;
-  text-transform:uppercase;border-radius:999px
-}
-.xhs-band-dot{
-  width:7px;height:7px;border-radius:50%;background:#FFB627;
-  animation:xhsPulse 1.8s ease-out infinite
-}
-.xhs-band-eyebrow{
-  font-size:13px;color:rgba(255,255,255,.55);
-  letter-spacing:.06em;margin-bottom:16px;font-weight:500
-}
-.xhs-band-title{
-  font-size:clamp(34px,4.8vw,56px);font-weight:900;letter-spacing:-.028em;
-  line-height:1.1;margin-bottom:22px;color:var(--white)
-}
-body.lang-ko .xhs-band-title{font-family:var(--display-ko);font-weight:400;letter-spacing:-.035em}
-.xhs-band-desc{
-  font-size:16px;line-height:1.75;color:rgba(255,255,255,.72);
-  margin-bottom:28px;max-width:540px
-}
-.xhs-band-bullets{
-  list-style:none;padding:0;margin:0;
-  display:flex;flex-wrap:wrap;gap:10px 16px
-}
-.xhs-band-bullets li{
-  display:inline-flex;align-items:center;gap:9px;
-  padding:10px 16px;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:999px;
-  font-size:13.5px;font-weight:500;color:rgba(255,255,255,.88);
-  letter-spacing:.01em
-}
-.xhs-band-check{color:#FFB627;font-size:11px}
-
-.xhs-band-right{
-  display:flex;flex-direction:column;align-items:flex-start;gap:18px
-}
-.xhs-band-btn{
-  position:relative;
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:22px 38px;
-  background:#FFB627;color:#0A0A0A;
-  font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-  text-decoration:none;
-  border:1px solid #FFB627;border-radius:4px;
-  box-shadow:0 14px 40px rgba(255,182,39,.32),0 0 0 0 rgba(255,182,39,.6);
-  transition:all .3s cubic-bezier(.2,.7,.2,1);
-  overflow:hidden;width:100%
-}
-body.lang-ko .xhs-band-btn{letter-spacing:.04em}
-.xhs-band-btn span:first-child{position:relative;z-index:2}
-.xhs-band-btn-glow{
-  position:absolute;inset:0;z-index:1;
-  background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.55) 50%,transparent 80%);
-  transform:translateX(-100%);
-  animation:xhsBtnShine 3.2s ease-in-out infinite
-}
-@keyframes xhsBtnShine{
+@keyframes xhsStripShine{
   0%,100%{transform:translateX(-120%)}
   55%{transform:translateX(120%)}
 }
-.xhs-band-btn:hover{
-  background:var(--white);border-color:var(--white);
-  transform:translateY(-3px);
-  box-shadow:0 22px 50px rgba(255,182,39,.42),0 0 0 6px rgba(255,182,39,.14)
-}
-.xhs-band-note{
-  font-size:12.5px;color:rgba(255,255,255,.5);line-height:1.6;
-  letter-spacing:.01em;margin:0
-}
 
-@media(max-width:960px){
-  .xhs-band{padding:72px 0}
-  .xhs-band-inner{grid-template-columns:1fr;gap:40px}
-  .xhs-band-right{align-items:stretch}
-  .xhs-band-btn{width:100%}
+.xhs-strip{
+  display:block;width:100%;
+  position:relative;overflow:hidden;
+  background:
+    linear-gradient(90deg,
+      #0A0A0A 0%,
+      #141414 50%,
+      #0A0A0A 100%
+    );
+  color:var(--white);text-decoration:none;
+  border-top:1px solid rgba(255,182,39,.32);
+  border-bottom:1px solid rgba(255,182,39,.32);
+  transition:background .3s ease
 }
-@media(max-width:540px){
-  .xhs-band{padding:56px 0}
-  .xhs-band-title{font-size:30px}
-  .xhs-band-desc{font-size:14.5px}
-  .xhs-band-bullets li{font-size:12.5px;padding:8px 13px}
-  .xhs-band-btn{padding:18px 26px;font-size:13.5px}
+.xhs-strip::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(120deg,transparent 20%,rgba(255,182,39,.18) 50%,transparent 80%);
+  transform:translateX(-120%);
+  animation:xhsStripShine 5s ease-in-out infinite
+}
+.xhs-strip:hover{
+  background:linear-gradient(90deg,#0A0A0A 0%,#1c1c1c 50%,#0A0A0A 100%)
+}
+.xhs-strip-inner{
+  position:relative;z-index:1;
+  max-width:1280px;margin:0 auto;padding:18px 32px;
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  font-family:'Noto Sans SC','Inter',sans-serif;
+  letter-spacing:.02em
+}
+.xhs-strip-dot{
+  width:9px;height:9px;border-radius:50%;background:#FFB627;
+  box-shadow:0 0 10px #FFB627;
+  animation:xhsPulse 1.8s ease-out infinite;flex-shrink:0
+}
+.xhs-strip-label{
+  color:#FFB627;font-size:15px;font-weight:700;letter-spacing:.04em
+}
+.xhs-strip-sep{
+  width:1px;height:14px;background:rgba(255,182,39,.35)
+}
+.xhs-strip-text{
+  color:rgba(255,255,255,.92);font-size:15px;font-weight:500;letter-spacing:.02em
+}
+.xhs-strip-arrow{
+  color:#FFB627;font-size:16px;font-weight:700;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1);
+  display:inline-block
+}
+.xhs-strip:hover .xhs-strip-arrow{transform:translateX(6px)}
+
+@media(max-width:640px){
+  .xhs-strip-inner{padding:14px 20px;gap:10px;flex-wrap:wrap}
+  .xhs-strip-label{font-size:13px}
+  .xhs-strip-text{font-size:13px}
+  .xhs-strip-arrow{font-size:14px}
+  .xhs-strip-sep{display:none}
 }
 
 /* ════════════════════════════════════════════════════════
