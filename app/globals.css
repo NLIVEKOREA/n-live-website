@@ -676,10 +676,12 @@ body.lang-ko .interest-card h3{font-weight:700}
 }
 
 /* WHY N-LIVE — 상단 사진 공간 + 하단 컨텐츠 분리 */
-.why-hero{
-  position:relative;padding:0;
-  background:#050505;color:var(--white);overflow:hidden
+.why-hero,.why-section.why-hero{
+  position:relative!important;padding:0!important;
+  background:#050505!important;color:var(--white)!important;
+  overflow:hidden;border:none!important
 }
+.why-section.why-hero.highlight{background:#050505!important;border:none!important}
 /* 상단: 사진 전용 구역 (더 길게) */
 .why-hero-bg{
   position:relative;
