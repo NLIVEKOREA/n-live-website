@@ -336,18 +336,18 @@ export default function HomePage() {
   // ═══════════════════════════════════════════════════════
   const FAQS: Record<Lang, { q: string; a: string }[]> = {
     ko: [
-      { q: "최소 프로젝트 규모가 있나요?",              a: "고정 최소 금액은 없습니다. 카테고리와 목표에 맞춰 단발 캠페인부터 장기 운영까지 모두 가능합니다." },
-      { q: "첫 미팅은 유료인가요?",                      a: "첫 30분 비대면 컨셉 미팅은 무료입니다. 시장 진단과 방향 제안까지 제공합니다." },
-      { q: "진행 중인 사례 레퍼런스를 볼 수 있나요?",   a: "프로젝트 자료는 비공개로 운영합니다. NDA 사전 체결 후 직접 공유드립니다." },
-      { q: "중국어/영어 커뮤니케이션이 가능한가요?",     a: "한·중·영·일 4개 언어로 전담 커뮤니케이션이 가능합니다." },
-      { q: "통관, 정산, CS까지 엔라이브에서 운영하나요?", a: "네. 별도 업체를 끼지 않고 한 팀에서 실행합니다." },
+      { q: "최소 프로젝트 규모가 있나요?", a: "고정 최소 금액은 없습니다. 단발 캠페인부터 분기 단위 장기 운영까지 카테고리와 목표에 맞춰 제안드립니다. 다만 카테고리·채널 조합에 따라 초기 최소 운영 규모를 권장해드리는 경우는 있습니다 — 이 부분은 첫 미팅에서 투명하게 공유합니다." },
+      { q: "첫 미팅은 유료인가요?", a: "첫 30분 비대면 컨셉 미팅은 무료입니다. 브랜드·채널 상황 진단, 가능한 실행 옵션 정리, 예상 견적 범위까지 포함해 미팅에서 드립니다. 미팅 전에 문의 폼의 \"카테고리·목표\" 칸을 채워주시면 맞춤 준비가 가능합니다." },
+      { q: "진행 중인 사례 레퍼런스를 볼 수 있나요?", a: "모든 프로젝트는 NDA 기반 비공개 운영입니다. 공개 보도된 사례가 아닌 실제 진행 자료는 NDA 사전 체결 후 직접 공유드립니다. 업종·카테고리 유사도 기준으로 가장 가까운 레퍼런스를 골라 전달드립니다." },
+      { q: "중국어/영어 커뮤니케이션이 가능한가요?", a: "한·중·영·일 4개 언어로 각 전담 운영자가 상주합니다. 시차 대응도 가능하며, 계약서·리포트·결재 문서도 요청 언어로 제공합니다." },
+      { q: "통관, 정산, CS까지 엔라이브에서 운영하나요?", a: "네. 외주 없이 내부 팀이 크로스보더 전 과정(문서·세금·인증·결제·반품·CS)을 처리합니다. 파트너는 매칭과 운영에만 집중하시면 됩니다." },
     ],
     en: [
-      { q: "Is there a minimum project size?",              a: "No fixed minimum. From single campaigns to long-term operations — we tailor to your category and goals." },
-      { q: "Is the first meeting paid?",                     a: "The first 30-minute remote concept meeting is free. Includes market diagnosis and direction proposal." },
-      { q: "Can I see ongoing project references?",          a: "Project materials are kept confidential. We share details directly after an NDA is signed." },
-      { q: "Is Chinese/English communication available?",    a: "Dedicated communication in Korean, Chinese, English, and Japanese." },
-      { q: "Do you operate customs, settlement, and CS?",    a: "Yes. All executed by one team, no separate vendors." },
+      { q: "Is there a minimum project size?", a: "No fixed minimum. We propose scopes ranging from single campaigns to quarterly long-term operations based on your category and goals. For certain category–channel combinations, we may recommend a minimum operating scale — which we share transparently in the first meeting." },
+      { q: "Is the first meeting paid?", a: "The first 30-minute remote concept meeting is free. We include a brand/channel diagnosis, possible execution options, and an estimated quote range. Filling in \"category/goals\" in the inquiry form before the meeting helps us prepare more specifically." },
+      { q: "Can I see ongoing project references?", a: "All projects run under NDA as confidential operations. Rather than public reports, real execution materials are shared directly after an NDA. We curate the closest-match references based on industry and category." },
+      { q: "Is Chinese/English communication available?", a: "Dedicated operators work in Korean, Chinese, English, and Japanese. Time-zone coverage is available, and we can provide contracts, reports, and approval documents in the requested language." },
+      { q: "Do you operate customs, settlement, and CS?", a: "Yes. Our in-house team handles the full cross-border process (documents, tax, certification, payment, returns, CS) without outsourcing. Partners can focus on matching and operations." },
     ],
     zh: [
       { q: "有最小项目规模要求吗?",                          a: "没有固定最低金额。从单次活动到长期运营,都可根据您的品类和目标定制。" },
@@ -391,18 +391,15 @@ export default function HomePage() {
 
   const finalCTA = interest ? INTEREST_FINAL_CTA[lang][interest] : null;
 
-  // 인터레스트 선택 시 해당 서비스 상세 페이지로 이동 (nlink는 제자리 + 스크롤)
+  // 인터레스트 선택 시 이동: 일반 → 서비스 상세 / nlink → Contact + interest=nlink
   const selectInterest = (id: Interest) => {
     setInterest(id);
     const url = INTEREST_URL[id];
     if (url) {
-      // 해당 서비스 상세 페이지로 이동
       window.location.href = url;
     } else {
-      // nlink: Coming Soon — 현재 섹션 유지
-      setTimeout(() => {
-        document.querySelector("#interest")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
+      // nlink: Coming Soon — 오픈 알림 신청 Contact로
+      window.location.href = "/contact?interest=nlink";
     }
   };
 

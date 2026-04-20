@@ -564,6 +564,105 @@ body.lang-ko .final-cta-title{font-family:var(--display-ko)}
 /* FORM */
 .contact-form{max-width:720px;margin:0 auto;background:var(--white);padding:48px;border:1px solid var(--gray-200);position:relative}
 .contact-form::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--amber)}
+
+/* ============ CONTACT FORM V2 — 스텝 + 유형별 카드 ============ */
+.contact-form-v2{
+  max-width:880px;padding:64px 56px;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.08)
+}
+.contact-form-v2::before{height:4px}
+.cf-step{margin-bottom:56px}
+.cf-step:last-of-type{margin-bottom:32px}
+.cf-step-header{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--gray-200)
+}
+.cf-step-num{
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:22px;
+  color:var(--amber);letter-spacing:-.03em
+}
+.cf-step-label{
+  font-size:15px;font-weight:800;letter-spacing:-.01em;color:var(--black)
+}
+body.lang-ko .cf-step-label{font-weight:700}
+.cf-type-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px
+}
+.cf-type-card{
+  text-align:left;padding:20px 18px 22px;
+  background:var(--white);border:1.5px solid var(--gray-200);
+  display:flex;flex-direction:column;gap:6px;cursor:pointer;
+  font-family:inherit;color:inherit;
+  transition:all .25s cubic-bezier(.7,0,.2,1);position:relative
+}
+.cf-type-card:hover{border-color:var(--amber);transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,182,39,.12)}
+.cf-type-card.active{border-color:var(--amber);background:rgba(255,182,39,.05);box-shadow:0 8px 20px rgba(255,182,39,.18)}
+.cf-type-card.active::after{
+  content:"";position:absolute;top:-1.5px;left:-1.5px;right:-1.5px;bottom:-1.5px;
+  border:2px solid var(--amber);pointer-events:none
+}
+.cf-type-icon{
+  font-size:18px;color:var(--gray-400);line-height:1;
+  font-weight:900;margin-bottom:4px
+}
+.cf-type-card.active .cf-type-icon{color:var(--amber)}
+.cf-type-card[data-type="matching"].active .cf-type-icon,
+.cf-type-card[data-type="matching"]:hover .cf-type-icon{color:var(--emerald)}
+.cf-type-card[data-type="matching"]:hover,
+.cf-type-card[data-type="matching"].active{border-color:var(--emerald);background:rgba(0,214,122,.04)}
+.cf-type-card[data-type="korea-entry"].active .cf-type-icon,
+.cf-type-card[data-type="korea-entry"]:hover .cf-type-icon{color:var(--heritage)}
+.cf-type-card[data-type="korea-entry"]:hover,
+.cf-type-card[data-type="korea-entry"].active{border-color:var(--heritage);background:rgba(155,58,44,.04)}
+.cf-type-card[data-type="overseas-entry"].active .cf-type-icon,
+.cf-type-card[data-type="overseas-entry"]:hover .cf-type-icon{color:#7B3FD1}
+.cf-type-card[data-type="overseas-entry"]:hover,
+.cf-type-card[data-type="overseas-entry"].active{border-color:#7B3FD1;background:rgba(123,63,209,.04)}
+.cf-type-card[data-type="nlink"] .cf-type-icon{color:var(--amber-deep)}
+.cf-type-card[data-type="nlink"].active{border-color:var(--amber-deep);background:rgba(255,182,39,.08)}
+.cf-type-card[data-type="general"] .cf-type-icon{color:var(--gray-400)}
+.cf-type-name{
+  font-size:14px;font-weight:800;letter-spacing:-.01em;color:var(--black);
+  line-height:1.25;margin-top:2px
+}
+.cf-type-desc{
+  font-size:11.5px;line-height:1.55;color:var(--gray-600);
+  margin-top:4px
+}
+.cf-optional{font-size:11px;font-weight:500;color:var(--gray-400);letter-spacing:.02em}
+.contact-form-v2 .form-group label{
+  font-size:11.5px;font-weight:700;letter-spacing:.1em;color:var(--gray-600);
+  text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:4px
+}
+.contact-form-v2 .form-control{
+  padding:14px 16px;font-size:14.5px;border-color:var(--gray-200);
+  transition:border-color .25s,box-shadow .25s
+}
+.contact-form-v2 .form-control:focus{
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,182,39,.12);outline:none
+}
+.contact-form-v2 textarea.form-control{min-height:92px;line-height:1.65}
+.contact-form-v2 .form-submit{
+  background:var(--amber);color:var(--black);font-weight:800;
+  padding:18px;font-size:15px;letter-spacing:.1em;
+  box-shadow:0 8px 24px rgba(255,182,39,.25);
+  transition:all .25s;margin-top:12px
+}
+.contact-form-v2 .form-submit:hover{
+  background:var(--black);color:var(--amber);
+  transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.15)
+}
+.contact-form-v2 .form-check{margin-top:28px;font-size:12.5px}
+.contact-form-v2 .form-note{margin-top:18px;font-size:11.5px;color:var(--gray-400)}
+
+@media(max-width:900px){
+  .contact-form-v2{padding:40px 28px}
+  .cf-type-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+}
+@media(max-width:540px){
+  .cf-type-grid{grid-template-columns:1fr}
+  .contact-form-v2{padding:28px 20px}
+}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .form-group{margin-bottom:20px}
 .form-group label{display:block;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;color:var(--gray-600)}
@@ -733,14 +832,19 @@ body.lang-ko .interest-card h3{font-weight:700}
   overflow:hidden;border:none!important
 }
 .why-section.why-hero.highlight{background:#050505!important;border:none!important}
-/* 상단: 사진 전용 구역 (더 길게) */
+/* 상단: 사진 전용 구역 — 이미지를 contain으로 전체 보이게 (얼굴 과도 확대 방지) */
 .why-hero-bg{
   position:relative;
-  width:100%;height:90vh;min-height:680px;max-height:960px;
+  width:100%;height:78vh;min-height:560px;max-height:820px;
+  background-color:#050505;
   background-image:url('/team-photo.jpg');
-  background-size:cover;background-position:center 25%;
+  background-size:contain;
+  background-position:center center;
   background-repeat:no-repeat;
   filter:saturate(.95) contrast(1.02)
+}
+@media(min-width:1600px){
+  .why-hero-bg{background-size:auto 100%}
 }
 /* 오버레이: 사진 하단만 섹션 배경으로 자연스럽게 페이드 */
 .why-hero-overlay{

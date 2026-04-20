@@ -8,7 +8,8 @@ import PageEnter from "@/components/PageEnter";
 function ContactInner() {
   const { t } = useLang();
   const params = useSearchParams();
-  const defaultType = params.get("type") || "general";
+  // type 파라미터(기존 kbrand/kseller...) 또는 interest 파라미터(sourcing/matching/nlink...) 모두 지원
+  const defaultType = params.get("type") || params.get("interest") || "general";
 
   return (
     <PageEnter variant="fall" color="#FFB627">
