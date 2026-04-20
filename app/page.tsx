@@ -158,28 +158,28 @@ export default function HomePage() {
   type MetricItem = { n: string; label: string; sub: string };
   const ALL_METRICS: Record<Lang, MetricItem[]> = {
     ko: [
-      { n: "150+", label: "한국 제품 · 브랜드 소싱 연결", sub: "K-Beauty · K-Fashion · 잡화 · 헬스 카테고리에서 검증 협력 브랜드 150+ 풀 매칭" },
-      { n: "500+", label: "한·중 셀러 · 왕홍 매칭", sub: "검증된 라이브 운영 셀러 500+ 풀에서 카테고리 적합 후보 제안" },
-      { n: "200+", label: "인플루언서 · KOL 마케팅", sub: "메가 KOL부터 마이크로까지 한국 인플루언서 200+ 캠페인 운영" },
-      { n: "100+", label: "한국 정상급 연예인 캠페인", sub: "배우 · K-POP · 가수 · 방송인 100+ 협업 풀 · PPL · 광고" },
+      { n: "DIRECT",  label: "직접 운영",        sub: "벤더·에이전시를 거치지 않고, 같은 팀이 매칭부터 라이브·통관·CS까지 수행합니다." },
+      { n: "4 LANG",  label: "언어 전담",        sub: "한국어 · 중국어 · 영어 · 일본어 각각 전담 운영자가 상주, 시차 대응 가능." },
+      { n: "6+ PLAT", label: "플랫폼 운영",      sub: "샤오홍슈 · 더우인 · 타오바오 · 네이버 쇼핑라이브 · 쿠팡라이브 · Grip 실전 계정 운영." },
+      { n: "NDA",     label: "파트너 운영 구조", sub: "전 프로젝트 NDA 사전 체결 기반 비공개 운영. 레퍼런스는 개별 공유." },
     ],
     en: [
-      { n: "150+", label: "Korean Product · Brand Sourcing", sub: "Matched from 150+ verified brands across K-Beauty, K-Fashion, accessories, and wellness." },
-      { n: "500+", label: "K-CN Seller · Wanghong Matching",   sub: "Category-fit candidates proposed from 500+ verified live-operating sellers." },
-      { n: "200+", label: "Influencer · KOL Campaigns",        sub: "200+ Korean influencers — mega KOL to micro — with full campaign operations." },
-      { n: "100+", label: "Top Korean Celebrity Campaigns",    sub: "100+ actors, K-POP artists, singers, and broadcasters — PPL, ads, collabs." },
+      { n: "DIRECT",  label: "Direct Operations",       sub: "No vendors or intermediary agencies — the same team runs matching, live, customs, and CS." },
+      { n: "4 LANG",  label: "Dedicated Languages",     sub: "Korean · Chinese · English · Japanese — each with a dedicated operator on-site, timezone-ready." },
+      { n: "6+ PLAT", label: "Platform Operations",     sub: "Xiaohongshu · Douyin · Taobao · Naver Shopping Live · Coupang Live · Grip — hands-on account operations." },
+      { n: "NDA",     label: "Partner Operating Model", sub: "All projects run under a pre-signed NDA. References shared individually." },
     ],
     zh: [
-      { n: "150+", label: "韩国产品 · 品牌采购对接", sub: "从美妆、服装、配饰、健康等品类的150+经验证品牌中匹配。" },
-      { n: "500+", label: "中韩卖家 · 达人匹配",      sub: "从500+经验证直播运营卖家中,提供符合品类的候选。" },
-      { n: "200+", label: "达人 · KOL营销",           sub: "200+韩国达人(头部到中腰部)全覆盖,全链路活动运营。" },
-      { n: "100+", label: "韩国顶级艺人营销",         sub: "100+演员、K-POP、歌手、主持人 — PPL、广告、联名。" },
+      { n: "DIRECT",  label: "直接运营",       sub: "无需中介或代理,同一团队从匹配到直播、通关、客服全程负责。" },
+      { n: "4 LANG",  label: "语言专属",       sub: "中文 · 韩文 · 英文 · 日文各有专属运营人员,可跨时区对接。" },
+      { n: "6+ PLAT", label: "平台运营",       sub: "小红书 · 抖音 · 淘宝 · Naver购物直播 · Coupang直播 · Grip 实战账号运营。" },
+      { n: "NDA",     label: "合作运营结构",   sub: "全部项目基于预先签署的NDA,采用非公开运营,参考案例单独共享。" },
     ],
     ja: [
-      { n: "150+", label: "韓国商品 · ブランドソーシング連結", sub: "K-Beauty、K-Fashion、アクセサリー、ヘルスの150+検証済みブランドからマッチング。" },
-      { n: "500+", label: "韓中セラー · KOLマッチング",          sub: "500+検証済みライブ運営セラープールからカテゴリ適合候補をご提案。" },
-      { n: "200+", label: "インフルエンサー · KOLマーケティング", sub: "メガKOLからマイクロまで韓国インフルエンサー200+キャンペーン運営。" },
-      { n: "100+", label: "韓国トップクラス芸能人キャンペーン",   sub: "俳優、K-POP、歌手、放送人100+ — PPL、広告、コラボ。" },
+      { n: "DIRECT",  label: "直接運営",                 sub: "ベンダーやエージェンシーを介さず、同じチームがマッチングからライブ・通関・CSまで実行します。" },
+      { n: "4 LANG",  label: "専任言語",                 sub: "韓国語・中国語・英語・日本語 各専任オペレーターが常駐、時差対応可能。" },
+      { n: "6+ PLAT", label: "プラットフォーム運営",     sub: "小紅書・抖音・淘宝・Naverショッピングライブ・Coupangライブ・Grip の実戦アカウント運営。" },
+      { n: "NDA",     label: "パートナー運営モデル",     sub: "全プロジェクトNDA事前締結の非公開運営。リファレンスは個別共有。" },
     ],
   };
 
@@ -189,28 +189,28 @@ export default function HomePage() {
   type CaseItem = { type: string; num: string; brand: string; desc: string; cat: string };
   const ALL_CASES: Record<Lang, CaseItem[]> = {
     ko: [
-      { type: "판매 성과",   num: "183억 원",        brand: "더후 × 댠댠",         desc: "한국 방문 3일간 4회 라이브, 단일 방송 기준 매출 183억 원",            cat: "m-amber" },
-      { type: "판매 성과",   num: "4시간 전량 매진",  brand: "메디큐브 × 더우인",    desc: "더우인 라이브에서 1.2만개 기획세트 전량 소진",                         cat: "m-emerald" },
-      { type: "마케팅 성과", num: "매출 50% 증가",    brand: "Dior × 지수",         desc: "BLACKPINK 지수 앰배서더 발탁 후 한국 매출 급증 — 연예인 캠페인 효과", cat: "m-azure" },
-      { type: "연결 성과",   num: "2,000억 원",       brand: "왕홍 댠댠 한국 방문", desc: "3일간 K-뷰티 집중 판매 — 해외 왕홍과 한국 브랜드의 연결 규모",        cat: "m-coral" },
+      { type: "시작 단계", num: "48시간 내",  brand: "초안 제안서",      desc: "카테고리·예산·목표 기반 후보 리스트 + 실행 옵션 + 견적서 1회 공유.",     cat: "m-amber" },
+      { type: "운영 단계", num: "매주 1회",   brand: "성과 리포트",      desc: "GMV · CTR · CVR · 트래픽 · 이슈 대응 현황을 1장 요약으로 정기 공유.",     cat: "m-emerald" },
+      { type: "실행 단계", num: "풀세트",     brand: "정산 · 통관 · CS", desc: "크로스보더 문서·세금·인증·결제·반품·CS — 외주 없이 내부 팀이 처리.",      cat: "m-azure" },
+      { type: "확장 단계", num: "분기",       brand: "확장 로드맵",      desc: "다음 캠페인 · 카테고리 · 채널 확장을 분기별로 공동 설계 · 합의.",         cat: "m-coral" },
     ],
     en: [
-      { type: "Sales",       num: "₩18.3B",           brand: "Whoo × Dandan",       desc: "4 lives over a 3-day Korea visit — ₩18.3B in single-broadcast revenue.", cat: "m-amber" },
-      { type: "Sales",       num: "Sold out in 4hrs", brand: "Medicube × Douyin",   desc: "12,000 curated sets fully sold out on a Douyin live.",                    cat: "m-emerald" },
-      { type: "Marketing",   num: "+50% revenue",     brand: "Dior × Jisoo",        desc: "Korea revenue surged after BLACKPINK Jisoo's ambassadorship — a celebrity campaign effect.", cat: "m-azure" },
-      { type: "Connection",  num: "₩200B",            brand: "Dandan Korea Visit",  desc: "3-day total — the scale of connecting an overseas wanghong with Korean brands.", cat: "m-coral" },
+      { type: "Kickoff",   num: "Within 48h", brand: "Initial Proposal",  desc: "Candidate list, execution options, and quote — shared as one deck based on category, budget, and goals.", cat: "m-amber" },
+      { type: "Operations",num: "Weekly",     brand: "Performance Report", desc: "GMV · CTR · CVR · traffic · issue log — one-page summary, shared every week.",                         cat: "m-emerald" },
+      { type: "Execution", num: "Full stack", brand: "Settlement · Customs · CS", desc: "Cross-border docs, tax, certification, payment, returns, CS — handled by our in-house team.", cat: "m-azure" },
+      { type: "Scaling",   num: "Quarterly",  brand: "Expansion Roadmap", desc: "Next-campaign, category, and channel expansion — co-designed and agreed every quarter.",                cat: "m-coral" },
     ],
     zh: [
-      { type: "销售成果",     num: "183亿韩元",        brand: "后 × 丹丹",           desc: "访韩3天4场直播 — 单场销售额183亿韩元。",                              cat: "m-amber" },
-      { type: "销售成果",     num: "4小时全部售罄",    brand: "Medicube × 抖音",     desc: "抖音直播1.2万套策划套装全部售罄。",                                  cat: "m-emerald" },
-      { type: "营销成果",     num: "销售额增长50%",    brand: "Dior × 智秀",         desc: "BLACKPINK智秀任大使后韩国销售额激增 — 艺人营销效果。",                cat: "m-azure" },
-      { type: "连接成果",     num: "10亿元人民币",     brand: "达人丹丹访韩",        desc: "3天K-Beauty集中销售 — 海外达人与韩国品牌连接的规模。",                cat: "m-coral" },
+      { type: "启动阶段",  num: "48小时内",   brand: "初步方案",           desc: "基于品类·预算·目标的候选清单 + 执行选项 + 报价书一次性共享。",              cat: "m-amber" },
+      { type: "运营阶段",  num: "每周一次",   brand: "成果报告",           desc: "GMV · CTR · CVR · 流量 · 问题应对现状一页摘要,定期共享。",                  cat: "m-emerald" },
+      { type: "执行阶段",  num: "全套",       brand: "结算 · 通关 · 客服", desc: "跨境文件·税务·认证·支付·退货·客服 — 无需外包,由内部团队处理。",              cat: "m-azure" },
+      { type: "扩展阶段",  num: "按季度",     brand: "扩展路线图",         desc: "下一期活动·品类·渠道扩展 — 每季度共同设计并达成共识。",                     cat: "m-coral" },
     ],
     ja: [
-      { type: "販売成果",     num: "183億ウォン",      brand: "后 × ダンダン",       desc: "訪韓3日間4回ライブ — 単一放送基準で売上183億ウォン。",                cat: "m-amber" },
-      { type: "販売成果",     num: "4時間で完売",      brand: "Medicube × 抖音",     desc: "抖音ライブで1.2万セットの企画セットが完売。",                         cat: "m-emerald" },
-      { type: "マーケティング", num: "売上50%増加",     brand: "Dior × ジス",        desc: "BLACKPINKジスのアンバサダー就任後、韓国売上が急増 — 芸能人キャンペーン効果。", cat: "m-azure" },
-      { type: "繋がり成果",   num: "2,000億ウォン",    brand: "KOLダンダン訪韓",     desc: "3日間のK-Beauty集中販売 — 海外KOLと韓国ブランドを繋いだ規模。",       cat: "m-coral" },
+      { type: "開始段階",  num: "48時間以内", brand: "初期提案書",             desc: "カテゴリ・予算・目標に基づく候補リスト + 実行オプション + 見積を1回で共有。",  cat: "m-amber" },
+      { type: "運営段階",  num: "週1回",      brand: "成果レポート",           desc: "GMV · CTR · CVR · トラフィック · 対応状況を1ページ要約で定期共有。",        cat: "m-emerald" },
+      { type: "実行段階",  num: "フルセット", brand: "精算 · 通関 · CS",       desc: "クロスボーダー書類・税金・認証・決済・返品・CS — 外注なしで内部チームが処理。", cat: "m-azure" },
+      { type: "拡張段階",  num: "四半期ごと", brand: "拡張ロードマップ",       desc: "次のキャンペーン・カテゴリ・チャネルの拡張を四半期ごとに共同設計・合意。",      cat: "m-coral" },
     ],
   };
 
@@ -416,19 +416,19 @@ export default function HomePage() {
   const is = INTEREST_SECTION[lang];
 
   const WHY_LABELS: Record<Lang, string> = { ko: "WHY N-LIVE", en: "WHY N-LIVE", zh: "WHY N-LIVE", ja: "WHY N-LIVE" };
-  const NET_LABELS: Record<Lang, string> = { ko: "WHAT WE CONNECT · 엔라이브가 연결하는 실행", en: "WHAT WE CONNECT", zh: "恩联连接的实行", ja: "WHAT WE CONNECT · N-LIVEが繋ぐ実行" };
-  const NET_TITLE: Record<Lang, string> = { ko: "이런 연결이 가능합니다", en: "These are the connections we enable", zh: "我们能实现的连接", ja: "こうした繋がりが可能です" };
-  const CASES_LABELS: Record<Lang, string> = { ko: "RESULTS · 엔라이브가 만드는 결과", en: "RESULTS", zh: "我们创造的结果", ja: "RESULTS · N-LIVEが生む結果" };
-  const CASES_TITLE: Record<Lang, string> = { ko: "판매 · 마케팅 · 연결에서 실제로 나온 결과", en: "Actual outcomes across sales, marketing, and connections", zh: "销售 · 营销 · 连接中实际产生的结果", ja: "販売 · マーケティング · 繋がりから生まれた実際の結果" };
+  const NET_LABELS: Record<Lang, string> = { ko: "HOW WE RUN · 엔라이브 운영 방식", en: "HOW WE RUN", zh: "恩联的运营方式", ja: "HOW WE RUN · N-LIVE運営方式" };
+  const NET_TITLE: Record<Lang, string> = { ko: "이렇게 실행합니다", en: "This is how we run", zh: "我们是这样执行的", ja: "このように実行します" };
+  const CASES_LABELS: Record<Lang, string> = { ko: "DELIVERABLES · 파트너가 받는 것", en: "DELIVERABLES", zh: "合作方获得的产出", ja: "DELIVERABLES · パートナーが受け取るもの" };
+  const CASES_TITLE: Record<Lang, string> = { ko: "계약 후 구체적으로 받는 것", en: "What you get after signing", zh: "签约后具体获得的内容", ja: "契約後、具体的に受け取るもの" };
   const PROCESS_LABELS: Record<Lang, string> = { ko: "HOW WE WORK · 진행 방식", en: "HOW WE WORK", zh: "我们的工作方式", ja: "進め方" };
   const PROCESS_TITLE: Record<Lang, string> = { ko: "문의부터 실행까지, 5단계", en: "From inquiry to execution — 5 steps", zh: "从咨询到执行 5 步", ja: "問い合わせから実行まで5ステップ" };
   const FAQ_LABELS: Record<Lang, string> = { ko: "FAQ · 자주 묻는 질문", en: "FREQUENTLY ASKED", zh: "常见问题", ja: "よくある質問" };
   const FAQ_TITLE: Record<Lang, string> = { ko: "궁금한 점이 있으신가요?", en: "Have questions?", zh: "有疑问吗?", ja: "ご質問はありますか?" };
   const CASE_NOTE: Record<Lang, string> = {
-    ko: "위 사례는 공개 보도 기반입니다. 프로젝트별 상세 데이터는 NDA 체결 후 공유드립니다.",
-    en: "Cases above are based on public reporting. Per-project details are shared after NDA.",
-    zh: "以上案例基于公开报道。项目详细数据可在签署NDA后共享。",
-    ja: "上記事例は公開報道に基づきます。プロジェクト詳細はNDA締結後に共有します。",
+    ko: "위 항목은 계약 기준 표준 산출물입니다. 프로젝트 규모에 따라 범위가 조정됩니다.",
+    en: "Items above are standard deliverables per contract. Scope adjusts to project size.",
+    zh: "以上为合同标准交付物。实际范围将根据项目规模调整。",
+    ja: "上記は契約基準の標準成果物です。プロジェクト規模に応じて範囲を調整します。",
   };
   const CTA_DEFAULT: Record<Lang, { h: string; sub: string; btn: string }> = {
     ko: { h: "맞춤 협업 가능성, 30분이면 정리됩니다.", sub: "지금 상황과 목표를 알려주시면 — 브랜드 매칭·셀러 매칭·캠페인·라이브 중 실행 가능한 옵션을 미팅에서 정리드립니다. 첫 미팅 무료.", btn: "맞춤 협업 가능성 확인하기 →" },
