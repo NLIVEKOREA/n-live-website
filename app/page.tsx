@@ -448,14 +448,14 @@ export default function HomePage() {
           </h1>
           <p className="hero-sub">{hero.sub}</p>
           <div className="hero-actions">
+            <Link href="/contact" className="btn btn-primary btn-hero-contact">{hero.cta2}</Link>
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-outline"
               onClick={() => document.querySelector("#interest")?.scrollIntoView({ behavior: "smooth" })}
             >
               {hero.cta1}
             </button>
-            <Link href="/contact" className="btn btn-outline">{hero.cta2}</Link>
           </div>
         </div>
       </section>

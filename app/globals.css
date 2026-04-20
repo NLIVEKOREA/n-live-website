@@ -145,6 +145,35 @@ body.lang-ko .tag-panel-text,body.lang-zh .tag-panel-text,body.lang-ja .tag-pane
 .btn{padding:18px 36px;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;display:inline-flex;align-items:center;gap:10px;border:1px solid transparent}
 .btn-primary{background:var(--amber);color:var(--black)}
 .btn-primary:hover{background:var(--white);color:var(--black)}
+
+/* Hero 문의하기 버튼 강조 — 더 크게 + 펄싱 글로우 */
+.btn-hero-contact{
+  padding:22px 44px;
+  font-size:14px;font-weight:700;letter-spacing:.12em;
+  position:relative;
+  box-shadow:0 8px 24px rgba(255,182,39,.35),0 0 0 0 rgba(255,182,39,.5);
+  animation:heroCtaPulse 2.4s cubic-bezier(.4,0,.6,1) infinite;
+  transform:translateZ(0);
+  transition:all .3s cubic-bezier(.7,0,.2,1)
+}
+.btn-hero-contact::after{
+  content:"→";margin-left:10px;display:inline-block;
+  transition:transform .3s cubic-bezier(.7,0,.2,1)
+}
+.btn-hero-contact:hover{
+  background:var(--white);color:var(--black);
+  transform:translateY(-2px);
+  box-shadow:0 14px 36px rgba(255,182,39,.55),0 0 0 8px rgba(255,182,39,.1);
+  animation-play-state:paused
+}
+.btn-hero-contact:hover::after{transform:translateX(6px)}
+@keyframes heroCtaPulse{
+  0%,100%{box-shadow:0 8px 24px rgba(255,182,39,.35),0 0 0 0 rgba(255,182,39,.5)}
+  50%{box-shadow:0 12px 32px rgba(255,182,39,.5),0 0 0 14px rgba(255,182,39,0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .btn-hero-contact{animation:none}
+}
 .btn-outline{background:transparent;color:var(--white);border-color:rgba(255,255,255,.3)}
 .btn-outline:hover{border-color:var(--amber);color:var(--amber);background:rgba(255,182,39,.05)}
 .btn-dark{background:var(--black);color:var(--white)}
