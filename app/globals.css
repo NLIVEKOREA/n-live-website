@@ -2387,3 +2387,156 @@ body.lang-ko .campaign-form .cmp-submit{letter-spacing:.02em}
   .cmp-chip{font-size:12.5px;padding:9px 14px}
   .cmp-radio{padding:12px 16px}
 }
+
+/* ════════════════════════════════════════════════════════
+   CAMPAIGN PAGE v2 — HERO CTA · 폰트 강화 · 연락처 블록
+   ════════════════════════════════════════════════════════ */
+
+/* Hero — 폰트/여백 확대, 스크롤 없이 바로 보이게 */
+.campaign-hero{ padding:140px 0 72px }
+.campaign-hero-inner{ max-width:920px }
+.campaign-title{
+  font-size:clamp(44px, 6.4vw, 84px);
+  line-height:1.12;
+  margin-bottom:24px;
+  word-break:keep-all;
+  overflow-wrap:break-word
+}
+.campaign-lead{
+  font-size:clamp(17px, 2vw, 22px);
+  line-height:1.8;
+  max-width:720px;
+  white-space:pre-line;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+  margin:0 auto 38px
+}
+
+/* Hero 즉시 신청 CTA — 커다란 앰버 버튼 */
+.campaign-hero-cta-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  margin-top:14px
+}
+.campaign-hero-cta{
+  display:inline-flex;align-items:center;gap:14px;
+  padding:20px 44px;
+  background:linear-gradient(135deg,#FFB627 0%,#FFC947 100%);
+  color:#0A0A0A;
+  font-size:clamp(17px, 2vw, 20px);
+  font-weight:800;letter-spacing:.02em;
+  border:1px solid #FFB627;
+  border-radius:999px;
+  text-decoration:none;
+  box-shadow:0 14px 40px rgba(255,182,39,.35), 0 2px 8px rgba(255,182,39,.25);
+  transition:all .25s cubic-bezier(.2,.7,.2,1);
+  position:relative;overflow:hidden;
+  animation:chcFloat 2.4s ease-in-out infinite
+}
+.campaign-hero-cta::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);
+  transform:translateX(-120%);
+  transition:transform .7s cubic-bezier(.2,.7,.2,1)
+}
+.campaign-hero-cta:hover{
+  transform:translateY(-3px);
+  box-shadow:0 20px 56px rgba(255,182,39,.5), 0 4px 16px rgba(255,182,39,.35);
+  background:linear-gradient(135deg,#FFC947 0%,#FFB627 100%)
+}
+.campaign-hero-cta:hover::before{ transform:translateX(120%) }
+.chc-spark{ font-size:18px;opacity:.9 }
+.chc-label{ font-weight:800 }
+.chc-arrow{ font-size:20px;transition:transform .25s }
+.campaign-hero-cta:hover .chc-arrow{ transform:translateX(4px) }
+.campaign-hero-cta-hint{
+  font-size:13px;color:rgba(255,255,255,.55);
+  letter-spacing:.02em;margin:0
+}
+@keyframes chcFloat{
+  0%,100%{ transform:translateY(0) }
+  50%{ transform:translateY(-3px) }
+}
+
+/* 폼 전체 폰트 확대 — 모바일 가독성 */
+.campaign-form .form-group label{
+  font-size:13.5px;margin-bottom:12px
+}
+body.lang-ko .campaign-form .form-group label,
+body.lang-zh .campaign-form .form-group label,
+body.lang-ja .campaign-form .form-group label{
+  font-size:15px;letter-spacing:.01em;text-transform:none;font-weight:700
+}
+.campaign-form .form-control{
+  padding:16px 18px;font-size:16px;
+  line-height:1.5
+}
+body.lang-zh .cmp-step-label,
+body.lang-ja .cmp-step-label{
+  font-weight:800;font-size:19px
+}
+.cmp-chip{ font-size:14px;padding:11px 18px }
+.cmp-radio{ padding:16px 22px;font-size:15px }
+.campaign-form .cmp-submit{
+  padding:22px;font-size:17px
+}
+.campaign-form .form-check{
+  font-size:13.5px;line-height:1.7
+}
+body.lang-zh .campaign-form .form-check,
+body.lang-ja .campaign-form .form-check{ font-size:14px }
+
+/* 모든 텍스트 줄바꿈 보호 — 중국어/일본어 단어 단위 개행 */
+.campaign-form .form-group label,
+.cg-benefit h4, .cg-benefit p,
+.campaign-audience-list li,
+.cg-apply-card h2, .cg-apply-sub,
+.cmp-step-label, .cf-thank-desc, .cf-thank-sub,
+.campaign-hero-cta-hint{
+  word-break:keep-all;
+  overflow-wrap:break-word
+}
+
+/* Benefit/Audience 폰트 약간 확대 */
+.cg-benefit h4{ font-size:22px }
+.cg-benefit p{ font-size:15.5px;line-height:1.75 }
+.campaign-audience-list li{ font-size:15.5px;line-height:1.65;padding:24px 26px }
+.cg-apply-card h2{ font-size:clamp(32px, 4.4vw, 46px) }
+.cg-apply-sub{ font-size:15.5px;margin-bottom:42px }
+
+/* ─── 연락처 블록 (카카오/위챗) ─── */
+.cmp-contact-block .cmp-contact-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px
+}
+.cmp-contact-cell{
+  display:flex;flex-direction:column;gap:6px
+}
+.cmp-contact-cap{
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;
+  color:var(--amber);text-transform:uppercase
+}
+.cmp-contact-error{
+  margin:10px 0 0;padding:10px 14px;
+  background:rgba(214,64,69,.07);
+  border-left:3px solid var(--heritage);
+  color:var(--heritage);font-size:13px;line-height:1.5
+}
+
+/* 모바일 최적화 — 줄바꿈/크기 재조정 */
+@media(max-width:768px){
+  .campaign-hero{ padding:108px 0 56px }
+  .campaign-title{ font-size:clamp(34px, 8.5vw, 52px);line-height:1.15 }
+  .campaign-lead{ font-size:16px;line-height:1.75 }
+  .campaign-hero-cta{ padding:18px 32px;font-size:16px;width:100%;max-width:360px;justify-content:center }
+  .cg-benefit h4{ font-size:19px }
+  .cg-benefit p{ font-size:14.5px }
+  .campaign-audience-list li{ font-size:14.5px;padding:18px 20px }
+  .cg-apply-card{ padding:38px 22px }
+  .cg-apply-card h2{ font-size:28px }
+  .cg-apply-sub{ font-size:14.5px }
+  .cmp-contact-block .cmp-contact-grid{ grid-template-columns:1fr;gap:12px }
+  .campaign-form .form-control{ padding:14px 16px;font-size:16px }
+  .campaign-form .form-group label{ font-size:14px }
+  .cmp-chip{ font-size:13px;padding:10px 15px }
+  .cmp-radio{ padding:13px 16px;font-size:14px }
+  .campaign-form .cmp-submit{ padding:18px;font-size:15px }
+}
