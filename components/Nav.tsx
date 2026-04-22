@@ -1,20 +1,46 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLang } from "./LangContext";
 import { Lang } from "@/lib/i18n";
+
+const LANG_OPTIONS: { code: Lang; label: string }[] = [
+  { code: "ko", label: "한국어" },
+  { code: "zh", label: "中文" },
+  { code: "en", label: "English" },
+  { code: "ja", label: "日本語" },
+];
 
 export default function Nav() {
   const { lang, setLang, t } = useLang();
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const langWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = () => setMenuOpen(false);
     window.addEventListener("hashchange", handler);
     return () => window.removeEventListener("hashchange", handler);
   }, []);
+
+  // 외부 클릭 시 언어 드롭다운 닫기
+  useEffect(() => {
+    if (!langOpen) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (langWrapRef.current && !langWrapRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    };
+    const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") setLangOpen(false); };
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, [langOpen]);
 
   return (
     <nav className="nav">
@@ -59,19 +85,38 @@ export default function Nav() {
           </button>
         </div>
 
-        {/* Mobile right: 문의하기 + 언어 토글 (1개 버튼) */}
+        {/* Mobile right: 문의하기 + Language 드롭다운 */}
         <div className="nav-mobile-right">
           <Link href="/contact" className="nav-mobile-cta">문의하기</Link>
-          <button
-            className="nav-mobile-lang"
-            onClick={() => {
-              const cycle: Lang[] = ["ko", "en", "zh", "ja"];
-              const next = cycle[(cycle.indexOf(lang) + 1) % cycle.length];
-              setLang(next);
-            }}
-          >
-            {lang === "ko" ? "English / 中文" : lang === "en" ? "中文 / 한국어" : lang === "zh" ? "한국어 / English" : "한국어 / English"}
-          </button>
+          <div className="nav-mobile-lang-wrap" ref={langWrapRef}>
+            <button
+              className={`nav-mobile-lang ${langOpen ? "open" : ""}`}
+              onClick={() => setLangOpen(o => !o)}
+              aria-haspopup="true"
+              aria-expanded={langOpen}
+            >
+              <span className="nml-globe" aria-hidden>🌐</span>
+              <span>Language</span>
+              <span className="nml-caret" aria-hidden>▾</span>
+            </button>
+            <div className={`nav-mobile-lang-menu ${langOpen ? "open" : ""}`} role="menu">
+              {LANG_OPTIONS.map(opt => (
+                <button
+                  key={opt.code}
+                  role="menuitem"
+                  className={`nav-mobile-lang-item ${lang === opt.code ? "active" : ""}`}
+                  onClick={() => {
+                    setLang(opt.code);
+                    setLangOpen(false);
+                  }}
+                >
+                  <span className="nml-code">{opt.code.toUpperCase()}</span>
+                  <span className="nml-label">{opt.label}</span>
+                  {lang === opt.code && <span className="nml-check" aria-hidden>✓</span>}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

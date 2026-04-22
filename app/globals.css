@@ -2540,3 +2540,80 @@ body.lang-ja .campaign-form .form-check{ font-size:14px }
   .cmp-radio{ padding:13px 16px;font-size:14px }
   .campaign-form .cmp-submit{ padding:18px;font-size:15px }
 }
+
+/* ════════════════════════════════════════════════════════
+   모바일 언어 드롭다운
+   ════════════════════════════════════════════════════════ */
+.nav-mobile-lang-wrap{
+  position:relative;display:inline-flex;align-items:center
+}
+.nav-mobile-lang{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 10px 6px 8px;
+  font-size:11.5px;font-weight:600;
+  color:var(--gray-600);
+  border:1px solid var(--gray-200);
+  background:var(--white);
+  border-radius:6px;
+  white-space:nowrap;cursor:pointer;
+  transition:all .18s
+}
+.nav-mobile-lang:hover{
+  color:var(--black);border-color:var(--gray-400);
+  background:var(--gray-50)
+}
+.nav-mobile-lang.open{
+  color:var(--black);border-color:var(--black);
+  background:var(--gray-50)
+}
+.nml-globe{ font-size:13px;line-height:1 }
+.nml-caret{
+  font-size:9px;margin-left:2px;opacity:.6;
+  transition:transform .2s
+}
+.nav-mobile-lang.open .nml-caret{ transform:rotate(180deg) }
+
+.nav-mobile-lang-menu{
+  position:absolute;top:calc(100% + 6px);right:0;
+  min-width:152px;
+  background:var(--white);
+  border:1px solid var(--gray-200);
+  border-radius:8px;
+  box-shadow:0 10px 30px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.06);
+  padding:4px;
+  display:none;
+  z-index:200;
+  opacity:0;transform:translateY(-4px);
+  transition:opacity .15s, transform .15s
+}
+.nav-mobile-lang-menu.open{
+  display:block;opacity:1;transform:translateY(0)
+}
+.nav-mobile-lang-item{
+  display:flex;align-items:center;gap:10px;
+  width:100%;
+  padding:10px 12px;
+  font-size:13px;font-weight:500;
+  color:var(--gray-700);
+  background:transparent;border:none;
+  border-radius:6px;
+  text-align:left;cursor:pointer;
+  transition:background .15s, color .15s
+}
+.nav-mobile-lang-item:hover{
+  background:var(--gray-50);color:var(--black)
+}
+.nav-mobile-lang-item.active{
+  background:rgba(255,182,39,.12);
+  color:var(--black);font-weight:700
+}
+.nml-code{
+  font-size:11px;font-weight:800;letter-spacing:.08em;
+  color:var(--amber);
+  min-width:22px;text-align:left
+}
+.nav-mobile-lang-item.active .nml-code{ color:var(--heritage) }
+.nml-label{ flex:1 }
+.nml-check{
+  color:var(--heritage);font-weight:800;font-size:12px
+}
