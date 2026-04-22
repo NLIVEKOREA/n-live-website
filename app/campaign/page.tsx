@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
 import PageEnter from "@/components/PageEnter";
+import CampaignForm from "@/components/CampaignForm";
 import type { Lang } from "@/lib/i18n";
 
 type Copy = {
@@ -205,19 +206,7 @@ export default function CampaignPage() {
             <h2>{c.ctaTitle}</h2>
             <p className="cg-apply-sub">{c.ctaSub}</p>
 
-            <div className="cg-form-placeholder">
-              <div className="cg-fp-icon">⌛</div>
-              <h3>{c.formComingTitle}</h3>
-              <p>{c.formComingDesc}</p>
-              <div className="cg-fp-actions">
-                <Link href="/contact?interest=general" className="cg-fp-btn-primary">
-                  {c.formComingBtn}
-                </Link>
-                <Link href="/" className="cg-fp-btn-ghost">
-                  {c.backBtn}
-                </Link>
-              </div>
-            </div>
+            <CampaignForm />
 
             <p className="cg-apply-note">{c.note}</p>
           </div>

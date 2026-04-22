@@ -2201,3 +2201,189 @@ body.lang-ko .cg-form-placeholder h3{font-family:var(--display-ko);font-weight:4
   .cg-fp-actions{flex-direction:column;width:100%}
   .cg-fp-btn-primary,.cg-fp-btn-ghost{width:100%;justify-content:center}
 }
+
+/* ════════════════════════════════════════════════════════
+   XIAOHONGSHU CAMPAIGN APPLICATION FORM
+   ════════════════════════════════════════════════════════ */
+.campaign-form{
+  text-align:left;
+  padding:0;
+  background:transparent;
+  border:none
+}
+.campaign-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.campaign-form .form-group{margin-bottom:22px}
+.campaign-form .form-group label{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  font-size:12px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:10px;color:var(--gray-700)
+}
+body.lang-ko .campaign-form .form-group label{letter-spacing:.02em;text-transform:none;font-size:13.5px}
+.campaign-form .req{color:var(--heritage)}
+.campaign-form .cf-optional{
+  color:var(--gray-400);font-weight:500;font-size:11.5px;letter-spacing:.02em;text-transform:none
+}
+.campaign-form .form-control{
+  width:100%;padding:14px 16px;font-size:14px;font-family:inherit;
+  border:1px solid var(--gray-200);background:var(--white);
+  transition:border-color .2s
+}
+.campaign-form .form-control:focus{
+  outline:none;border-color:var(--amber);
+  box-shadow:0 0 0 3px rgba(255,182,39,.12)
+}
+.campaign-form textarea.form-control{resize:vertical;min-height:84px;line-height:1.6}
+.campaign-form select.form-control{
+  appearance:none;
+  background:var(--white) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 16px center
+}
+
+/* Progress strip */
+.cmp-progress{
+  position:relative;
+  margin-bottom:40px;padding:14px 0;
+  border-top:1px solid var(--gray-200);
+  border-bottom:1px solid var(--gray-200);
+  display:flex;align-items:center;justify-content:center;gap:12px
+}
+.cmp-progress-bar{
+  position:absolute;top:-1px;left:0;
+  width:60%;height:2px;
+  background:linear-gradient(90deg,var(--amber),transparent);
+  animation:cmpBarSweep 4s ease-in-out infinite
+}
+@keyframes cmpBarSweep{
+  0%,100%{width:30%;left:0}
+  50%{width:70%;left:30%}
+}
+.cmp-progress-label{
+  font-size:10.5px;font-weight:800;letter-spacing:.3em;color:var(--gray-500);
+  text-transform:uppercase
+}
+
+/* Steps */
+.cmp-step{margin-bottom:48px}
+.cmp-step:last-child{margin-bottom:0}
+.cmp-step-header{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:24px;
+  padding-bottom:14px;border-bottom:1px solid var(--gray-100)
+}
+.cmp-step-num{
+  font-family:var(--display);font-size:14px;font-weight:800;
+  color:var(--amber);letter-spacing:.1em
+}
+.cmp-step-label{
+  font-size:18px;font-weight:800;letter-spacing:-.01em;color:var(--black)
+}
+body.lang-ko .cmp-step-label{font-family:var(--display-ko);font-weight:400;letter-spacing:-.02em}
+.cmp-step-time{
+  font-size:11.5px;color:var(--gray-400);letter-spacing:.02em;font-weight:500
+}
+
+/* Chip grid (multi-select) */
+.cmp-chip-grid{
+  display:flex;flex-wrap:wrap;gap:8px
+}
+.cmp-chip{
+  position:relative;display:inline-flex;align-items:center;
+  padding:10px 16px;
+  background:var(--white);
+  border:1px solid var(--gray-200);
+  border-radius:999px;
+  font-size:13px;font-weight:500;color:var(--gray-700);
+  cursor:pointer;transition:all .18s cubic-bezier(.2,.7,.2,1);
+  user-select:none
+}
+.cmp-chip input{
+  position:absolute;opacity:0;pointer-events:none;width:0;height:0
+}
+.cmp-chip:hover{
+  border-color:var(--gray-400);color:var(--black)
+}
+.cmp-chip:has(input:checked){
+  background:var(--black);color:var(--amber);
+  border-color:var(--black);
+  box-shadow:0 4px 14px rgba(0,0,0,.15)
+}
+
+/* Radio row */
+.cmp-radio-row{
+  display:flex;gap:10px
+}
+.cmp-radio{
+  flex:1;position:relative;
+  padding:14px 20px;
+  background:var(--white);
+  border:1px solid var(--gray-200);
+  font-size:14px;font-weight:600;color:var(--gray-700);
+  cursor:pointer;transition:all .18s;
+  text-align:center
+}
+.cmp-radio input{
+  position:absolute;opacity:0;pointer-events:none
+}
+.cmp-radio:hover{border-color:var(--gray-400)}
+.cmp-radio:has(input:checked){
+  background:var(--black);color:var(--amber);
+  border-color:var(--black)
+}
+
+/* Character counter */
+.cmp-counter{
+  margin-left:auto;
+  font-size:11px;font-weight:500;color:var(--gray-400);
+  letter-spacing:.02em;text-transform:none
+}
+
+/* Conditional fade-in */
+.cmp-fade-in{
+  animation:cmpFadeIn .32s cubic-bezier(.2,.7,.2,1) both
+}
+@keyframes cmpFadeIn{
+  from{opacity:0;transform:translateY(-4px);max-height:0}
+  to{opacity:1;transform:translateY(0);max-height:200px}
+}
+
+/* Submit button (override) */
+.campaign-form .cmp-submit{
+  width:100%;padding:20px;margin-top:24px;
+  background:var(--amber);color:var(--black);
+  font-size:15px;font-weight:800;letter-spacing:.06em;
+  border:1px solid var(--amber);
+  box-shadow:0 10px 30px rgba(255,182,39,.28);
+  transition:all .25s cubic-bezier(.2,.7,.2,1);
+  cursor:pointer
+}
+body.lang-ko .campaign-form .cmp-submit{letter-spacing:.02em}
+.campaign-form .cmp-submit:hover:not(:disabled){
+  background:var(--black);color:var(--amber);
+  transform:translateY(-2px);
+  box-shadow:0 14px 36px rgba(0,0,0,.18)
+}
+.campaign-form .cmp-submit:disabled{
+  opacity:.6;cursor:not-allowed
+}
+
+.campaign-form .form-check{
+  display:flex;gap:10px;align-items:flex-start;
+  margin-top:10px;margin-bottom:0;
+  font-size:12.5px;color:var(--gray-600);line-height:1.65;cursor:pointer
+}
+.campaign-form .form-check input{margin-top:3px;flex-shrink:0}
+.campaign-form .form-note{
+  font-size:11.5px;color:var(--gray-400);margin-top:16px;
+  text-align:center;line-height:1.65
+}
+.campaign-form .form-error{
+  margin-top:14px;padding:12px 16px;
+  background:rgba(214,64,69,.06);border:1px solid rgba(214,64,69,.25);
+  color:var(--heritage);font-size:13px;letter-spacing:.02em;
+  line-height:1.5;text-align:center
+}
+
+@media(max-width:720px){
+  .campaign-form .form-row{grid-template-columns:1fr;gap:0}
+  .cmp-step-label{font-size:16px}
+  .cmp-chip{font-size:12.5px;padding:9px 14px}
+  .cmp-radio{padding:12px 16px}
+}
