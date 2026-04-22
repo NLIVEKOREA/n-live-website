@@ -7,7 +7,7 @@ export default function TermsPage() {
         <div className="container page-hero-inner">
           <div className="breadcrumb">LEGAL · 이용약관</div>
           <h1>이용약관</h1>
-          <p className="lead">본 약관은 엔라이브(N-LIVE, 이하 &quot;회사&quot;)가 운영하는 웹사이트(www.n-live.com, 이하 &quot;사이트&quot;)의 이용에 관한 권리·의무 및 책임 사항을 규정합니다. 시행일: 2026년 4월 19일.</p>
+          <p className="lead">본 약관은 엔라이브(N-LIVE, 이하 &quot;회사&quot;)가 운영하는 웹사이트(www.n-live.co.kr, 이하 &quot;사이트&quot;)의 이용에 관한 권리·의무 및 책임 사항을 규정합니다. 시행일: 2026년 4월 19일.</p>
         </div>
       </section>
 
@@ -19,7 +19,7 @@ export default function TermsPage() {
 
             <h2>제2조 용어의 정의</h2>
             <ul>
-              <li><strong>&quot;사이트&quot;:</strong> 회사가 운영하는 웹사이트(www.n-live.com)를 의미합니다.</li>
+              <li><strong>&quot;사이트&quot;:</strong> 회사가 운영하는 웹사이트(www.n-live.co.kr)를 의미합니다.</li>
               <li><strong>&quot;이용자&quot;:</strong> 본 약관에 동의하고 사이트에 접속하여 정보를 열람하거나 문의 폼을 제출하는 모든 자를 의미합니다.</li>
               <li><strong>&quot;파트너&quot;:</strong> 회사와 별도의 계약을 체결한 브랜드, 셀러, 인플루언서, 왕홍, 미디어 등 사업 파트너를 의미합니다.</li>
             </ul>

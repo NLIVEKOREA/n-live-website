@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE = "https://n-live.com";
+const SITE = "https://www.n-live.co.kr";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "network", priority: 0.7, freq: "monthly" as const },
     { path: "process", priority: 0.7, freq: "monthly" as const },
     { path: "contact", priority: 0.6, freq: "yearly" as const },
+    { path: "campaign", priority: 0.8, freq: "weekly" as const },
     { path: "privacy", priority: 0.2, freq: "yearly" as const },
     { path: "terms", priority: 0.2, freq: "yearly" as const },
   ];

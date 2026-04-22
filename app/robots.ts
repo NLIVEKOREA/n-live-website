@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "Googlebot", allow: "/" },
       { userAgent: "Bingbot", allow: "/" },
     ],
-    sitemap: "https://n-live.com/sitemap.xml",
-    host: "https://n-live.com",
+    sitemap: "https://www.n-live.co.kr/sitemap.xml",
+    host: "https://www.n-live.co.kr",
   };
 }

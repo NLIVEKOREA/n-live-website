@@ -5,7 +5,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Effects from "@/components/Effects";
 
-const SITE_URL = "https://n-live.com";
+const SITE_URL = "https://www.n-live.co.kr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -75,6 +75,45 @@ export const metadata: Metadata = {
   },
 };
 
+// ─────────────────────────────────────────────────────
+// 구조화된 데이터 (JSON-LD) — 네이버/구글 검색 결과에
+// "브랜드 박스" 노출 확률을 높이는 Organization 스키마
+// ─────────────────────────────────────────────────────
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "엔라이브",
+  alternateName: ["N-LIVE", "恩联", "Nlive"],
+  url: SITE_URL,
+  logo: `${SITE_URL}/og-square.png`,
+  image: `${SITE_URL}/og.png`,
+  description:
+    "엔라이브(N-LIVE)는 한국과 해외의 브랜드·셀러·인플루언서·왕홍을 직접 연결하는 한중 크로스보더 라이브커머스 에이전시입니다.",
+  sameAs: [
+    // 필요 시 SNS URL 추가 (Instagram, YouTube, 네이버 블로그 등)
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "won4646@naver.com",
+    contactType: "customer support",
+    availableLanguage: ["Korean", "Chinese", "English", "Japanese"],
+  },
+  areaServed: ["KR", "CN", "JP", "US"],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "엔라이브 N-LIVE",
+  url: SITE_URL,
+  inLanguage: ["ko-KR", "zh-CN", "en-US", "ja-JP"],
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${SITE_URL}/?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
@@ -85,6 +124,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Unbounded:wght@400;600;700;800;900&family=Bebas+Neue&family=Anton&family=Big+Shoulders+Display:wght@500;700;800;900&family=Black+Han+Sans&family=Jua&family=Saira+Stencil+One&family=Archivo+Black&family=Bowlby+One&display=swap" rel="stylesheet" />
         <meta name="naver-site-verification" content="" />
         <meta name="google-site-verification" content="" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
       </head>
       <body className="lang-ko">
         <LangProvider>
