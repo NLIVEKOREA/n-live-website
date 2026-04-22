@@ -67,10 +67,13 @@ type LabelDict = {
   nickname: string; nicknamePh: string;
   nationality: string;
   age: string;
+  height: string; heightPh: string;
+  weight: string; weightPh: string;
   wechat: string; wechatPh: string;
   phone: string; phonePh: string;
 
   platform: string;
+  profileUrl: string; profileUrlPh: string;
   category: string;
   follower: string;
   prefDate1: string;
@@ -102,10 +105,13 @@ const L: Record<Lang, LabelDict> = {
     nickname: "닉네임", nicknamePh: "예: N-Live",
     nationality: "국적",
     age: "나이",
+    height: "키 (cm)", heightPh: "예: 165",
+    weight: "몸무게 (kg)", weightPh: "예: 52",
     wechat: "위챗 ID (WeChat)", wechatPh: "请填写您的微信号",
     phone: "전화번호", phonePh: "中国号码或韩国号码均可",
 
     platform: "주요 플랫폼",
+    profileUrl: "프로필 URL 또는 검색 가능한 ID", profileUrlPh: "https://www.xiaohongshu.com/user/... 또는 @nlive_korea",
     category: "활동 카테고리",
     follower: "팔로워 수",
     prefDate1: "1지망 방문일",
@@ -137,10 +143,13 @@ const L: Record<Lang, LabelDict> = {
     nickname: "昵称/网名", nicknamePh: "例: N-Live",
     nationality: "国籍",
     age: "年龄",
+    height: "身高 (cm)", heightPh: "例: 165",
+    weight: "体重 (kg)", weightPh: "例: 52",
     wechat: "微信 ID", wechatPh: "请填写您的微信号",
     phone: "手机号码", phonePh: "中国号码或韩国号码均可",
 
     platform: "主要平台",
+    profileUrl: "主页链接 或 可搜索ID", profileUrlPh: "https://www.xiaohongshu.com/user/... 或 @nlive_korea",
     category: "内容类目",
     follower: "粉丝数",
     prefDate1: "第一志愿拜访日期",
@@ -172,10 +181,13 @@ const L: Record<Lang, LabelDict> = {
     nickname: "Nickname", nicknamePh: "e.g. N-Live",
     nationality: "Nationality",
     age: "Age",
+    height: "Height (cm)", heightPh: "e.g. 165",
+    weight: "Weight (kg)", weightPh: "e.g. 52",
     wechat: "WeChat ID", wechatPh: "Your WeChat ID",
     phone: "Phone", phonePh: "CN or KR number OK",
 
     platform: "Main platform",
+    profileUrl: "Profile URL or searchable ID", profileUrlPh: "https://www.xiaohongshu.com/user/... or @nlive_korea",
     category: "Content category",
     follower: "Followers",
     prefDate1: "1st choice visit date",
@@ -207,10 +219,13 @@ const L: Record<Lang, LabelDict> = {
     nickname: "ニックネーム", nicknamePh: "例: N-Live",
     nationality: "国籍",
     age: "年齢",
+    height: "身長 (cm)", heightPh: "例: 165",
+    weight: "体重 (kg)", weightPh: "例: 52",
     wechat: "WeChat ID (微信)", wechatPh: "WeChat ID",
     phone: "電話番号", phonePh: "中国 / 韓国番号 どちらでも可",
 
     platform: "メイン活動プラットフォーム",
+    profileUrl: "プロフィールURL または 検索可能なID", profileUrlPh: "https://www.xiaohongshu.com/user/... または @nlive_korea",
     category: "コンテンツカテゴリ",
     follower: "フォロワー数",
     prefDate1: "第一希望 訪問日",
@@ -376,6 +391,17 @@ export default function CampaignForm() {
 
         <div className="form-row">
           <div className="form-group">
+            <label>{t.height} <span className="req">{t.req}</span></label>
+            <input name="height_cm" type="number" min="50" max="250" required placeholder={t.heightPh} className="form-control" inputMode="numeric" />
+          </div>
+          <div className="form-group">
+            <label>{t.weight} <span className="req">{t.req}</span></label>
+            <input name="weight_kg" type="number" min="20" max="200" required placeholder={t.weightPh} className="form-control" inputMode="numeric" />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
             <label>{t.wechat} <span className="req">{t.req}</span></label>
             <input name="wechat_id" required placeholder={t.wechatPh} className="form-control" />
           </div>
@@ -412,6 +438,11 @@ export default function CampaignForm() {
         </div>
 
         <div className="form-group">
+          <label>{t.profileUrl} <span className="req">{t.req}</span></label>
+          <input name="profile_url" type="text" required placeholder={t.profileUrlPh} className="form-control" />
+        </div>
+
+        <div className="form-group">
           <label>{t.category} <span className="req">{t.req}</span></label>
           <select name="category" required className="form-control" defaultValue="">
             <option value="" disabled>{t.selectPh}</option>
@@ -419,54 +450,4 @@ export default function CampaignForm() {
           </select>
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label>{t.prefDate1} <span className="req">{t.req}</span></label>
-            <input name="preferred_date_1" type="date" required className="form-control" placeholder={t.prefDateHint} />
-          </div>
-          <div className="form-group">
-            <label>{t.prefDate2} <span className="req">{t.req}</span></label>
-            <input name="preferred_date_2" type="date" required className="form-control" placeholder={t.prefDateHint} />
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label>{t.prefTime} <span className="req">{t.req}</span></label>
-          <select name="preferred_time" required className="form-control" defaultValue="">
-            <option value="" disabled>{t.selectPh}</option>
-            {TIME_SLOTS.map(s => <option key={s} value={s}>{optLabel(s)}</option>)}
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label>
-            {t.notes} <span className="cf-optional"> · {t.notesHint}</span>
-            <span className="cmp-counter">{notes.length}/200</span>
-          </label>
-          <textarea
-            name="notes"
-            rows={3}
-            maxLength={200}
-            value={notes}
-            onChange={e => setNotes(e.target.value)}
-            placeholder={t.notesPh}
-            className="form-control"
-          />
-        </div>
-
-        <label className="form-check">
-          <input type="checkbox" required />
-          <span>{t.agree}</span>
-        </label>
-
-        <button type="submit" className="form-submit cmp-submit" disabled={status === "sending"}>
-          {status === "sending" ? t.sending : t.submit}
-        </button>
-
-        {status === "error" && <p className="form-error">{t.sendError}</p>}
-
-        <p className="form-note">{t.formNote}</p>
-      </div>
-    </form>
-  );
-}
+        <div className="f
