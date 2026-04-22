@@ -353,7 +353,7 @@ export default function CampaignForm() {
         <span className="cmp-progress-label">{t.progress}</span>
       </div>
 
-      {/* STEP 1 — 기본 정보 */}
+      {/* STEP 1 */}
       <div className="cmp-step">
         <div className="cmp-step-header">
           <span className="cmp-step-num">01</span>
@@ -392,11 +392,11 @@ export default function CampaignForm() {
         <div className="form-row">
           <div className="form-group">
             <label>{t.height} <span className="req">{t.req}</span></label>
-            <input name="height_cm" type="number" min="50" max="250" required placeholder={t.heightPh} className="form-control" inputMode="numeric" />
+            <input name="height_cm" type="number" min={50} max={250} required placeholder={t.heightPh} className="form-control" inputMode="numeric" />
           </div>
           <div className="form-group">
             <label>{t.weight} <span className="req">{t.req}</span></label>
-            <input name="weight_kg" type="number" min="20" max="200" required placeholder={t.weightPh} className="form-control" inputMode="numeric" />
+            <input name="weight_kg" type="number" min={20} max={200} required placeholder={t.weightPh} className="form-control" inputMode="numeric" />
           </div>
         </div>
 
@@ -412,7 +412,7 @@ export default function CampaignForm() {
         </div>
       </div>
 
-      {/* STEP 2 — 활동 & 방문 */}
+      {/* STEP 2 */}
       <div className="cmp-step">
         <div className="cmp-step-header">
           <span className="cmp-step-num">02</span>
@@ -450,4 +450,54 @@ export default function CampaignForm() {
           </select>
         </div>
 
-        <div className="f
+        <div className="form-row">
+          <div className="form-group">
+            <label>{t.prefDate1} <span className="req">{t.req}</span></label>
+            <input name="preferred_date_1" type="date" required className="form-control" placeholder={t.prefDateHint} />
+          </div>
+          <div className="form-group">
+            <label>{t.prefDate2} <span className="req">{t.req}</span></label>
+            <input name="preferred_date_2" type="date" required className="form-control" placeholder={t.prefDateHint} />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>{t.prefTime} <span className="req">{t.req}</span></label>
+          <select name="preferred_time" required className="form-control" defaultValue="">
+            <option value="" disabled>{t.selectPh}</option>
+            {TIME_SLOTS.map(s => <option key={s} value={s}>{optLabel(s)}</option>)}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>
+            {t.notes} <span className="cf-optional"> · {t.notesHint}</span>
+            <span className="cmp-counter">{notes.length}/200</span>
+          </label>
+          <textarea
+            name="notes"
+            rows={3}
+            maxLength={200}
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            placeholder={t.notesPh}
+            className="form-control"
+          />
+        </div>
+
+        <label className="form-check">
+          <input type="checkbox" required />
+          <span>{t.agree}</span>
+        </label>
+
+        <button type="submit" className="form-submit cmp-submit" disabled={status === "sending"}>
+          {status === "sending" ? t.sending : t.submit}
+        </button>
+
+        {status === "error" && <p className="form-error">{t.sendError}</p>}
+
+        <p className="form-note">{t.formNote}</p>
+      </div>
+    </form>
+  );
+}
