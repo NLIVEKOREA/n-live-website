@@ -4,6 +4,7 @@ import { LangProvider } from "@/components/LangContext";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Effects from "@/components/Effects";
+import { Analytics } from "@vercel/analytics/react";
 
 const SITE_URL = "https://www.n-live.co.kr";
 
@@ -78,7 +79,7 @@ export const metadata: Metadata = {
 // ─────────────────────────────────────────────────────
 // 구조화된 데이터 (JSON-LD) — 네이버/구글 검색 결과에
 // "브랜드 박스" 노출 확률을 높이는 Organization 스키마
-// ─────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────
 const orgSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -140,6 +141,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main>{children}</main>
           <Footer />
         </LangProvider>
+        <Analytics />
       </body>
     </html>
   );
