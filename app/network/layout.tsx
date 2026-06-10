@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/network" },
   title: "네트워크 — 중국 왕홍·한국 인플루언서 자원 풀",
   description: "엔라이브의 검증된 자원 풀: 중국 왕홍 500+ 통합 네트워크와 한국 정상급 연예인 100+ 협업 풀. 콘텐츠 왕홍과 커머스 왕홍 두 축의 운영.",
   keywords: ["중국 왕홍 네트워크", "한국 KOL 풀", "콘텐츠 왕홍", "커머스 왕홍", "샤오홍슈 KOL", "더우인 라이브 인플루언서", "엔라이브"],
