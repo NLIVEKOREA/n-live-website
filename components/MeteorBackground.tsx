@@ -30,7 +30,7 @@ export default function MeteorBackground() {
       { core: "#FF1F8E", rgb: "255,31,142", name: "coral" },    // hot magenta
     ];
 
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let width = 0;
     let height = 0;
 
@@ -94,7 +94,33 @@ export default function MeteorBackground() {
       speed: number;
       color: Color | null; // null = white
       glow: boolean;
+      sprite: HTMLCanvasElement;
     }
+
+    // Pre-rendered star sprites — replaces per-frame radial gradients +
+    // shadowBlur (the #1 canvas perf killer with 150+ stars at 60fps).
+    function makeStarSprite(rgb: string): HTMLCanvasElement {
+      const S = 64;
+      const c = document.createElement("canvas");
+      c.width = S;
+      c.height = S;
+      const g = c.getContext("2d")!;
+      const cx = S / 2;
+      const halo = g.createRadialGradient(cx, cx, 0, cx, cx, cx);
+      halo.addColorStop(0, `rgba(${rgb},0.95)`);
+      halo.addColorStop(0.16, `rgba(${rgb},0.55)`);
+      halo.addColorStop(0.42, `rgba(${rgb},0.16)`);
+      halo.addColorStop(1, `rgba(${rgb},0)`);
+      g.fillStyle = halo;
+      g.fillRect(0, 0, S, S);
+      g.fillStyle = "rgba(255,255,255,0.95)";
+      g.beginPath();
+      g.arc(cx, cx, S * 0.045, 0, Math.PI * 2);
+      g.fill();
+      return c;
+    }
+    const STAR_SPRITES = COLORS.map((c) => makeStarSprite(c.rgb));
+    const WHITE_SPRITE = makeStarSprite("255,255,255");
 
     const meteors: Meteor[] = [];
     const particles: Particle[] = [];
@@ -102,7 +128,7 @@ export default function MeteorBackground() {
     const stars: Star[] = [];
 
     // Deep space neon starfield: tiered (distant tiny, mid, neon accents)
-    const STAR_COUNT = reduce ? 90 : isMobile ? 80 : 240;
+    const STAR_COUNT = reduce ? 90 : isMobile ? 70 : 150;
     for (let i = 0; i < STAR_COUNT; i++) {
       const tier = Math.random();
       let r: number, base: number, glow: boolean;
@@ -124,6 +150,7 @@ export default function MeteorBackground() {
       }
       // ~55% white, ~45% colored brand tint (much more neon variety)
       const colored = Math.random() < 0.45;
+      const ci = Math.floor(Math.random() * COLORS.length);
       stars.push({
         x: Math.random(),
         y: Math.random(),
@@ -131,8 +158,9 @@ export default function MeteorBackground() {
         base,
         twinkle: Math.random() * Math.PI * 2,
         speed: 0.002 + Math.random() * 0.008,
-        color: colored ? COLORS[Math.floor(Math.random() * COLORS.length)] : null,
+        color: colored ? COLORS[ci] : null,
         glow,
+        sprite: colored ? STAR_SPRITES[ci] : WHITE_SPRITE,
       });
     }
 
@@ -309,6 +337,17 @@ export default function MeteorBackground() {
       }
     }
 
+    function drawStars(dt: number) {
+      for (const s of stars) {
+        s.twinkle += s.speed * dt;
+        const a = Math.max(0.1, Math.min(1, s.base + Math.sin(s.twinkle) * 0.3));
+        const d = s.r * 9; // sprite size (halo baked in)
+        ctx.globalAlpha = a;
+        ctx.drawImage(s.sprite, s.x * width - d / 2, s.y * height - d / 2, d, d);
+      }
+      ctx.globalAlpha = 1;
+    }
+
     let raf = 0;
     let lastSpawn = 0;
     let lastTime = 0;
@@ -322,46 +361,8 @@ export default function MeteorBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Neon-sign starfield with strong twinkle glow
-      for (const s of stars) {
-        s.twinkle += s.speed * dt;
-        const alpha = s.base + Math.sin(s.twinkle) * 0.3;
-        const a = Math.max(0.1, Math.min(1, alpha));
-        const px = s.x * width;
-        const py = s.y * height;
-        const rgb = s.color ? s.color.rgb : "255,255,255";
-        const glowColor = s.color ? s.color.core : "#ffffff";
-
-        // Outer halo — soft glow ring (neon tube look)
-        const haloR = s.r * 4.5;
-        const halo = ctx.createRadialGradient(px, py, 0, px, py, haloR);
-        halo.addColorStop(0, `rgba(${rgb},${a * 0.55})`);
-        halo.addColorStop(0.4, `rgba(${rgb},${a * 0.18})`);
-        halo.addColorStop(1, `rgba(${rgb},0)`);
-        ctx.fillStyle = halo;
-        ctx.beginPath();
-        ctx.arc(px, py, haloR, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Bright neon core
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = s.r > 1.4 ? 16 : 10;
-        ctx.fillStyle = s.color
-          ? `rgba(${rgb},${Math.min(1, a * 1.15)})`
-          : `rgba(255,255,255,${a})`;
-        ctx.beginPath();
-        ctx.arc(px, py, s.r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        // White-hot pinpoint center for biggest stars
-        if (s.r > 1.6) {
-          ctx.fillStyle = `rgba(255,255,255,${a})`;
-          ctx.beginPath();
-          ctx.arc(px, py, s.r * 0.45, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
+      // Neon starfield — pre-rendered sprites, one drawImage per star
+      drawStars(dt);
 
       // Spawn meteors at intervals (skip entirely on mobile — stars only)
       if (!isMobile && t - lastSpawn > SPAWN_MIN + Math.random() * SPAWN_JITTER) {
@@ -616,10 +617,52 @@ export default function MeteorBackground() {
 
       raf = requestAnimationFrame(tick);
     }
-    raf = requestAnimationFrame(tick);
+
+    // Reduced motion: render a single static starfield, no animation loop.
+    if (reduce) {
+      const drawStatic = () => {
+        ctx.clearRect(0, 0, width, height);
+        drawStars(0);
+      };
+      drawStatic();
+      const onResizeStatic = () => drawStatic();
+      window.addEventListener("resize", onResizeStatic);
+      return () => {
+        window.removeEventListener("resize", onResizeStatic);
+        window.removeEventListener("resize", resize);
+      };
+    }
+
+    // Run only while the hero canvas is on screen and the tab is visible —
+    // stops all main-thread work once the user scrolls past the hero.
+    let running = false;
+    let inView = true;
+    const start = () => {
+      if (running) return;
+      running = true;
+      lastTime = 0;
+      raf = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+    const sync = () => {
+      if (inView && !document.hidden) start();
+      else stop();
+    };
+    const io = new IntersectionObserver((entries) => {
+      inView = entries[0]?.isIntersecting ?? true;
+      sync();
+    });
+    io.observe(canvas);
+    document.addEventListener("visibilitychange", sync);
+    sync();
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", sync);
       window.removeEventListener("resize", resize);
     };
   }, []);
