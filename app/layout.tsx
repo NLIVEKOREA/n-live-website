@@ -42,12 +42,6 @@ export const metadata: Metadata = {
   formatDetection: { email: false, address: false, telephone: false },
   alternates: {
     canonical: "/",
-    languages: {
-      "ko-KR": "/",
-      "en-US": "/",
-      "zh-CN": "/",
-      "ja-JP": "/",
-    },
   },
   openGraph: {
     type: "website",
@@ -84,7 +78,7 @@ const orgSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "엔라이브",
-  alternateName: ["N-LIVE", "恩联", "Nlive"],
+  alternateName: ["N-LIVE", "扩联", "Nlive"],
   url: SITE_URL,
   logo: `${SITE_URL}/og-square.png`,
   image: `${SITE_URL}/og.png`,
@@ -122,7 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Unbounded:wght@400;600;700;800;900&family=Bebas+Neue&family=Anton&family=Big+Shoulders+Display:wght@500;700;800;900&family=Black+Han+Sans&family=Jua&family=Saira+Stencil+One&family=Archivo+Black&family=Bowlby+One&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans+SC:wght@400;500;700;900&family=Unbounded:wght@700;800;900&family=Big+Shoulders+Display:wght@700;800;900&family=Black+Han+Sans&display=swap" rel="stylesheet" />
         <meta name="naver-site-verification" content="08812db1bd1766008eb7aae92743c793f9f44472" />
         <meta name="google-site-verification" content="DsjBRsK4AVj0-59ppIzqmXV5Zd5ODxF9zQqxuh6bltM" />
         <script
