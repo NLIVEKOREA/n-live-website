@@ -24,9 +24,8 @@
   --gray-400:#9A9A9A;
   --gray-600:#525252;
   --gray-800:#1F1F1F;
-  --display:'Big Shoulders Display','Anton','Bebas Neue','Pretendard',sans-serif;
+  --display:'Big Shoulders Display','Pretendard',sans-serif;
   --display-ko:'Black Han Sans','Pretendard',sans-serif;
-  --display-stencil:'Saira Stencil One','Big Shoulders Display',sans-serif;
 }
 html{scroll-behavior:smooth}
 body{
@@ -783,7 +782,7 @@ select.form-control{appearance:none;background:var(--white) url("data:image/svg+
 .form-note{font-size:11px;color:var(--gray-400);margin-top:16px;text-align:center;line-height:1.6}
 
 /* ANIM */
-.fade-up{opacity:0;transform:translateY(30px);transition:all .9s cubic-bezier(.2,.7,.2,1)}
+.fade-up{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
 .fade-up.in{opacity:1;transform:translateY(0)}
 
 /* ============ INTEREST PICKER (공통 메인 아래 관심사 선택) ============ */
@@ -809,8 +808,8 @@ body.lang-ko .interest-section .section-title{font-family:var(--display-ko);font
   margin:0 0 24px!important
 }
 body.lang-ko .interest-card-big h3{
-  font-family:var(--display-ko);font-weight:400!important;
-  font-size:clamp(32px,3.8vw,50px)!important;letter-spacing:-.04em!important;line-height:1.1!important
+  font-family:'Pretendard',sans-serif;font-weight:800!important;
+  font-size:clamp(28px,3.2vw,42px)!important;letter-spacing:-.035em!important;line-height:1.15!important
 }
 body.lang-zh .interest-card-big h3,
 body.lang-ja .interest-card-big h3{
@@ -1159,14 +1158,14 @@ body.lang-zh .final-cta h3,body.lang-ja .final-cta h3{font-family:'Pretendard','
 }
 .pt .page-hero .back-link{animation:heroFadeUp .8s .15s both}
 .pt .page-hero .breadcrumb{animation:heroFadeUp .8s .35s both}
-.pt .page-hero .lead{animation:heroFadeUp 1s 1.7s both}
+.pt .page-hero .lead{animation:heroFadeUp .8s .7s both}
 @keyframes heroFadeUp{
   from{opacity:0;transform:translateY(24px)}
   to{opacity:1;transform:translateY(0)}
 }
 
 /* H1 — variant-specific reveal. Starts at delay .55s, runs ~1.5s */
-.pt .page-hero h1{animation-duration:1.5s;animation-delay:.55s;display:block}
+.pt .page-hero h1{animation-duration:1s;animation-delay:.35s;display:block}
 
 /* wipe-r → "rise up" line-mask style (matches home hero) */
 .pt-wipe-r .page-hero h1{animation-name:heroH1Up}
@@ -1226,6 +1225,7 @@ body.lang-zh .final-cta h3,body.lang-ja .final-cta h3{font-family:'Pretendard','
 
 /* Reduced motion — quick fade only */
 @media(prefers-reduced-motion:reduce){
+  .fade-up{opacity:1!important;transform:none!important;transition:none!important}
   .pt .page-hero .back-link,
   .pt .page-hero .breadcrumb,
   .pt .page-hero h1,
