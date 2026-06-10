@@ -40,6 +40,7 @@ export default function Effects() {
   }, []);
 
   useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
@@ -47,7 +48,7 @@ export default function Effects() {
           io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.05, rootMargin: "0px 0px 12% 0px" });
     // Skip hero & page-hero children — both have their own entrance animations
     // (hero = home keyframe entrance; page-hero = .pt wrapper slide-in)
     document.querySelectorAll("section:not(.hero):not(.page-hero) > .container > *, .audience-matrix > *").forEach((el) => {
