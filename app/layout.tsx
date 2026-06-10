@@ -78,7 +78,7 @@ const orgSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "엔라이브",
-  alternateName: ["N-LIVE", "扩联", "Nlive"],
+  alternateName: ["N-LIVE", "恩联", "Nlive"],
   url: SITE_URL,
   logo: `${SITE_URL}/og-square.png`,
   image: `${SITE_URL}/og.png`,
