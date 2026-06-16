@@ -638,15 +638,14 @@
     transform:translateY(-3px);
   }
   .brand-logo {
-    height:60px; display:flex; align-items:center; justify-content:center; margin:2px 0 14px;
+    height:74px; display:flex; align-items:center; justify-content:center;
+    margin:2px 0 14px; padding:10px 16px;
+    background:#fff; border-radius:12px; border:1px solid var(--gold-line);
   }
-  .brand-logo img {
-    max-height:46px; max-width:175px; object-fit:contain;
-    filter:brightness(0) invert(1) opacity(.95);
-    transition:filter .3s;
-  }
-  .brand-logo.dark img { filter:opacity(.95); }
-  .brand-logo .logo-fallback { font-family:var(--serif); font-size:27px; font-weight:600; color:#ece7df; }
+  .brand-logo.dark { background:#141110; }   /* 흰색 로고 전용 (어두운 칩) */
+  .brand-logo img { max-height:52px; max-width:100%; object-fit:contain; transition:filter .3s; }
+  .brand-logo .logo-fallback { font-family:var(--serif); font-size:25px; font-weight:600; color:#1a1a1a; }
+  .brand-logo.dark .logo-fallback { color:#ece7df; }
   body:not(.authed) .brand-logo img,
   body:not(.authed) .brand-logo .logo-fallback { filter:blur(9px); }
   .brand-cat {
@@ -753,11 +752,12 @@
   .bd-head { display:flex; gap:20px; align-items:center; padding-bottom:20px; border-bottom:1px solid var(--line); margin-bottom:8px; }
   .bd-logo {
     flex:0 0 130px; height:90px; display:flex; align-items:center; justify-content:center;
-    background:#100d0a; border-radius:12px; border:1px solid var(--gold-line); padding:14px;
+    background:#fff; border-radius:12px; border:1px solid var(--gold-line); padding:14px;
   }
-  .bd-logo img { max-height:60px; max-width:100%; object-fit:contain; filter:brightness(0) invert(1) opacity(.95); }
-  .bd-logo.dark img { filter:opacity(.95); }
-  .bd-logo .logo-fallback { font-family:var(--serif); font-size:22px; font-weight:600; color:#ece7df; }
+  .bd-logo.dark { background:#141110; }
+  .bd-logo img { max-height:62px; max-width:100%; object-fit:contain; }
+  .bd-logo .logo-fallback { font-family:var(--serif); font-size:22px; font-weight:600; color:#1a1a1a; }
+  .bd-logo.dark .logo-fallback { color:#ece7df; }
   .bd-headinfo h2 { font-family:var(--serif); font-size:30px; font-weight:600; margin:0 0 8px; }
   .bd-region { font-size:13px; color:var(--text-dim); margin-top:10px; }
   .bd-sec { padding:18px 0; border-bottom:1px solid var(--gold-line); }
