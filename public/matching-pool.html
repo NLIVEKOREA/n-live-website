@@ -701,6 +701,27 @@
     box-shadow:0 2px 10px rgba(196,160,92,.4);
   }
 
+  /* ── 중국관 (스페셜) ── */
+  .tab.tab-china.active { background:#e2342f; color:#fff; }
+  .tab.tab-china:not(.active) { color:#ff8b86; }
+  .china-intro {
+    max-width:1200px; margin:24px auto 0; padding:24px 28px;
+    border:1px solid rgba(226,52,47,.3); border-radius:var(--radius);
+    background:linear-gradient(135deg, rgba(226,52,47,.08), rgba(196,160,92,.05));
+  }
+  .china-eyebrow { font-size:11px; letter-spacing:.2em; color:#ff7a74; font-weight:700; margin-bottom:10px; }
+  .china-intro h2 { font-family:"Pretendard",sans-serif; font-size:22px; font-weight:700; margin:0 0 10px; }
+  .china-intro p { font-size:13.5px; color:var(--text-dim); line-height:1.65; margin:0; max-width:760px; }
+  .china-intro b { color:#e7cf9b; font-weight:600; }
+  .china-card { border-color:rgba(226,52,47,.28); }
+  .china-card:hover { border-color:rgba(226,52,47,.6); }
+  .china-card .seller-ava { border-color:rgba(226,52,47,.5); }
+  .china-card .seller-fol b { color:#ffb4af; }
+  .cn-rank {
+    position:absolute; top:12px; left:12px; z-index:2; font-size:10px; font-weight:700;
+    color:#fff; background:#e2342f; padding:3px 9px; border-radius:999px;
+  }
+
   /* ── 셀러 카드 (프로필 중심) ── */
   .seller-ava {
     width:96px; height:96px; margin:4px auto 14px; border-radius:50%;
@@ -840,6 +861,7 @@
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="brands">K-브랜드 보기 (셀러용)</button>
     <button class="tab" data-tab="sellers">글로벌 셀러 보기 (브랜드용)</button>
+    <button class="tab tab-china" data-tab="china">🇨🇳 중국관</button>
   </div>
 </section>
 
@@ -918,6 +940,15 @@
 <!-- ── 글로벌 셀러 카드 그리드 ── -->
 <div class="view" id="sellers">
   <div class="grid" id="sellerGrid"></div>
+</div>
+
+<div class="view" id="china">
+  <div class="china-intro">
+    <div class="china-eyebrow">SPECIAL · 중국관</div>
+    <h2>중국 진출 브랜드 × 도우인 라이브 왕홍</h2>
+    <p>중국에 진출한 K-브랜드를 <b>이보(广州毅播)</b> 실행망 + 검증된 <b>도우인 라이브 왕홍</b>으로 방송·판매합니다. 아래는 일평균 매출 상위 라이브 왕홍입니다.</p>
+  </div>
+  <div class="grid" id="chinaGrid"></div>
 </div>
 
 <p class="note">
@@ -1022,6 +1053,32 @@
     </div>`;
   }
 
+  // 중국관 왕홍 카드: 프사·닉네임·팔로워·일평균매출 / 프로필 URL은 마스터키만
+  function chinaCard(c){
+    const ava = c.image ? `<img src="${esc(c.image)}" alt="" loading="lazy">` : `<span class="ava-fallback">${esc((c.name||'?').slice(0,2))}</span>`;
+    const adminUrl = (document.body.classList.contains('master') && c.url)
+      ? `<div class="sd-adminurl" style="margin:0 0 10px"><span>🔑 도우인 프로필 (관리자 전용)</span><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.douyinId||c.url)}</a></div>` : '';
+    return `<div class="card brand-card seller-card china-card" data-cat="cn">
+      <span class="cn-rank">중국관 #${esc(String(c.rank))}</span>
+      <div class="seller-ava">${ava}</div>
+      <div class="brand-cat">抖音 라이브${c.douyinId?' · '+esc(c.douyinId):''}</div>
+      <h3 class="brand-name">
+        <span class="name-masked">중국 왕홍 #${esc(c.id.toUpperCase())}</span>
+        <span class="name-real">${esc(c.name||'')}</span>
+      </h3>
+      <div class="seller-fol"><b>${esc(c.followersText||'')}</b><span>팔로워</span></div>
+      <div class="seller-meta">
+        <div><span>플랫폼</span><b>抖音</b></div>
+        <div><span>판매방식</span><b>라이브</b></div>
+        <div><span>일평균 매출</span><b>${esc(c.salesDay||'-')}</b></div>
+      </div>
+      ${adminUrl}
+      <button class="btn-cta btn-cta-before">🔒 인증 후 정보 보기</button>
+      <button class="btn-cta btn-cta-after" onclick="location.href='/contact'">매칭 요청 →</button>
+      <p class="unlock-hint">접근 코드 입력하면 마스킹 자동 해제</p>
+    </div>`;
+  }
+
   // 렌더
   (async () => {
     try {
@@ -1041,6 +1098,15 @@
       document.getElementById('sellerGrid').innerHTML = sellers.map(sellerCard).join('');
     } catch(e){
       document.getElementById('sellerGrid').innerHTML = SELLERS.map(sellerCard).join('');
+    }
+    try {
+      const cres = await fetch('/pool-china.json', {cache:'no-store'});
+      const china = await cres.json();
+      china.sort((a,b) => (a.rank||999) - (b.rank||999));
+      window.__CHINA = {}; china.forEach(c => window.__CHINA[c.id] = c);
+      document.getElementById('chinaGrid').innerHTML = china.map(chinaCard).join('');
+    } catch(e){
+      document.getElementById('chinaGrid').innerHTML = '<p style="color:var(--text-mute);padding:20px">중국관 데이터를 불러오지 못했습니다.</p>';
     }
   })();
 
@@ -1227,8 +1293,8 @@
   }
   tabs.forEach(t => {
     t.addEventListener('click', () => {
-      // 인증된 상태에서 다른 역할의 풀을 보려고 하면 차단 (통합 코드는 예외)
-      if (session && session.role !== 'all' && t.dataset.tab !== ROLE_TO_VIEW[session.role]) {
+      // 중국관은 모든 인증 사용자 열람 가능 (역할 제한 예외)
+      if (session && session.role !== 'all' && t.dataset.tab !== 'china' && t.dataset.tab !== ROLE_TO_VIEW[session.role]) {
         flashErr(`${ROLE_LABEL[session.role]} 코드로는 ${VIEW_LABEL[t.dataset.tab]} 풀을 열람할 수 없어요.`);
         return;
       }
@@ -1337,7 +1403,7 @@
     switchTab(targetView);
     // 다른 탭 비활성 시각 (통합 코드는 둘 다 활성)
     tabs.forEach(t => {
-      const allowed = session.role === 'all' || t.dataset.tab === targetView;
+      const allowed = session.role === 'all' || t.dataset.tab === targetView || t.dataset.tab === 'china';
       t.style.opacity = allowed ? '' : '0.35';
       t.title = allowed ? '' : `${ROLE_LABEL[session.role]} 코드로는 열람 불가`;
     });
