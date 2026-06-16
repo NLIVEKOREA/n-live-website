@@ -675,6 +675,29 @@
   .brand-price .price-val { font-size:14px; font-weight:600; color:#cbb896; letter-spacing:.02em; }
   .brand-price .price-val.dim { color:var(--text-mute); }
 
+  /* 진출국가·판매방식 태그 */
+  .brand-tags { display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; margin:0 0 8px; min-height:20px; }
+  .btag { font-size:10px; font-weight:600; letter-spacing:.02em; color:var(--text-dim);
+    background:rgba(255,255,255,.05); border:1px solid var(--line-strong); padding:2px 9px; border-radius:999px; }
+  .btag.studio { color:#9fe3c4; border-color:rgba(93,202,143,.35); background:rgba(93,202,143,.08); }
+  .brand-flags { font-size:15px; letter-spacing:1px; line-height:1; }
+
+  /* 10점 프리미엄 — 오로라 테두리 + 배지 */
+  .brand-card.premium { border-color:transparent; }
+  .brand-card.premium::before {
+    content:''; position:absolute; inset:-1.5px; border-radius:18px; z-index:-1;
+    background:linear-gradient(120deg,#c4a05c,#6ad7ff,#b07dff,#6affb0,#ffd27d,#ff9ed2,#c4a05c);
+    background-size:300% 300%; animation:aurora 7s ease infinite; opacity:.9;
+  }
+  .brand-card.premium { box-shadow:0 0 24px rgba(180,140,255,.12); }
+  @keyframes aurora { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  .premium-badge {
+    position:absolute; top:12px; right:12px; z-index:2;
+    font-size:9.5px; font-weight:800; letter-spacing:.08em; color:#1a140a;
+    background:linear-gradient(120deg,#ffd27d,#c4a05c); padding:3px 9px; border-radius:999px;
+    box-shadow:0 2px 10px rgba(196,160,92,.4);
+  }
+
   /* ── 셀러 카드 (프로필 중심) ── */
   .seller-ava {
     width:96px; height:96px; margin:4px auto 14px; border-radius:50%;
@@ -915,7 +938,14 @@
 
   function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-  // 브랜드 카드: 닉네임·카테고리·지역·대표상품·가격대 + 대표상품 이미지5
+  const FLAG = {대한민국:'🇰🇷',한국:'🇰🇷',중국:'🇨🇳',일본:'🇯🇵',미국:'🇺🇸',대만:'🇹🇼',홍콩:'🇭🇰',베트남:'🇻🇳',태국:'🇹🇭',싱가포르:'🇸🇬',말레이시아:'🇲🇾',인도네시아:'🇮🇩',필리핀:'🇵🇭'};
+  function countryFlags(arr){
+    let list = (arr && arr.length) ? arr.slice() : ['대한민국'];
+    list = list.filter(c=>c!=='대한민국'); list.unshift('대한민국');   // 대한민국 항상 맨앞
+    return list.map(c=>`<span title="${esc(c)}">${FLAG[c]||'🏳️'}</span>`).join('');
+  }
+
+  // 브랜드 카드: 로고·이름·카테고리·진출국가·판매방식·상품·가격 / 점수순 정렬 / 10점=프리미엄
   function brandCard(b){
     const imgs = (b.images||[]).slice(0,5);
     let thumbs = '';
@@ -928,13 +958,20 @@
     const price = b.priceRange
       ? `<span class="price-val">${esc(b.priceRange)}</span>`
       : `<span class="price-val dim">가격 문의</span>`;
-    return `<div class="card brand-card" data-cat="${esc(b.cat||'fashion')}">
+    const premium = (b.score >= 10);
+    const tags = [];
+    if (b.salesMethod) tags.push(`<span class="btag">${esc(b.salesMethod)}</span>`);
+    if (b.hasStudio === '유') tags.push(`<span class="btag studio">스튜디오</span>`);
+    const tagRow = `<div class="brand-tags">${tags.join('')}<span class="brand-flags">${countryFlags(b.countries)}</span></div>`;
+    return `<div class="card brand-card${premium?' premium':''}" data-cat="${esc(b.cat||'fashion')}">
+      ${premium?'<span class="premium-badge">★ PREMIUM</span>':''}
       <div class="brand-logo${b.logoLight ? ' dark' : ''}">${logo}</div>
       <h3 class="brand-name">
         <span class="name-masked">${esc(b.nickname||'브랜드')}</span>
         <span class="name-real">${esc(b.realName||'')}</span>
       </h3>
       <div class="brand-cat">${esc(b.category||'')}</div>
+      ${tagRow}
       <p class="brand-slogan">${esc(b.slogan||'')}</p>
       <div class="prod-thumbs">${thumbs}</div>
       <div class="brand-price"><span class="price-label">가격대</span>${price}</div>
@@ -978,6 +1015,7 @@
     try {
       const res = await fetch('/pool-brands.json', {cache:'no-store'});
       const brands = await res.json();
+      brands.sort((a,b) => (b.score||0) - (a.score||0));   // 점수 높은 순(위) → 낮은 순(아래)
       window.__BRANDS = {}; brands.forEach(b => window.__BRANDS[b.id] = b);
       document.getElementById('brandGrid').innerHTML = brands.map(brandCard).join('');
     } catch(e){
@@ -1048,17 +1086,26 @@
       : `<p class="bd-na">상품 이미지 준비 중</p>`;
     const logo = b.logo ? `<img src="${esc2(b.logo)}" alt="">` : `<span class="logo-fallback">${esc2((b.realName||'?').slice(0,8))}</span>`;
     const na = '<span class="bd-na">준비 중</span>';
+    const ctrs = (b.countries && b.countries.length ? b.countries.slice() : ['대한민국']);
+    const ctrsOrdered = ['대한민국', ...ctrs.filter(c=>c!=='대한민국')];
+    const attrs = `<div class="sd-stats">
+        <div class="sd-stat"><span>판매 방식</span><b>${b.salesMethod?esc2(b.salesMethod):'—'}</b></div>
+        <div class="sd-stat"><span>스튜디오</span><b>${b.hasStudio?esc2(b.hasStudio):'—'}</b></div>
+        <div class="sd-stat"><span>진출 국가</span><b>${esc2(ctrsOrdered.join(' · '))}</b></div>
+        <div class="sd-stat"><span>브랜드 점수</span><b>${b.score!=null?esc2(b.score)+' / 10':'—'}</b></div>
+      </div>`;
     ov.innerHTML = `
       <div class="bd-panel">
         <button class="bd-close" aria-label="닫기">✕</button>
         <div class="bd-head">
           <div class="bd-logo${b.logoLight?' dark':''}">${logo}</div>
           <div class="bd-headinfo">
-            <h2>${esc2(b.realName||'')}</h2>
+            <h2>${esc2(b.realName||'')}${b.score>=10?' <span class="premium-badge" style="position:static;display:inline-block;margin-left:8px;">★ PREMIUM</span>':''}</h2>
             <span class="brand-cat">${esc2(b.category||'')}</span>
-            <div class="bd-region">📍 지역 · ${b.region ? esc2(b.region) : na}</div>
+            <div class="bd-region">🌐 진출 · ${esc2(ctrsOrdered.join(' · '))}</div>
           </div>
         </div>
+        ${attrs}
         <section class="bd-sec"><h3>브랜드 소개</h3><p>${esc2(b.slogan||'')||na}</p></section>
         <section class="bd-sec"><h3>전체 상품군</h3>${gallery}<p class="bd-hint">사진 클릭 시 크게 보기 · 더 많은 상품은 추후 업데이트</p></section>
         <section class="bd-sec"><h3>SNS 채널</h3><p>${na} <span class="bd-dim">— 인스타그램 · 유튜브 등 (관리자 등록)</span></p></section>
