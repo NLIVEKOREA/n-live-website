@@ -1,0 +1,1335 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N-LIVE Network · 검증된 파트너 풀</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Serif+KR:wght@500;600&display=swap">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --bg-elev: #141417;
+    --bg-card: #151518;
+    --bg-card-hover: #1b1b1f;
+    --line: rgba(255,255,255,0.07);
+    --line-strong: rgba(255,255,255,0.14);
+    --text: #f5f5f4;
+    --text-dim: #a1a1a6;
+    --text-mute: #6b6b70;
+    --amber: #FFB627;
+    --amber-soft: rgba(255, 182, 39, 0.12);
+    --amber-dim: rgba(255, 182, 39, 0.4);
+    --gold: #c4a05c;
+    --gold-line: rgba(196,160,92,0.22);
+    --gold-line-on: rgba(196,160,92,0.55);
+    --serif: "Cormorant Garamond","Noto Serif KR",serif;
+    --red: #ff5a5a;
+    --green: #4ade80;
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+    word-break: keep-all;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ── Header ── */
+  .topnav {
+    border-bottom: 1px solid var(--line);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--amber); }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .nav-links a { text-decoration: none; }
+  .nav-links a.active { color: var(--text); font-weight: 600; }
+
+  /* ── Hero / Tabs ── */
+  .hero {
+    padding: 72px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+    background: radial-gradient(ellipse at top, rgba(255,182,39,0.08), transparent 60%);
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--amber);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  h1 {
+    font-size: clamp(34px, 5vw, 56px);
+    font-weight: 800;
+    margin: 0 0 14px;
+    line-height: 1.1;
+  }
+  h1 em { color: var(--amber); font-style: normal; }
+  .lead {
+    color: var(--text-dim);
+    max-width: 640px;
+    margin: 0 auto 32px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .tabs {
+    display: inline-flex;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px;
+    gap: 4px;
+  }
+  .tab {
+    background: transparent;
+    border: 0;
+    color: var(--text-dim);
+    padding: 11px 22px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.18s;
+  }
+  .tab.active {
+    background: var(--amber);
+    color: #000;
+  }
+  .tab:not(.active):hover { color: var(--text); }
+
+  /* ── Auth strip (compact, sits below hero) ── */
+  .auth-strip {
+    max-width: 1200px;
+    margin: 24px auto 0;
+    padding: 14px 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    justify-content: space-between;
+  }
+  .auth-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    color: var(--text-dim);
+  }
+  .auth-status b { color: var(--text); }
+  .auth-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 4px rgba(255,90,90,0.18);
+  }
+  .auth-dot.on {
+    background: var(--green);
+    box-shadow: 0 0 0 4px rgba(74,222,128,0.18);
+  }
+  .countdown {
+    font-size: 12px;
+    color: var(--text-mute);
+    margin-left: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .auth-trigger {
+    background: var(--amber);
+    color: #000;
+    border: 0;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    transition: transform 0.15s;
+  }
+  .auth-trigger:hover { transform: translateY(-1px); }
+  .auth-trigger.ghost {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--line);
+  }
+
+  /* ── Modal ── */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px;
+    position: relative;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    animation: slideUp 0.25s ease-out;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: transparent;
+    border: 0;
+    color: var(--text-mute);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .modal-close:hover { background: var(--bg-card); color: var(--text); }
+  .modal-eyebrow {
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+    color: var(--amber);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .modal h2 {
+    font-size: 22px;
+    margin: 0 0 8px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  .modal p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 0 0 22px;
+    line-height: 1.55;
+  }
+
+  /* role picker */
+  .role-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .role-card {
+    padding: 14px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .role-card:hover { border-color: #444; }
+  .role-card.active {
+    border-color: var(--amber);
+    background: var(--amber-soft);
+  }
+  .role-card .role-emoji { font-size: 22px; margin-bottom: 6px; }
+  .role-card .role-title { font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
+  .role-card .role-sub { font-size: 11px; color: var(--text-mute); line-height: 1.4; }
+
+  .auth-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 12px;
+  }
+  .auth-input:focus { border-color: var(--amber-dim); }
+  .modal-btn {
+    width: 100%;
+    background: var(--amber);
+    color: #000;
+    border: 0;
+    padding: 13px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 14px;
+    transition: transform 0.15s;
+  }
+  .modal-btn:hover { transform: translateY(-1px); }
+  .modal-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+  .modal-help {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--text-mute);
+    line-height: 1.6;
+  }
+  .modal-help a { color: var(--amber); text-decoration: none; }
+  .modal-help b { color: var(--text-dim); }
+  .modal-error {
+    font-size: 12.5px;
+    color: var(--red);
+    margin: -4px 0 12px;
+    display: none;
+  }
+  .modal-error.show { display: block; }
+
+  /* ── Filter bar ── */
+  .filters {
+    max-width: 1200px;
+    margin: 18px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-label {
+    font-size: 12px;
+    color: var(--text-mute);
+    margin-right: 8px;
+  }
+  .chip {
+    padding: 7px 14px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    border-radius: 999px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover { color: var(--text); border-color: #444; }
+  .chip.active {
+    background: var(--amber-soft);
+    border-color: var(--amber-dim);
+    color: var(--amber);
+  }
+
+  /* ── Grid ── */
+  .grid {
+    max-width: 1200px;
+    margin: 28px auto 80px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    position: relative;
+    transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--line-strong);
+    background: var(--bg-card-hover);
+  }
+  .card:hover {
+    border-color: #3a3a3a;
+    transform: translateY(-2px);
+  }
+  .card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: stretch;
+  }
+  .thumb {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+    display: block;
+    object-fit: cover;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #1a1a1a;
+  }
+  /* Wrapper for image+mask+overlay */
+  .thumb-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--line);
+  }
+  .thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+  }
+  .card:hover .thumb-wrap img { transform: scale(1.04); }
+  /* Color overlay tinted by category */
+  .thumb-wrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--cat-color, var(--amber-soft)) 0%, transparent 60%),
+                linear-gradient(0deg, rgba(0,0,0,0.45) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  /* Bottom-left category mark on hero */
+  .thumb-mark {
+    position: absolute;
+    left: 12px;
+    bottom: 10px;
+    z-index: 3;
+    font-size: 11px;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  }
+  /* Masking when not authed */
+  body:not(.authed) .thumb-wrap::before {
+    content: "🔒  인증 후 공개";
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(16px);
+    background: rgba(10,10,10,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.92);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+
+  /* ── Category color tokens (used by .card[data-cat="..."]) ── */
+  .card[data-cat="beauty"]   { --cat-color: rgba(255, 120, 170, 0.55); --cat-fg: #ff78aa; }
+  .card[data-cat="fashion"]  { --cat-color: rgba(132, 110, 255, 0.55); --cat-fg: #846eff; }
+  .card[data-cat="food"]     { --cat-color: rgba(255, 110, 70, 0.55);  --cat-fg: #ff6e46; }
+  .card[data-cat="lifestyle"]{ --cat-color: rgba(80, 210, 170, 0.55);  --cat-fg: #50d2aa; }
+  .card[data-cat="xhs"]      { --cat-color: rgba(255, 36, 66, 0.55);   --cat-fg: #ff2442; }
+  .card[data-cat="douyin"]   { --cat-color: rgba(60, 220, 255, 0.5);   --cat-fg: #3cdcff; }
+  .card[data-cat="kuaishou"] { --cat-color: rgba(255, 156, 36, 0.55);  --cat-fg: #ff9c24; }
+  .card[data-cat="weibo"]    { --cat-color: rgba(230, 22, 45, 0.55);   --cat-fg: #e6162d; }
+
+  /* category-tinted badge */
+  .badge.cat {
+    background: color-mix(in oklab, var(--cat-fg, var(--amber)) 18%, transparent);
+    border-color: color-mix(in oklab, var(--cat-fg, var(--amber)) 45%, transparent);
+    color: var(--cat-fg, var(--amber));
+  }
+  .stat-value.cat { color: var(--cat-fg, var(--amber)); }
+
+  .card-meta { min-width: 0; }
+  .badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .badge {
+    font-size: 10.5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge.amber {
+    background: var(--amber-soft);
+    border-color: var(--amber-dim);
+    color: var(--amber);
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+  }
+  .card-title .name-masked {
+    color: var(--text);
+  }
+  .card-title .name-real {
+    color: var(--amber);
+    display: none;
+  }
+  body.authed .card-title .name-masked { display: none; }
+  body.authed .card-title .name-real { display: inline; }
+
+  .card-desc {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    margin: 4px 0 0;
+    line-height: 1.5;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .stat-label {
+    font-size: 10.5px;
+    color: var(--text-mute);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .stat-value {
+    font-size: 13.5px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .stat-value.amber { color: var(--amber); }
+
+  /* Locked details (revealed after auth) */
+  .locked {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 12.5px;
+  }
+  .locked-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .locked-row .k { color: var(--text-mute); }
+  .locked-row .v { color: var(--text); font-weight: 500; }
+  .locked-row .v.masked {
+    color: var(--text-mute);
+    filter: blur(5px);
+    user-select: none;
+    transition: filter 0.3s;
+  }
+  body.authed .locked-row .v.masked {
+    filter: none;
+    color: var(--text);
+  }
+
+  .card-cta {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .btn-cta {
+    flex: 1;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold-line-on);
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    transition: background .16s, color .16s, border-color .16s;
+  }
+  .btn-cta:hover { background: var(--gold); color: #15120c; border-color: var(--gold); }
+  .btn-cta-before {
+    color: var(--text-mute);
+    border-color: var(--line-strong);
+    cursor: default;
+  }
+  .btn-cta-before:hover { background: transparent; color: var(--text-mute); border-color: var(--line-strong); }
+  body:not(.authed) .btn-cta-after { display: none; }
+  body.authed .btn-cta-before { display: none; }
+
+  .unlock-hint {
+    font-size: 11.5px;
+    color: var(--text-mute);
+    text-align: center;
+    margin: 2px 0 0;
+  }
+  body.authed .unlock-hint { display: none; }
+
+  /* Tab content visibility */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* footer note */
+  .note {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 0 24px;
+    font-size: 12px;
+    color: var(--text-mute);
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 48px 20px 28px; }
+    .auth-bar { padding: 14px 16px; }
+    .auth-input-wrap { width: 100%; max-width: none; }
+    .grid { grid-template-columns: 1fr; padding: 0 16px; }
+    .nav-links { display: none; }
+  }
+
+  /* ── 대표상품 썸네일 5개 ── */
+  .prod-thumbs { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin:10px 0 4px; }
+  .prod-thumbs img { width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:6px; border:1px solid var(--line); background:#1a1a1a; }
+  .prod-thumbs .empty { width:100%; aspect-ratio:3/4; border-radius:6px; border:1px dashed var(--line); background:#141414; }
+  .stat-value.masked { filter:blur(5px); user-select:none; transition:filter .3s; }
+  body.authed .stat-value.masked { filter:none; }
+
+  /* ── 브랜드 카드 (B 럭셔리 + A 미니멀 배경) ── */
+  .brand-card {
+    text-align:center;
+    background:#100d0a;
+    border-color:var(--gold-line);
+  }
+  .brand-card:hover {
+    background:#14110c;
+    border-color:var(--gold-line-on);
+    transform:translateY(-3px);
+  }
+  .brand-logo {
+    height:60px; display:flex; align-items:center; justify-content:center; margin:2px 0 14px;
+  }
+  .brand-logo img {
+    max-height:46px; max-width:175px; object-fit:contain;
+    filter:brightness(0) invert(1) opacity(.95);
+    transition:filter .3s;
+  }
+  .brand-logo.dark img { filter:opacity(.95); }
+  .brand-logo .logo-fallback { font-family:var(--serif); font-size:27px; font-weight:600; color:#ece7df; }
+  body:not(.authed) .brand-logo img,
+  body:not(.authed) .brand-logo .logo-fallback { filter:blur(9px); }
+  .brand-cat {
+    display:inline-block; font-size:10.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:10px;
+  }
+  .brand-name {
+    font-family:var(--serif); font-size:25px; font-weight:600; margin:0 0 8px; line-height:1.2;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .brand-name .name-masked { color:var(--text); }
+  .brand-name .name-real { color:#e7cf9b; display:none; }
+  body.authed .brand-name .name-masked { display:none; }
+  body.authed .brand-name .name-real { display:inline; }
+  .brand-slogan {
+    font-size:12.5px; color:var(--text-dim); margin:0 auto 4px; line-height:1.55; max-width:92%;
+    min-height:38px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .brand-card .brand-price { margin-top:auto; }
+  .brand-price {
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:13px 0 2px; margin-top:4px; border-top:1px solid var(--gold-line);
+  }
+  .brand-price .price-label { font-size:10px; color:var(--text-mute); text-transform:uppercase; letter-spacing:.12em; }
+  .brand-price .price-val { font-size:14px; font-weight:600; color:#cbb896; letter-spacing:.02em; }
+  .brand-price .price-val.dim { color:var(--text-mute); }
+
+  /* ── 셀러 카드 (프로필 중심) ── */
+  .seller-ava {
+    width:96px; height:96px; margin:4px auto 14px; border-radius:50%;
+    overflow:hidden; border:2px solid var(--gold-line-on); background:#100d0a;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .seller-ava img { width:100%; height:100%; object-fit:cover; transition:filter .3s; }
+  .seller-ava .ava-fallback { font-family:var(--serif); font-size:30px; font-weight:600; color:#cbb896; }
+  body:not(.authed) .seller-ava img { filter:blur(11px); }
+  .seller-fol { margin:2px 0 8px; }
+  .seller-fol b {
+    font-family:"Pretendard",sans-serif; font-size:32px; font-weight:700; color:#e7cf9b;
+    display:block; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-0.01em;
+  }
+  .seller-fol span { font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-mute); }
+  .seller-meta {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:auto;
+    background:var(--gold-line); border:1px solid var(--gold-line); border-radius:10px; overflow:hidden;
+  }
+  .seller-meta div { display:flex; flex-direction:column; gap:4px; align-items:center; padding:11px 4px; background:#100d0a; }
+  .seller-meta span { font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--gold); }
+  .seller-meta b { font-size:13px; font-weight:600; color:var(--text); }
+  /* 셀러 이름 뒤 절반 모자이크 (마스터키만 전체 공개) */
+  .seller-card .name-real .mo, .bd-headinfo .name-real .mo { filter:blur(6px); user-select:none; }
+  body.master .seller-card .name-real .mo, body.master .bd-headinfo .name-real .mo { filter:none; user-select:auto; }
+  /* 상품 썸네일: 마우스 올리면 점멸 강조 → 클릭하면 확대 */
+  .prod-thumbs img {
+    cursor:pointer; position:relative;
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  .prod-thumbs img:hover {
+    transform:scale(1.07); z-index:2; border-color:var(--amber);
+    animation:thumbBlink 0.9s ease-in-out infinite;
+  }
+  @keyframes thumbBlink {
+    0%,100% { box-shadow:0 0 0 2px var(--amber), 0 6px 18px rgba(0,0,0,.5); opacity:1; }
+    50%     { box-shadow:0 0 0 2px var(--amber-dim), 0 6px 18px rgba(0,0,0,.25); opacity:.78; }
+  }
+
+  /* ── 상품 이미지 라이트박스 ── */
+  .lightbox {
+    position:fixed; inset:0; z-index:2000; display:none;
+    background:rgba(0,0,0,0.9); backdrop-filter:blur(4px);
+    align-items:center; justify-content:center; padding:40px;
+  }
+  .lightbox.show { display:flex; }
+  .lightbox img { max-width:min(90vw,720px); max-height:88vh; object-fit:contain; border-radius:10px; box-shadow:0 20px 80px rgba(0,0,0,.6); }
+  .lb-btn {
+    position:absolute; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2);
+    color:#fff; width:48px; height:48px; border-radius:50%; font-size:26px; line-height:1;
+    display:flex; align-items:center; justify-content:center; transition:background .15s;
+  }
+  .lb-btn:hover { background:rgba(255,255,255,0.22); }
+  .lb-close { top:24px; right:24px; font-size:22px; }
+  .lb-prev { left:24px; top:50%; transform:translateY(-50%); }
+  .lb-next { right:24px; top:50%; transform:translateY(-50%); }
+  .lb-count { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,.7); font-size:13px; font-variant-numeric:tabular-nums; }
+  @media (max-width:560px){ .lb-prev{left:10px;} .lb-next{right:10px;} .lb-btn{width:42px;height:42px;} }
+
+  /* ── 브랜드 상세 오버레이 ── */
+  .detail-overlay {
+    position:fixed; inset:0; z-index:1500; display:none;
+    background:rgba(0,0,0,0.7); backdrop-filter:blur(4px);
+    overflow-y:auto; padding:40px 20px;
+  }
+  .detail-overlay.show { display:block; }
+  .bd-panel {
+    max-width:760px; margin:0 auto; background:var(--bg-elev);
+    border:1px solid var(--line); border-radius:18px; padding:32px;
+    position:relative; box-shadow:0 24px 80px rgba(0,0,0,.5);
+  }
+  .bd-close {
+    position:absolute; top:18px; right:18px; width:38px; height:38px; border-radius:10px;
+    background:var(--bg-card); border:1px solid var(--line); color:var(--text-dim); font-size:18px;
+  }
+  .bd-close:hover { color:var(--text); }
+  .bd-head { display:flex; gap:20px; align-items:center; padding-bottom:20px; border-bottom:1px solid var(--line); margin-bottom:8px; }
+  .bd-logo {
+    flex:0 0 130px; height:90px; display:flex; align-items:center; justify-content:center;
+    background:#100d0a; border-radius:12px; border:1px solid var(--gold-line); padding:14px;
+  }
+  .bd-logo img { max-height:60px; max-width:100%; object-fit:contain; filter:brightness(0) invert(1) opacity(.95); }
+  .bd-logo.dark img { filter:opacity(.95); }
+  .bd-logo .logo-fallback { font-family:var(--serif); font-size:22px; font-weight:600; color:#ece7df; }
+  .bd-headinfo h2 { font-family:var(--serif); font-size:30px; font-weight:600; margin:0 0 8px; }
+  .bd-region { font-size:13px; color:var(--text-dim); margin-top:10px; }
+  .bd-sec { padding:18px 0; border-bottom:1px solid var(--gold-line); }
+  .bd-sec h3 { font-size:11px; font-weight:600; color:var(--gold); margin:0 0 12px; letter-spacing:.16em; text-transform:uppercase; }
+  .bd-sec p { font-size:13.5px; color:var(--text-dim); line-height:1.6; margin:0; }
+  .bd-gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:8px; }
+  .bd-gallery img { width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:8px; border:1px solid var(--line); cursor:pointer; transition:transform .15s; }
+  .bd-gallery img:hover { transform:scale(1.04); border-color:var(--amber); }
+  .bd-hint { font-size:11.5px; color:var(--text-mute); margin-top:10px; }
+  .bd-na { color:var(--text-mute); font-style:italic; }
+  .bd-dim { color:var(--text-mute); font-size:12px; }
+  .bd-foot { font-size:11.5px; color:var(--text-mute); margin:18px 0 0; }
+  /* 셀러 상세: 원형 아바타 + 지표 */
+  .bd-ava {
+    flex:0 0 110px; width:110px; height:110px; border-radius:50%; overflow:hidden;
+    border:2px solid var(--gold-line-on); background:#100d0a;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .bd-ava img { width:100%; height:100%; object-fit:cover; }
+  .bd-ava .logo-fallback { font-family:var(--serif); font-size:30px; font-weight:600; color:#cbb896; }
+  .sd-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--gold-line);
+    border:1px solid var(--gold-line); border-radius:12px; overflow:hidden; margin:16px 0 4px; }
+  .sd-stat { background:#100d0a; padding:16px 8px; text-align:center; display:flex; flex-direction:column; gap:6px; }
+  .sd-stat span { font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
+  .sd-stat b { font-size:17px; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums; }
+  .sd-adminurl { margin:14px 0 0; padding:12px 14px; background:rgba(255,182,39,.06); border:1px solid var(--amber-dim); border-radius:10px; }
+  .sd-adminurl span { display:block; font-size:11px; color:var(--amber); margin-bottom:4px; font-weight:600; }
+  .sd-adminurl a { font-size:12.5px; color:var(--text-dim); word-break:break-all; text-decoration:underline; }
+  @media (max-width:560px){ .bd-head{flex-direction:column; text-align:center;} .bd-panel{padding:22px;} .sd-stats{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <a href="/" class="logo" style="text-decoration:none; color:inherit;">N<span>·</span>LIVE <span style="color:var(--text-mute); font-weight:500; font-size:13px; margin-left:8px;">엔라이브</span></a>
+  <nav class="nav-links">
+    <a href="/about">회사소개</a>
+    <a href="/for-korean-brands">서비스</a>
+    <a href="/network">네트워크</a>
+    <a href="/matching-pool.html" class="active">매칭 풀</a>
+    <a href="/contact">문의</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">N-LIVE NETWORK · 검증된 파트너 풀</div>
+  <h1>K-브랜드와<br>글로벌 셀러를 <em>매칭</em>합니다</h1>
+  <p class="lead">
+    엔라이브와 파트너십을 맺은 검증된 K-브랜드와 글로벌 라이브커머스 셀러 풀입니다.
+    리스트 열람은 문의 후 발급되는 <b>접근 코드</b>로 가능합니다.
+  </p>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="brands">K-브랜드 보기 (셀러용)</button>
+    <button class="tab" data-tab="sellers">글로벌 셀러 보기 (브랜드용)</button>
+  </div>
+</section>
+
+<!-- ── Auth strip (compact status) ── -->
+<div class="auth-strip">
+  <div class="auth-status">
+    <span class="auth-dot" id="authDot"></span>
+    <span id="authText"><b>비공개 모드</b> · 카드 미리보기 가능, 상세는 잠금</span>
+    <span class="countdown" id="countdown"></span>
+  </div>
+  <button class="auth-trigger" id="authOpenBtn">🔓 잠금 해제</button>
+  <button class="auth-trigger ghost" id="lockBtn" style="display:none;">잠그기</button>
+</div>
+
+<!-- ── Auth modal ── -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" role="dialog" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="닫기">✕</button>
+    <div class="modal-eyebrow">N-LIVE NETWORK · ACCESS</div>
+    <h2 id="modalTitle">파트너 풀 열람</h2>
+    <p>본인을 어떻게 소개해야 할까요? 셀러는 K-브랜드만, 브랜드는 글로벌 셀러만 열람할 수 있어요.</p>
+
+    <div class="role-group" id="roleGroup">
+      <button class="role-card" data-role="seller">
+        <div class="role-emoji">🛍️</div>
+        <div class="role-title">셀러</div>
+        <div class="role-sub">K-브랜드 풀 열람</div>
+      </button>
+      <button class="role-card" data-role="brand">
+        <div class="role-emoji">🏷️</div>
+        <div class="role-title">브랜드</div>
+        <div class="role-sub">글로벌 셀러 풀 열람</div>
+      </button>
+    </div>
+
+    <input class="auth-input" id="authInput" type="text" placeholder="접근 코드 입력" autocomplete="off">
+    <p class="modal-error" id="authErr">접근 코드가 잘못되었어요. 다시 확인해주세요.</p>
+    <button class="modal-btn" id="authSubmit" disabled>역할 선택 후 잠금 해제</button>
+
+    <div class="modal-help">
+      <b>코드가 없으신가요?</b> <a href="/contact">문의하기</a> → 영업일 24시간 내 발급<br>
+      코드는 발급 후 <b>24시간 유효</b>, 영업 의지 확인 시 <b>장기 코드</b> 별도 제공.<br>
+      <span style="color:var(--text-mute); font-size:11px;">테스트용 코드 — <code>1</code> (셀러·브랜드 통합 열람)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Filters ── -->
+<div class="filters" id="filterBrands">
+  <span class="filter-label">필터 ·</span>
+  <button class="chip active">전체</button>
+  <button class="chip">K-Beauty</button>
+  <button class="chip">K-Fashion</button>
+  <button class="chip">K-Food</button>
+  <button class="chip">K-Lifestyle</button>
+  <button class="chip">샤오홍슈 입점</button>
+  <button class="chip">티몰 입점</button>
+  <button class="chip">MOQ ≤ 50</button>
+</div>
+
+<div class="filters" id="filterSellers" style="display:none;">
+  <span class="filter-label">필터 ·</span>
+  <button class="chip active">전체</button>
+  <button class="chip">샤오홍슈</button>
+  <button class="chip">더우인/抖音</button>
+  <button class="chip">콰이셔우/快手</button>
+  <button class="chip">웨이보/微博</button>
+  <button class="chip">뷰티</button>
+  <button class="chip">패션</button>
+  <button class="chip">10만+ 팔로워</button>
+  <button class="chip">100만+ 팔로워</button>
+</div>
+
+<!-- ── K-브랜드 카드 그리드 ── -->
+<div class="view active" id="brands">
+  <div class="grid" id="brandGrid"></div>
+</div>
+
+<!-- ── 글로벌 셀러 카드 그리드 ── -->
+<div class="view" id="sellers">
+  <div class="grid" id="sellerGrid"></div>
+</div>
+
+<p class="note">
+  * 본 페이지는 N-LIVE 파트너 풀의 일부 예시입니다. 실제 풀은 K-브랜드 500+, 글로벌 셀러 300+ 규모입니다.<br>
+  접근 코드 발급은 사업자등록증 / 영업 의지 확인 후 이뤄지며, 1주 단위로 재발급됩니다.
+</p>
+
+<script>
+  // ─── 셀러 더미 데이터 (실 데이터 입력 전 레이아웃용) ───
+  const SELLERS = [
+    { plat:'샤오홍슈', cat:'xhs',      followers:'85만',  nick:'뷰티 크리에이터 #S047', real:'@뷰티셀러A', time:'평일 20~23시', nation:'中国', fee:'협의' },
+    { plat:'더우인',   cat:'douyin',   followers:'120만', nick:'라이프 크리에이터 #S112', real:'@라이프셀러B', time:'매일 21~24시', nation:'中国', fee:'협의' },
+    { plat:'콰이쇼우', cat:'kuaishou', followers:'60만',  nick:'패션 크리에이터 #S203', real:'@패션셀러C', time:'주말 19~22시', nation:'中国', fee:'협의' },
+    { plat:'웨이보',   cat:'weibo',    followers:'200만', nick:'K-컬처 크리에이터 #S041', real:'@컬처셀러D', time:'평일 18~21시', nation:'中国', fee:'협의' },
+    { plat:'샤오홍슈', cat:'xhs',      followers:'45만',  nick:'푸드 크리에이터 #S077', real:'@푸드셀러E', time:'평일 12~14시', nation:'中国', fee:'협의' },
+    { plat:'더우인',   cat:'douyin',   followers:'90만',  nick:'피트니스 크리에이터 #S088', real:'@핏셀러F', time:'매일 07~09시', nation:'中国', fee:'협의' },
+    { plat:'샤오홍슈', cat:'xhs',      followers:'30만',  nick:'육아 크리에이터 #S066', real:'@육아셀러G', time:'평일 10~12시', nation:'中国', fee:'협의' },
+    { plat:'콰이쇼우', cat:'kuaishou', followers:'150만', nick:'라이브 셀러 #S099', real:'@라이브셀러H', time:'매일 20~23시', nation:'中国', fee:'협의' },
+  ];
+
+  function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  // 브랜드 카드: 닉네임·카테고리·지역·대표상품·가격대 + 대표상품 이미지5
+  function brandCard(b){
+    const imgs = (b.images||[]).slice(0,5);
+    let thumbs = '';
+    for(let i=0;i<5;i++){
+      thumbs += imgs[i] ? `<img src="${esc(imgs[i])}" alt="" loading="lazy">` : `<div class="empty"></div>`;
+    }
+    const logo = b.logo
+      ? `<img src="${esc(b.logo)}" alt="${esc(b.realName||'')}" loading="lazy">`
+      : `<span class="logo-fallback">${esc((b.realName||'?').slice(0,8))}</span>`;
+    const price = b.priceRange
+      ? `<span class="price-val">${esc(b.priceRange)}</span>`
+      : `<span class="price-val dim">가격 문의</span>`;
+    return `<div class="card brand-card" data-cat="${esc(b.cat||'fashion')}">
+      <div class="brand-logo${b.logoLight ? ' dark' : ''}">${logo}</div>
+      <h3 class="brand-name">
+        <span class="name-masked">${esc(b.nickname||'브랜드')}</span>
+        <span class="name-real">${esc(b.realName||'')}</span>
+      </h3>
+      <div class="brand-cat">${esc(b.category||'')}</div>
+      <p class="brand-slogan">${esc(b.slogan||'')}</p>
+      <div class="prod-thumbs">${thumbs}</div>
+      <div class="brand-price"><span class="price-label">가격대</span>${price}</div>
+      <button class="btn-cta btn-cta-before">🔒 인증 후 브랜드 정보 보기</button>
+      <button class="btn-cta btn-cta-after" onclick="openBrandDetail('${esc(b.id)}')">브랜드 정보 보기 →</button>
+      <p class="unlock-hint">접근 코드 입력하면 마스킹 자동 해제</p>
+    </div>`;
+  }
+
+  // 셀러 카드: 플랫폼·팔로우·닉네임·방송시간대·국적·섭외비용 (채널/플랫폼ID 노출 X)
+  function sellerCard(s){
+    const ava = s.image
+      ? `<img src="${esc(s.image)}" alt="" loading="lazy">`
+      : `<span class="ava-fallback">${esc((s.realName||'?').slice(0,2))}</span>`;
+    const sub = [s.platform, s.category].filter(Boolean).join(' · ');
+    const nm = s.realName || '';
+    const half = Math.ceil(nm.length/2);
+    const nameReal = `${esc(nm.slice(0,half))}<span class="mo">${esc(nm.slice(half))}</span>`;
+    return `<div class="card brand-card seller-card" data-cat="fb">
+      <div class="seller-ava">${ava}</div>
+      <div class="brand-cat">${esc(sub)}</div>
+      <h3 class="brand-name">
+        <span class="name-masked">${esc(s.nickname||'셀러')}</span>
+        <span class="name-real">${nameReal}</span>
+      </h3>
+      <div class="seller-fol"><b>${esc(s.followersText||'')}</b><span>팔로워</span></div>
+      <p class="brand-slogan">${esc(s.intro||'')}</p>
+      <div class="seller-meta">
+        <div><span>국적</span><b>${esc(s.country||'-')}</b></div>
+        <div><span>방송</span><b>${esc(s.broadcast||'-')}</b></div>
+        <div><span>섭외비용</span><b>${esc(s.fee||'협의')}</b></div>
+      </div>
+      <button class="btn-cta btn-cta-before">🔒 인증 후 매칭 정보 보기</button>
+      <button class="btn-cta btn-cta-after" onclick="openSellerDetail('${esc(s.id)}')">셀러 정보 보기 →</button>
+      <p class="unlock-hint">접근 코드 입력하면 마스킹 자동 해제</p>
+    </div>`;
+  }
+
+  // 렌더
+  (async () => {
+    try {
+      const res = await fetch('/pool-brands.json', {cache:'no-store'});
+      const brands = await res.json();
+      window.__BRANDS = {}; brands.forEach(b => window.__BRANDS[b.id] = b);
+      document.getElementById('brandGrid').innerHTML = brands.map(brandCard).join('');
+    } catch(e){
+      document.getElementById('brandGrid').innerHTML = '<p style="color:var(--text-mute);padding:20px">브랜드 데이터를 불러오지 못했습니다.</p>';
+    }
+    try {
+      const sres = await fetch('/pool-sellers.json', {cache:'no-store'});
+      const sellers = await sres.json();
+      window.__SELLERS = {}; sellers.forEach(s => window.__SELLERS[s.id] = s);
+      document.getElementById('sellerGrid').innerHTML = sellers.map(sellerCard).join('');
+    } catch(e){
+      document.getElementById('sellerGrid').innerHTML = SELLERS.map(sellerCard).join('');
+    }
+  })();
+
+  // ─── 대표상품 이미지 라이트박스 ───
+  (function(){
+    const lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.innerHTML = `
+      <button class="lb-btn lb-close" aria-label="닫기">✕</button>
+      <button class="lb-btn lb-prev" aria-label="이전">‹</button>
+      <img alt="">
+      <button class="lb-btn lb-next" aria-label="다음">›</button>
+      <div class="lb-count"></div>`;
+    document.body.appendChild(lb);
+    const lbImg = lb.querySelector('img');
+    const lbCount = lb.querySelector('.lb-count');
+    let list = [], idx = 0;
+
+    function show(){ lbImg.src = list[idx]; lbCount.textContent = `${idx+1} / ${list.length}`; }
+    function open(imgs, start){ list = imgs; idx = start; lb.classList.add('show'); show(); }
+    function close(){ lb.classList.remove('show'); lbImg.src = ''; }
+    function move(d){ if(!list.length) return; idx = (idx + d + list.length) % list.length; show(); }
+
+    // 카드의 상품 썸네일 클릭 (이벤트 위임)
+    document.addEventListener('click', e => {
+      const img = e.target.closest('.prod-thumbs img, .bd-gallery img');
+      if (!img) return;
+      const thumbs = [...img.closest('.prod-thumbs, .bd-gallery').querySelectorAll('img')];
+      open(thumbs.map(t => t.src), thumbs.indexOf(img));
+    });
+    lb.querySelector('.lb-close').addEventListener('click', close);
+    lb.querySelector('.lb-prev').addEventListener('click', e => { e.stopPropagation(); move(-1); });
+    lb.querySelector('.lb-next').addEventListener('click', e => { e.stopPropagation(); move(1); });
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('show')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') move(-1);
+      else if (e.key === 'ArrowRight') move(1);
+    });
+  })();
+
+  // ─── 브랜드 상세 페이지 (오버레이) ───
+  function esc2(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  window.openBrandDetail = function(id){
+    const b = (window.__BRANDS||{})[id]; if(!b) return;
+    let ov = document.getElementById('brandDetail');
+    if(!ov){
+      ov = document.createElement('div'); ov.id='brandDetail'; ov.className='detail-overlay';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', e=>{ if(e.target===ov || e.target.closest('.bd-close')) window.closeBrandDetail(); });
+    }
+    const imgs = (b.images||[]).filter(Boolean);
+    const gallery = imgs.length
+      ? `<div class="bd-gallery">${imgs.map(s=>`<img src="${esc2(s)}" loading="lazy">`).join('')}</div>`
+      : `<p class="bd-na">상품 이미지 준비 중</p>`;
+    const logo = b.logo ? `<img src="${esc2(b.logo)}" alt="">` : `<span class="logo-fallback">${esc2((b.realName||'?').slice(0,8))}</span>`;
+    const na = '<span class="bd-na">준비 중</span>';
+    ov.innerHTML = `
+      <div class="bd-panel">
+        <button class="bd-close" aria-label="닫기">✕</button>
+        <div class="bd-head">
+          <div class="bd-logo${b.logoLight?' dark':''}">${logo}</div>
+          <div class="bd-headinfo">
+            <h2>${esc2(b.realName||'')}</h2>
+            <span class="brand-cat">${esc2(b.category||'')}</span>
+            <div class="bd-region">📍 지역 · ${b.region ? esc2(b.region) : na}</div>
+          </div>
+        </div>
+        <section class="bd-sec"><h3>브랜드 소개</h3><p>${esc2(b.slogan||'')||na}</p></section>
+        <section class="bd-sec"><h3>전체 상품군</h3>${gallery}<p class="bd-hint">사진 클릭 시 크게 보기 · 더 많은 상품은 추후 업데이트</p></section>
+        <section class="bd-sec"><h3>SNS 채널</h3><p>${na} <span class="bd-dim">— 인스타그램 · 유튜브 등 (관리자 등록)</span></p></section>
+        <section class="bd-sec"><h3>마케팅 · 홍보 자료</h3><p>${na} <span class="bd-dim">— 기사 · 연예인 착용 이미지 (관리자 등록)</span></p></section>
+        <section class="bd-sec"><h3>추가 설명</h3><p>${b.note ? esc2(b.note) : na} <span class="bd-dim">— 관리자 직접 작성</span></p></section>
+        <p class="bd-foot">※ 브랜드 홈페이지 · 연락처는 매칭 확정 후 별도 안내됩니다.</p>
+      </div>`;
+    ov.classList.add('show'); document.body.style.overflow='hidden';
+  };
+  window.closeBrandDetail = function(){
+    const ov=document.getElementById('brandDetail');
+    if(ov){ ov.classList.remove('show'); document.body.style.overflow=''; }
+  };
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ const ov=document.getElementById('brandDetail'); if(ov && ov.classList.contains('show')) window.closeBrandDetail(); }
+  });
+
+  // ─── 셀러 상세 페이지 (오버레이) ───
+  window.openSellerDetail = function(id){
+    const s = (window.__SELLERS||{})[id]; if(!s) return;
+    let ov = document.getElementById('sellerDetail');
+    if(!ov){
+      ov = document.createElement('div'); ov.id='sellerDetail'; ov.className='detail-overlay';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', e=>{ if(e.target===ov || e.target.closest('.bd-close')) window.closeSellerDetail(); });
+    }
+    const ava = s.image
+      ? `<img src="${esc2(s.image)}" alt="">`
+      : `<span class="logo-fallback">${esc2((s.realName||'?').slice(0,2))}</span>`;
+    const data = [
+      ['팔로워', (s.followersText||'-')], ['국적', (s.country||'-')],
+      ['주력 방송', (s.broadcast||'-')], ['섭외비용', (s.fee||'협의')],
+    ].map(([k,v])=>`<div class="sd-stat"><span>${esc2(k)}</span><b>${esc2(v)}</b></div>`).join('');
+    ov.innerHTML = `
+      <div class="bd-panel">
+        <button class="bd-close" aria-label="닫기">✕</button>
+        <div class="bd-head">
+          <div class="bd-ava">${ava}</div>
+          <div class="bd-headinfo">
+            <h2 class="name-real">${(()=>{const nm=s.realName||'';const h=Math.ceil(nm.length/2);return esc2(nm.slice(0,h))+'<span class="mo">'+esc2(nm.slice(h))+'</span>';})()}</h2>
+            <span class="brand-cat">${esc2([s.platform,s.category].filter(Boolean).join(' · '))}</span>
+            <div class="bd-region">🌐 ${esc2(s.country||'글로벌')} · ${esc2(s.platform||'')}</div>
+          </div>
+        </div>
+        ${document.body.classList.contains('master') && s.url ? `<div class="sd-adminurl"><span>🔑 플랫폼 바로가기 (관리자 전용)</span><a href="${esc2(s.url)}" target="_blank" rel="noopener">${esc2(s.url)}</a></div>` : ''}
+        <div class="sd-stats">${data}</div>
+        <section class="bd-sec"><h3>셀러 소개</h3><p>${esc2(s.intro||'')||'<span class=bd-na>준비 중</span>'}</p></section>
+        <section class="bd-sec"><h3>채널 강점</h3><p>팔로워 <b style="color:#cbb896">${esc2(s.followersText||'-')}</b> 규모의 ${esc2(s.platform||'라이브')} 채널 운영 · ${esc2(s.country||'해외')} 시장 타깃 라이브 커머스 셀러입니다.</p></section>
+        <section class="bd-sec"><h3>협업 · 라이브 실적</h3><p class="bd-na">검증된 라이브 셀러 — 한·중 브랜드 협업 이력 보유 (상세 실적은 매칭 진행 시 제공)</p></section>
+        <section class="bd-sec"><h3>매칭 진행 방식</h3><p>관심 셀러 선택 → 엔라이브가 조건 협의 → 라이브 일정 확정. 섭외비용은 상품군·일정에 따라 <b style="color:#cbb896">협의</b>로 진행됩니다.</p></section>
+        <p class="bd-foot">※ 셀러 채널 링크 · 연락처는 매칭 확정 후 별도 안내됩니다.</p>
+      </div>`;
+    ov.classList.add('show'); document.body.style.overflow='hidden';
+  };
+  window.closeSellerDetail = function(){
+    const ov=document.getElementById('sellerDetail');
+    if(ov){ ov.classList.remove('show'); document.body.style.overflow=''; }
+  };
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ const ov=document.getElementById('sellerDetail'); if(ov && ov.classList.contains('show')) window.closeSellerDetail(); }
+  });
+</script>
+<script>
+  // ─── Sample access codes (실제 서비스에선 서버에서 검증) ───
+  const CODES = {
+    '1':                { role: 'all',    expiresHours: null }, // 마스터 코드 → 셀러+브랜드 전체 열람
+    'nlive2026-seller': { role: 'seller', expiresHours: 24 },  // 셀러용 → 브랜드 풀 열람
+    'nlive2026-brand':  { role: 'brand',  expiresHours: 24 },  // 브랜드용 → 셀러 풀 열람
+    'nlive-vip-seller': { role: 'seller', expiresHours: null }, // 평생 (테스트)
+    'nlive-vip-brand':  { role: 'brand',  expiresHours: null }
+  };
+
+  // 셀러/브랜드 → 보여줄 탭 매핑 (all = 둘 다)
+  const ROLE_TO_VIEW = { seller: 'brands', brand: 'sellers', all: 'brands' };
+  const ROLE_LABEL = { seller: '셀러', brand: '브랜드', all: '통합' };
+  const VIEW_LABEL = { brands: 'K-브랜드', sellers: '글로벌 셀러' };
+
+  // ─── DOM refs ───
+  const tabs = document.querySelectorAll('.tab');
+  const views = document.querySelectorAll('.view');
+  const filterB = document.getElementById('filterBrands');
+  const filterS = document.getElementById('filterSellers');
+  const authDot = document.getElementById('authDot');
+  const authText = document.getElementById('authText');
+  const countdownEl = document.getElementById('countdown');
+  const authOpenBtn = document.getElementById('authOpenBtn');
+  const lockBtn = document.getElementById('lockBtn');
+  const modal = document.getElementById('modalBackdrop');
+  const modalClose = document.getElementById('modalClose');
+  const authInput = document.getElementById('authInput');
+  const authSubmit = document.getElementById('authSubmit');
+  const authErr = document.getElementById('authErr');
+  const roleGroup = document.getElementById('roleGroup');
+
+  // ─── State ───
+  let selectedRole = null;
+  let session = null; // { role, expiresAt | null }
+  let countdownTimer = null;
+
+  // ─── Tab switching ───
+  function switchTab(target) {
+    tabs.forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+    views.forEach(v => v.classList.toggle('active', v.id === target));
+    filterB.style.display = target === 'brands' ? '' : 'none';
+    filterS.style.display = target === 'sellers' ? '' : 'none';
+  }
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      // 인증된 상태에서 다른 역할의 풀을 보려고 하면 차단 (통합 코드는 예외)
+      if (session && session.role !== 'all' && t.dataset.tab !== ROLE_TO_VIEW[session.role]) {
+        flashErr(`${ROLE_LABEL[session.role]} 코드로는 ${VIEW_LABEL[t.dataset.tab]} 풀을 열람할 수 없어요.`);
+        return;
+      }
+      switchTab(t.dataset.tab);
+    });
+  });
+
+  // 인증 안 됨일 땐 일시적 에러 toast (간단히 status text 색만 깜빡)
+  function flashErr(msg) {
+    const prev = authText.innerHTML;
+    authText.innerHTML = `<b style="color:var(--red);">${msg}</b>`;
+    setTimeout(() => { if (session) updateStatusAuthed(); else authText.innerHTML = prev; }, 2200);
+  }
+
+  // ─── Chip filter (visual only in mockup) ───
+  document.querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => {
+      const siblings = c.parentElement.querySelectorAll('.chip');
+      siblings.forEach(s => s.classList.remove('active'));
+      c.classList.add('active');
+    });
+  });
+
+  // ─── Modal open/close ───
+  function openModal() {
+    modal.classList.add('show');
+    setTimeout(() => authInput.focus(), 100);
+  }
+  function closeModal() {
+    modal.classList.remove('show');
+    authErr.classList.remove('show');
+    authInput.value = '';
+    selectedRole = null;
+    document.querySelectorAll('.role-card').forEach(r => r.classList.remove('active'));
+    updateSubmitState();
+  }
+  authOpenBtn.addEventListener('click', openModal);
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('show')) closeModal(); });
+
+  // ─── Role picker ───
+  document.querySelectorAll('.role-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.role-card').forEach(r => r.classList.remove('active'));
+      card.classList.add('active');
+      selectedRole = card.dataset.role;
+      updateSubmitState();
+    });
+  });
+  function updateSubmitState() {
+    const code = authInput.value.trim();
+    const master = code && CODES[code] && CODES[code].role === 'all';  // 통합 코드는 역할 선택 불필요
+    if ((selectedRole || master) && code) {
+      authSubmit.disabled = false;
+      authSubmit.textContent = '잠금 해제';
+    } else if (selectedRole) {
+      authSubmit.disabled = true;
+      authSubmit.textContent = '접근 코드 입력 →';
+    } else {
+      authSubmit.disabled = true;
+      authSubmit.textContent = '역할 선택 후 잠금 해제';
+    }
+  }
+  authInput.addEventListener('input', () => { authErr.classList.remove('show'); updateSubmitState(); });
+  authInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !authSubmit.disabled) authSubmit.click(); });
+
+  // ─── Submit auth ───
+  authSubmit.addEventListener('click', () => {
+    const code = authInput.value.trim();
+    const meta = CODES[code];
+    if (!meta) { authErr.classList.add('show'); return; }
+    if (meta.role !== 'all' && selectedRole && meta.role !== selectedRole) {
+      authErr.innerHTML = `이 코드는 ${ROLE_LABEL[meta.role]}용 코드입니다. 역할을 다시 선택해주세요.`;
+      authErr.classList.add('show');
+      return;
+    }
+    // OK
+    const expiresAt = meta.expiresHours ? Date.now() + meta.expiresHours * 3600 * 1000 : null;
+    session = { role: meta.role, expiresAt };
+    try { localStorage.setItem('nlive_network_session', JSON.stringify(session)); } catch(e) {}
+    applySession();
+    closeModal();
+  });
+
+  // ─── Apply session (UI lock state) ───
+  function applySession() {
+    if (!session) return applyLockedOut();
+    document.body.classList.add('authed');
+    document.body.classList.toggle('master', session.role === 'all');
+    const targetView = ROLE_TO_VIEW[session.role];
+    switchTab(targetView);
+    // 다른 탭 비활성 시각 (통합 코드는 둘 다 활성)
+    tabs.forEach(t => {
+      const allowed = session.role === 'all' || t.dataset.tab === targetView;
+      t.style.opacity = allowed ? '' : '0.35';
+      t.title = allowed ? '' : `${ROLE_LABEL[session.role]} 코드로는 열람 불가`;
+    });
+    updateStatusAuthed();
+    authOpenBtn.style.display = 'none';
+    lockBtn.style.display = '';
+    startCountdown();
+  }
+  function applyLockedOut() {
+    document.body.classList.remove('authed');
+    document.body.classList.remove('master');
+    tabs.forEach(t => { t.style.opacity = ''; t.title = ''; });
+    authDot.classList.remove('on');
+    authText.innerHTML = '<b>비공개 모드</b> · 카드 미리보기 가능, 상세는 잠금';
+    countdownEl.textContent = '';
+    authOpenBtn.style.display = '';
+    lockBtn.style.display = 'none';
+    if (countdownTimer) clearInterval(countdownTimer);
+  }
+  function updateStatusAuthed() {
+    authDot.classList.add('on');
+    if (session.role === 'all') {
+      authText.innerHTML = `<b>통합 코드로 인증됨</b> · K-브랜드 + 글로벌 셀러 전체 열람 가능`;
+      return;
+    }
+    const label = ROLE_LABEL[session.role];
+    const targetLabel = VIEW_LABEL[ROLE_TO_VIEW[session.role]];
+    authText.innerHTML = `<b>${label}로 인증됨</b> · ${targetLabel} 풀 전체 열람 가능`;
+  }
+  function startCountdown() {
+    if (countdownTimer) clearInterval(countdownTimer);
+    if (!session.expiresAt) { countdownEl.textContent = '· 장기 코드 (만료 없음)'; return; }
+    const tick = () => {
+      const ms = session.expiresAt - Date.now();
+      if (ms <= 0) {
+        session = null;
+        try { localStorage.removeItem('nlive_network_session'); } catch(e) {}
+        applyLockedOut();
+        return;
+      }
+      const h = Math.floor(ms / 3600000);
+      const m = Math.floor((ms % 3600000) / 60000);
+      const s = Math.floor((ms % 60000) / 1000);
+      countdownEl.textContent = `· 만료까지 ${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+    };
+    tick();
+    countdownTimer = setInterval(tick, 1000);
+  }
+
+  // ─── Lock (sign out) ───
+  lockBtn.addEventListener('click', () => {
+    session = null;
+    try { localStorage.removeItem('nlive_network_session'); } catch(e) {}
+    applyLockedOut();
+  });
+
+  // ─── Restore session on load ───
+  try {
+    const raw = localStorage.getItem('nlive_network_session');
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (!s.expiresAt || s.expiresAt > Date.now()) { session = s; applySession(); }
+      else localStorage.removeItem('nlive_network_session');
+    }
+  } catch(e) {}
+</script>
+
+</body>
+</html>
