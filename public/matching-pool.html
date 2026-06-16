@@ -611,6 +611,40 @@
     text-align: center;
   }
 
+  /* ── 카테고리별 상담/문의 CTA 배너 ── */
+  .pool-cta {
+    max-width: 1200px;
+    margin: 30px auto 8px;
+    padding: 26px 30px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+    background: linear-gradient(135deg, rgba(196,160,92,0.11), rgba(255,182,39,0.035));
+    border: 1px solid var(--gold-line);
+    border-radius: 18px;
+  }
+  .pool-cta-text { flex: 1 1 440px; }
+  .pool-cta-eyebrow {
+    display: inline-block; font-size: 11px; letter-spacing: .07em;
+    color: var(--gold); font-weight: 700; margin-bottom: 9px;
+  }
+  .pool-cta h3 {
+    font-family: "Pretendard", sans-serif; font-size: 19px; font-weight: 700;
+    margin: 0 0 8px; color: #efece4; letter-spacing: -.01em;
+  }
+  .pool-cta p { font-size: 13px; color: var(--text-dim); line-height: 1.66; margin: 0; }
+  .pool-cta p b { color: #e7cf9b; font-weight: 600; }
+  .pool-cta-btn {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 7px;
+    background: var(--gold); color: #1a1505; font-weight: 700; font-size: 14px;
+    padding: 15px 26px; border-radius: 12px; text-decoration: none; white-space: nowrap;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .pool-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(196,160,92,0.28); }
+  @media (max-width: 640px) {
+    .pool-cta { flex-direction: column; align-items: stretch; padding: 22px; }
+    .pool-cta-btn { justify-content: center; }
+  }
+
   @media (max-width: 640px) {
     .hero { padding: 48px 20px 28px; }
     .auth-bar { padding: 14px 16px; }
@@ -956,11 +990,27 @@
 <!-- ── K-브랜드 카드 그리드 ── -->
 <div class="view active" id="brands">
   <div class="grid" id="brandGrid"></div>
+  <div class="pool-cta">
+    <div class="pool-cta-text">
+      <span class="pool-cta-eyebrow">🔒 검증된 전체 리스트</span>
+      <h3>지금 보시는 카드는 일부 미리보기예요</h3>
+      <p>검증된 <b>K-브랜드 전체 리스트</b>와 가격·실적·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 찾으시는 협업·입점 방향을 알려주시면 맞춤 리스트를 준비해 드려요.</p>
+    </div>
+    <a class="pool-cta-btn" href="/contact/?type=sourcing">K-브랜드 협업·입점 문의 →</a>
+  </div>
 </div>
 
 <!-- ── 글로벌 셀러 카드 그리드 ── -->
 <div class="view" id="sellers">
   <div class="grid" id="sellerGrid"></div>
+  <div class="pool-cta">
+    <div class="pool-cta-text">
+      <span class="pool-cta-eyebrow">🔒 검증된 전체 리스트</span>
+      <h3>지금 보시는 카드는 일부 미리보기예요</h3>
+      <p>검증된 <b>글로벌 셀러·왕홍 전체 리스트</b>와 팔로워·섭외비용·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 원하시는 매칭·입점 방향을 알려주시면 맞춤 리스트를 준비해 드려요.</p>
+    </div>
+    <a class="pool-cta-btn" href="/contact/?type=matching">글로벌 셀러 매칭·입점 문의 →</a>
+  </div>
 </div>
 
 <div class="view" id="china">
@@ -971,10 +1021,17 @@
     <button class="entry-guide-btn" onclick="openEntryGuide()">📋 중국 진출 가이드 보기</button>
   </div>
   <div class="grid" id="chinaGrid"></div>
+  <div class="pool-cta">
+    <div class="pool-cta-text">
+      <span class="pool-cta-eyebrow">🇨🇳 중국 진출 상담</span>
+      <h3>지금 보시는 왕홍은 일부 미리보기예요</h3>
+      <p>검증된 <b>도우인 라이브 왕홍 전체 리스트</b>와 매출·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 진출 브랜드·예산을 알려주시면 맞춤 왕홍을 매칭해 드려요.</p>
+    </div>
+    <a class="pool-cta-btn" href="/contact/?type=overseas-entry">중국 진출·왕홍 매칭 문의 →</a>
+  </div>
 </div>
 
 <p class="note">
-  * 본 페이지는 N-LIVE 파트너 풀의 일부 예시입니다. 실제 풀은 K-브랜드 500+, 글로벌 셀러 300+ 규모입니다.<br>
   접근 코드 발급은 사업자등록증 / 영업 의지 확인 후 이뤄지며, 1주 단위로 재발급됩니다.
 </p>
 
