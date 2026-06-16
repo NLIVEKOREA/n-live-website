@@ -721,6 +721,27 @@
     position:absolute; top:12px; left:12px; z-index:2; font-size:10px; font-weight:700;
     color:#fff; background:#e2342f; padding:3px 9px; border-radius:999px;
   }
+  .entry-guide-btn {
+    margin-top:16px; background:#e2342f; color:#fff; border:0; padding:11px 20px; border-radius:10px;
+    font:inherit; font-size:13.5px; font-weight:700; cursor:pointer; transition:transform .15s, background .15s;
+  }
+  .entry-guide-btn:hover { background:#c92b27; transform:translateY(-1px); }
+  /* 진출 가이드 단계 */
+  .eg-head { padding-bottom:18px; border-bottom:1px solid var(--gold-line); margin-bottom:6px; }
+  .eg-head h2 { font-family:"Pretendard",sans-serif; font-size:24px; font-weight:700; margin:6px 0 10px; }
+  .eg-lead { font-size:13px; color:var(--text-dim); line-height:1.65; margin:0; }
+  .eg-lead b { color:#ff9b96; }
+  .eg-step { display:flex; gap:18px; padding:20px 0; border-bottom:1px solid var(--line); }
+  .eg-num { flex:0 0 48px; font-family:var(--serif); font-size:34px; font-weight:600; color:#e2342f; line-height:1; }
+  .eg-body h4 { font-size:16px; font-weight:700; margin:0 0 7px; }
+  .eg-body h4 span { color:var(--text-mute); font-weight:500; font-size:12.5px; }
+  .eg-body > p { font-size:13px; color:var(--text-dim); line-height:1.6; margin:0 0 12px; }
+  .eg-body > p b { color:#ffb4af; font-weight:600; }
+  .eg-cols { display:grid; grid-template-columns:1fr 1fr; gap:8px 24px; }
+  .eg-cols ul { margin:0; padding:0; list-style:none; }
+  .eg-cols li { font-size:12px; color:var(--text-dim); padding:3px 0 3px 12px; position:relative; }
+  .eg-cols li::before { content:"–"; position:absolute; left:0; color:#e2342f; }
+  @media (max-width:560px){ .eg-cols{grid-template-columns:1fr;} .eg-step{flex-direction:column;gap:8px;} }
 
   /* ── 셀러 카드 (프로필 중심) ── */
   .seller-ava {
@@ -946,7 +967,8 @@
   <div class="china-intro">
     <div class="china-eyebrow">SPECIAL · 중국관</div>
     <h2>중국 진출 브랜드 × 도우인 라이브 왕홍</h2>
-    <p>중국에 진출한 K-브랜드를 <b>이보(广州毅播)</b> 실행망 + 검증된 <b>도우인 라이브 왕홍</b>으로 방송·판매합니다. 아래는 일평균 매출 상위 라이브 왕홍입니다.</p>
+    <p>중국에 진출한 K-브랜드를 검증된 <b>도우인 라이브 왕홍</b>으로 방송·판매합니다. NLIVE가 진입 준비부터 스토어·콘텐츠·라이브 판매·성과 확장까지 전 과정을 실행합니다. 아래는 일평균 매출 상위 라이브 왕홍입니다.</p>
+    <button class="entry-guide-btn" onclick="openEntryGuide()">📋 중국 진출 가이드 보기</button>
   </div>
   <div class="grid" id="chinaGrid"></div>
 </div>
@@ -1248,6 +1270,52 @@
   document.addEventListener('keydown', e=>{
     if(e.key==='Escape'){ const ov=document.getElementById('sellerDetail'); if(ov && ov.classList.contains('show')) window.closeSellerDetail(); }
   });
+
+  // ─── 중국 진출 가이드 (오버레이) ───
+  const ENTRY_STEPS = [
+    {n:"01", t:"진입 준비", s:"자격·서류 점검", d:"한국 브랜드는 중국 법인이 없어도, 국내 대리 주체를 통한 <b>크로스보더 스토어</b>로 진입합니다. 필요한 서류를 NLIVE가 미리 안내·수집 지원합니다.",
+     a:["사업자 공증·번역 · 법인 계좌 · 대표자 서류","상표권 · 브랜드 위임서","원산지·검사·중문 라벨·품목 수입 인증"],
+     b:["진입 경로 적합성 진단","서류 체크리스트 제공·수집 지원","국내 대리 주체·보세창고 연결"]},
+    {n:"02", t:"스토어 개설", s:"입점·상품·물류 세팅", d:"크로스보더 스토어를 개설하고 상품을 최적화해 등록한 뒤, 소량 현물을 <b>보세창고</b>에 입고해 '빠른 발송·낮은 반품' 환경을 만듭니다.",
+     a:["크로스보더 스토어 개설·기초 세팅","상품 등록(상세·이미지·옵션) 최적화","가격 정책·프로모션 설정"],
+     b:["소량 선진출 후 보세창고 입고","빠른 발송으로 판매 용이·반품 감소","반응 테스트 결과로 발주 최적화"]},
+    {n:"03", t:"콘텐츠 운영", s:"잠재고객 선확보", d:"바로 판매하지 않고 <b>콘텐츠·시딩</b>으로 저비용 잠재고객을 먼저 확보합니다. 검증된 콘텐츠 공식으로 채널을 만들고 라이브를 예열합니다.",
+     a:["샤오홍슈·더우인 크리에이터 시딩","브랜드 계정 운영·콘텐츠 월 6편","잠재고객·검색 노출 축적"],
+     b:["여러 크리에이터로 동시 반응 테스트","조회·전환·반응으로 성과 상품 선별","상위 상품을 라이브 대표 상품으로 확정"]},
+    {n:"04", t:"라이브 판매", s:"매출 전환·확장", d:"확보한 잠재고객을 라이브에서 <b>매출로 전환</b>합니다. 크리에이터 라이브로 단기 폭발을, 자체 라이브·퍼포먼스 광고로 상시 확장 채널을 구축합니다.",
+     a:["여성복 크리에이터 매칭·섭외·진행","유입·대표·수익·혜택 상품 구성","회차별 매출·전환·반품 정산·리뷰"],
+     b:["공식 라이브 채널 구축·상시 운영","실사+AI 콘텐츠로 광고 정밀 확장","입찰·타깃·예산 실시간 효율 관리"]},
+    {n:"05", t:"성과 · 확장", s:"데이터 리뷰·재발주", d:"모든 단계를 <b>데이터로 리뷰</b>해 무엇을 늘리고 줄일지 결정합니다. 성과 좋은 상품·크리에이터·광고에 자원을 집중하고 물량·예산을 단계 확대합니다.",
+     a:["주간: 상품·크리에이터·광고·재고 + 계획","월간: 매출·상품·크리에이터·전략 종합","긴급 이슈는 당일 즉시 공유"],
+     b:["성과 상품 집중·재발주","우수 크리에이터를 전속 판매망으로","검증 후 물량·예산·품목 확대"]},
+  ];
+  window.openEntryGuide = function(){
+    let ov=document.getElementById('entryGuide');
+    if(!ov){ ov=document.createElement('div'); ov.id='entryGuide'; ov.className='detail-overlay'; document.body.appendChild(ov);
+      ov.addEventListener('click', e=>{ if(e.target===ov || e.target.closest('.bd-close')) window.closeEntryGuide(); }); }
+    const steps = ENTRY_STEPS.map(s=>`
+      <div class="eg-step">
+        <div class="eg-num">${s.n}</div>
+        <div class="eg-body">
+          <h4>${s.t} <span>· ${s.s}</span></h4>
+          <p>${s.d}</p>
+          <div class="eg-cols">
+            <ul>${s.a.map(x=>`<li>${x}</li>`).join('')}</ul>
+            <ul>${s.b.map(x=>`<li>${x}</li>`).join('')}</ul>
+          </div>
+        </div>
+      </div>`).join('');
+    ov.innerHTML = `<div class="bd-panel">
+      <button class="bd-close" aria-label="닫기">✕</button>
+      <div class="eg-head"><div class="china-eyebrow">NLIVE · ENTRY PROCESS</div><h2>중국 진출 5단계 프로세스</h2>
+        <p class="eg-lead">진입 준비부터 스토어 개설, 콘텐츠 운영, 라이브 판매, 성과 리뷰까지 — NLIVE가 단계별로 실행하는 전체 흐름입니다. 전 과정은 <b>3개월 단위</b>로 병행·반복되며 데이터에 따라 빠르게 최적화됩니다.</p></div>
+      ${steps}
+      <p class="bd-foot">※ 상세 일정·견적은 매칭/문의 후 안내됩니다.</p>
+    </div>`;
+    ov.classList.add('show'); document.body.style.overflow='hidden';
+  };
+  window.closeEntryGuide = function(){ const ov=document.getElementById('entryGuide'); if(ov){ov.classList.remove('show'); document.body.style.overflow='';} };
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ const ov=document.getElementById('entryGuide'); if(ov&&ov.classList.contains('show')) window.closeEntryGuide(); }});
 </script>
 <script>
   // ─── Sample access codes (실제 서비스에선 서버에서 검증) ───
