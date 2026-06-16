@@ -63,7 +63,7 @@ export default function Nav() {
             </div>
           </div>
           <Link href="/network" onClick={() => setMenuOpen(false)}>{t("nav.network")}</Link>
-          <a href="/matching-pool.html" onClick={() => setMenuOpen(false)}>{t("nav.pool")}</a>
+          <a href="/matching-pool/" onClick={() => setMenuOpen(false)}>{t("nav.pool")}</a>
           <Link href="/process" onClick={() => setMenuOpen(false)}>{t("nav.process")}</Link>
           <Link href="/contact" onClick={() => setMenuOpen(false)}>{t("nav.contact")}</Link>
         </div>
@@ -126,7 +126,7 @@ export default function Nav() {
         <Link href="/about">{t("nav.about")}</Link>
         <Link href="/for-korean-brands">{t("nav.services")}</Link>
         <Link href="/network">{t("nav.network")}</Link>
-        <a href="/matching-pool.html">{t("nav.pool")}</a>
+        <a href="/matching-pool/">{t("nav.pool")}</a>
         <Link href="/process">{t("nav.process")}</Link>
         <Link href="/contact">{t("nav.contact")}</Link>
       </div>
