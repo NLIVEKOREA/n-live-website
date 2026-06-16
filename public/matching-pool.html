@@ -1078,8 +1078,6 @@
   // 중국관 왕홍 카드: 프사·닉네임·팔로워·일평균매출 / 프로필 URL은 마스터키만
   function chinaCard(c){
     const ava = c.image ? `<img src="${esc(c.image)}" alt="" loading="lazy">` : `<span class="ava-fallback">${esc((c.name||'?').slice(0,2))}</span>`;
-    const adminUrl = (document.body.classList.contains('master') && c.url)
-      ? `<div class="sd-adminurl" style="margin:0 0 10px"><span>🔑 도우인 프로필 (관리자 전용)</span><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.douyinId||c.url)}</a></div>` : '';
     return `<div class="card brand-card seller-card china-card" data-cat="cn">
       <span class="cn-rank">중국관 #${esc(String(c.rank))}</span>
       <div class="seller-ava">${ava}</div>
@@ -1094,9 +1092,8 @@
         <div><span>판매방식</span><b>라이브</b></div>
         <div><span>일평균 매출</span><b>${esc(c.salesDay||'-')}</b></div>
       </div>
-      ${adminUrl}
-      <button class="btn-cta btn-cta-before">🔒 인증 후 정보 보기</button>
-      <button class="btn-cta btn-cta-after" onclick="location.href='/contact'">매칭 요청 →</button>
+      <button class="btn-cta btn-cta-before">🔒 인증 후 왕홍 정보 보기</button>
+      <button class="btn-cta btn-cta-after" onclick="openChinaDetail('${esc(c.id)}')">왕홍 정보 보기 →</button>
       <p class="unlock-hint">접근 코드 입력하면 마스킹 자동 해제</p>
     </div>`;
   }
@@ -1276,6 +1273,51 @@
   };
   document.addEventListener('keydown', e=>{
     if(e.key==='Escape'){ const ov=document.getElementById('sellerDetail'); if(ov && ov.classList.contains('show')) window.closeSellerDetail(); }
+  });
+
+  // ─── 중국관 왕홍 상세 페이지 (오버레이) ───
+  window.openChinaDetail = function(id){
+    const c = (window.__CHINA||{})[id]; if(!c) return;
+    let ov = document.getElementById('chinaDetail');
+    if(!ov){
+      ov = document.createElement('div'); ov.id='chinaDetail'; ov.className='detail-overlay';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', e=>{ if(e.target===ov || e.target.closest('.bd-close')) window.closeChinaDetail(); });
+    }
+    const ava = c.image
+      ? `<img src="${esc2(c.image)}" alt="">`
+      : `<span class="logo-fallback">${esc2((c.name||'?').slice(0,2))}</span>`;
+    const data = [
+      ['팔로워', (c.followersText||'-')], ['플랫폼', '抖音'],
+      ['판매방식', '라이브'], ['일평균 매출', (c.salesDay||'-')],
+    ].map(([k,v])=>`<div class="sd-stat"><span>${esc2(k)}</span><b>${esc2(v)}</b></div>`).join('');
+    ov.innerHTML = `
+      <div class="bd-panel">
+        <button class="bd-close" aria-label="닫기">✕</button>
+        <div class="bd-head">
+          <div class="bd-ava">${ava}</div>
+          <div class="bd-headinfo">
+            <h2 class="name-real">${esc2(c.name||'')}</h2>
+            <span class="brand-cat">抖音 라이브 왕홍 · 중국관 #${esc2(String(c.rank))}</span>
+            <div class="bd-region">🇨🇳 중국 · 抖音(Douyin) 라이브 커머스</div>
+          </div>
+        </div>
+        ${document.body.classList.contains('master') && c.url ? `<div class="sd-adminurl"><span>🔑 도우인 프로필 (관리자 전용)</span><a href="${esc2(c.url)}" target="_blank" rel="noopener">${esc2(c.douyinId||c.url)}</a></div>` : ''}
+        <div class="sd-stats">${data}</div>
+        <section class="bd-sec"><h3>왕홍 소개</h3><p>${esc2(c.note||'')||'<span class=bd-na>준비 중</span>'}</p></section>
+        <section class="bd-sec"><h3>채널 강점</h3><p>팔로워 <b style="color:#cbb896">${esc2(c.followersText||'-')}</b> 규모의 抖音 라이브 왕홍 · 중국 내수 시장 타깃 라이브 커머스로 한국 브랜드의 중국 진출을 직접 판매·확산합니다.</p></section>
+        <section class="bd-sec"><h3>협업 · 라이브 실적</h3><p class="bd-na">검증된 도우인 라이브 왕홍 — 중국 진출 K-브랜드 방송 진행 (상세 실적은 매칭 진행 시 제공)</p></section>
+        <section class="bd-sec"><h3>매칭 진행 방식</h3><p>관심 왕홍 선택 → 엔라이브가 진출 준비·상품·일정 협의 → 도우인 라이브 진행. 진행 조건은 상품군·일정에 따라 <b style="color:#cbb896">협의</b>로 진행됩니다.</p></section>
+        <p class="bd-foot">※ 왕홍 채널 링크 · 연락처는 매칭 확정 후 별도 안내됩니다.</p>
+      </div>`;
+    ov.classList.add('show'); document.body.style.overflow='hidden';
+  };
+  window.closeChinaDetail = function(){
+    const ov=document.getElementById('chinaDetail');
+    if(ov){ ov.classList.remove('show'); document.body.style.overflow=''; }
+  };
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ const ov=document.getElementById('chinaDetail'); if(ov && ov.classList.contains('show')) window.closeChinaDetail(); }
   });
 
   // ─── 중국 진출 가이드 (오버레이) ───
@@ -1474,7 +1516,6 @@
     if (!session) return applyLockedOut();
     document.body.classList.add('authed');
     document.body.classList.toggle('master', session.role === 'all');
-    renderChina();
     const targetView = ROLE_TO_VIEW[session.role];
     switchTab(targetView);
     // 다른 탭 비활성 시각 (통합 코드는 둘 다 활성)
@@ -1491,7 +1532,6 @@
   function applyLockedOut() {
     document.body.classList.remove('authed');
     document.body.classList.remove('master');
-    renderChina();
     tabs.forEach(t => { t.style.opacity = ''; t.title = ''; });
     authDot.classList.remove('on');
     authText.innerHTML = '<b>비공개 모드</b> · 카드 미리보기 가능, 상세는 잠금';
