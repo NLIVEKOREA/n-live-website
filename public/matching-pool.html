@@ -680,17 +680,19 @@
   .btag { font-size:10px; font-weight:600; letter-spacing:.02em; color:var(--text-dim);
     background:rgba(255,255,255,.05); border:1px solid var(--line-strong); padding:2px 9px; border-radius:999px; }
   .btag.studio { color:#9fe3c4; border-color:rgba(93,202,143,.35); background:rgba(93,202,143,.08); }
-  .brand-flags { font-size:15px; letter-spacing:1px; line-height:1; }
+  .btag.flag { color:#cbb896; border-color:var(--gold-line-on); background:rgba(196,160,92,.08); }
 
-  /* 10점 프리미엄 — 오로라 테두리 + 배지 */
+  /* 10점 프리미엄 — 테두리를 따라 도는 굵은 오로라 띠 */
+  @property --aang { syntax:'<angle>'; initial-value:0deg; inherits:false; }
   .brand-card.premium { border-color:transparent; }
   .brand-card.premium::before {
-    content:''; position:absolute; inset:-1.5px; border-radius:18px; z-index:-1;
-    background:linear-gradient(120deg,#c4a05c,#6ad7ff,#b07dff,#6affb0,#ffd27d,#ff9ed2,#c4a05c);
-    background-size:300% 300%; animation:aurora 7s ease infinite; opacity:.9;
+    content:''; position:absolute; inset:0; border-radius:16px; padding:3px; z-index:1;
+    background:conic-gradient(from var(--aang), #c4a05c,#6ad7ff,#b07dff,#6affb0,#ffd27d,#ff9ed2,#6ad7ff,#c4a05c);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    animation:auroraSpin 4s linear infinite; pointer-events:none;
   }
-  .brand-card.premium { box-shadow:0 0 24px rgba(180,140,255,.12); }
-  @keyframes aurora { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes auroraSpin { to { --aang:360deg; } }
   .premium-badge {
     position:absolute; top:12px; right:12px; z-index:2;
     font-size:9.5px; font-weight:800; letter-spacing:.08em; color:#1a140a;
@@ -938,11 +940,11 @@
 
   function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-  const FLAG = {대한민국:'🇰🇷',한국:'🇰🇷',중국:'🇨🇳',일본:'🇯🇵',미국:'🇺🇸',대만:'🇹🇼',홍콩:'🇭🇰',베트남:'🇻🇳',태국:'🇹🇭',싱가포르:'🇸🇬',말레이시아:'🇲🇾',인도네시아:'🇮🇩',필리핀:'🇵🇭'};
-  function countryFlags(arr){
+  const CSHORT = {대한민국:'한국'};
+  function countryNames(arr){
     let list = (arr && arr.length) ? arr.slice() : ['대한민국'];
     list = list.filter(c=>c!=='대한민국'); list.unshift('대한민국');   // 대한민국 항상 맨앞
-    return list.map(c=>`<span title="${esc(c)}">${FLAG[c]||'🏳️'}</span>`).join('');
+    return list.map(c=>esc(CSHORT[c]||c)).join(' · ');
   }
 
   // 브랜드 카드: 로고·이름·카테고리·진출국가·판매방식·상품·가격 / 점수순 정렬 / 10점=프리미엄
@@ -962,7 +964,7 @@
     const tags = [];
     if (b.salesMethod) tags.push(`<span class="btag">${esc(b.salesMethod)}</span>`);
     if (b.hasStudio === '유') tags.push(`<span class="btag studio">스튜디오</span>`);
-    const tagRow = `<div class="brand-tags">${tags.join('')}<span class="brand-flags">${countryFlags(b.countries)}</span></div>`;
+    const tagRow = `<div class="brand-tags">${tags.join('')}<span class="btag flag">🌐 ${countryNames(b.countries)}</span></div>`;
     return `<div class="card brand-card${premium?' premium':''}" data-cat="${esc(b.cat||'fashion')}">
       ${premium?'<span class="premium-badge">★ PREMIUM</span>':''}
       <div class="brand-logo${b.logoLight ? ' dark' : ''}">${logo}</div>
