@@ -655,7 +655,8 @@
     color:var(--gold); margin-bottom:10px;
   }
   .brand-name {
-    font-family:var(--serif); font-size:25px; font-weight:600; margin:0 0 8px; line-height:1.2;
+    font-family:"Pretendard",sans-serif; font-size:20px; font-weight:700; margin:0 0 8px; line-height:1.25;
+    letter-spacing:-0.02em;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .brand-name .name-masked { color:var(--text); }
@@ -784,7 +785,7 @@
   .bd-logo img { max-height:62px; max-width:100%; object-fit:contain; filter:brightness(0) invert(1) opacity(.95); }
   .bd-logo.dark img { filter:opacity(.95); }
   .bd-logo .logo-fallback { font-family:var(--serif); font-size:22px; font-weight:600; color:#ece7df; }
-  .bd-headinfo h2 { font-family:var(--serif); font-size:30px; font-weight:600; margin:0 0 8px; }
+  .bd-headinfo h2 { font-family:"Pretendard",sans-serif; font-size:26px; font-weight:700; letter-spacing:-0.02em; margin:0 0 8px; }
   .bd-region { font-size:13px; color:var(--text-dim); margin-top:10px; }
   .bd-sec { padding:18px 0; border-bottom:1px solid var(--gold-line); }
   .bd-sec h3 { font-size:11px; font-weight:600; color:var(--gold); margin:0 0 12px; letter-spacing:.16em; text-transform:uppercase; }
@@ -809,6 +810,7 @@
   .sd-stat { background:#100d0a; padding:16px 8px; text-align:center; display:flex; flex-direction:column; gap:6px; }
   .sd-stat span { font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); }
   .sd-stat b { font-size:17px; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums; }
+  .sd-stats-3 { grid-template-columns:repeat(3,1fr) !important; }
   .sd-adminurl { margin:14px 0 0; padding:12px 14px; background:rgba(255,182,39,.06); border:1px solid var(--amber-dim); border-radius:10px; }
   .sd-adminurl span { display:block; font-size:11px; color:var(--amber); margin-bottom:4px; font-weight:600; }
   .sd-adminurl a { font-size:12.5px; color:var(--text-dim); word-break:break-all; text-decoration:underline; }
@@ -887,27 +889,25 @@
 <!-- ── Filters ── -->
 <div class="filters" id="filterBrands">
   <span class="filter-label">필터 ·</span>
-  <button class="chip active">전체</button>
-  <button class="chip">K-Beauty</button>
-  <button class="chip">K-Fashion</button>
-  <button class="chip">K-Food</button>
-  <button class="chip">K-Lifestyle</button>
-  <button class="chip">샤오홍슈 입점</button>
-  <button class="chip">티몰 입점</button>
-  <button class="chip">MOQ ≤ 50</button>
+  <button class="chip active" data-f="all">전체</button>
+  <button class="chip" data-f="패션">패션</button>
+  <button class="chip" data-f="패션잡화">패션잡화</button>
+  <button class="chip" data-f="뷰티">뷰티</button>
+  <button class="chip" data-f="식품">식품</button>
+  <button class="chip" data-f="라이프스타일">라이프스타일</button>
 </div>
 
 <div class="filters" id="filterSellers" style="display:none;">
   <span class="filter-label">필터 ·</span>
-  <button class="chip active">전체</button>
-  <button class="chip">샤오홍슈</button>
-  <button class="chip">더우인/抖音</button>
-  <button class="chip">콰이셔우/快手</button>
-  <button class="chip">웨이보/微博</button>
-  <button class="chip">뷰티</button>
-  <button class="chip">패션</button>
-  <button class="chip">10만+ 팔로워</button>
-  <button class="chip">100만+ 팔로워</button>
+  <button class="chip active" data-f="all">전체</button>
+  <button class="chip" data-f="plat:Facebook">Facebook</button>
+  <button class="chip" data-f="country:대만">대만</button>
+  <button class="chip" data-f="country:홍콩">홍콩</button>
+  <button class="chip" data-f="country:태국">태국</button>
+  <button class="chip" data-f="country:말레이시아">말레이시아</button>
+  <button class="chip" data-f="fol:100000">10만+</button>
+  <button class="chip" data-f="fol:500000">50만+</button>
+  <button class="chip" data-f="fol:1000000">100만+</button>
 </div>
 
 <!-- ── K-브랜드 카드 그리드 ── -->
@@ -941,6 +941,14 @@
   function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
   const CSHORT = {대한민국:'한국'};
+  function categoryGroup(cat){
+    const c = cat || '';
+    if (/뷰티|화장품|코스메|스킨|메이크업/.test(c)) return '뷰티';
+    if (/식품|푸드|음료|건강식품/.test(c)) return '식품';
+    if (/가방|모자|아이웨어|구두|신발|슈즈|스니커즈|슬리퍼|잡화|주얼리|악세|액세/.test(c)) return '패션잡화';
+    if (/리빙|라이프|홈|인테리어|반려|펫/.test(c)) return '라이프스타일';
+    return '패션';
+  }
   function countryNames(arr){
     let list = (arr && arr.length) ? arr.slice() : ['대한민국'];
     list = list.filter(c=>c!=='대한민국'); list.unshift('대한민국');   // 대한민국 항상 맨앞
@@ -965,7 +973,7 @@
     if (b.salesMethod) tags.push(`<span class="btag">${esc(b.salesMethod)}</span>`);
     if (b.hasStudio === '유') tags.push(`<span class="btag studio">스튜디오</span>`);
     const tagRow = `<div class="brand-tags">${tags.join('')}<span class="btag flag">🌐 ${countryNames(b.countries)}</span></div>`;
-    return `<div class="card brand-card${premium?' premium':''}" data-cat="${esc(b.cat||'fashion')}">
+    return `<div class="card brand-card${premium?' premium':''}" data-cat="${esc(b.cat||'fashion')}" data-group="${esc(categoryGroup(b.category))}">
       ${premium?'<span class="premium-badge">★ PREMIUM</span>':''}
       <div class="brand-logo${b.logoLight ? ' dark' : ''}">${logo}</div>
       <h3 class="brand-name">
@@ -993,7 +1001,7 @@
     const half = Math.ceil(nm.length/2);
     const nameReal = `${esc(nm.slice(0,half))}<span class="mo">${esc(nm.slice(half))}</span>`;
     const premium = (s.score >= 10);
-    return `<div class="card brand-card seller-card${premium?' premium':''}" data-cat="fb">
+    return `<div class="card brand-card seller-card${premium?' premium':''}" data-cat="fb" data-country="${esc(s.country||'')}" data-fol="${s.followers||0}" data-plat="${esc(s.platform||'')}">
       ${premium?'<span class="premium-badge">★ PREMIUM</span>':''}
       <div class="seller-ava">${ava}</div>
       <div class="brand-cat">${esc(sub)}</div>
@@ -1005,7 +1013,7 @@
       <p class="brand-slogan">${esc(s.intro||'')}</p>
       <div class="seller-meta">
         <div><span>국적</span><b>${esc(s.country||'-')}</b></div>
-        <div><span>방송</span><b>${esc(s.broadcast||'-')}</b></div>
+        <div><span>판매방식</span><b>라이브</b></div>
         <div><span>섭외비용</span><b>${esc(s.fee||'협의')}</b></div>
       </div>
       <button class="btn-cta btn-cta-before">🔒 인증 후 매칭 정보 보기</button>
@@ -1093,12 +1101,13 @@
     const na = '<span class="bd-na">준비 중</span>';
     const ctrs = (b.countries && b.countries.length ? b.countries.slice() : ['대한민국']);
     const ctrsOrdered = ['대한민국', ...ctrs.filter(c=>c!=='대한민국')];
-    const attrs = `<div class="sd-stats">
+    const attrs = `<div class="sd-stats sd-stats-3">
         <div class="sd-stat"><span>판매 방식</span><b>${b.salesMethod?esc2(b.salesMethod):'—'}</b></div>
         <div class="sd-stat"><span>스튜디오</span><b>${b.hasStudio?esc2(b.hasStudio):'—'}</b></div>
         <div class="sd-stat"><span>진출 국가</span><b>${esc2(ctrsOrdered.join(' · '))}</b></div>
-        <div class="sd-stat"><span>브랜드 점수</span><b>${b.score!=null?esc2(b.score)+' / 10':'—'}</b></div>
       </div>`;
+    const adminUrl = (document.body.classList.contains('master') && b.url)
+      ? `<div class="sd-adminurl"><span>🔑 공식 홈페이지 (관리자 전용)</span><a href="${esc2(b.url)}" target="_blank" rel="noopener">${esc2(b.url)}</a></div>` : '';
     ov.innerHTML = `
       <div class="bd-panel">
         <button class="bd-close" aria-label="닫기">✕</button>
@@ -1110,6 +1119,7 @@
             <div class="bd-region">🌐 진출 · ${esc2(ctrsOrdered.join(' · '))}</div>
           </div>
         </div>
+        ${adminUrl}
         ${attrs}
         <section class="bd-sec"><h3>브랜드 소개</h3><p>${esc2(b.slogan||'')||na}</p></section>
         <section class="bd-sec"><h3>전체 상품군</h3>${gallery}<p class="bd-hint">사진 클릭 시 크게 보기 · 브랜드 SHOP 기준 일부 상품</p></section>
@@ -1142,7 +1152,7 @@
       : `<span class="logo-fallback">${esc2((s.realName||'?').slice(0,2))}</span>`;
     const data = [
       ['팔로워', (s.followersText||'-')], ['국적', (s.country||'-')],
-      ['주력 방송', (s.broadcast||'-')], ['섭외비용', (s.fee||'협의')],
+      ['판매방식', '라이브'], ['섭외비용', (s.fee||'협의')],
     ].map(([k,v])=>`<div class="sd-stat"><span>${esc2(k)}</span><b>${esc2(v)}</b></div>`).join('');
     ov.innerHTML = `
       <div class="bd-panel">
@@ -1233,12 +1243,26 @@
     setTimeout(() => { if (session) updateStatusAuthed(); else authText.innerHTML = prev; }, 2200);
   }
 
-  // ─── Chip filter (visual only in mockup) ───
+  // ─── Chip filter (실제 작동) ───
+  function applyFilter(gridId, f){
+    document.querySelectorAll('#'+gridId+' .card').forEach(c=>{
+      let show = true;
+      if (f && f!=='all'){
+        if (f.startsWith('country:')) show = (c.dataset.country||'')===f.slice(8);
+        else if (f.startsWith('fol:')) show = (parseInt(c.dataset.fol||'0',10)) >= parseInt(f.slice(4),10);
+        else if (f.startsWith('plat:')) show = (c.dataset.plat||'').toLowerCase().includes(f.slice(5).toLowerCase());
+        else show = (c.dataset.group||'')===f;
+      }
+      c.style.display = show ? '' : 'none';
+    });
+  }
   document.querySelectorAll('.chip').forEach(c => {
     c.addEventListener('click', () => {
-      const siblings = c.parentElement.querySelectorAll('.chip');
-      siblings.forEach(s => s.classList.remove('active'));
+      const wrap = c.parentElement;
+      wrap.querySelectorAll('.chip').forEach(s => s.classList.remove('active'));
       c.classList.add('active');
+      const grid = wrap.id === 'filterSellers' ? 'sellerGrid' : 'brandGrid';
+      applyFilter(grid, c.dataset.f || 'all');
     });
   });
 
