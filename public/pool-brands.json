@@ -19,12 +19,17 @@
   ],
   "slogan": "Everyone is weird",
   "logoLight": false,
-  "score": 10,
+  "score": 1,
   "salesMethod": "위탁·방송",
   "hasStudio": "유",
   "countries": [
-   "대한민국",
-   "중국"
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://thegeeks.kr/28",
+  "snsUrls": [],
+  "repProductUrls": [
+   "https://thegeeks.kr/19"
   ]
  },
  {
@@ -46,14 +51,19 @@
    "/brand-images/b02/p4.jpg",
    "/brand-images/b02/p5.jpg"
   ],
-  "slogan": "트래픽하모니는 Traffic과 Harmony 두 축을 중심으로 세계관을 확장해 나가는 헤드웨어 브랜드입니다.",
+  "slogan": "Traffic과 Harmony 두 축을 중심으로 세계관을 확장해 나가는 헤드웨어 브랜드입니다.",
   "logoLight": false,
-  "score": 10,
+  "score": 5,
   "salesMethod": "위탁·방송",
   "hasStudio": "유",
   "countries": [
-   "대한민국",
-   "중국"
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://trafficharmony.kr/product/list.html?cate_no=24",
+  "snsUrls": [],
+  "repProductUrls": [
+   "https://trafficharmony.kr/product/list.html?cate_no=24&page=3"
   ]
  },
  {
@@ -75,14 +85,19 @@
    "/brand-images/b03/p4.jpg",
    "/brand-images/b03/p5.jpg"
   ],
-  "slogan": "하루 종일 편한신발, 발편한신발, 편한운동화는 아키클래식. 경량·쿠셔닝·광폭 라인, 남녀 사이즈 풀라인업과 혜택 확인.",
+  "slogan": "경량·쿠셔닝·광폭 라인, 남녀 사이즈 풀라인업과 혜택 확인.",
   "logoLight": false,
-  "score": 9,
+  "score": 10,
   "salesMethod": "위탁·방송",
   "hasStudio": "유",
   "countries": [
-   "대한민국",
-   "중국"
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://www.akiii.co.kr/shop/shopbrand.html?xcode=027&type=Y",
+  "snsUrls": [],
+  "repProductUrls": [
+   "https://www.akiii.co.kr/shop/bestseller.html?xcode=BEST"
   ]
  },
  {
@@ -104,12 +119,17 @@
   ],
   "slogan": "THREECHEERS 쇼핑몰 | I ALWAYS THREECHEERS FOR YOU",
   "logoLight": false,
-  "score": 9,
+  "score": 10,
   "salesMethod": "위탁·방송",
   "hasStudio": "유",
   "countries": [
-   "대한민국",
-   "중국"
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://www.threecheers.co.kr/product/list.html?cate_no=23",
+  "snsUrls": [],
+  "repProductUrls": [
+   "https://www.threecheers.co.kr/product/list.html?cate_no=46"
   ]
  },
  {
@@ -131,14 +151,18 @@
    "/brand-images/b05/p4.jpg",
    "/brand-images/b05/p5.jpg"
   ],
-  "slogan": "LOOKOPTICAL 안경/선글라스 쇼핑의 즐거움을 선사 합니다. 대한민국 대표 패션 아이웨어샵. 명품 브랜드 최다 보유 및 100% 정품 취급 아이웨어 전문 유",
+  "slogan": "안경/선글라스 쇼핑의 즐거움을 선사 합니다. 대한민국 대표 패션 아이웨어샵. 명품 브랜드 최다 보유 및 100% 정품 취급",
   "logoLight": false,
-  "score": 8,
+  "score": 10,
   "salesMethod": "위탁",
   "hasStudio": "무",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "FILA, SANDRO, LACOSTE, NIKE , DIOR, 등 브랜드 취급",
+  "shopUrl": "https://lookoptical.kr/product/list.html?cate_no=53",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b06",
@@ -161,11 +185,17 @@
   ],
   "slogan": "스튜디오 데누 공식 온라인 스토어",
   "logoLight": true,
-  "score": 8,
+  "score": 6,
   "salesMethod": "위탁",
   "hasStudio": "무",
   "countries": [
    "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://www.denustore.com/product/list.html?cate_no=400",
+  "snsUrls": [],
+  "repProductUrls": [
+   "https://www.denustore.com/product/list.html?cate_no=402"
   ]
  },
  {
@@ -183,13 +213,19 @@
   "images": [
    "/brand-images/b07/p1.jpg"
   ],
-  "slogan": "힙한, 세련된, 트렌디한 디자이너 브랜드 '아라크나인'",
+  "slogan": "힙한, 세련된, 트렌디한 디자이너 브랜드",
   "logoLight": false,
   "score": 8,
   "salesMethod": "위탁",
   "hasStudio": "무",
   "countries": [
    "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://www.arac9.com/product/list.html?cate_no=78",
+  "snsUrls": [],
+  "repProductUrls": [
+   "https://www.arac9.com/product/list.html?cate_no=78"
   ]
  },
  {
@@ -218,7 +254,11 @@
   "hasStudio": "무",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b09",
@@ -239,14 +279,18 @@
    "/brand-images/b09/p4.jpg",
    "/brand-images/b09/p5.jpg"
   ],
-  "slogan": "‘까이에’는 섬세하고 꾸띄르적인 감성의 제품들로 그 가치와 즐거움을 전함과 동시에, 내 인생 최고의 순간을 함께 하고 싶습니다.",
+  "slogan": "섬세하고 꾸띄르적인 감성의 제품들로 그 가치와 즐거움을 전함과 동시에, 내 인생 최고의 순간을 함께 하고 싶습니다.",
   "logoLight": false,
   "score": 7,
   "salesMethod": "위탁",
   "hasStudio": "무",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b11",
@@ -269,12 +313,16 @@
   ],
   "slogan": "Zeroplanet = For you",
   "logoLight": false,
-  "score": 6,
+  "score": 9,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b12",
@@ -295,14 +343,18 @@
    "/brand-images/b12/p4.jpg",
    "/brand-images/b12/p5.jpg"
   ],
-  "slogan": "닉앤니콜 | Outerwear, Tops, Dresses, Bottoms, Accessories",
+  "slogan": "Outerwear, Tops, Dresses, Bottoms, Accessories",
   "logoLight": false,
-  "score": 6,
+  "score": 9,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b13",
@@ -323,14 +375,18 @@
    "/brand-images/b13/p4.jpg",
    "/brand-images/b13/p5.jpg"
   ],
-  "slogan": "밀로 아카이브, 밀로 우먼 공식 온라인 스토어",
+  "slogan": "밀로 우먼 공식 온라인 스토어",
   "logoLight": false,
-  "score": 5,
+  "score": 9,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b15",
@@ -351,13 +407,19 @@
    "/brand-images/b15/p4.jpg",
    "/brand-images/b15/p5.jpg"
   ],
-  "slogan": "발레에서 애슬레저, 그리고 일상까지. 새로운 피트니스룩의 기준을 만드는 브랜드, 레페르입니다.",
+  "slogan": "발레에서 애슬레저, 그리고 일상까지. 새로운 피트니스룩의 기준을 만드는 브랜드입니다.",
   "logoLight": false,
-  "score": 5,
+  "score": 4,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://www.maisonrepere.com/product/list.html?cate_no=49",
+  "snsUrls": [],
+  "repProductUrls": [
+   "https://www.maisonrepere.com/product/list.html?cate_no=170"
   ]
  },
  {
@@ -381,12 +443,16 @@
   ],
   "slogan": "격투 스포츠의 혼을 담은 UFCSPORT 공식몰. 일상과 운동에 최적화된 액티브웨어로 자신감을 더하세요.",
   "logoLight": false,
-  "score": 5,
+  "score": 8,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b17",
@@ -408,12 +474,16 @@
   ],
   "slogan": "유즈는 매 시즌 변하는 트랜드에 자사 브랜드의 CREATIVE한 감성을 담아내는 유니섹스 브랜드입니다.",
   "logoLight": false,
-  "score": 4,
+  "score": 7,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b19",
@@ -436,12 +506,16 @@
   ],
   "slogan": "리얼 데일리룩, 편안하고 담백한 우리의 슬로우앤드",
   "logoLight": false,
-  "score": 4,
+  "score": 10,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b20",
@@ -464,12 +538,16 @@
   ],
   "slogan": "로제프란츠 공식 온라인스토어 | ROSEFRANTZ Official Online Store",
   "logoLight": false,
-  "score": 3,
+  "score": 10,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b22",
@@ -492,12 +570,16 @@
   ],
   "slogan": "드헤베 DEHEVÉ 공식 온라인 스토어",
   "logoLight": false,
-  "score": 3,
+  "score": 7,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  },
  {
   "id": "b25",
@@ -520,11 +602,15 @@
   ],
   "slogan": "걸어요, 프리미엄 메리노울로 세상에서 가장 가볍고 편하게",
   "logoLight": false,
-  "score": 3,
+  "score": 9,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
    "대한민국"
-  ]
+  ],
+  "note": "",
+  "shopUrl": "",
+  "snsUrls": [],
+  "repProductUrls": []
  }
 ]
