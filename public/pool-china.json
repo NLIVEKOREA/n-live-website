@@ -210,22 +210,8 @@
   "note": ""
  },
  {
-  "id": "c16",
-  "rank": 16,
-  "name": "晨晨深圳",
-  "douyinId": "1yy76960362",
-  "platform": "抖音 라이브",
-  "followers": 4930,
-  "followersText": "4,930",
-  "salesRaw": "500w-750w",
-  "salesDay": "1.8억원",
-  "url": "https://www.douyin.com/user/MS4wLjABAAAAI1pj5ewaRuzLA61d_xID9IuPo6mdCiMKVKJuVcaNbUo",
-  "image": "/china-avatars/c16.png",
-  "note": "⚠️동명이인 의심(매출1.8억인데 팔로워4930)"
- },
- {
   "id": "c17",
-  "rank": 17,
+  "rank": 16,
   "name": "美大哥·沐熙",
   "douyinId": "Mz18709147",
   "platform": "抖音 라이브",
@@ -239,7 +225,7 @@
  },
  {
   "id": "c18",
-  "rank": 18,
+  "rank": 17,
   "name": "Maggie杨斯淇",
   "douyinId": "maggieyang103",
   "platform": "抖音 라이브",
@@ -253,7 +239,7 @@
  },
  {
   "id": "c19",
-  "rank": 19,
+  "rank": 18,
   "name": "Y头baby",
   "douyinId": "",
   "platform": "抖音 라이브",
@@ -261,13 +247,13 @@
   "followersText": "319.9만",
   "salesRaw": "500w-750w",
   "salesDay": "1.8억원",
-  "url": "https://www.douyin.com/user/MS4wLjABAAAApHcBD1BrGPR6JFx54KlF8Wj2aLnV",
+  "url": "",
   "image": "/china-avatars/c19.png",
-  "note": "URL일부(재확인)"
+  "note": "URL일부(재확인) URL재확인필요"
  },
  {
   "id": "c20",
-  "rank": 20,
+  "rank": 19,
   "name": "乔思姐姐",
   "douyinId": "",
   "platform": "抖音 라이브",
@@ -275,8 +261,8 @@
   "followersText": "39.1만",
   "salesRaw": "500w-750w",
   "salesDay": "1.8억원",
-  "url": "https://www.douyin.com/user/MS4wLjABAAAAznNr2erO9fJJlMGCrpncqur4hcfs",
+  "url": "",
   "image": "/china-avatars/c20.png",
-  "note": "URL일부(재확인)"
+  "note": "URL일부(재확인) URL재확인필요"
  }
 ]

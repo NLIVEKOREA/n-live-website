@@ -1083,7 +1083,7 @@
     return `<div class="card brand-card seller-card china-card" data-cat="cn">
       <span class="cn-rank">중국관 #${esc(String(c.rank))}</span>
       <div class="seller-ava">${ava}</div>
-      <div class="brand-cat">抖音 라이브${c.douyinId?' · '+esc(c.douyinId):''}</div>
+      <div class="brand-cat">抖音 라이브</div>
       <h3 class="brand-name">
         <span class="name-masked">중국 왕홍 #${esc(c.id.toUpperCase())}</span>
         <span class="name-real">${esc(c.name||'')}</span>
@@ -1099,6 +1099,12 @@
       <button class="btn-cta btn-cta-after" onclick="location.href='/contact'">매칭 요청 →</button>
       <p class="unlock-hint">접근 코드 입력하면 마스킹 자동 해제</p>
     </div>`;
+  }
+  // 중국관 카드 (마스터 상태에 따라 URL 포함 여부가 달라지므로 인증 시 재렌더)
+  function renderChina(){
+    const list = window.__CHINA_LIST;
+    if (!list) return;
+    document.getElementById('chinaGrid').innerHTML = list.map(chinaCard).join('');
   }
 
   // 렌더
@@ -1126,7 +1132,8 @@
       const china = await cres.json();
       china.sort((a,b) => (a.rank||999) - (b.rank||999));
       window.__CHINA = {}; china.forEach(c => window.__CHINA[c.id] = c);
-      document.getElementById('chinaGrid').innerHTML = china.map(chinaCard).join('');
+      window.__CHINA_LIST = china;
+      renderChina();
     } catch(e){
       document.getElementById('chinaGrid').innerHTML = '<p style="color:var(--text-mute);padding:20px">중국관 데이터를 불러오지 못했습니다.</p>';
     }
@@ -1467,6 +1474,7 @@
     if (!session) return applyLockedOut();
     document.body.classList.add('authed');
     document.body.classList.toggle('master', session.role === 'all');
+    renderChina();
     const targetView = ROLE_TO_VIEW[session.role];
     switchTab(targetView);
     // 다른 탭 비활성 시각 (통합 코드는 둘 다 활성)
@@ -1483,6 +1491,7 @@
   function applyLockedOut() {
     document.body.classList.remove('authed');
     document.body.classList.remove('master');
+    renderChina();
     tabs.forEach(t => { t.style.opacity = ''; t.title = ''; });
     authDot.classList.remove('on');
     authText.innerHTML = '<b>비공개 모드</b> · 카드 미리보기 가능, 상세는 잠금';
