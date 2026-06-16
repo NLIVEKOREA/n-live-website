@@ -31,6 +31,18 @@
   "snsUrls": [],
   "repProductUrls": [
    "https://thegeeks.kr/19"
+  ],
+  "shopProducts": [
+   "/brand-images/b01/shop1.jpg",
+   "/brand-images/b01/shop2.jpg",
+   "/brand-images/b01/shop3.jpg",
+   "/brand-images/b01/shop4.jpg",
+   "/brand-images/b01/shop5.jpg",
+   "/brand-images/b01/shop6.jpg",
+   "/brand-images/b01/shop7.jpg",
+   "/brand-images/b01/shop8.jpg",
+   "/brand-images/b01/shop9.jpg",
+   "/brand-images/b01/shop10.jpg"
   ]
  },
  {
@@ -65,6 +77,18 @@
   "snsUrls": [],
   "repProductUrls": [
    "https://trafficharmony.kr/product/list.html?cate_no=24&page=3"
+  ],
+  "shopProducts": [
+   "/brand-images/b02/shop1.jpg",
+   "/brand-images/b02/shop2.jpg",
+   "/brand-images/b02/shop3.jpg",
+   "/brand-images/b02/shop4.jpg",
+   "/brand-images/b02/shop5.jpg",
+   "/brand-images/b02/shop6.jpg",
+   "/brand-images/b02/shop7.jpg",
+   "/brand-images/b02/shop8.jpg",
+   "/brand-images/b02/shop9.jpg",
+   "/brand-images/b02/shop10.jpg"
   ]
  },
  {
@@ -99,6 +123,18 @@
   "snsUrls": [],
   "repProductUrls": [
    "https://www.akiii.co.kr/shop/bestseller.html?xcode=BEST"
+  ],
+  "shopProducts": [
+   "/brand-images/b03/shop1.jpg",
+   "/brand-images/b03/shop2.jpg",
+   "/brand-images/b03/shop3.jpg",
+   "/brand-images/b03/shop4.jpg",
+   "/brand-images/b03/shop5.jpg",
+   "/brand-images/b03/shop6.jpg",
+   "/brand-images/b03/shop7.jpg",
+   "/brand-images/b03/shop8.jpg",
+   "/brand-images/b03/shop9.jpg",
+   "/brand-images/b03/shop10.jpg"
   ]
  },
  {
@@ -133,6 +169,18 @@
   "snsUrls": [],
   "repProductUrls": [
    "https://www.threecheers.co.kr/product/list.html?cate_no=46"
+  ],
+  "shopProducts": [
+   "/brand-images/b04/shop1.jpg",
+   "/brand-images/b04/shop2.jpg",
+   "/brand-images/b04/shop3.jpg",
+   "/brand-images/b04/shop4.jpg",
+   "/brand-images/b04/shop5.jpg",
+   "/brand-images/b04/shop6.jpg",
+   "/brand-images/b04/shop7.jpg",
+   "/brand-images/b04/shop8.jpg",
+   "/brand-images/b04/shop9.jpg",
+   "/brand-images/b04/shop10.jpg"
   ]
  },
  {
@@ -165,7 +213,19 @@
   "note": "FILA, SANDRO, LACOSTE, NIKE , DIOR, 등 브랜드 취급",
   "shopUrl": "https://lookoptical.kr/product/list.html?cate_no=53",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "shopProducts": [
+   "/brand-images/b05/shop1.jpg",
+   "/brand-images/b05/shop2.jpg",
+   "/brand-images/b05/shop3.jpg",
+   "/brand-images/b05/shop4.jpg",
+   "/brand-images/b05/shop5.jpg",
+   "/brand-images/b05/shop6.jpg",
+   "/brand-images/b05/shop7.jpg",
+   "/brand-images/b05/shop8.jpg",
+   "/brand-images/b05/shop9.jpg",
+   "/brand-images/b05/shop10.jpg"
+  ]
  },
  {
   "id": "b06",
@@ -199,6 +259,18 @@
   "snsUrls": [],
   "repProductUrls": [
    "https://www.denustore.com/product/list.html?cate_no=402"
+  ],
+  "shopProducts": [
+   "/brand-images/b06/shop1.jpg",
+   "/brand-images/b06/shop2.jpg",
+   "/brand-images/b06/shop3.jpg",
+   "/brand-images/b06/shop4.jpg",
+   "/brand-images/b06/shop5.jpg",
+   "/brand-images/b06/shop6.jpg",
+   "/brand-images/b06/shop7.jpg",
+   "/brand-images/b06/shop8.jpg",
+   "/brand-images/b06/shop9.jpg",
+   "/brand-images/b06/shop10.jpg"
   ]
  },
  {
@@ -233,6 +305,18 @@
   "snsUrls": [],
   "repProductUrls": [
    "https://www.arac9.com/product/list.html?cate_no=78"
+  ],
+  "shopProducts": [
+   "/brand-images/b07/shop1.jpg",
+   "/brand-images/b07/shop2.jpg",
+   "/brand-images/b07/shop3.jpg",
+   "/brand-images/b07/shop4.jpg",
+   "/brand-images/b07/shop5.jpg",
+   "/brand-images/b07/shop6.jpg",
+   "/brand-images/b07/shop7.jpg",
+   "/brand-images/b07/shop8.jpg",
+   "/brand-images/b07/shop9.jpg",
+   "/brand-images/b07/shop10.jpg"
   ]
  },
  {
@@ -427,6 +511,18 @@
   "snsUrls": [],
   "repProductUrls": [
    "https://www.maisonrepere.com/product/list.html?cate_no=170"
+  ],
+  "shopProducts": [
+   "/brand-images/b15/shop1.jpg",
+   "/brand-images/b15/shop2.jpg",
+   "/brand-images/b15/shop3.jpg",
+   "/brand-images/b15/shop4.jpg",
+   "/brand-images/b15/shop5.jpg",
+   "/brand-images/b15/shop6.jpg",
+   "/brand-images/b15/shop7.jpg",
+   "/brand-images/b15/shop8.jpg",
+   "/brand-images/b15/shop9.jpg",
+   "/brand-images/b15/shop10.jpg"
   ]
  },
  {
