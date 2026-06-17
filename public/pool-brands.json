@@ -715,5 +715,524 @@
   "shopUrl": "",
   "snsUrls": [],
   "repProductUrls": []
+ },
+ {
+  "id": "b26",
+  "no": 26,
+  "realName": "로에카",
+  "nickname": "K-브랜드 #B26",
+  "category": "여성가방",
+  "cat": "lifestyle",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://loeka.store/",
+  "logo": "/brand-images/b26/logo.png",
+  "images": [
+   "/brand-images/b26/p1.jpg",
+   "/brand-images/b26/p2.jpg",
+   "/brand-images/b26/p3.jpg",
+   "/brand-images/b26/p4.jpg",
+   "/brand-images/b26/p5.jpg"
+  ],
+  "slogan": "NEWTRO·MINIMAL·CLASSIC 컨셉의 디자이너 가방 브랜드로, 소가죽 데일리백을 합리적인 가격대에 선보인다.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://loeka.store/product/list.html?cate_no=96",
+  "snsUrls": [
+   "https://www.instagram.com/loeka_official/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b27",
+  "no": 27,
+  "realName": "쓰리타임즈",
+  "nickname": "K-브랜드 #B27",
+  "category": "여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.threetimes.kr/",
+  "logo": "/brand-images/b27/logo.png",
+  "images": [],
+  "slogan": "2018년 서울에서 시작된 여성의류 브랜드로 'born in seoul'을 표방하며 시즌마다 감각적이고 트렌디한 디자인을 선보인다.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://threetimes.kr/product/list.html",
+  "snsUrls": [
+   "https://www.instagram.com/threetimess/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b28",
+  "no": 28,
+  "realName": "육심원",
+  "nickname": "K-브랜드 #B28",
+  "category": "여성의류및잡화",
+  "cat": "lifestyle",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://youkshimwon.com/",
+  "logo": "/brand-images/b28/logo.png",
+  "images": [],
+  "slogan": "작가 육심원의 그림을 바탕으로 한 여성의류 및 잡화 아트샵 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://youkshimwon.com/product/list.html?cate_no=285",
+  "snsUrls": [
+   "https://www.instagram.com/youkshimwon_official/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b29",
+  "no": 29,
+  "realName": "바온",
+  "nickname": "K-브랜드 #B29",
+  "category": "여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.ba-on.com",
+  "logo": "/brand-images/b29/logo.png",
+  "images": [
+   "/brand-images/b29/p1.jpg",
+   "/brand-images/b29/p2.jpg",
+   "/brand-images/b29/p3.jpg",
+   "/brand-images/b29/p4.jpg",
+   "/brand-images/b29/p5.jpg"
+  ],
+  "slogan": "데일리룩 중심의 컨템포러리 여성복과 액세서리를 전개하는 브랜드. BAONHAUS·BASIC_BAON·UNISEX 라인 운영.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://www.ba-on.com/product/list.html",
+  "snsUrls": [
+   "https://www.instagram.com/ba_on/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b30",
+  "no": 30,
+  "realName": "일리고",
+  "nickname": "K-브랜드 #B30",
+  "category": "여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://illigo.co.kr/",
+  "logo": "/brand-images/b30/logo.jpg",
+  "images": [
+   "/brand-images/b30/p1.jpg",
+   "/brand-images/b30/p2.jpg",
+   "/brand-images/b30/p3.jpg",
+   "/brand-images/b30/p4.jpg",
+   "/brand-images/b30/p5.jpg"
+  ],
+  "slogan": "'로맨틱한 감성의 시작'을 표방하는 여성의류 브랜드. 서울 성수동 기반.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://www.illigo.co.kr/product/list.html?cate_no=219",
+  "snsUrls": [
+   "https://www.instagram.com/illigo.kr/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b31",
+  "no": 31,
+  "realName": "퍼스텝",
+  "nickname": "K-브랜드 #B31",
+  "category": "유니섹스 캐쥬얼",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.fairplay142.com/m/product_list.html?xcode=013",
+  "logo": "/brand-images/b31/logo.png",
+  "images": [
+   "/brand-images/b31/p1.jpg",
+   "/brand-images/b31/p2.jpg",
+   "/brand-images/b31/p3.jpg",
+   "/brand-images/b31/p4.jpg",
+   "/brand-images/b31/p5.jpg"
+  ],
+  "slogan": "SPA 기업 페플(fairplay142)이 전개하는 유니섹스 캐주얼 브랜드. 데일리 캐주얼을 합리적 가격에 선보인다.",
+  "logoLight": true,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://www.fairplay142.com/shop/shopbrand.html?xcode=013&type=Y",
+  "snsUrls": [
+   "https://www.instagram.com/fp142_kr/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b32",
+  "no": 32,
+  "realName": "카인드러브",
+  "nickname": "K-브랜드 #B32",
+  "category": "아이웨어",
+  "cat": "lifestyle",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.kindlove.co.kr/",
+  "logo": "/brand-images/b32/logo.png",
+  "images": [
+   "/brand-images/b32/p1.jpg",
+   "/brand-images/b32/p2.jpg",
+   "/brand-images/b32/p3.jpg",
+   "/brand-images/b32/p4.jpg",
+   "/brand-images/b32/p5.jpg"
+  ],
+  "slogan": "30년 이상의 아이웨어 노하우를 바탕으로 안경·선글라스를 선보이는 브랜드. 1년 무상교체 서비스 제공.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://www.kindlove.co.kr/product/list.html",
+  "snsUrls": [
+   "https://www.instagram.com/kindlove_official"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b33",
+  "no": 33,
+  "realName": "스탠드오일",
+  "nickname": "K-브랜드 #B33",
+  "category": "여성가방",
+  "cat": "lifestyle",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://standoil.kr/",
+  "logo": "/brand-images/b33/logo.png",
+  "images": [
+   "/brand-images/b33/p1.jpg",
+   "/brand-images/b33/p2.jpg",
+   "/brand-images/b33/p3.jpg",
+   "/brand-images/b33/p4.jpg",
+   "/brand-images/b33/p5.jpg"
+  ],
+  "slogan": "유화 보조제(스탠드오일)에서 영감을 받은 여성 가방 브랜드로, 일상을 재해석한 데일리백을 선보인다.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://standoil.kr/product/list.html",
+  "snsUrls": [
+   "https://www.instagram.com/standoil",
+   "https://www.youtube.com/@standoil_official",
+   "https://blog.naver.com/standoil_official"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b34",
+  "no": 34,
+  "realName": "숲",
+  "nickname": "K-브랜드 #B34",
+  "category": "여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.soupmall.co.kr/product/list.html?cate_no=90",
+  "logo": "/brand-images/b34/logo.png",
+  "images": [
+   "/brand-images/b34/p1.jpg",
+   "/brand-images/b34/p2.jpg",
+   "/brand-images/b34/p3.jpg",
+   "/brand-images/b34/p4.jpg",
+   "/brand-images/b34/p5.jpg"
+  ],
+  "slogan": "로맨틱 앤 페미닌 무드의 영 캐릭터 캐주얼 여성복 브랜드. (2025 뮤즈: 배우 이세영)",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 동일 광고주 · 로고 별도제공",
+  "shopUrl": "https://www.soupmall.co.kr/product/list.html?cate_no=90",
+  "snsUrls": [
+   "https://www.instagram.com/soup_official/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b35",
+  "no": 35,
+  "realName": "비지트인뉴욕",
+  "nickname": "K-브랜드 #B35",
+  "category": "여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.soupmall.co.kr/product/list.html?cate_no=145",
+  "logo": "/brand-images/b35/logo.png",
+  "images": [
+   "/brand-images/b35/p1.jpg",
+   "/brand-images/b35/p2.jpg",
+   "/brand-images/b35/p3.jpg",
+   "/brand-images/b35/p4.jpg",
+   "/brand-images/b35/p5.jpg"
+  ],
+  "slogan": "뉴요커 감성의 모던 시크를 지향하는 영 캐릭터 캐주얼 여성복 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://www.soupmall.co.kr/product/list.html?cate_no=145",
+  "snsUrls": [
+   "https://www.instagram.com/visitinnewyork.official/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b36",
+  "no": 36,
+  "realName": "AD HOC",
+  "nickname": "K-브랜드 #B36",
+  "category": "남성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.soupmall.co.kr/product/list.html?cate_no=2811",
+  "logo": "/brand-images/b36/logo.png",
+  "images": [
+   "/brand-images/b36/p1.jpg",
+   "/brand-images/b36/p2.jpg",
+   "/brand-images/b36/p3.jpg",
+   "/brand-images/b36/p4.jpg",
+   "/brand-images/b36/p5.jpg"
+  ],
+  "slogan": "'어반 뉴 비즈니스 컨템포러리 캐주얼'을 표방하는 남성 캐주얼 브랜드. 자사몰(adhoc.co.kr)·soupmall에서 판매.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://adhoc.co.kr/product/list.html?cate_no=54",
+  "snsUrls": [
+   "https://www.instagram.com/adhoc.official/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b37",
+  "no": 37,
+  "realName": "UCLA",
+  "nickname": "K-브랜드 #B37",
+  "category": "유니섹스 캐쥬얼",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.soupmall.co.kr/product/list.html?cate_no=2810",
+  "logo": "/brand-images/b37/logo.png",
+  "images": [
+   "/brand-images/b37/p1.jpg",
+   "/brand-images/b37/p2.jpg",
+   "/brand-images/b37/p3.jpg",
+   "/brand-images/b37/p4.jpg",
+   "/brand-images/b37/p5.jpg"
+  ],
+  "slogan": "미국 UCLA 라이선스를 활용한 한국 유니섹스 캐주얼 브랜드(아메리칸 뉴 프레피 룩). 자사몰(uclakorea.co.kr)·soupmall에서 판매.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://uclakorea.co.kr/product/list.html?cate_no=305",
+  "snsUrls": [
+   "https://www.instagram.com/ucla_lifestyle_korea/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b38",
+  "no": 38,
+  "realName": "디스커버리 익스페디션",
+  "nickname": "K-브랜드 #B38",
+  "category": "아웃도어",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.discovery-expedition.com/",
+  "logo": "/brand-images/b38/logo.png",
+  "images": [
+   "/brand-images/b38/p1.jpg",
+   "/brand-images/b38/p2.jpg",
+   "/brand-images/b38/p3.jpg",
+   "/brand-images/b38/p4.jpg",
+   "/brand-images/b38/p5.jpg"
+  ],
+  "slogan": "F&F가 워너 브라더스 디스커버리 라이선스를 받아 2012년 론칭한 라이프스타일 아웃도어 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 동일 광고주 · 로고 별도제공",
+  "shopUrl": "https://www.discovery-expedition.com/",
+  "snsUrls": [
+   "https://www.instagram.com/discoveryexpedition_kr",
+   "https://www.youtube.com/@DISCOVERYEXPEDITION",
+   "https://www.facebook.com/discoverykr"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b39",
+  "no": 39,
+  "realName": "MLB",
+  "nickname": "K-브랜드 #B39",
+  "category": "유니섹스 캐쥬얼",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://www.mlb-korea.com/",
+  "logo": "/brand-images/b39/logo.png",
+  "images": [
+   "/brand-images/b39/p1.jpg",
+   "/brand-images/b39/p2.jpg",
+   "/brand-images/b39/p3.jpg",
+   "/brand-images/b39/p4.jpg",
+   "/brand-images/b39/p5.jpg"
+  ],
+  "slogan": "F&F가 미국 메이저리그(MLB) 라이선스를 기반으로 운영하는 스트릿 캐주얼 브랜드. 볼캡·의류·신발·가방 전개.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://www.mlb-korea.com/display/majorView?dspCtgryNo=MBMA02",
+  "snsUrls": [
+   "https://www.instagram.com/mlbkorea"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
+ },
+ {
+  "id": "b40",
+  "no": 40,
+  "realName": "애즈온",
+  "nickname": "K-브랜드 #B40",
+  "category": "여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "",
+  "url": "https://ason.kr/",
+  "logo": "/brand-images/b40/logo.png",
+  "images": [
+   "/brand-images/b40/p1.jpg",
+   "/brand-images/b40/p2.jpg",
+   "/brand-images/b40/p3.jpg",
+   "/brand-images/b40/p4.jpg",
+   "/brand-images/b40/p5.jpg"
+  ],
+  "slogan": "니트·데님·아우터 등 합리적이고 웨어러블한 데일리웨어를 제안하는 여성의류 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "전 광고주 · 로고 별도제공",
+  "shopUrl": "https://ason.kr/category/all/67/",
+  "snsUrls": [
+   "https://www.instagram.com/as_on_official",
+   "https://www.youtube.com/@ason.official",
+   "https://blog.naver.com/as_on"
+  ],
+  "repProductUrls": [],
+  "shopProducts": []
  }
 ]
