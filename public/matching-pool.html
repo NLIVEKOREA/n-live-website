@@ -1712,7 +1712,7 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
 
   // ─── Restore session on load ───
   // ⚠️⚠️ 임시 전체공개 모드 (영업/홈페이지 이미지 제작용). 끝나면 FORCE_PUBLIC=false 로 되돌릴 것! ⚠️⚠️
-  const FORCE_PUBLIC = true;
+  const FORCE_PUBLIC = false;
   if (FORCE_PUBLIC) {
     session = { role: 'all', expiresAt: null };  // 마스터(전체 열람) 상태로 자동 잠금해제
     applySession();
