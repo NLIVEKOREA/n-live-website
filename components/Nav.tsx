@@ -5,43 +5,69 @@ import { useState, useEffect, useRef } from "react";
 import { useLang } from "./LangContext";
 import { UILang } from "@/lib/i18n";
 
-const LANG_OPTIONS: { code: UILang; label: string }[] = [
-  { code: "ko", label: "한국어" },
-  { code: "en", label: "English" },
-  { code: "zh", label: "中文 (简体)" },
-  { code: "zh-Hant", label: "中文 (繁體)" },
-  { code: "ja", label: "日本語" },
+const LANG_OPTIONS: { code: UILang; label: string; short: string }[] = [
+  { code: "ko", label: "한국어", short: "KO" },
+  { code: "en", label: "English", short: "EN" },
+  { code: "zh", label: "中文 (简体)", short: "简" },
+  { code: "zh-Hant", label: "中文 (繁體)", short: "繁" },
+  { code: "ja", label: "日本語", short: "JP" },
 ];
 
+const GlobeIcon = () => (
+  <svg className="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18" />
+  </svg>
+);
+
+function LangDropdown({ variant }: { variant: "desktop" | "mobile" }) {
+  const { lang, setLang } = useLang();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onEsc);
+    return () => { document.removeEventListener("mousedown", onClick); document.removeEventListener("keydown", onEsc); };
+  }, [open]);
+  const cur = LANG_OPTIONS.find(o => o.code === lang) || LANG_OPTIONS[0];
+  return (
+    <div className={`lang-dd lang-dd-${variant}`} ref={ref}>
+      <button className={`lang-dd-btn ${open ? "open" : ""}`} onClick={() => setOpen(o => !o)} aria-haspopup="true" aria-expanded={open} aria-label="Language">
+        <GlobeIcon />
+        <span className="lang-dd-cur">{cur.short}</span>
+        <span className="lang-dd-caret" aria-hidden>▾</span>
+      </button>
+      <div className={`lang-dd-menu ${open ? "open" : ""}`} role="menu">
+        {LANG_OPTIONS.map(opt => (
+          <button
+            key={opt.code}
+            role="menuitem"
+            className={`lang-dd-item ${lang === opt.code ? "active" : ""}`}
+            onClick={() => { setLang(opt.code); setOpen(false); }}
+          >
+            <span className="lang-dd-code">{opt.short}</span>
+            <span className="lang-dd-label">{opt.label}</span>
+            {lang === opt.code && <span className="lang-dd-check" aria-hidden>✓</span>}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Nav() {
-  const { lang, setLang, t } = useLang();
+  const { t } = useLang();
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
-  const [langOpen, setLangOpen] = useState(false);
-  const langWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = () => setMenuOpen(false);
     window.addEventListener("hashchange", handler);
     return () => window.removeEventListener("hashchange", handler);
   }, []);
-
-  // 외부 클릭 시 언어 드롭다운 닫기
-  useEffect(() => {
-    if (!langOpen) return;
-    const onDocClick = (e: MouseEvent) => {
-      if (langWrapRef.current && !langWrapRef.current.contains(e.target as Node)) {
-        setLangOpen(false);
-      }
-    };
-    const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") setLangOpen(false); };
-    document.addEventListener("mousedown", onDocClick);
-    document.addEventListener("keydown", onEsc);
-    return () => {
-      document.removeEventListener("mousedown", onDocClick);
-      document.removeEventListener("keydown", onEsc);
-    };
-  }, [langOpen]);
 
   return (
     <nav className="nav">
@@ -69,56 +95,19 @@ export default function Nav() {
           <Link href="/contact" onClick={() => setMenuOpen(false)}>{t("nav.contact")}</Link>
         </div>
 
-        {/* Desktop right: 4 lang + CTA + hamburger(tablet) */}
+        {/* Desktop right: lang dropdown + CTA + hamburger(tablet) */}
         <div className="nav-right">
-          <div className="lang-switch">
-            {(["ko", "en", "zh", "zh-Hant", "ja"] as UILang[]).map((l, i) => (
-              <span key={l}>
-                {i > 0 && <span className="divider">·</span>}
-                <button onClick={() => setLang(l)} className={lang === l ? "active" : ""}>
-                  {l === "ko" ? "KO" : l === "en" ? "EN" : l === "zh" ? "简" : l === "zh-Hant" ? "繁" : "JP"}
-                </button>
-              </span>
-            ))}
-          </div>
+          <LangDropdown variant="desktop" />
           <Link href="/contact" className="nav-cta">{t("nav.cta")}</Link>
           <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
             <span /><span /><span />
           </button>
         </div>
 
-        {/* Mobile right: 문의하기 + Language 드롭다운 */}
+        {/* Mobile right: 문의 + lang dropdown */}
         <div className="nav-mobile-right">
-          <Link href="/contact" className="nav-mobile-cta">문의하기</Link>
-          <div className="nav-mobile-lang-wrap" ref={langWrapRef}>
-            <button
-              className={`nav-mobile-lang ${langOpen ? "open" : ""}`}
-              onClick={() => setLangOpen(o => !o)}
-              aria-haspopup="true"
-              aria-expanded={langOpen}
-            >
-              <span className="nml-globe" aria-hidden>🌐</span>
-              <span>Language</span>
-              <span className="nml-caret" aria-hidden>▾</span>
-            </button>
-            <div className={`nav-mobile-lang-menu ${langOpen ? "open" : ""}`} role="menu">
-              {LANG_OPTIONS.map(opt => (
-                <button
-                  key={opt.code}
-                  role="menuitem"
-                  className={`nav-mobile-lang-item ${lang === opt.code ? "active" : ""}`}
-                  onClick={() => {
-                    setLang(opt.code);
-                    setLangOpen(false);
-                  }}
-                >
-                  <span className="nml-code">{opt.code.toUpperCase()}</span>
-                  <span className="nml-label">{opt.label}</span>
-                  {lang === opt.code && <span className="nml-check" aria-hidden>✓</span>}
-                </button>
-              ))}
-            </div>
-          </div>
+          <Link href="/contact" className="nav-mobile-cta">{t("nav.contact")}</Link>
+          <LangDropdown variant="mobile" />
         </div>
       </div>
 
