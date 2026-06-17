@@ -241,7 +241,21 @@
    "https://ecimg.cafe24img.com/pg1887b31097187095/threecheers/web/product/big/20251229/717ef35cdfdf9c3895487e13c23d7769.jpg",
    "https://ecimg.cafe24img.com/pg1887b31097187095/threecheers/web/product/medium/20251229/73296728a86f1fdda0b57cacb8d58211.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b04/1.jpg",
+    "url": "https://www.threecheers.co.kr/"
+   },
+   {
+    "img": "/brand-marketing/b04/2.jpg",
+    "url": "https://www.threecheers.co.kr/"
+   },
+   {
+    "img": "/brand-marketing/b04/3.jpg",
+    "url": "https://www.threecheers.co.kr/"
+   }
+  ]
  },
  {
   "id": "b05",
@@ -359,7 +373,21 @@
    "https://www.denustore.com/web/product/medium/202509/1a47cefd36e066c195089575b5bdcd7d.jpg",
    "https://www.denustore.com/web/product/medium/202509/c226a040e5dd76beb16464002a106994.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b06/1.jpg",
+    "url": "https://www.denustore.com/"
+   },
+   {
+    "img": "/brand-marketing/b06/2.jpg",
+    "url": "https://www.denustore.com/"
+   },
+   {
+    "img": "/brand-marketing/b06/3.jpg",
+    "url": "https://www.denustore.com/"
+   }
+  ]
  },
  {
   "id": "b07",
@@ -472,6 +500,20 @@
    "https://ecimg.cafe24img.com/pg1408b91948480066/sunup1218/web/product/medium/20260322/43df5e4b0f3f995f1809d158763cac66.jpg",
    "https://ecimg.cafe24img.com/pg1408b91948480066/sunup1218/web/product/medium/20260314/09be557e214c7d8db020cff4c529cea0.jpg",
    "https://ecimg.cafe24img.com/pg1408b91948480066/sunup1218/web/product/medium/20260314/3281b6d9cac09f131eab4311268d89cd.jpg"
+  ],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b08/1.jpg",
+    "url": "https://meieldew.com/"
+   },
+   {
+    "img": "/brand-marketing/b08/2.jpg",
+    "url": "https://meieldew.com/"
+   },
+   {
+    "img": "/brand-marketing/b08/3.jpg",
+    "url": "https://meieldew.com/"
+   }
   ]
  },
  {
@@ -523,6 +565,16 @@
    "https://cahiers-shop.com/web/product/medium/202204/4438d86f1953f5183746239695d07226.jpg",
    "https://cahiers-shop.com/web/product/medium/202204/31119d2b5446bb96c8d42c751d4cff6e.jpg",
    "https://cahiers-shop.com/web/product/medium/202204/39a5364da75e2d1d65e9a5a1aa2cd0cb.jpg"
+  ],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b09/1.jpg",
+    "url": "https://cahiers-shop.com/"
+   },
+   {
+    "img": "/brand-marketing/b09/2.jpg",
+    "url": "https://cahiers-shop.com/"
+   }
   ]
  },
  {
@@ -678,7 +730,13 @@
   ],
   "repProductUrls": [],
   "marketingUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b13/1.jpg",
+    "url": "https://milloarchive.com/"
+   }
+  ]
  },
  {
   "id": "b15",
@@ -747,7 +805,17 @@
    "https://www.maisonrepere.com/web/product/medium/202602/6dca7135e19402d710d9419722c1cd79.jpg",
    "https://www.maisonrepere.com/web/product/medium/202601/153f0229c57cb2146cd5518e7fb95e0e.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b15/1.jpg",
+    "url": "https://www.maisonrepere.com/"
+   },
+   {
+    "img": "/brand-marketing/b15/2.jpg",
+    "url": "https://www.maisonrepere.com/"
+   }
+  ]
  },
  {
   "id": "b16",
@@ -846,7 +914,13 @@
    "https://www.instagram.com/yuse.co.kr"
   ],
   "repProductUrls": [],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b17/1.jpg",
+    "url": "https://www.yuse.co.kr/"
+   }
+  ]
  },
  {
   "id": "b19",
@@ -981,6 +1055,16 @@
    "https://rosefrantz.com/web/product/big/202605/274f84680937cb4ec3efce3000a55234.jpg",
    "https://rosefrantz.com/web/product/big/202605/56cf7380e0b8bc69f3ad037e4c2f0200.jpg",
    "https://rosefrantz.com/web/product/big/202605/936cc61636618e77d6adb3d440cfd4fa.jpg"
+  ],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b20/1.jpg",
+    "url": "https://rosefrantz.com/"
+   },
+   {
+    "img": "/brand-marketing/b20/2.jpg",
+    "url": "https://rosefrantz.com/"
+   }
   ]
  },
  {
@@ -1017,7 +1101,21 @@
   ],
   "repProductUrls": [],
   "marketingUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b22/1.jpg",
+    "url": "https://deheve.com/"
+   },
+   {
+    "img": "/brand-marketing/b22/2.jpg",
+    "url": "https://deheve.com/"
+   },
+   {
+    "img": "/brand-marketing/b22/3.jpg",
+    "url": "https://deheve.com/"
+   }
+  ]
  },
  {
   "id": "b25",
@@ -1054,7 +1152,21 @@
    "https://www.facebook.com/LeMoutonShoes"
   ],
   "repProductUrls": [],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b25/1.jpg",
+    "url": "https://lemouton.co.kr/"
+   },
+   {
+    "img": "/brand-marketing/b25/2.jpg",
+    "url": "https://lemouton.co.kr/"
+   },
+   {
+    "img": "/brand-marketing/b25/3.jpg",
+    "url": "https://lemouton.co.kr/"
+   }
+  ]
  },
  {
   "id": "b26",
@@ -1098,7 +1210,21 @@
    "https://loeka.store/web/upload/category/editor/2024/08/22/7ca5654b0b9a49517b19aea958ac2208.jpg",
    "https://loeka.store/web/upload/category/editor/2024/10/02/dbe63b51b5d3c4cca81d6631a6b0ebbe.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b26/1.jpg",
+    "url": "https://loeka.store/"
+   },
+   {
+    "img": "/brand-marketing/b26/2.jpg",
+    "url": "https://loeka.store/"
+   },
+   {
+    "img": "/brand-marketing/b26/3.jpg",
+    "url": "https://loeka.store/"
+   }
+  ]
  },
  {
   "id": "b27",
