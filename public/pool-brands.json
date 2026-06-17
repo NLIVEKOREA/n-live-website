@@ -1564,7 +1564,17 @@
    "https://www.kindlove.co.kr/web/product/big/202203/8082ca3d97974754dfff77b34c93cf7e.jpg",
    "https://www.kindlove.co.kr/web/product/big/202203/1a6423bd23b022c5b530ba871c6d06db.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b32/1.jpg",
+    "url": "https://www.kindlove.co.kr/"
+   },
+   {
+    "img": "/brand-marketing/b32/2.jpg",
+    "url": "https://www.kindlove.co.kr/"
+   }
+  ]
  },
  {
   "id": "b33",
@@ -1761,7 +1771,13 @@
    "https://www.soupmall.co.kr/web/product/medium/202605/d06c6c934e18e5d6844a983b2aa24a29.jpg",
    "https://www.soupmall.co.kr/web/product/medium/202605/4ef2a822368cd7471a9fb4d5edc574fd.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b35/1.jpg",
+    "url": "https://www.soupmall.co.kr/product/list.html?cate_no=145"
+   }
+  ]
  },
  {
   "id": "b36",
@@ -1817,7 +1833,13 @@
    "https://ecimg.cafe24img.com/pg883b16165457022/adhoc01/web/product/small/20260512/826a166ba8567e6a267d9f6b2a612215.jpg",
    "https://ecimg.cafe24img.com/pg883b16165457022/adhoc01/web/product/small/20260508/51901e4bae3ff1e7a668a165013419d6.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b36/1.jpg",
+    "url": "https://www.soupmall.co.kr/product/list.html?cate_no=2811"
+   }
+  ]
  },
  {
   "id": "b37",
@@ -1873,7 +1895,13 @@
    "https://uclakorea.co.kr/web/product/small/202606/edfe1d8590a8a51546893db368f78b2f.jpg",
    "https://uclakorea.co.kr/web/product/small/202606/8a39fe679971e73e06814ea53cbd5b49.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b37/1.jpg",
+    "url": "https://www.soupmall.co.kr/product/list.html?cate_no=2810"
+   }
+  ]
  },
  {
   "id": "b38",
@@ -1924,7 +1952,21 @@
    "https://static-resource.discovery-expedition.com/cdn-cgi/image/q=80,w=600,format=auto/images/goods/ec/X26SDMTS81063KAD/thnail/3C9646D3B7AD4EB38A5D016209B79B5B.png",
    "https://static-resource.discovery-expedition.com/cdn-cgi/image/q=80,w=600,format=auto/images/goods/ec/X24NDXSH7244NSIL/thnail/ADECBEEF917D40D2933C2861F5A4F83C.png"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b38/1.jpg",
+    "url": "https://www.discovery-expedition.com/"
+   },
+   {
+    "img": "/brand-marketing/b38/2.jpg",
+    "url": "https://www.discovery-expedition.com/"
+   },
+   {
+    "img": "/brand-marketing/b38/3.jpg",
+    "url": "https://www.discovery-expedition.com/"
+   }
+  ]
  },
  {
   "id": "b39",
@@ -2050,6 +2092,20 @@
    "https://ason.kr/web/product/medium/202604/da26aedee5f289f773185881e1a1ad7a.jpg",
    "https://ason.kr/web/product/medium/202604/4dc2fbe6312b63d404e1d7aae79769a5.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b40/1.jpg",
+    "url": "https://ason.kr/"
+   },
+   {
+    "img": "/brand-marketing/b40/2.jpg",
+    "url": "https://ason.kr/"
+   },
+   {
+    "img": "/brand-marketing/b40/3.jpg",
+    "url": "https://ason.kr/"
+   }
+  ]
  }
 ]
