@@ -1,4 +1,5 @@
 "use client";
+import { pickLang } from "@/lib/i18n";
 import { useEffect } from "react";
 import { useLang } from "@/components/LangContext";
 import PageEnter from "@/components/PageEnter";
@@ -131,7 +132,7 @@ const COPY: Record<Lang, Copy> = {
 
 export default function CampaignPage() {
   const { lang, setLang } = useLang();
-  const c = COPY[lang];
+  const c = pickLang(COPY, lang);
 
   // 이 페이지는 샤오홍슈 타겟 → 저장된 lang이 없으면 기본 중국어
   useEffect(() => {

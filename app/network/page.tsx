@@ -1,4 +1,5 @@
 "use client";
+import { pickLang } from "@/lib/i18n";
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
 import PageEnter from "@/components/PageEnter";
@@ -219,7 +220,7 @@ const C: Record<Lang, any> = {
 
 export default function NetworkPage() {
   const { lang } = useLang();
-  const t = C[lang];
+  const t = pickLang(C, lang);
   return (
     <PageEnter variant="blocks" className="pt-blocks-multi">
       {/* HERO */}

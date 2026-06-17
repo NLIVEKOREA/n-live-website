@@ -1,4 +1,5 @@
 "use client";
+import { pickLang } from "@/lib/i18n";
 import Link from "next/link";
 import { useState } from "react";
 import { useLang } from "@/components/LangContext";
@@ -368,13 +369,13 @@ export default function HomePage() {
   // ═══════════════════════════════════════════════════════
   // DERIVED DATA (based on selected interest)
   // ═══════════════════════════════════════════════════════
-  const hero = HERO[lang];
-  const interestCards = INTEREST_CARDS[lang];
-  const metrics = ALL_METRICS[lang];
-  const cases = ALL_CASES[lang];
-  const stepsBase = STEPS_BASE[lang];
-  const why = WHY[lang];
-  const faqs = FAQS[lang];
+  const hero = pickLang(HERO, lang);
+  const interestCards = pickLang(INTEREST_CARDS, lang);
+  const metrics = pickLang(ALL_METRICS, lang);
+  const cases = pickLang(ALL_CASES, lang);
+  const stepsBase = pickLang(STEPS_BASE, lang);
+  const why = pickLang(WHY, lang);
+  const faqs = pickLang(FAQS, lang);
 
   // 관심사 기반 정렬
   const metricOrder = interest ? INTEREST_METRIC_ORDER[interest] : [0, 1, 2, 3];
@@ -385,11 +386,11 @@ export default function HomePage() {
   // 관심사 기반 프로세스 문구 변형
   const steps = stepsBase.map((s, i) => {
     if (!interest) return s;
-    const override = STEP_OVERRIDE[interest][lang]?.[i];
+    const override = pickLang(STEP_OVERRIDE[interest], lang)?.[i];
     return override ? { ...s, d: override } : s;
   });
 
-  const finalCTA = interest ? INTEREST_FINAL_CTA[lang][interest] : null;
+  const finalCTA = interest ? pickLang(INTEREST_FINAL_CTA, lang)[interest] : null;
 
   // 인터레스트 선택 시 이동: 일반 → 서비스 상세 / nlink → Contact + interest=nlink
   const selectInterest = (id: Interest) => {
@@ -410,7 +411,7 @@ export default function HomePage() {
     zh: { eyebrow: "您的关注领域",                       question: "您想找什么样的合作?",           hint: "选择关注领域,我们会优先展示相关信息与CTA。" },
     ja: { eyebrow: "WHAT DO YOU NEED · 関心分野",        question: "どのような協業をお探しですか?", hint: "関心分野を選ぶと、関連情報とCTAを優先表示します。" },
   };
-  const is = INTEREST_SECTION[lang];
+  const is = pickLang(INTEREST_SECTION, lang);
 
   const WHY_LABELS: Record<Lang, string> = { ko: "WHY N-LIVE", en: "WHY N-LIVE", zh: "WHY N-LIVE", ja: "WHY N-LIVE" };
   const NET_LABELS: Record<Lang, string> = { ko: "HOW WE RUN · 엔라이브 운영 방식", en: "HOW WE RUN", zh: "恩联的运营方式", ja: "HOW WE RUN · N-LIVE運営方式" };
@@ -433,7 +434,7 @@ export default function HomePage() {
     zh: { h: "30分钟梳理,您的合作可行性一次看清。", sub: "告诉我们现在的情况与目标 — 我们在会议中整理品牌匹配、卖家匹配、营销、直播中实际可行的方案。首次会议免费。", btn: "确认定制合作可能性 →" },
     ja: { h: "カスタム協業の可能性、30分で整理します。", sub: "現状と目標をお知らせいただければ、ブランド/セラーマッチング・キャンペーン・ライブのうち実行可能なオプションをミーティングで整理します。初回無料。", btn: "カスタム協業の可能性を確認する →" },
   };
-  const ctaBlock = finalCTA || CTA_DEFAULT[lang];
+  const ctaBlock = finalCTA || pickLang(CTA_DEFAULT, lang);
 
   // Multi-language marquee
   const marquee1 = [
@@ -536,7 +537,7 @@ export default function HomePage() {
           <div className="why-hero-overlay" aria-hidden="true" />
         </div>
         <div className="container why-hero-content">
-          <div className="section-eyebrow">— {WHY_LABELS[lang]}</div>
+          <div className="section-eyebrow">— {pickLang(WHY_LABELS, lang)}</div>
           <h2 className="section-title">{why.title}</h2>
           <p className="why-lead">{why.lead}</p>
 
@@ -555,8 +556,8 @@ export default function HomePage() {
       {/* NETWORK / METRICS — 관심사별 순서 변경 */}
       <section id="network" className={`metrics topo-bg section-grain ${interest === "matching" || interest === "korea-entry" ? "highlight" : ""}`}>
         <div className="container">
-          <div className="metrics-eyebrow">— {NET_LABELS[lang]}</div>
-          <h2 className="metrics-title">{NET_TITLE[lang]}</h2>
+          <div className="metrics-eyebrow">— {pickLang(NET_LABELS, lang)}</div>
+          <h2 className="metrics-title">{pickLang(NET_TITLE, lang)}</h2>
           <div className="metrics-grid">
             {orderedMetrics.map((m, i) => (
               <div className={`metric-card ${["m-amber", "m-emerald", "m-azure", "m-coral"][metricOrder[i]]} ${i === 0 && interest ? "metric-priority" : ""}`} key={metricOrder[i]}>
@@ -572,8 +573,8 @@ export default function HomePage() {
       {/* CASES */}
       <section id="cases" className="case-highlights">
         <div className="container">
-          <div className="section-eyebrow">— {CASES_LABELS[lang]}</div>
-          <h2 className="cases-title">{CASES_TITLE[lang]}</h2>
+          <div className="section-eyebrow">— {pickLang(CASES_LABELS, lang)}</div>
+          <h2 className="cases-title">{pickLang(CASES_TITLE, lang)}</h2>
           <div className="case-row">
             {orderedCases.map((c, i) => (
               <div className={`case-pill ${c.cat} ${i === 0 && interest ? "case-priority" : ""}`} key={caseOrder[i]}>
@@ -584,15 +585,15 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <p className="case-highlight-note">{CASE_NOTE[lang]}</p>
+          <p className="case-highlight-note">{pickLang(CASE_NOTE, lang)}</p>
         </div>
       </section>
 
       {/* PROCESS */}
       <section id="process" className={`process-section ${interest === "korea-entry" || interest === "overseas-entry" ? "highlight" : ""}`}>
         <div className="container">
-          <div className="section-eyebrow">— {PROCESS_LABELS[lang]}</div>
-          <h2 className="section-title">{PROCESS_TITLE[lang]}</h2>
+          <div className="section-eyebrow">— {pickLang(PROCESS_LABELS, lang)}</div>
+          <h2 className="section-title">{pickLang(PROCESS_TITLE, lang)}</h2>
           <div className="step-list">
             {steps.map((s, i) => (
               <div className="step-row" key={i}>
@@ -610,8 +611,8 @@ export default function HomePage() {
       {/* FAQ */}
       <section className="faq-section">
         <div className="container">
-          <div className="section-eyebrow">— {FAQ_LABELS[lang]}</div>
-          <h2 className="section-title">{FAQ_TITLE[lang]}</h2>
+          <div className="section-eyebrow">— {pickLang(FAQ_LABELS, lang)}</div>
+          <h2 className="section-title">{pickLang(FAQ_TITLE, lang)}</h2>
           <div className="faq-list">
             {faqs.map((f, i) => (
               <div className={`faq-item ${openFaq === i ? "open" : ""}`} key={i}>

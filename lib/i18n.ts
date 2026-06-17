@@ -1,5 +1,7 @@
+import { ZH_HANT } from "./zh-hant-map";
 export type Lang = "ko" | "en" | "zh" | "ja";
-export const LANGS: Lang[] = ["ko", "en", "zh", "ja"];
+export type UILang = Lang | "zh-Hant";
+export const LANGS: UILang[] = ["ko", "en", "zh", "zh-Hant", "ja"];
 
 type Dict = Record<string, string>;
 type Messages = Record<Lang, Dict>;
@@ -307,6 +309,25 @@ export const MESSAGES: Messages = {
   },
 };
 
-export function t(lang: Lang, key: string): string {
-  return MESSAGES[lang]?.[key] ?? MESSAGES.ko[key] ?? key;
+export function s2t(s: string): string {
+  return ZH_HANT[s] ?? s;
+}
+export function s2tDeep<T>(v: T): T {
+  if (typeof v === "string") return s2t(v) as unknown as T;
+  if (Array.isArray(v)) return v.map((x) => s2tDeep(x)) as unknown as T;
+  if (v && typeof v === "object") {
+    const o: Record<string, unknown> = {};
+    for (const k in v as Record<string, unknown>) o[k] = s2tDeep((v as Record<string, unknown>)[k]);
+    return o as unknown as T;
+  }
+  return v;
+}
+// 컴포넌트의 DICT[lang] 대체: zh-Hant는 zh를 번체로 변환
+export function pickLang<T>(dict: Record<Lang, T>, lang: UILang): T {
+  if (lang === "zh-Hant") return s2tDeep(dict.zh);
+  return dict[lang as Lang];
+}
+export function t(lang: UILang, key: string): string {
+  if (lang === "zh-Hant") return s2t(MESSAGES.zh[key] ?? MESSAGES.ko[key] ?? key);
+  return MESSAGES[lang as Lang]?.[key] ?? MESSAGES.ko[key] ?? key;
 }

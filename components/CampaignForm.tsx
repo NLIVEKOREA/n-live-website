@@ -1,4 +1,5 @@
 "use client";
+import { pickLang } from "@/lib/i18n";
 import { useState } from "react";
 import { useLang } from "@/components/LangContext";
 import type { Lang } from "@/lib/i18n";
@@ -288,8 +289,8 @@ const OPT: Record<Lang, Record<string, string>> = {
 
 export default function CampaignForm() {
   const { lang } = useLang();
-  const t = L[lang];
-  const optLabel = (v: string) => OPT[lang][v] || v;
+  const t = pickLang(L, lang);
+  const optLabel = (v: string) => pickLang(OPT, lang)[v] || v;
 
   const [status, setStatus] = useState<"idle"|"sending"|"success"|"error">("idle");
   const [notes, setNotes] = useState<string>("");

@@ -3,12 +3,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { useLang } from "./LangContext";
-import { Lang } from "@/lib/i18n";
+import { UILang } from "@/lib/i18n";
 
-const LANG_OPTIONS: { code: Lang; label: string }[] = [
+const LANG_OPTIONS: { code: UILang; label: string }[] = [
   { code: "ko", label: "한국어" },
-  { code: "zh", label: "中文" },
   { code: "en", label: "English" },
+  { code: "zh", label: "中文 (简体)" },
+  { code: "zh-Hant", label: "中文 (繁體)" },
   { code: "ja", label: "日本語" },
 ];
 
@@ -71,11 +72,11 @@ export default function Nav() {
         {/* Desktop right: 4 lang + CTA + hamburger(tablet) */}
         <div className="nav-right">
           <div className="lang-switch">
-            {(["ko", "zh", "en", "ja"] as Lang[]).map((l, i) => (
+            {(["ko", "en", "zh", "zh-Hant", "ja"] as UILang[]).map((l, i) => (
               <span key={l}>
                 {i > 0 && <span className="divider">·</span>}
                 <button onClick={() => setLang(l)} className={lang === l ? "active" : ""}>
-                  {l === "ko" ? "KO" : l === "zh" ? "中文" : l === "en" ? "EN" : "JP"}
+                  {l === "ko" ? "KO" : l === "en" ? "EN" : l === "zh" ? "简" : l === "zh-Hant" ? "繁" : "JP"}
                 </button>
               </span>
             ))}

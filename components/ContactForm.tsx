@@ -1,4 +1,5 @@
 "use client";
+import { pickLang } from "@/lib/i18n";
 import { useState } from "react";
 import { useLang } from "./LangContext";
 
@@ -190,7 +191,7 @@ const ENDPOINT = "https://script.google.com/macros/s/AKfycbzV4Qlf4And0KT4i34dPtD
 
 export default function ContactForm({ defaultType = "general" }: { defaultType?: string }) {
   const { lang } = useLang();
-  const l = LABELS[lang];
+  const l = pickLang(LABELS, lang);
   // 기존 쿼리 파라미터 (kbrand/kseller/obrand/oseller) → 새 interest 키로 매핑
   const mapped: Record<string, InquiryType> = {
     "kbrand": "overseas-entry",
