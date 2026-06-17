@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useLang } from "@/components/LangContext";
 import Marquee from "@/components/Marquee";
+import LogoMarquee from "@/components/LogoMarquee";
 import MeteorBackground from "@/components/MeteorBackground";
 import type { Lang } from "@/lib/i18n";
 
@@ -533,9 +534,6 @@ export default function HomePage() {
 
       {/* WHY N-LIVE */}
       <section id="why" className={`why-section why-hero ${interest === "sourcing" ? "highlight" : ""}`}>
-        <div className="why-hero-bg" aria-hidden="true">
-          <div className="why-hero-overlay" aria-hidden="true" />
-        </div>
         <div className="container why-hero-content">
           <div className="section-eyebrow">— {pickLang(WHY_LABELS, lang)}</div>
           <h2 className="section-title">{why.title}</h2>
@@ -551,6 +549,9 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+
+        {/* 협업 브랜드 + 중국 왕홍풀 — 2줄 흐름 */}
+        <LogoMarquee />
       </section>
 
       {/* NETWORK / METRICS — 관심사별 순서 변경 */}
