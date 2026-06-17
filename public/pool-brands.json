@@ -51,7 +51,8 @@
    "https://cdn.imweb.me/thumbnail/20251030/6faaf8c576a55.png",
    "https://cdn.imweb.me/upload/S20250524f1d22dfa92967/573176e759fbd.png"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-images/b01/p1.jpg"
  },
  {
   "id": "b02",
@@ -120,7 +121,8 @@
    "https://ecimg.cafe24img.com/pg1664b65566644035/trafficharmony/web/product/extra/big/20260518/9ea2e27cbbff6b0ceaecdf93da48af5c.jpg",
    "https://ecimg.cafe24img.com/pg1664b65566644035/trafficharmony/web/product/extra/big/20260518/a5f32edfb3df71ef6e822be13095f6e3.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-hero/b02.jpg"
  },
  {
   "id": "b03",
@@ -191,7 +193,8 @@
    "https://www.akiii.co.kr/shopimages/akiiikr/0140040001243.jpg",
    "https://www.akiii.co.kr/shopimages/akiiikr/0140040001253.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-images/b03/p1.jpg"
  },
  {
   "id": "b04",
@@ -255,7 +258,8 @@
     "img": "/brand-marketing/b04/3.jpg",
     "url": "https://www.threecheers.co.kr/"
    }
-  ]
+  ],
+  "heroImage": "/brand-marketing/b04/1.jpg"
  },
  {
   "id": "b05",
@@ -324,7 +328,8 @@
    "https://lookoptical.kr/web/product/small/202510/be838330de0cb0cbac046eff1365a285.jpg",
    "https://lookoptical.kr/web/product/small/202602/23aef0952b137f7bd116a3aeb8164db7.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-images/b05/p1.jpg"
  },
  {
   "id": "b06",
@@ -387,7 +392,8 @@
     "img": "/brand-marketing/b06/3.jpg",
     "url": "https://www.denustore.com/"
    }
-  ]
+  ],
+  "heroImage": "/brand-marketing/b06/1.jpg"
  },
  {
   "id": "b07",
@@ -446,7 +452,8 @@
    "https://www.arac9.com/web/product/medium/202308/af76b6b2cfa4af55cc8a20878852ca30.jpg",
    "https://www.arac9.com/web/product/tiny/202308/897da66729af4c6a8b7cb286701ff47b.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-images/b07/p1.jpg"
  },
  {
   "id": "b08",
@@ -514,7 +521,8 @@
     "img": "/brand-marketing/b08/3.jpg",
     "url": "https://meieldew.com/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b08.jpg"
  },
  {
   "id": "b09",
@@ -575,7 +583,8 @@
     "img": "/brand-marketing/b09/2.jpg",
     "url": "https://cahiers-shop.com/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b09.jpg"
  },
  {
   "id": "b11",
@@ -625,7 +634,8 @@
    "https://zero-planet.co.kr/web/product/tiny/202205/3e5540937c8b00a4b5e4ea0e7dd6aea8.jpg",
    "https://zero-planet.co.kr/web/product/tiny/202205/e6fefe14c086d36445aba5b11b7388c2.jpg",
    "https://zero-planet.co.kr/web/product/tiny/202403/43739b30847705f04b9e476012c5f445.jpg"
-  ]
+  ],
+  "heroImage": "/brand-images/b11/p1.jpg"
  },
  {
   "id": "b12",
@@ -692,7 +702,8 @@
    "https://ecimg.cafe24img.com/pg1597b15597020044/nicknnicole/web/product/medium/20260616/2cbca2a2c1a638bb84b8b0c298ab33bf.jpg",
    "https://ecimg.cafe24img.com/pg1597b15597020044/nicknnicole/web/product/medium/20260616/8d538389449127b135741e83dd0d401d.jpg",
    "https://ecimg.cafe24img.com/pg1597b15597020044/nicknnicole/web/product/medium/20260616/eb1cd7e19deecf465b2a11e46ab533e3.jpg"
-  ]
+  ],
+  "heroImage": "/brand-hero/b12.jpg"
  },
  {
   "id": "b13",
@@ -736,7 +747,8 @@
     "img": "/brand-marketing/b13/1.jpg",
     "url": "https://milloarchive.com/"
    }
-  ]
+  ],
+  "heroImage": "/brand-marketing/b13/1.jpg"
  },
  {
   "id": "b15",
@@ -815,7 +827,8 @@
     "img": "/brand-marketing/b15/2.jpg",
     "url": "https://www.maisonrepere.com/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b15.jpg"
  },
  {
   "id": "b16",
@@ -880,7 +893,8 @@
    "https://ufcsport.co.kr/web/product/medium/202605/7a00c6467ee872ee0d45752d798f267f.jpg",
    "https://ufcsport.co.kr/web/product/medium/202605/9068a9e75da157de14b69a445afe3009.jpg",
    "https://ufcsport.co.kr/web/product/medium/202606/2689a46998398f7d7737555a1afcaf46.jpg"
-  ]
+  ],
+  "heroImage": "/brand-hero/b16.jpg"
  },
  {
   "id": "b17",
@@ -920,7 +934,8 @@
     "img": "/brand-marketing/b17/1.jpg",
     "url": "https://www.yuse.co.kr/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b17.jpg"
  },
  {
   "id": "b19",
@@ -988,7 +1003,8 @@
    "https://cafe24img.poxo.com/anne2173/web/product/medium/202605/4d695c7e35d3dad34674c3a9d7baaf04.webp",
    "https://cafe24img.poxo.com/anne2173/web/product/medium/202605/67e8c23de842c5ce5259ca7f7c548e00.webp",
    "https://cafe24img.poxo.com/anne2173/web/product/medium/202605/4dff512d1ddab6941f7dd287935ba791.webp"
-  ]
+  ],
+  "heroImage": "/brand-hero/b19.jpg"
  },
  {
   "id": "b20",
@@ -1065,7 +1081,8 @@
     "img": "/brand-marketing/b20/2.jpg",
     "url": "https://rosefrantz.com/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b20.jpg"
  },
  {
   "id": "b22",
@@ -1115,7 +1132,8 @@
     "img": "/brand-marketing/b22/3.jpg",
     "url": "https://deheve.com/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b22.jpg"
  },
  {
   "id": "b25",
@@ -1166,7 +1184,8 @@
     "img": "/brand-marketing/b25/3.jpg",
     "url": "https://lemouton.co.kr/"
    }
-  ]
+  ],
+  "heroImage": "/brand-marketing/b25/1.jpg"
  },
  {
   "id": "b26",
@@ -1224,7 +1243,8 @@
     "img": "/brand-marketing/b26/3.jpg",
     "url": "https://loeka.store/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b26.jpg"
  },
  {
   "id": "b27",
@@ -1320,7 +1340,8 @@
    "https://cdn.shopify.com/s/files/1/0596/8704/3156/files/IMG25S_7125_8bc5e8b2-c351-4adc-925f-414d541065d4.jpg?width=600",
    "https://cdn.shopify.com/s/files/1/0596/8704/3156/files/IMG25S_7111_d9925786-72ea-4d6a-9fb4-189139345662.jpg?width=600"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-images/b27/p1.jpg"
  },
  {
   "id": "b28",
@@ -1376,7 +1397,8 @@
    "https://youkshimwon.com/web/product/medium/202601/04b3ca889ce208119da0988f2df7ce93.jpg",
    "https://youkshimwon.com/web/product/medium/202601/f602972b49600491c115e6bc9ee7c09e.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-images/b28/p1.jpg"
  },
  {
   "id": "b29",
@@ -1443,7 +1465,8 @@
    "https://www.ba-on.com/web/product/big/202605/81ab00150d661f581ea1afe3d870d89f.webp",
    "https://www.ba-on.com/web/product/big/202605/b1c4432eba599ce6fe1583e65f6d4078.webp"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-images/b29/p1.jpg"
  },
  {
   "id": "b30",
@@ -1499,7 +1522,8 @@
    "https://www.illigo.co.kr/web/product/medium/202605/a2c56013cd57aaac48cf00b4fe3d282f.jpg",
    "https://www.illigo.co.kr/web/product/medium/202606/7f03c3439475da65b3ae70b8a02e39ac.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-hero/b30.jpg"
  },
  {
   "id": "b31",
@@ -1563,7 +1587,8 @@
    "https://efairplay.img2.kr/www/018_site/01_main/02_mobile/catemenu/search/package.png",
    "https://cdn5-aka.makeshop.co.kr/shopimages/efairplay/1140030000402.jpg"
   ],
-  "marketingUrls": []
+  "marketingUrls": [],
+  "heroImage": "/brand-images/b31/p1.jpg"
  },
  {
   "id": "b32",
@@ -1640,7 +1665,8 @@
     "img": "/brand-marketing/b32/2.jpg",
     "url": "https://www.kindlove.co.kr/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b32.jpg"
  },
  {
   "id": "b33",
@@ -1695,7 +1721,8 @@
     "img": "/brand-marketing/b33/1.jpg",
     "url": "https://newsroom.musinsa.com/newsroom-menu/2024-0227-mubwiki-standoil"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b33.jpg"
  },
  {
   "id": "b34",
@@ -1770,7 +1797,8 @@
     "img": "/brand-marketing/b34/1.jpg",
     "url": "https://www.apparelnews.co.kr/news/news_view/?idx=215467"
    }
-  ]
+  ],
+  "heroImage": "/brand-marketing/b34/1.jpg"
  },
  {
   "id": "b35",
@@ -1843,7 +1871,8 @@
     "img": "/brand-marketing/b35/1.jpg",
     "url": "https://www.soupmall.co.kr/product/list.html?cate_no=145"
    }
-  ]
+  ],
+  "heroImage": "/brand-marketing/b35/1.jpg"
  },
  {
   "id": "b36",
@@ -1905,7 +1934,8 @@
     "img": "/brand-marketing/b36/1.jpg",
     "url": "https://www.soupmall.co.kr/product/list.html?cate_no=2811"
    }
-  ]
+  ],
+  "heroImage": "/brand-marketing/b36/1.jpg"
  },
  {
   "id": "b37",
@@ -1967,7 +1997,8 @@
     "img": "/brand-marketing/b37/1.jpg",
     "url": "https://www.soupmall.co.kr/product/list.html?cate_no=2810"
    }
-  ]
+  ],
+  "heroImage": "/brand-marketing/b37/1.jpg"
  },
  {
   "id": "b38",
@@ -2032,7 +2063,8 @@
     "img": "/brand-marketing/b38/3.jpg",
     "url": "https://www.discovery-expedition.com/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b38.jpg"
  },
  {
   "id": "b39",
@@ -2089,7 +2121,8 @@
     "img": "/brand-marketing/b39/1.jpg",
     "url": "https://news.nate.com/view/20230605n24399"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b39.jpg"
  },
  {
   "id": "b40",
@@ -2172,6 +2205,7 @@
     "img": "/brand-marketing/b40/3.jpg",
     "url": "https://ason.kr/"
    }
-  ]
+  ],
+  "heroImage": "/brand-hero/b40.jpg"
  }
 ]
