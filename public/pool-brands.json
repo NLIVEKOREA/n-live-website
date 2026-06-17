@@ -151,7 +151,7 @@
   "repProduct": "",
   "priceRange": "",
   "url": "https://www.threecheers.co.kr/",
-  "logo": null,
+  "logo": "/brand-images/b04/logo.png",
   "images": [
    "/brand-images/b04/p1.jpg",
    "/brand-images/b04/p2.jpg",
@@ -243,7 +243,7 @@
   "repProduct": "",
   "priceRange": "",
   "url": "https://www.denustore.com/",
-  "logo": "/brand-images/b06/logo.svg",
+  "logo": "/brand-images/b06/logo.png",
   "images": [
    "/brand-images/b06/p1.jpg",
    "/brand-images/b06/p2.jpg",
@@ -252,7 +252,7 @@
    "/brand-images/b06/p5.jpg"
   ],
   "slogan": "스튜디오 데누 공식 온라인 스토어",
-  "logoLight": true,
+  "logoLight": false,
   "score": 5,
   "salesMethod": "위탁",
   "hasStudio": "무",
@@ -337,7 +337,7 @@
   "repProduct": "",
   "priceRange": "₩182,400 ~ ₩268,000",
   "url": "https://meieldew.com/",
-  "logo": null,
+  "logo": "/brand-images/b08/logo.png",
   "images": [
    "/brand-images/b08/p1.jpg",
    "/brand-images/b08/p2.jpg",
@@ -370,7 +370,7 @@
   "repProduct": "",
   "priceRange": "₩15,700 ~ ₩957,000",
   "url": "https://cahiers-shop.com/",
-  "logo": null,
+  "logo": "/brand-images/b09/logo.png",
   "images": [
    "/brand-images/b09/p1.jpg",
    "/brand-images/b09/p2.jpg",
@@ -436,7 +436,7 @@
   "repProduct": "",
   "priceRange": "₩38,000 ~ ₩238,000",
   "url": "https://www.nicknnicole.co.kr/",
-  "logo": null,
+  "logo": "/brand-images/b12/logo.png",
   "images": [
    "/brand-images/b12/p1.jpg",
    "/brand-images/b12/p2.jpg",
@@ -502,7 +502,7 @@
   "repProduct": "",
   "priceRange": "₩58,000 ~ ₩159,000",
   "url": "https://www.maisonrepere.com/",
-  "logo": null,
+  "logo": "/brand-images/b15/logo.png",
   "images": [
    "/brand-images/b15/p1.jpg",
    "/brand-images/b15/p2.jpg",
@@ -624,7 +624,7 @@
   ],
   "slogan": "리얼 데일리룩, 편안하고 담백한 우리의 슬로우앤드",
   "logoLight": false,
-  "score": 9,
+  "score": 10,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
@@ -680,7 +680,7 @@
   "repProduct": "",
   "priceRange": "₩99,750 ~ ₩125,000",
   "url": "https://deheve.com/",
-  "logo": null,
+  "logo": "/brand-images/b22/logo.png",
   "images": [
    "/brand-images/b22/p1.jpg",
    "/brand-images/b22/p2.jpg",
@@ -813,7 +813,13 @@
   "priceRange": "",
   "url": "https://youkshimwon.com/",
   "logo": "/brand-images/b28/logo.png",
-  "images": [],
+  "images": [
+   "/brand-images/b28/p1.jpg",
+   "/brand-images/b28/p2.jpg",
+   "/brand-images/b28/p3.jpg",
+   "/brand-images/b28/p4.jpg",
+   "/brand-images/b28/p5.jpg"
+  ],
   "slogan": "작가 육심원의 그림을 바탕으로 한 여성의류 및 잡화 아트샵 브랜드.",
   "logoLight": false,
   "score": 7,
@@ -878,7 +884,7 @@
   "repProduct": "",
   "priceRange": "",
   "url": "https://illigo.co.kr/",
-  "logo": "/brand-images/b30/logo.jpg",
+  "logo": "/brand-images/b30/logo.png",
   "images": [
    "/brand-images/b30/p1.jpg",
    "/brand-images/b30/p2.jpg",
@@ -1146,7 +1152,7 @@
   ],
   "slogan": "미국 UCLA 라이선스를 활용한 한국 유니섹스 캐주얼 브랜드(아메리칸 뉴 프레피 룩). 자사몰(uclakorea.co.kr)·soupmall에서 판매.",
   "logoLight": false,
-  "score": 9,
+  "score": 10,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
