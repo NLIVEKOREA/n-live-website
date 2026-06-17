@@ -1,5 +1,5 @@
 "use client";
-import { pickLang } from "@/lib/i18n";
+import { pickLang, s2t } from "@/lib/i18n";
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
 import PageEnter from "@/components/PageEnter";
@@ -406,7 +406,7 @@ export default function ProcessPage() {
                   <div className="pr-step-value">{s.value}</div>
                   <div className="pr-step-trust">
                     <span className="pr-trust-badge">{s.trust}</span>
-                    <span className="pr-trust-zh">{s.zh}</span>
+                    <span className="pr-trust-zh">{lang === "zh-Hant" ? s2t(s.zh) : s.zh}</span>
                   </div>
                 </div>
               </div>
@@ -425,7 +425,7 @@ export default function ProcessPage() {
               <div className="pr-guarantee-card" key={i}>
                 <h4>{g.t}</h4>
                 <p>{g.d}</p>
-                <span className="pr-guarantee-zh">{g.zh}</span>
+                <span className="pr-guarantee-zh">{lang === "zh-Hant" ? s2t(g.zh) : g.zh}</span>
               </div>
             ))}
           </div>

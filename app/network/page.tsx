@@ -1,5 +1,5 @@
 "use client";
-import { pickLang } from "@/lib/i18n";
+import { pickLang, s2t } from "@/lib/i18n";
 import Link from "next/link";
 import { useLang } from "@/components/LangContext";
 import PageEnter from "@/components/PageEnter";
@@ -244,7 +244,7 @@ export default function NetworkPage() {
                 <div className="nw-verify-num">{v.n}</div>
                 <h4>{v.t}</h4>
                 <p>{v.d}</p>
-                <span className="nw-verify-zh">{v.zh}</span>
+                <span className="nw-verify-zh">{lang === "zh-Hant" ? s2t(v.zh) : v.zh}</span>
               </div>
             ))}
           </div>
