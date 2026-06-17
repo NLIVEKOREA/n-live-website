@@ -43,7 +43,8 @@
    "/brand-images/b01/shop8.jpg",
    "/brand-images/b01/shop9.jpg",
    "/brand-images/b01/shop10.jpg"
-  ]
+  ],
+  "marketingUrls": []
  },
  {
   "id": "b02",
@@ -89,7 +90,8 @@
    "/brand-images/b02/shop8.jpg",
    "/brand-images/b02/shop9.jpg",
    "/brand-images/b02/shop10.jpg"
-  ]
+  ],
+  "marketingUrls": []
  },
  {
   "id": "b03",
@@ -135,7 +137,8 @@
    "/brand-images/b03/shop8.jpg",
    "/brand-images/b03/shop9.jpg",
    "/brand-images/b03/shop10.jpg"
-  ]
+  ],
+  "marketingUrls": []
  },
  {
   "id": "b04",
@@ -181,7 +184,8 @@
    "/brand-images/b04/shop8.jpg",
    "/brand-images/b04/shop9.jpg",
    "/brand-images/b04/shop10.jpg"
-  ]
+  ],
+  "marketingUrls": []
  },
  {
   "id": "b05",
@@ -225,7 +229,8 @@
    "/brand-images/b05/shop8.jpg",
    "/brand-images/b05/shop9.jpg",
    "/brand-images/b05/shop10.jpg"
-  ]
+  ],
+  "marketingUrls": []
  },
  {
   "id": "b06",
@@ -271,7 +276,8 @@
    "/brand-images/b06/shop8.jpg",
    "/brand-images/b06/shop9.jpg",
    "/brand-images/b06/shop10.jpg"
-  ]
+  ],
+  "marketingUrls": []
  },
  {
   "id": "b07",
@@ -317,7 +323,8 @@
    "/brand-images/b07/shop8.jpg",
    "/brand-images/b07/shop9.jpg",
    "/brand-images/b07/shop10.jpg"
-  ]
+  ],
+  "marketingUrls": []
  },
  {
   "id": "b08",
@@ -349,7 +356,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b09",
@@ -381,7 +389,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b11",
@@ -413,7 +422,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b12",
@@ -445,7 +455,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b13",
@@ -477,7 +488,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b15",
@@ -523,7 +535,8 @@
    "/brand-images/b15/shop8.jpg",
    "/brand-images/b15/shop9.jpg",
    "/brand-images/b15/shop10.jpg"
-  ]
+  ],
+  "marketingUrls": []
  },
  {
   "id": "b16",
@@ -555,7 +568,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b17",
@@ -586,7 +600,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b19",
@@ -618,7 +633,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b20",
@@ -650,7 +666,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b22",
@@ -682,7 +699,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b25",
@@ -714,7 +732,8 @@
   "note": "",
   "shopUrl": "",
   "snsUrls": [],
-  "repProductUrls": []
+  "repProductUrls": [],
+  "marketingUrls": []
  },
  {
   "id": "b26",
@@ -749,7 +768,8 @@
    "https://www.instagram.com/loeka_official/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b27",
@@ -778,7 +798,8 @@
    "https://www.instagram.com/threetimess/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b28",
@@ -807,7 +828,8 @@
    "https://www.instagram.com/youkshimwon_official/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b29",
@@ -842,7 +864,8 @@
    "https://www.instagram.com/ba_on/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b30",
@@ -877,7 +900,8 @@
    "https://www.instagram.com/illigo.kr/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b31",
@@ -912,7 +936,8 @@
    "https://www.instagram.com/fp142_kr/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b32",
@@ -947,7 +972,8 @@
    "https://www.instagram.com/kindlove_official"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b33",
@@ -984,7 +1010,10 @@
    "https://blog.naver.com/standoil_official"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": [
+   "https://newsroom.musinsa.com/newsroom-menu/2024-0227-mubwiki-standoil"
+  ]
  },
  {
   "id": "b34",
@@ -1019,7 +1048,10 @@
    "https://www.instagram.com/soup_official/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": [
+   "https://www.apparelnews.co.kr/news/news_view/?idx=215467"
+  ]
  },
  {
   "id": "b35",
@@ -1054,7 +1086,8 @@
    "https://www.instagram.com/visitinnewyork.official/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b36",
@@ -1089,7 +1122,8 @@
    "https://www.instagram.com/adhoc.official/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b37",
@@ -1124,7 +1158,8 @@
    "https://www.instagram.com/ucla_lifestyle_korea/"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b38",
@@ -1161,7 +1196,8 @@
    "https://www.facebook.com/discoverykr"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  },
  {
   "id": "b39",
@@ -1196,7 +1232,10 @@
    "https://www.instagram.com/mlbkorea"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": [
+   "https://news.nate.com/view/20230605n24399"
+  ]
  },
  {
   "id": "b40",
@@ -1233,6 +1272,7 @@
    "https://blog.naver.com/as_on"
   ],
   "repProductUrls": [],
-  "shopProducts": []
+  "shopProducts": [],
+  "marketingUrls": []
  }
 ]

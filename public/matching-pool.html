@@ -853,6 +853,9 @@
     background:var(--bg-card); border:1px solid var(--line); color:var(--text-dim); font-size:18px;
   }
   .bd-close:hover { color:var(--text); }
+  .bd-sns-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+  .bd-sns { font-size:12px; color:var(--text-dim); background:var(--bg-elev); border:1px solid var(--line-strong); border-radius:20px; padding:6px 13px; text-decoration:none; white-space:nowrap; }
+  .bd-sns:hover { border-color:var(--gold); color:#e7cf9b; }
   .bd-head { display:flex; gap:20px; align-items:center; padding-bottom:20px; border-bottom:1px solid var(--line); margin-bottom:8px; }
   .bd-logo {
     flex:0 0 130px; height:90px; display:flex; align-items:center; justify-content:center;
@@ -1257,6 +1260,24 @@
       </div>`;
     const adminUrl = (document.body.classList.contains('master') && b.url)
       ? `<div class="sd-adminurl"><span>🔑 공식 홈페이지 (관리자 전용)</span><a href="${esc2(b.url)}" target="_blank" rel="noopener">${esc2(b.url)}</a></div>` : '';
+    const snsLabel = (u) => {
+      const s = String(u);
+      if (/instagram\.com/i.test(s)) return 'Instagram';
+      if (/youtube\.com|youtu\.be/i.test(s)) return 'YouTube';
+      if (/tiktok\.com/i.test(s)) return 'TikTok';
+      if (/facebook\.com/i.test(s)) return 'Facebook';
+      if (/xiaohongshu|xhslink/i.test(s)) return '샤오홍슈';
+      if (/naver\.com/i.test(s)) return '네이버';
+      return 'SNS';
+    };
+    const snsList = (b.snsUrls||[]).filter(Boolean);
+    const snsHtml = snsList.length
+      ? `<div class="bd-sns-row">${snsList.map(u=>`<a class="bd-sns" href="${esc2(u)}" target="_blank" rel="noopener">${snsLabel(u)} ↗</a>`).join('')}</div>`
+      : `${na} <span class="bd-dim">— 인스타그램 · 유튜브 등 (관리자 등록)</span>`;
+    const mktList = (b.marketingUrls||[]).filter(Boolean);
+    const mktHtml = mktList.length
+      ? `<div class="bd-sns-row">${mktList.map((u,i)=>`<a class="bd-sns" href="${esc2(u)}" target="_blank" rel="noopener">홍보 자료 ${i+1} ↗</a>`).join('')}</div>`
+      : `${na} <span class="bd-dim">— 기사 · 연예인 착용 이미지 (관리자 등록)</span>`;
     ov.innerHTML = `
       <div class="bd-panel">
         <button class="bd-close" aria-label="닫기">✕</button>
@@ -1272,8 +1293,8 @@
         ${attrs}
         <section class="bd-sec"><h3>브랜드 소개</h3><p>${esc2(b.slogan||'')||na}</p></section>
         <section class="bd-sec"><h3>전체 상품군</h3>${gallery}<p class="bd-hint">사진 클릭 시 크게 보기 · 브랜드 SHOP 기준 일부 상품</p></section>
-        <section class="bd-sec"><h3>SNS 채널</h3><p>${na} <span class="bd-dim">— 인스타그램 · 유튜브 등 (관리자 등록)</span></p></section>
-        <section class="bd-sec"><h3>마케팅 · 홍보 자료</h3><p>${na} <span class="bd-dim">— 기사 · 연예인 착용 이미지 (관리자 등록)</span></p></section>
+        <section class="bd-sec"><h3>SNS 채널</h3>${snsHtml}</section>
+        <section class="bd-sec"><h3>마케팅 · 홍보 자료</h3>${mktHtml}</section>
         <section class="bd-sec"><h3>추가 설명</h3><p>${b.note ? esc2(b.note) : na} <span class="bd-dim">— 관리자 직접 작성</span></p></section>
         <p class="bd-foot">※ 브랜드 홈페이지 · 연락처는 매칭 확정 후 별도 안내됩니다.</p>
       </div>`;
