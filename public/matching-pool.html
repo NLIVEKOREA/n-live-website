@@ -701,14 +701,7 @@
     font-size:12.5px; color:var(--text-dim); margin:0 auto 4px; line-height:1.55; max-width:92%;
     min-height:38px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
   }
-  .brand-card .brand-price { margin-top:auto; }
-  .brand-price {
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    padding:13px 0 2px; margin-top:4px; border-top:1px solid var(--gold-line);
-  }
-  .brand-price .price-label { font-size:10px; color:var(--text-mute); text-transform:uppercase; letter-spacing:.12em; }
-  .brand-price .price-val { font-size:14px; font-weight:600; color:#cbb896; letter-spacing:.02em; }
-  .brand-price .price-val.dim { color:var(--text-mute); }
+  .brand-card .brand-spacer { margin-top:auto; }
 
   /* 진출국가·판매방식 태그 */
   .brand-tags { display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; margin:0 0 8px; min-height:20px; }
@@ -1007,7 +1000,7 @@
     <div class="pool-cta-text">
       <span class="pool-cta-eyebrow">🔒 검증된 전체 리스트</span>
       <h3>지금 보시는 카드는 일부 미리보기예요</h3>
-      <p>검증된 <b>K-브랜드 전체 리스트</b>와 가격·실적·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 찾으시는 협업·입점 방향을 알려주시면 맞춤 리스트를 준비해 드려요.</p>
+      <p>검증된 <b>K-브랜드 전체 리스트</b>와 실적·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 찾으시는 협업·입점 방향을 알려주시면 맞춤 리스트를 준비해 드려요.</p>
     </div>
     <a class="pool-cta-btn" href="/contact/?type=sourcing">K-브랜드 협업·입점 문의 →</a>
   </div>
@@ -1088,9 +1081,6 @@
     const logo = b.logo
       ? `<img src="${esc(b.logo)}" alt="${esc(b.realName||'')}" loading="lazy">`
       : `<span class="logo-fallback">${esc((b.realName||'?').slice(0,8))}</span>`;
-    const price = b.priceRange
-      ? `<span class="price-val">${esc(b.priceRange)}</span>`
-      : `<span class="price-val dim">가격 문의</span>`;
     const premium = (b.score >= 10);
     const tags = [];
     if (b.salesMethod) tags.push(`<span class="btag">${esc(b.salesMethod)}</span>`);
@@ -1107,7 +1097,7 @@
       ${tagRow}
       <p class="brand-slogan">${esc(b.slogan||'')}</p>
       <div class="prod-thumbs">${thumbs}</div>
-      <div class="brand-price"><span class="price-label">가격대</span>${price}</div>
+      <div class="brand-spacer"></div>
       <button class="btn-cta btn-cta-before">🔒 인증 후 브랜드 정보 보기</button>
       <button class="btn-cta btn-cta-after" onclick="openBrandDetail('${esc(b.id)}')">브랜드 정보 보기 →</button>
       <p class="unlock-hint">접근 코드 입력하면 마스킹 자동 해제</p>
