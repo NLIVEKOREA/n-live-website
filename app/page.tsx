@@ -534,11 +534,16 @@ export default function HomePage() {
 
       {/* WHY N-LIVE */}
       <section id="why" className={`why-section why-hero ${interest === "sourcing" ? "highlight" : ""}`}>
-        <div className="container why-hero-content">
+        <div className="container why-hero-content why-hero-intro">
           <div className="section-eyebrow">— {pickLang(WHY_LABELS, lang)}</div>
           <h2 className="section-title">{why.title}</h2>
           <p className="why-lead">{why.lead}</p>
+        </div>
 
+        {/* 협업 브랜드 + 중국 왕홍풀 — 2줄 흐름 (섹션 비주얼 중심) */}
+        <LogoMarquee />
+
+        <div className="container why-hero-grid">
           <div className="why-grid">
             {why.items.map((item, i) => (
               <div className="why-item" key={i}>
@@ -549,9 +554,6 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-
-        {/* 협업 브랜드 + 중국 왕홍풀 — 2줄 흐름 */}
-        <LogoMarquee />
       </section>
 
       {/* NETWORK / METRICS — 관심사별 순서 변경 */}
