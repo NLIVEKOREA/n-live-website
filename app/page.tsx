@@ -484,6 +484,30 @@ export default function HomePage() {
 
       <Marquee items={marquee1} />
 
+      {/* WHY N-LIVE */}
+      <section id="why" className={`why-section why-hero ${interest === "sourcing" ? "highlight" : ""}`}>
+        <div className="container why-hero-content why-hero-intro">
+          <div className="section-eyebrow">— {pickLang(WHY_LABELS, lang)}</div>
+          <h2 className="section-title">{why.title}</h2>
+          <p className="why-lead">{why.lead}</p>
+        </div>
+
+        {/* 협업 브랜드 + 중국 왕홍풀 — 2줄 흐름 (섹션 비주얼 중심) */}
+        <LogoMarquee />
+
+        <div className="container why-hero-grid">
+          <div className="why-grid">
+            {why.items.map((item, i) => (
+              <div className="why-item" key={i}>
+                <div className="why-num">0{i + 1}</div>
+                <h4>{item.t}</h4>
+                <p>{item.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* INTEREST PICKER — 핵심 */}
       <section id="interest" className="interest-section">
         <div className="container">
@@ -529,30 +553,6 @@ export default function HomePage() {
               <span className="icw-cta">{interestCards["nlink"].cta}</span>
             </div>
           </button>
-        </div>
-      </section>
-
-      {/* WHY N-LIVE */}
-      <section id="why" className={`why-section why-hero ${interest === "sourcing" ? "highlight" : ""}`}>
-        <div className="container why-hero-content why-hero-intro">
-          <div className="section-eyebrow">— {pickLang(WHY_LABELS, lang)}</div>
-          <h2 className="section-title">{why.title}</h2>
-          <p className="why-lead">{why.lead}</p>
-        </div>
-
-        {/* 협업 브랜드 + 중국 왕홍풀 — 2줄 흐름 (섹션 비주얼 중심) */}
-        <LogoMarquee />
-
-        <div className="container why-hero-grid">
-          <div className="why-grid">
-            {why.items.map((item, i) => (
-              <div className="why-item" key={i}>
-                <div className="why-num">0{i + 1}</div>
-                <h4>{item.t}</h4>
-                <p>{item.d}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
