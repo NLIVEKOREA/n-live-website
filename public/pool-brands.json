@@ -329,7 +329,24 @@
    "https://lookoptical.kr/web/product/small/202602/23aef0952b137f7bd116a3aeb8164db7.jpg"
   ],
   "marketingUrls": [],
-  "heroImage": "/brand-images/b05/p1.jpg"
+  "heroImage": "/brand-images/b05/p1.jpg",
+  "isMultiBrand": true,
+  "carriedBrands": [
+   "DIOR",
+   "CELINE",
+   "FENDI",
+   "FERRAGAMO",
+   "MULBERRY",
+   "LONGCHAMP",
+   "PAUL SMITH",
+   "SANDRO",
+   "ED HARDY",
+   "POLICE",
+   "ESCADA",
+   "NIKE",
+   "FILA",
+   "LACOSTE"
+  ]
  },
  {
   "id": "b06",

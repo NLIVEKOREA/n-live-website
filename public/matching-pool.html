@@ -881,6 +881,13 @@
   .bd-hero-info h2 { font-family:"Pretendard",sans-serif; font-size:30px; font-weight:800; letter-spacing:-.02em; color:#fff; margin:0 0 10px; text-shadow:0 2px 14px rgba(0,0,0,.55); }
   .bd-hero-cat { display:inline-block; font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#fff;
     background:rgba(212,175,55,.20); border:1px solid rgba(212,175,55,.55); border-radius:999px; padding:6px 16px; backdrop-filter:blur(3px); }
+  .bd-hero-multi { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; letter-spacing:.06em; color:#1a1505;
+    background:var(--gold); border-radius:999px; padding:6px 14px; vertical-align:middle; }
+  .bd-brands-wall { display:flex; flex-wrap:wrap; gap:9px; margin-top:2px; }
+  .bd-brand-chip { font-family:var(--serif); font-size:16px; font-weight:600; letter-spacing:.05em; color:#ece4cf;
+    background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02)); border:1px solid var(--gold-line);
+    border-radius:10px; padding:11px 18px; transition:border-color .2s,transform .2s; }
+  .bd-brand-chip:hover { border-color:var(--gold); transform:translateY(-1px); }
   @media (max-width:560px){ .bd-hero{ margin:-22px -22px 4px; height:280px; } .bd-hero-info{ left:22px; right:22px; bottom:18px; } .bd-hero-info h2{ font-size:25px; } }
   .bd-sns-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
   .bd-sns { font-size:12px; color:var(--text-dim); background:var(--bg-elev); border:1px solid var(--line-strong); border-radius:20px; padding:6px 13px; text-decoration:none; white-space:nowrap; }
@@ -1403,11 +1410,12 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
           <div class="bd-hero-info">
             <div class="bd-herologo${b.logoLight?' light':''}">${logo}</div>
             <h2>${esc2(b.realName||'')}${b.score>=10?' <span class="premium-badge" style="position:static;display:inline-block;margin-left:8px;vertical-align:middle;">★ PREMIUM</span>':''}</h2>
-            ${b.category?`<span class="bd-hero-cat">${esc2(b.category)}</span>`:''}
+            ${b.category?`<span class="bd-hero-cat">${esc2(b.category)}</span>`:''}${b.isMultiBrand?`<span class="bd-hero-multi">멀티브랜드 총판</span>`:''}
           </div>
         </div>
         ${adminUrl}
         ${attrs}
+        ${(b.carriedBrands&&b.carriedBrands.length)?`<section class="bd-sec"><h3>취급 브랜드 · ${b.carriedBrands.length}</h3><div class="bd-brands-wall">${b.carriedBrands.map(n=>`<span class="bd-brand-chip">${esc2(n)}</span>`).join('')}</div><p class="bd-hint">이 업체와 협업 시 위 브랜드 아이웨어를 공급받을 수 있습니다.</p></section>`:''}
         <section class="bd-sec"><h3>${tr('bd.intro.brand')}</h3><p>${esc2(b.slogan||'')||na}</p></section>
         <section class="bd-sec"><h3>${tr('bd.products')}</h3>${gallery}<p class="bd-hint">사진 클릭 시 크게 보기 · 브랜드 SHOP 기준 일부 상품</p></section>
         <section class="bd-sec"><h3>${tr('bd.sns')}</h3>${snsHtml}</section>
