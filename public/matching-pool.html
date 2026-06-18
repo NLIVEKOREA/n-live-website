@@ -1670,10 +1670,13 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
   }
   tabs.forEach(t => {
     t.addEventListener('click', () => {
-      // 중국관은 모든 인증 사용자 열람 가능 (역할 제한 예외)
-      if (session && session.role !== 'all' && t.dataset.tab !== 'china' && t.dataset.tab !== ROLE_TO_VIEW[session.role]) {
-        flashErr(`${ROLE_LABEL[session.role]} 코드로는 ${VIEW_LABEL[t.dataset.tab]} 풀을 열람할 수 없어요.`);
-        return;
+      // 중국관(왕홍)은 브랜드·마스터만 (셀러 코드는 열람 불가)
+      if (session && session.role !== 'all') {
+        const chinaOk = t.dataset.tab === 'china' && session.role === 'brand';
+        if (t.dataset.tab !== ROLE_TO_VIEW[session.role] && !chinaOk) {
+          flashErr(`${ROLE_LABEL[session.role]} 코드로는 열람할 수 없어요.`);
+          return;
+        }
       }
       switchTab(t.dataset.tab);
     });
@@ -1780,7 +1783,9 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
     switchTab(targetView);
     // 다른 탭 비활성 시각 (통합 코드는 둘 다 활성)
     tabs.forEach(t => {
-      const allowed = session.role === 'all' || t.dataset.tab === targetView || t.dataset.tab === 'china';
+      const isChina = t.dataset.tab === 'china';
+      if (isChina) t.style.display = (session.role === 'seller') ? 'none' : '';   // 셀러는 중국관 숨김
+      const allowed = session.role === 'all' || t.dataset.tab === targetView || (isChina && session.role === 'brand');
       t.style.opacity = allowed ? '' : '0.35';
       t.title = allowed ? '' : `${ROLE_LABEL[session.role]} 코드로는 열람 불가`;
     });
@@ -1792,7 +1797,7 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
   function applyLockedOut() {
     document.body.classList.remove('authed');
     document.body.classList.remove('master');
-    tabs.forEach(t => { t.style.opacity = ''; t.title = ''; });
+    tabs.forEach(t => { t.style.opacity = ''; t.title = ''; t.style.display = ''; });
     authDot.classList.remove('on');
     authText.innerHTML = tr('auth.status.locked');
     countdownEl.textContent = '';
