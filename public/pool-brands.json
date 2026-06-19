@@ -2371,5 +2371,41 @@
    }
   ],
   "heroImage": "/brand-hero/b40.jpg"
+ },
+ {
+  "id": "b41",
+  "no": 41,
+  "realName": "비너톡",
+  "nickname": "K-브랜드 #B41",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "36,000~38,000원",
+  "url": "https://vinnerty.com",
+  "logo": "/brand-images/b41/logo.png",
+  "images": [
+   "/brand-images/b41/p1.jpg",
+   "/brand-images/b41/p2.jpg",
+   "/brand-images/b41/p3.jpg",
+   "/brand-images/b41/p4.jpg",
+   "/brand-images/b41/p5.jpg"
+  ],
+  "slogan": "콜라겐·슬림핏 등 이너뷰티 중심의 데일리 뷰티 솔루션을 제안하는 뷰티 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://vinnerty.com/product/list.html?cate_no=43",
+  "snsUrls": [],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "/brand-hero/b41.jpg"
  }
 ]
