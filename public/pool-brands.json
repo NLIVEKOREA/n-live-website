@@ -2407,5 +2407,43 @@
   "marketingUrls": [],
   "marketingItems": [],
   "heroImage": "/brand-hero/b41.jpg"
+ },
+ {
+  "id": "b42",
+  "no": 42,
+  "realName": "루미너스",
+  "nickname": "K-브랜드 #B42",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "30,000~87,000원",
+  "url": "https://lbfashion.co.kr",
+  "logo": "/brand-images/b42/logo.png",
+  "images": [
+   "/brand-images/b42/p1.jpg",
+   "/brand-images/b42/p2.jpg",
+   "/brand-images/b42/p3.jpg",
+   "/brand-images/b42/p4.jpg",
+   "/brand-images/b42/p5.jpg"
+  ],
+  "slogan": "기초케어와 기초메이크업으로 피부를 환하게 밝혀주는 K-뷰티 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "협의",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://lbfashion.co.kr/",
+  "snsUrls": [
+   "https://www.instagram.com/lb_fb_official/"
+  ],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "/brand-hero/b42.jpg"
  }
 ]
