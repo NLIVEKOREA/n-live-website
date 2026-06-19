@@ -963,6 +963,13 @@
   .bd-gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:8px; }
   .bd-gallery img { width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:8px; border:1px solid var(--line); cursor:pointer; transition:transform .15s; }
   .bd-gallery img:hover { transform:scale(1.04); border-color:var(--amber); }
+  .bd-prodgrid { display:grid; grid-template-columns:repeat(auto-fill, minmax(132px,1fr)); gap:16px 9px; }
+  .bd-prod { margin:0; display:flex; flex-direction:column; gap:6px; }
+  .bd-prod img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:8px; border:1px solid var(--line); cursor:pointer; transition:transform .15s; background:#fff; }
+  .bd-prod img:hover { transform:scale(1.04); border-color:var(--amber); }
+  .bd-prod-name { font-size:11.5px; color:var(--text-dim); line-height:1.35; min-height:2.6em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .bd-prod-price { font-size:14px; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums; }
+  .sd-stat-hl b { color:var(--amber) !important; }
   .bd-hint { font-size:11.5px; color:var(--text-mute); margin-top:10px; }
   .bd-na { color:var(--text-mute); font-style:italic; }
   .bd-dim { color:var(--text-mute); font-size:12px; }
@@ -1377,9 +1384,9 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
 
     // 카드의 상품 썸네일 클릭 (이벤트 위임)
     document.addEventListener('click', e => {
-      const img = e.target.closest('.prod-thumbs img, .bd-gallery img');
+      const img = e.target.closest('.prod-thumbs img, .bd-gallery img, .bd-prodgrid img');
       if (!img) return;
-      const thumbs = [...img.closest('.prod-thumbs, .bd-gallery').querySelectorAll('img')];
+      const thumbs = [...img.closest('.prod-thumbs, .bd-gallery, .bd-prodgrid').querySelectorAll('img')];
       open(thumbs.map(t => t.src), thumbs.indexOf(img));
     });
     lb.querySelector('.lb-close').addEventListener('click', close);
@@ -1404,16 +1411,20 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
       document.body.appendChild(ov);
       ov.addEventListener('click', e=>{ if(e.target===ov || e.target.closest('.bd-close')) window.closeBrandDetail(); });
     }
+    const pp = (b.pricedProducts && b.pricedProducts.length) ? b.pricedProducts.filter(x=>x&&x.img) : [];
     const imgs = ((b.shopProducts && b.shopProducts.length ? b.shopProducts : b.images)||[]).filter(Boolean);
-    const gallery = imgs.length
-      ? `<div class="bd-gallery">${imgs.map(s=>`<img src="${esc2(s)}" loading="lazy">`).join('')}</div>`
-      : `<p class="bd-na">상품 이미지 준비 중</p>`;
+    const gallery = pp.length
+      ? `<div class="bd-prodgrid">${pp.map(p=>`<figure class="bd-prod"><img src="${esc2(p.img)}" loading="lazy" alt="${esc2(p.name||'')}"><figcaption class="bd-prod-name">${esc2(p.name||'')}</figcaption><span class="bd-prod-price">${esc2(p.price||'')}</span></figure>`).join('')}</div>`
+      : (imgs.length
+        ? `<div class="bd-gallery">${imgs.map(s=>`<img src="${esc2(s)}" loading="lazy">`).join('')}</div>`
+        : `<p class="bd-na">상품 이미지 준비 중</p>`);
     const logo = b.logo ? `<img src="${esc2(b.logo)}" alt="">` : `<span class="logo-fallback">${esc2((b.realName||'?').slice(0,8))}</span>`;
     const na = '<span class="bd-na">준비 중</span>';
     const ctrs = (b.countries && b.countries.length ? b.countries.slice() : ['대한민국']);
     const ctrsOrdered = ['대한민국', ...ctrs.filter(c=>c!=='대한민국')];
-    const attrs = `<div class="sd-stats sd-stats-3">
+    const attrs = `<div class="sd-stats">
         <div class="sd-stat"><span>판매 방식</span><b>${b.salesMethod?esc2(b.salesMethod):'—'}</b></div>
+        <div class="sd-stat sd-stat-hl"><span>공급률</span><b>${b.supplyRate?esc2(b.supplyRate):'협의'}</b></div>
         <div class="sd-stat"><span>스튜디오</span><b>${b.hasStudio?esc2(b.hasStudio):'—'}</b></div>
         <div class="sd-stat"><span>진출 국가</span><b>${esc2(ctrsOrdered.join(' · '))}</b></div>
       </div>`;
@@ -1474,7 +1485,7 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
           <div class="lo-auth"><span class="lo-auth-ic">✓</span><span>전 제품 <b>100% 정품</b> · 공식 유통 (병행수입·짝퉁 아님). 협업 시 아래 브랜드 아이웨어를 직접 공급받을 수 있습니다.</span></div>
           <div class="lo-brands">${b.carriedBrands.map(c=>`<div class="lo-brand${c.featured?' lo-feat':''}"><div class="lo-brand-head"><span class="lo-brand-name">${esc2(c.name)}</span>${c.featured?'<span class="lo-star">★ 대표 브랜드</span>':''}</div><div class="lo-prods">${(c.products||[]).slice(0,5).map(u=>`<img src="${esc2(u)}" loading="lazy" alt="${esc2(c.name)}">`).join('')}</div></div>`).join('')}</div></section>`:''}
         <section class="bd-sec"><h3>${tr('bd.intro.brand')}</h3><p>${esc2(b.slogan||'')||na}</p></section>
-        <section class="bd-sec"><h3>${tr('bd.products')}</h3>${gallery}<p class="bd-hint">사진 클릭 시 크게 보기 · 브랜드 SHOP 기준 일부 상품</p></section>
+        <section class="bd-sec"><h3>${tr('bd.products')}</h3>${gallery}<p class="bd-hint">가격은 브랜드 공식몰 판매가 기준 · 사진 클릭 시 크게 보기 · 공급가는 문의 시 안내</p></section>
         <section class="bd-sec"><h3>${tr('bd.sns')}</h3>${snsHtml}</section>
         <section class="bd-sec"><h3>${tr('bd.marketing')}</h3>${mktHtml}</section>
         <section class="bd-sec"><h3>${tr('bd.note')}</h3><p>${b.note ? esc2(b.note) : na} <span class="bd-dim">— 관리자 직접 작성</span></p></section>

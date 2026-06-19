@@ -2406,7 +2406,40 @@
   "shopProducts": [],
   "marketingUrls": [],
   "marketingItems": [],
-  "heroImage": "/brand-hero/b41.jpg"
+  "heroImage": "/brand-hero/b41.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b41/pp1.jpg",
+    "name": "비너티 비너 쉐이크 체중조절용 단백질 쉐이크 그레인",
+    "price": "23,000원",
+    "url": "https://vinnerty.com/product/list.html?cate_no=43&sort_method=5#Product_ListMenu"
+   },
+   {
+    "img": "/brand-images/b41/pp2.jpg",
+    "name": "비너티 비너츄 슬림핏 가르시니아 다이어트 체지방 탄수화물 컷팅제 30정 1box",
+    "price": "42,000원",
+    "url": "https://vinnerty.com/product/detail.html?product_no=42&cate_no=43&display_group=1"
+   },
+   {
+    "img": "/brand-images/b41/pp3.jpg",
+    "name": "비너티 비너수 물 붓기 필요없는 호박차 임산부 차 120ml",
+    "price": "39,000원",
+    "url": "https://vinnerty.com/product/detail.html?product_no=17&cate_no=43&display_group=1"
+   },
+   {
+    "img": "/brand-images/b41/pp4.jpg",
+    "name": "비너티 비너톡 레몬맛",
+    "price": "38,000원",
+    "url": "https://vinnerty.com/product/detail.html?product_no=12&cate_no=43&display_group=1"
+   },
+   {
+    "img": "/brand-images/b41/pp5.jpg",
+    "name": "비너티 비너톡 산머루맛",
+    "price": "38,000원",
+    "url": "https://vinnerty.com/product/detail.html?product_no=37&cate_no=43&display_group=1"
+   }
+  ],
+  "supplyRate": "39%"
  },
  {
   "id": "b42",
@@ -2444,6 +2477,45 @@
   "shopProducts": [],
   "marketingUrls": [],
   "marketingItems": [],
-  "heroImage": "/brand-hero/b42.jpg"
+  "heroImage": "/brand-hero/b42.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b42/pp1.jpg",
+    "name": "LUMINOUS 선쿠션 & 재생쿠션 & 톤업크림",
+    "price": "39,000원",
+    "url": "https://lbfashion.co.kr/product/luminous-%EC%84%A0%EC%BF%A0%EC%85%98-%EC%9E%AC%EC%83%9D%EC%BF%A0%EC%85%98-%ED%86%A4%EC%97%85%ED%81%AC%EB%A6%BC/1139/category/1/display/2/?icid=MAIN.product_listmain_1"
+   },
+   {
+    "img": "/brand-images/b42/pp2.jpg",
+    "name": "[LUMINOUS] 글루타치온 팩 (3+1세트)",
+    "price": "172,000원",
+    "url": "https://lbfashion.co.kr/product/luminous-%EA%B8%80%EB%A3%A8%ED%83%80%EC%B9%98%EC%98%A8-%ED%8C%A9-31%EC%84%B8%ED%8A%B8/814/category/1/display/2/?icid=MAIN.product_listmain_1"
+   },
+   {
+    "img": "/brand-images/b42/pp3.jpg",
+    "name": "[LUMINOUS] 펩타이드 100세럼",
+    "price": "39,000원",
+    "url": "https://lbfashion.co.kr/product/luminous-%ED%8E%A9%ED%83%80%EC%9D%B4%EB%93%9C-100%EC%84%B8%EB%9F%BC/806/category/1/display/2/?icid=MAIN.product_listmain_1"
+   },
+   {
+    "img": "/brand-images/b42/pp4.jpg",
+    "name": "[LUMINOUS] 펩타이드 500크림",
+    "price": "99,000원",
+    "url": "https://lbfashion.co.kr/product/luminous-%ED%8E%A9%ED%83%80%EC%9D%B4%EB%93%9C-500%ED%81%AC%EB%A6%BC/808/category/1/display/2/?icid=MAIN.product_listmain_1"
+   },
+   {
+    "img": "/brand-images/b42/pp5.jpg",
+    "name": "루미너스 쿨링팩",
+    "price": "172,000원",
+    "url": "https://lbfashion.co.kr/product/%EB%A3%A8%EB%AF%B8%EB%84%88%EC%8A%A4-%EC%BF%A8%EB%A7%81%ED%8C%A9/1137/category/1/display/2/?icid=MAIN.product_listmain_1"
+   },
+   {
+    "img": "/brand-images/b42/pp6.jpg",
+    "name": "[LUMINOUS] 쿨링 팩 (3+1세트)",
+    "price": "172,000원",
+    "url": "https://lbfashion.co.kr/product/luminous-%EC%BF%A8%EB%A7%81-%ED%8C%A9-31%EC%84%B8%ED%8A%B8/813/category/1/display/3/?icid=MAIN.product_listmain_2"
+   }
+  ],
+  "supplyRate": "40~42%"
  }
 ]
