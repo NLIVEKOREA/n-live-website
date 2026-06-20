@@ -6774,5 +6774,578 @@
    }
   ],
   "supplyRate": "40~42%"
+ },
+ {
+  "id": "b43",
+  "no": 43,
+  "realName": "레이브힐",
+  "nickname": "K-브랜드 #B43",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "36,500~87,000원",
+  "url": "https://raveheal.com/",
+  "logo": "/brand-images/b43/logo.png",
+  "images": [
+   "/brand-images/b43/pp1.jpg",
+   "/brand-images/b43/pp2.jpg",
+   "/brand-images/b43/pp3.jpg",
+   "/brand-images/b43/pp4.jpg",
+   "/brand-images/b43/pp5.jpg"
+  ],
+  "slogan": "활성 EGF·6GF 고함량으로 고탄력·안티에이징을 앞세운 EGF 앰플·신부세럼 스킨케어 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://raveheal.com/product/list.html?cate_no=45",
+  "snsUrls": [],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b43/pp1.jpg",
+    "name": "멜라제로 EGF 앰플",
+    "price": "52,000원",
+    "url": "https://raveheal.com/product/detail.html?product_no=31&cate_no=1&display_group=5"
+   },
+   {
+    "img": "/brand-images/b43/pp2.jpg",
+    "name": "브라이드 EGF 혼수 탄력크림",
+    "price": "59,000원",
+    "url": "https://raveheal.com/product/detail.html?product_no=28&cate_no=45&display_group=1"
+   },
+   {
+    "img": "/brand-images/b43/pp3.jpg",
+    "name": "브라이드 EGF 세럼 미스트",
+    "price": "48,000원",
+    "url": "https://raveheal.com/product/detail.html?product_no=15&cate_no=1&display_group=5"
+   },
+   {
+    "img": "/brand-images/b43/pp4.jpg",
+    "name": "브라이드 EGF 세럼 마스크",
+    "price": "36,500원",
+    "url": "https://raveheal.com/product/detail.html?product_no=12&cate_no=1&display_group=5"
+   },
+   {
+    "img": "/brand-images/b43/pp5.jpg",
+    "name": "브라이드 EGF 타임리스 세럼",
+    "price": "87,000원",
+    "url": "https://raveheal.com/product/detail.html?product_no=11&cate_no=1&display_group=5"
+   }
+  ],
+  "supplyRate": ""
+ },
+ {
+  "id": "b44",
+  "no": 44,
+  "realName": "아르네 (Arne)",
+  "nickname": "K-브랜드 #B44",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "33,000~132,000원",
+  "url": "https://arne.kr/",
+  "logo": "/brand-images/b44/logo.png",
+  "images": [
+   "/brand-images/b44/pp1.jpg",
+   "/brand-images/b44/pp2.jpg",
+   "/brand-images/b44/pp3.jpg",
+   "/brand-images/b44/pp4.jpg",
+   "/brand-images/b44/pp7.jpg"
+  ],
+  "slogan": "‘피부를 다시 쓰다’ — PDRN 재생 앰플·스킨부스터 중심의 더마 스킨케어 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://arne.kr/product/list.html?cate_no=23",
+  "snsUrls": [],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b44/pp1.jpg",
+    "name": "아르네 엑셀리뉴 PDRN 리쥬비네이팅 선크림",
+    "price": "33,000원",
+    "url": "https://arne.kr/product/%EC%95%84%EB%A5%B4%EB%84%A4-%EC%97%91%EC%85%80%EB%A6%AC%EB%89%B4-pdrn-%EB%A6%AC%EC%A5%AC%EB%B9%84%EB%84%A4%EC%9D%B4%ED%8C%85-%EC%84%A0%ED%81%AC%EB%A6%BC/29/category/23/display/1/"
+   },
+   {
+    "img": "/brand-images/b44/pp2.jpg",
+    "name": "아르네 엑셀리뉴 PDRN 스킨부스터 앰플 1+1(30ml*2)",
+    "price": "132,000원",
+    "url": "https://arne.kr/product/%EC%95%84%EB%A5%B4%EB%84%A4-%EC%97%91%EC%85%80%EB%A6%AC%EB%89%B4-pdrn-%EC%8A%A4%ED%82%A8%EB%B6%80%EC%8A%A4%ED%84%B0-%EC%95%B0%ED%94%8C-1130ml2/10/category/23/display/1/"
+   },
+   {
+    "img": "/brand-images/b44/pp3.jpg",
+    "name": "아르네 라스텔로 PDRN 화이트 글로우 앰플",
+    "price": "66,000원",
+    "url": "https://arne.kr/product/%EC%95%84%EB%A5%B4%EB%84%A4-%EB%9D%BC%EC%8A%A4%ED%85%94%EB%A1%9C-pdrn-%ED%99%94%EC%9D%B4%ED%8A%B8-%EA%B8%80%EB%A1%9C%EC%9A%B0-%EC%95%B0%ED%94%8C/9/category/23/display/1/"
+   },
+   {
+    "img": "/brand-images/b44/pp4.jpg",
+    "name": "셀쥬란 보습 리페어 고농축 PDRN 크림 대용량 300g",
+    "price": "54,000원",
+    "url": "https://arne.kr/product/%EC%85%80%EC%A5%AC%EB%9E%80-%EB%B3%B4%EC%8A%B5-%EB%A6%AC%ED%8E%98%EC%96%B4-%EA%B3%A0%EB%86%8D%EC%B6%95-pdrn-%ED%81%AC%EB%A6%BC-%EB%8C%80%EC%9A%A9%EB%9F%89-300g/44/category/23/display/1/"
+   },
+   {
+    "img": "/brand-images/b44/pp7.jpg",
+    "name": "[PDRN 선크림 + 앰플 SET] 선크림 본품 + 앰플 본품 (택 1)",
+    "price": "99,000원",
+    "url": "https://arne.kr/product/pdrn-%EC%84%A0%ED%81%AC%EB%A6%BC-%EC%95%B0%ED%94%8C-set-%EC%84%A0%ED%81%AC%EB%A6%BC-%EB%B3%B8%ED%92%88-%EC%95%B0%ED%94%8C-%EB%B3%B8%ED%92%88-%ED%83%9D-1/33/category/23/display/1/"
+   },
+   {
+    "img": "/brand-images/b44/pp8.jpg",
+    "name": "[PDRN 앰플 스페셜 SET] 앰플 본품 + 미니어처 (택 1)",
+    "price": "76,000원",
+    "url": "https://arne.kr/product/pdrn-%EC%95%B0%ED%94%8C-%EC%8A%A4%ED%8E%98%EC%85%9C-set-%EC%95%B0%ED%94%8C-%EB%B3%B8%ED%92%88-%EB%AF%B8%EB%8B%88%EC%96%B4%EC%B2%98-%ED%83%9D-1/32/category/23/display/1/"
+   }
+  ],
+  "supplyRate": ""
+ },
+ {
+  "id": "b45",
+  "no": 45,
+  "realName": "얼핏 (earfit)",
+  "nickname": "K-브랜드 #B45",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "20,000~30,000원",
+  "url": "https://earfit.co.kr/",
+  "logo": "/brand-images/b45/logo.png",
+  "images": [
+   "/brand-images/b45/pp1.jpg",
+   "/brand-images/b45/pp2.jpg",
+   "/brand-images/b45/pp3.jpg",
+   "/brand-images/b45/pp4.jpg",
+   "/brand-images/b45/pp5.jpg"
+  ],
+  "slogan": "‘느리게 더 아름답게’ 슬로우에이징 — 비건·고보습 데일리 스킨케어 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://earfit.co.kr/shop_all",
+  "snsUrls": [],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b45/pp1.jpg",
+    "name": "에어리 필터 모이스처 톤업",
+    "price": "28,000원",
+    "url": "https://earfit.co.kr/shop_all/?idx=14"
+   },
+   {
+    "img": "/brand-images/b45/pp2.jpg",
+    "name": "UV 프로텍터 모이스처 선",
+    "price": "21,000원",
+    "url": "https://earfit.co.kr/shop_all/?idx=6"
+   },
+   {
+    "img": "/brand-images/b45/pp3.jpg",
+    "name": "잼 팩 클랜저",
+    "price": "25,000원",
+    "url": "https://earfit.co.kr/shop_all/?idx=23"
+   },
+   {
+    "img": "/brand-images/b45/pp4.jpg",
+    "name": "바이옴세라 배리어 클렌징 젤",
+    "price": "20,000원",
+    "url": "https://earfit.co.kr/shop_all/?idx=3"
+   },
+   {
+    "img": "/brand-images/b45/pp5.jpg",
+    "name": "바이옴세라 배리어 토너",
+    "price": "21,000원",
+    "url": "https://earfit.co.kr/shop_all/?idx=11"
+   },
+   {
+    "img": "/brand-images/b45/pp6.jpg",
+    "name": "바이옴세라 배리어 세럼",
+    "price": "28,000원",
+    "url": "https://earfit.co.kr/shop_all/?idx=10"
+   },
+   {
+    "img": "/brand-images/b45/pp7.jpg",
+    "name": "바이옴세라 배리어 크림",
+    "price": "30,000원",
+    "url": "https://earfit.co.kr/shop_all/?idx=2"
+   }
+  ],
+  "supplyRate": ""
+ },
+ {
+  "id": "b46",
+  "no": 46,
+  "realName": "탐뷰티 (TAM BEAUTY)",
+  "nickname": "K-브랜드 #B46",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "12,600~18,000원",
+  "url": "https://tambeauty.kr/",
+  "logo": "/brand-images/b46/logo.png",
+  "images": [
+   "/brand-images/b46/pp1.jpg",
+   "/brand-images/b46/pp2.jpg",
+   "/brand-images/b46/pp3.jpg",
+   "/brand-images/b46/pp4.jpg",
+   "/brand-images/b46/pp5.jpg"
+  ],
+  "slogan": "‘매일 더 탐나는 메이크업’ — 베이스·립·치크 데일리 색조 메이크업 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://tambeauty.kr/product/list.html?cate_no=78",
+  "snsUrls": [],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b46/pp1.jpg",
+    "name": "더 클라우드 이지 브로우 마스카라",
+    "price": "12,600원",
+    "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%9D%B4%EC%A7%80-%EB%B8%8C%EB%A1%9C%EC%9A%B0-%EB%A7%88%EC%8A%A4%EC%B9%B4%EB%9D%BC/121/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b46/pp2.jpg",
+    "name": "더 클라우드 플럼핑 립 라이너",
+    "price": "12,600원",
+    "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%ED%94%8C%EB%9F%BC%ED%95%91-%EB%A6%BD-%EB%9D%BC%EC%9D%B4%EB%84%88/118/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b46/pp3.jpg",
+    "name": "더 클라우드 이지 브로우 펜슬",
+    "price": "12,600원",
+    "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%9D%B4%EC%A7%80-%EB%B8%8C%EB%A1%9C%EC%9A%B0-%ED%8E%9C%EC%8A%AC/115/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b46/pp4.jpg",
+    "name": "더 클라우드 스킨 컨실러",
+    "price": "14,400원",
+    "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%8A%A4%ED%82%A8-%EC%BB%A8%EC%8B%A4%EB%9F%AC/114/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b46/pp5.jpg",
+    "name": "더 클라우드 블러 립 틴트",
+    "price": "14,400원",
+    "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EB%B8%94%EB%9F%AC-%EB%A6%BD-%ED%8B%B4%ED%8A%B8/112/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b46/pp6.jpg",
+    "name": "더 클라우드 필터 파우더 밤",
+    "price": "16,200원",
+    "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%ED%95%84%ED%84%B0-%ED%8C%8C%EC%9A%B0%EB%8D%94-%EB%B0%A4/111/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b46/pp7.jpg",
+    "name": "더 클라우드 블러 크림 블러셔",
+    "price": "14,400원",
+    "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EB%B8%94%EB%9F%AC-%ED%81%AC%EB%A6%BC-%EB%B8%94%EB%9F%AC%EC%85%94/110/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b46/pp8.jpg",
+    "name": "더 클라우드 하트 쉐이딩 듀오",
+    "price": "18,000원",
+    "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%ED%95%98%ED%8A%B8-%EC%89%90%EC%9D%B4%EB%94%A9-%EB%93%80%EC%98%A4/109/category/78/display/1/"
+   }
+  ],
+  "supplyRate": ""
+ },
+ {
+  "id": "b47",
+  "no": 47,
+  "realName": "씨유스킨 (CU SKIN)",
+  "nickname": "K-브랜드 #B47",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "7,000~52,000원",
+  "url": "https://www.cueshop.co.kr/",
+  "logo": "/brand-images/b47/logo.png",
+  "images": [
+   "/brand-images/b47/pp1.jpg",
+   "/brand-images/b47/pp2.jpg",
+   "/brand-images/b47/pp3.jpg",
+   "/brand-images/b47/pp4.jpg",
+   "/brand-images/b47/pp5.jpg"
+  ],
+  "slogan": "비타민U·닥터솔루션 라인을 갖춘 클린업화장품의 더마 코스메틱 브랜드 CU스킨.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://www.cueshop.co.kr/goods/goods_list.php?cateCd=010",
+  "snsUrls": [],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b47/pp1.jpg",
+    "name": "[CU 비타민U] 커버핏 쿠션팩트 23호 15g(+리필 15g)",
+    "price": "52,000원",
+    "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=898"
+   },
+   {
+    "img": "/brand-images/b47/pp2.jpg",
+    "name": "[CU 비타민U] 세럼 미스트 48ml",
+    "price": "23,000원",
+    "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=890"
+   },
+   {
+    "img": "/brand-images/b47/pp3.jpg",
+    "name": "[CU 비타민U] 선 크림 50ml",
+    "price": "32,000원",
+    "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=882"
+   },
+   {
+    "img": "/brand-images/b47/pp4.jpg",
+    "name": "[CU 닥터솔루션] 판테놀 스피큘 세럼 30ml",
+    "price": "25,000원",
+    "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=881"
+   },
+   {
+    "img": "/brand-images/b47/pp5.jpg",
+    "name": "[CU 닥터솔루션] 카멜리아 그라인딩 클렌징 밤 50ml",
+    "price": "35,000원",
+    "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=880"
+   },
+   {
+    "img": "/brand-images/b47/pp6.jpg",
+    "name": "[CU 비타민U] 콜라겐 하이드로 겔 마스크 34g",
+    "price": "7,000원",
+    "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=831"
+   },
+   {
+    "img": "/brand-images/b47/pp7.jpg",
+    "name": "[CU 비타민U] 오일 투 폼클렌저 250ml",
+    "price": "36,000원",
+    "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=680"
+   },
+   {
+    "img": "/brand-images/b47/pp8.jpg",
+    "name": "[CU 비타민U] 선 세럼 50g",
+    "price": "32,000원",
+    "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=793"
+   }
+  ],
+  "supplyRate": ""
+ },
+ {
+  "id": "b48",
+  "no": 48,
+  "realName": "루아렌 (LuaRén)",
+  "nickname": "K-브랜드 #B48",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "9,000~224,000원",
+  "url": "https://luaren.co.kr/",
+  "logo": "/brand-images/b48/logo.png",
+  "images": [
+   "/brand-images/b48/pp1.jpg",
+   "/brand-images/b48/pp2.jpg",
+   "/brand-images/b48/pp3.jpg",
+   "/brand-images/b48/pp4.jpg",
+   "/brand-images/b48/pp5.jpg"
+  ],
+  "slogan": "‘나를 돌보는 효율적인 시간’ — 클렌저·선스크린·립 색조의 데일리 뷰티 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://luaren.co.kr/product/list.html?cate_no=53",
+  "snsUrls": [],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b48/pp1.jpg",
+    "name": "시카 선스크린",
+    "price": "29,000원",
+    "url": "https://luaren.co.kr/product/%EC%8B%9C%EC%B9%B4-%EC%84%A0%EC%8A%A4%ED%81%AC%EB%A6%B0/24/category/53/display/2/?icid=PRODUCT_LIST.product_listrecommend"
+   },
+   {
+    "img": "/brand-images/b48/pp2.jpg",
+    "name": "틴팅 옴브레 글로우 립앤치크",
+    "price": "28,000원",
+    "url": "https://luaren.co.kr/product/%ED%8B%B4%ED%8C%85-%EC%98%B4%EB%B8%8C%EB%A0%88-%EA%B8%80%EB%A1%9C%EC%9A%B0-%EB%A6%BD%EC%95%A4%EC%B9%98%ED%81%AC/23/category/53/display/2/?icid=PRODUCT_LIST.product_listrecommend"
+   },
+   {
+    "img": "/brand-images/b48/pp3.jpg",
+    "name": "틴팅 옴브레 글로우 립앤치크 시그니처 세트",
+    "price": "56,000원",
+    "url": "https://luaren.co.kr/product/%ED%8B%B4%ED%8C%85-%EC%98%B4%EB%B8%8C%EB%A0%88-%EA%B8%80%EB%A1%9C%EC%9A%B0-%EB%A6%BD%EC%95%A4%EC%B9%98%ED%81%AC-%EC%8B%9C%EA%B7%B8%EB%8B%88%EC%B2%98-%EC%84%B8%ED%8A%B8/12/category/53/display/2/?icid=PRODUCT_LIST.product_listrecommend"
+   },
+   {
+    "img": "/brand-images/b48/pp4.jpg",
+    "name": "퀵 포밍 스킨 팩 클렌저 모이스트 7개입",
+    "price": "9,000원",
+    "url": "https://luaren.co.kr/product/%ED%80%B5-%ED%8F%AC%EB%B0%8D-%EC%8A%A4%ED%82%A8-%ED%8C%A9-%ED%81%B4%EB%A0%8C%EC%A0%80-%EB%AA%A8%EC%9D%B4%EC%8A%A4%ED%8A%B8-7%EA%B0%9C%EC%9E%85/40/category/53/display/1/"
+   },
+   {
+    "img": "/brand-images/b48/pp5.jpg",
+    "name": "[풀패키지] 틴팅 옴브레 글로우 립앤치크 8종",
+    "price": "224,000원",
+    "url": "https://luaren.co.kr/product/%ED%92%80%ED%8C%A8%ED%82%A4%EC%A7%80-%ED%8B%B4%ED%8C%85-%EC%98%B4%EB%B8%8C%EB%A0%88-%EA%B8%80%EB%A1%9C%EC%9A%B0-%EB%A6%BD%EC%95%A4%EC%B9%98%ED%81%AC-8%EC%A2%85/28/category/53/display/1/"
+   },
+   {
+    "img": "/brand-images/b48/pp6.jpg",
+    "name": "[가정의달 기획/생기가득, 윤슬광 치트키 세트] 틴팅 옴브레 글로우 립앤치크 택1&시카 선스크린",
+    "price": "57,000원",
+    "url": "https://luaren.co.kr/product/%EA%B0%80%EC%A0%95%EC%9D%98%EB%8B%AC-%EA%B8%B0%ED%9A%8D%EC%83%9D%EA%B8%B0%EA%B0%80%EB%93%9D-%EC%9C%A4%EC%8A%AC%EA%B4%91-%EC%B9%98%ED%8A%B8%ED%82%A4-%EC%84%B8%ED%8A%B8-%ED%8B%B4%ED%8C%85-%EC%98%B4%EB%B8%8C%EB%A0%88-%EA%B8%80%EB%A1%9C%EC%9A%B0-%EB%A6%BD%EC%95%A4%EC%B9%98%ED%81%AC-%ED%83%9D1%EC%8B%9C%EC%B9%B4-%EC%84%A0%EC%8A%A4%ED%81%AC%EB%A6%B0/46/category/48/display/1/"
+   },
+   {
+    "img": "/brand-images/b48/pp7.jpg",
+    "name": "[가정의달 기획/스킨 배리어 듀오] 퀵 포밍 스킨 팩클렌저 모이스트 30개입&시카 선스크린",
+    "price": "59,000원",
+    "url": "https://luaren.co.kr/product/%EA%B0%80%EC%A0%95%EC%9D%98%EB%8B%AC-%EA%B8%B0%ED%9A%8D%EC%8A%A4%ED%82%A8-%EB%B0%B0%EB%A6%AC%EC%96%B4-%EB%93%80%EC%98%A4-%ED%80%B5-%ED%8F%AC%EB%B0%8D-%EC%8A%A4%ED%82%A8-%ED%8C%A9%ED%81%B4%EB%A0%8C%EC%A0%80-%EB%AA%A8%EC%9D%B4%EC%8A%A4%ED%8A%B8-30%EA%B0%9C%EC%9E%85%EC%8B%9C%EC%B9%B4-%EC%84%A0%EC%8A%A4%ED%81%AC%EB%A6%B0/45/category/48/display/1/"
+   },
+   {
+    "img": "/brand-images/b48/pp8.jpg",
+    "name": "[가정의달 기획/메이크업 부스팅 키트] 퀵 포밍 스킨 팩클렌저 모이스트 30개입&틴팅 옴브레 글로우 립앤치크",
+    "price": "58,000원",
+    "url": "https://luaren.co.kr/product/%EA%B0%80%EC%A0%95%EC%9D%98%EB%8B%AC-%EA%B8%B0%ED%9A%8D%EB%A9%94%EC%9D%B4%ED%81%AC%EC%97%85-%EB%B6%80%EC%8A%A4%ED%8C%85-%ED%82%A4%ED%8A%B8-%ED%80%B5-%ED%8F%AC%EB%B0%8D-%EC%8A%A4%ED%82%A8-%ED%8C%A9%ED%81%B4%EB%A0%8C%EC%A0%80-%EB%AA%A8%EC%9D%B4%EC%8A%A4%ED%8A%B8-30%EA%B0%9C%EC%9E%85%ED%8B%B4%ED%8C%85-%EC%98%B4%EB%B8%8C%EB%A0%88-%EA%B8%80%EB%A1%9C%EC%9A%B0-%EB%A6%BD%EC%95%A4%EC%B9%98%ED%81%AC-%ED%83%9D1/43/category/48/display/1/"
+   }
+  ],
+  "supplyRate": ""
+ },
+ {
+  "id": "b49",
+  "no": 49,
+  "realName": "볼타신시아 (VOLTASYNTHIA)",
+  "nickname": "K-브랜드 #B49",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "17,500~105,000원",
+  "url": "https://voltasynthia.com/",
+  "logo": "/brand-images/b49/logo.png",
+  "images": [
+   "/brand-images/b49/pp1.jpg",
+   "/brand-images/b49/pp2.jpg",
+   "/brand-images/b49/pp3.jpg",
+   "/brand-images/b49/pp4.jpg",
+   "/brand-images/b49/pp5.jpg"
+  ],
+  "slogan": "올리브 발란싱 라인을 중심으로 한 비건 스킨·바디 뷰티 브랜드, 볼타신시아.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://www.ousiainnollostore.com/voltasynthia/",
+  "snsUrls": [],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [],
+  "heroImage": "",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b49/pp1.jpg",
+    "name": "Olive Balancing Tint Cream",
+    "price": "19,500원",
+    "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=36"
+   },
+   {
+    "img": "/brand-images/b49/pp2.jpg",
+    "name": "Voltasynthia Hand Cream",
+    "price": "26,000원",
+    "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=13"
+   },
+   {
+    "img": "/brand-images/b49/pp3.jpg",
+    "name": "Olive Glow Cleanser",
+    "price": "17,500원",
+    "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=34"
+   },
+   {
+    "img": "/brand-images/b49/pp4.jpg",
+    "name": "Sexta Body Wash",
+    "price": "42,000원",
+    "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=15"
+   },
+   {
+    "img": "/brand-images/b49/pp5.jpg",
+    "name": "Osillasynthia GIFT 001",
+    "price": "105,000원",
+    "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=21"
+   },
+   {
+    "img": "/brand-images/b49/pp6.jpg",
+    "name": "Olive Balancing Sun Cream",
+    "price": "18,000원",
+    "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=35"
+   },
+   {
+    "img": "/brand-images/b49/pp7.jpg",
+    "name": "Osillasynthia GIFT 002",
+    "price": "78,000원",
+    "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=33"
+   },
+   {
+    "img": "/brand-images/b49/pp8.jpg",
+    "name": "Quinta Body Lotion",
+    "price": "42,000원",
+    "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=14"
+   }
+  ],
+  "supplyRate": ""
  }
 ]
