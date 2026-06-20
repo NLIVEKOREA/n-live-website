@@ -1846,10 +1846,8 @@ Object.assign(window.MP_I18N, {
 <script>
   // ─── Sample access codes (실제 서비스에선 서버에서 검증) ───
   const CODES = {
-    '4646':   { role: 'all',    expiresHours: null }, // 마스터 → 전체 열람 + 관리자
-    '5712':   { role: 'all',    expiresHours: null, reveal: true }, // 마스터(패션·패션잡화 비공개 해제 포함)
-    'seller': { role: 'seller', expiresHours: null }, // 셀러용 → K-브랜드 풀 열람
-    '10':     { role: 'brand',  expiresHours: null }  // 브랜드용 → 글로벌 셀러 풀 열람
+    // 2026-06-20: 기존 코드(4646·seller·10) 전부 폐기. 5712 단일 마스터 코드만 유효.
+    '5712':   { role: 'all',    expiresHours: null, reveal: true } // 유일한 마스터 코드(전체 열람 + 패션·패션잡화 포함)
   };
 
   // 셀러/브랜드 → 보여줄 탭 매핑 (all = 둘 다)
@@ -1986,7 +1984,7 @@ Object.assign(window.MP_I18N, {
     }
     // OK
     const expiresAt = meta.expiresHours ? Date.now() + meta.expiresHours * 3600 * 1000 : null;
-    session = { role: meta.role, expiresAt, reveal: !!meta.reveal };
+    session = { role: meta.role, expiresAt, reveal: !!meta.reveal, code: code };
     try { localStorage.setItem('nlive_network_session', JSON.stringify(session)); } catch(e) {}
     applySession();
     closeModal();
@@ -2077,7 +2075,9 @@ Object.assign(window.MP_I18N, {
       const raw = localStorage.getItem('nlive_network_session');
       if (raw) {
         const s = JSON.parse(raw);
-        if (!s.expiresAt || s.expiresAt > Date.now()) { session = s; applySession(); }
+        // 폐기된 코드/구버전 세션(코드 미보유)은 무효화 → 기존 로그인 사용자도 다시 잠김. 현재 CODES의 코드만 유효
+        const valid = s && s.code && CODES[s.code] && (!s.expiresAt || s.expiresAt > Date.now());
+        if (valid) { session = s; applySession(); }
         else localStorage.removeItem('nlive_network_session');
       }
     } catch(e) {}
