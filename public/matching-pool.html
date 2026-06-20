@@ -1043,7 +1043,7 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
     document.documentElement.lang = l;
     document.querySelectorAll("[data-i18n]").forEach(function(el){ el.innerHTML = tr(el.getAttribute("data-i18n")); });
     document.querySelectorAll("[data-i18n-ph]").forEach(function(el){ el.setAttribute("placeholder", tr(el.getAttribute("data-i18n-ph"))); });
-    if(window.__BRANDS_ARR && document.getElementById("brandGrid")) document.getElementById("brandGrid").innerHTML = window.__BRANDS_ARR.map(brandCard).join("");
+    if(window.renderBrandGrid) window.renderBrandGrid();
     if(window.__SELLERS_ARR && document.getElementById("sellerGrid")) document.getElementById("sellerGrid").innerHTML = window.__SELLERS_ARR.map(sellerCard).join("");
     if(window.__CHINA_LIST && document.getElementById("chinaGrid")) document.getElementById("chinaGrid").innerHTML = window.__CHINA_LIST.map(chinaCard).join("");
     var SHORT={ko:"KO",en:"EN","zh-Hans":"简","zh-Hant":"繁",ja:"JP"};
@@ -1413,25 +1413,34 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
     document.getElementById('chinaGrid').innerHTML = list.map(chinaCard).join('');
   }
 
+  // ── [임시 비공개] 패션·패션잡화 브랜드는 기본 숨김. 마스터코드 5712(reveal) 잠금해제 시에만 노출. 영구 재노출하려면 아래 배열을 [] 로 비우면 됨 ──
+  window.MP_HIDDEN_GROUPS = ['패션','패션잡화'];
+  window.MP_REVEAL = false;   // 5712 잠금해제 시 true → 숨긴 그룹 노출
+  window.renderBrandGrid = function(){
+    if (!window.__BRANDS_ALL) return;
+    var visible = window.__BRANDS_ALL.filter(function(b){
+      return window.MP_REVEAL || window.MP_HIDDEN_GROUPS.indexOf(categoryGroup(b.category)) === -1;
+    });
+    window.__BRANDS = {}; visible.forEach(function(b){ window.__BRANDS[b.id] = b; });
+    window.__BRANDS_ARR = visible;
+    var grid = document.getElementById('brandGrid');
+    if (grid) grid.innerHTML = visible.map(brandCard).join('');
+    // 빈 카테고리 필터칩 자동 숨김 (브랜드 0개인 그룹 칩 감춤 → 재노출 시 자동 복구)
+    var groups = {}; visible.forEach(function(b){ groups[categoryGroup(b.category)] = true; });
+    document.querySelectorAll('#filterBrands .chip').forEach(function(ch){
+      var f = ch.dataset.f;
+      if (f && f !== 'all' && f.indexOf(':') === -1) ch.style.display = groups[f] ? '' : 'none';
+    });
+  };
+
   // 렌더
   (async () => {
     try {
       const res = await fetch('/pool-brands.json', {cache:'no-store'});
       const brands = await res.json();
       brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));   // ELITE 최상단 → 점수 높은 순
-      // ── [임시 비공개] 패션·패션잡화 브랜드 숨김 (협의 후 재노출 예정). 복구하려면 아래 배열을 [] 로 비우면 전부 다시 노출됨 ──
-      window.MP_HIDDEN_GROUPS = ['패션','패션잡화'];
-      const visibleBrands = brands.filter(b => window.MP_HIDDEN_GROUPS.indexOf(categoryGroup(b.category)) === -1);
-      window.__BRANDS = {}; visibleBrands.forEach(b => window.__BRANDS[b.id] = b); window.__BRANDS_ARR = visibleBrands;
-      document.getElementById('brandGrid').innerHTML = visibleBrands.map(brandCard).join('');
-      // 빈 카테고리 필터칩 자동 숨김 (브랜드 0개인 그룹 칩 감춤 → 재노출 시 자동 복구)
-      (function(){
-        var groups = {}; visibleBrands.forEach(function(b){ groups[categoryGroup(b.category)] = true; });
-        document.querySelectorAll('#filterBrands .chip').forEach(function(ch){
-          var f = ch.dataset.f;
-          if (f && f !== 'all' && f.indexOf(':') === -1) ch.style.display = groups[f] ? '' : 'none';
-        });
-      })();
+      window.__BRANDS_ALL = brands;
+      window.renderBrandGrid();
     } catch(e){
       document.getElementById('brandGrid').innerHTML = '<p style="color:var(--text-mute);padding:20px">브랜드 데이터를 불러오지 못했습니다.</p>';
     }
@@ -1735,6 +1744,7 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
   // ─── Sample access codes (실제 서비스에선 서버에서 검증) ───
   const CODES = {
     '4646':   { role: 'all',    expiresHours: null }, // 마스터 → 전체 열람 + 관리자
+    '5712':   { role: 'all',    expiresHours: null, reveal: true }, // 마스터(패션·패션잡화 비공개 해제 포함)
     'seller': { role: 'seller', expiresHours: null }, // 셀러용 → K-브랜드 풀 열람
     '10':     { role: 'brand',  expiresHours: null }  // 브랜드용 → 글로벌 셀러 풀 열람
   };
@@ -1873,7 +1883,7 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
     }
     // OK
     const expiresAt = meta.expiresHours ? Date.now() + meta.expiresHours * 3600 * 1000 : null;
-    session = { role: meta.role, expiresAt };
+    session = { role: meta.role, expiresAt, reveal: !!meta.reveal };
     try { localStorage.setItem('nlive_network_session', JSON.stringify(session)); } catch(e) {}
     applySession();
     closeModal();
@@ -1881,6 +1891,10 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
 
   // ─── Apply session (UI lock state) ───
   function applySession() {
+    // 패션·패션잡화 노출 여부: 5712(reveal) 세션일 때만 해제
+    var prevReveal = window.MP_REVEAL;
+    window.MP_REVEAL = !!(session && session.reveal);
+    if (window.MP_REVEAL !== prevReveal && window.renderBrandGrid) window.renderBrandGrid();
     if (!session) return applyLockedOut();
     document.body.classList.add('authed');
     document.body.classList.toggle('master', session.role === 'all');
@@ -1900,6 +1914,8 @@ window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 �
     startCountdown();
   }
   function applyLockedOut() {
+    // 잠금 상태에선 패션·패션잡화 항상 숨김
+    if (window.MP_REVEAL) { window.MP_REVEAL = false; if (window.renderBrandGrid) window.renderBrandGrid(); }
     document.body.classList.remove('authed');
     document.body.classList.remove('master');
     tabs.forEach(t => { t.style.opacity = ''; t.title = ''; t.style.display = ''; });
