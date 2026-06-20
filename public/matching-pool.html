@@ -976,6 +976,24 @@
   .bd-mkt img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; }
   .bd-mkt span { display:block; padding:7px 10px; font-size:11px; color:var(--text-dim); line-height:1.35; }
   .bd-mkt:hover { border-color:var(--gold); }
+  /* ── 한국 마케팅·PR 증거 카드 ── */
+  .bd-pr-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:6px; }
+  .bd-pr { display:flex; flex-direction:column; border:1px solid var(--line); border-radius:12px; overflow:hidden; text-decoration:none; background:var(--bg-card); transition:border-color .2s, transform .15s; }
+  .bd-pr:hover { border-color:var(--gold); transform:translateY(-2px); }
+  .bd-pr-thumb { position:relative; width:100%; aspect-ratio:16/9; background:#15120d; overflow:hidden; }
+  .bd-pr-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .bd-pr-noimg { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:34px; opacity:.85; }
+  .bd-pr-badge { position:absolute; left:8px; top:8px; font-size:10px; font-weight:700; color:#fff; padding:3px 8px; border-radius:999px; letter-spacing:.02em; backdrop-filter:blur(2px); }
+  .bd-pr-play { position:absolute; right:8px; bottom:8px; width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,.62); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
+  .pr-news    { background:#2f6fdb; } .bd-pr-noimg.pr-news    { background:linear-gradient(135deg,#1e3a63,#2f6fdb22); }
+  .pr-press   { background:#7b56d6; } .bd-pr-noimg.pr-press   { background:linear-gradient(135deg,#3b2c63,#7b56d622); }
+  .pr-ambassador { background:#d6a23a; } .bd-pr-noimg.pr-ambassador { background:linear-gradient(135deg,#5c4a1e,#d6a23a22); }
+  .pr-review  { background:#e0567f; } .bd-pr-noimg.pr-review  { background:linear-gradient(135deg,#5c2336,#e0567f22); }
+  .pr-youtube { background:#e23b2e; } .bd-pr-noimg.pr-youtube { background:linear-gradient(135deg,#5c1f1a,#e23b2e22); }
+  .bd-pr-meta { padding:9px 11px 11px; display:flex; flex-direction:column; gap:4px; }
+  .bd-pr-meta b { font-size:12px; color:var(--text); line-height:1.4; font-weight:600; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .bd-pr-meta span { font-size:10.5px; color:var(--text-mute); }
+  @media (max-width:680px){ .bd-pr-grid { grid-template-columns:repeat(2,1fr); } }
   .bd-head { display:flex; gap:20px; align-items:center; padding-bottom:20px; border-bottom:1px solid var(--line); margin-bottom:8px; }
   .bd-logo {
     flex:0 0 130px; height:90px; display:flex; align-items:center; justify-content:center;
@@ -1046,7 +1064,13 @@ Object.assign(window.MP_I18N, {
  "bd.foot":{"ko":"※ 브랜드 홈페이지 · 연락처는 매칭 확정 후 별도 안내됩니다.","en":"※ Brand website and contact are provided after matching is confirmed.","ja":"※ ブランドのホームページ・連絡先はマッチング確定後に別途ご案内します。","zh-Hans":"※ 品牌官网及联系方式将在匹配确定后另行告知。","zh-Hant":"※ 品牌官網及聯絡方式將在配對確定後另行告知。"},
  "bd.sns.dim":{"ko":"— 인스타그램 · 유튜브 등 (관리자 등록)","en":"— Instagram · YouTube, etc. (admin-registered)","ja":"— Instagram・YouTube など（管理者登録）","zh-Hans":"— Instagram · YouTube 等（管理员登记）","zh-Hant":"— Instagram · YouTube 等（管理員登記）"},
  "bd.mkt.item":{"ko":"홍보 자료","en":"Promo Material","ja":"広報資料","zh-Hans":"宣传资料","zh-Hant":"宣傳資料"},
- "bd.mkt.dim":{"ko":"— 기사 · 연예인 착용 이미지 (관리자 등록)","en":"— Press · celebrity-worn images (admin-registered)","ja":"— 記事・芸能人着用画像（管理者登録）","zh-Hans":"— 报道 · 明星同款图片（管理员登记）","zh-Hant":"— 報導 · 明星同款圖片（管理員登記）"}
+ "bd.mkt.dim":{"ko":"— 한국 내 기사·후기·보도자료·유튜브 등 (수집 예정)","en":"— Korean press, reviews, releases, YouTube, etc. (to be collected)","ja":"— 韓国の記事・レビュー・プレスリリース・YouTubeなど（収集予定）","zh-Hans":"— 韩国报道·测评·新闻稿·YouTube等（待收集）","zh-Hant":"— 韓國報導·評測·新聞稿·YouTube等（待收集）"},
+ "bd.marketing":{"ko":"한국 마케팅·PR 현황","en":"Marketing & PR in Korea","ja":"韓国でのマーケティング・PR","zh-Hans":"韩国营销·PR现状","zh-Hant":"韓國行銷·PR現況"},
+ "pr.news":{"ko":"기사","en":"News","ja":"記事","zh-Hans":"报道","zh-Hant":"報導"},
+ "pr.review":{"ko":"인플루언서 후기","en":"Influencer Review","ja":"インフルエンサー","zh-Hans":"达人测评","zh-Hant":"達人評測"},
+ "pr.press":{"ko":"보도자료","en":"Press Release","ja":"プレスリリース","zh-Hans":"新闻稿","zh-Hant":"新聞稿"},
+ "pr.ambassador":{"ko":"앰버서더","en":"Ambassador","ja":"アンバサダー","zh-Hans":"品牌大使","zh-Hant":"品牌大使"},
+ "pr.youtube":{"ko":"유튜브","en":"YouTube","ja":"YouTube","zh-Hans":"YouTube","zh-Hant":"YouTube"}
 });
 (function(){
   function valid(l){ return MP_I18N["tab.china"] && MP_I18N["tab.china"][l]; }
@@ -1628,13 +1652,25 @@ Object.assign(window.MP_I18N, {
       ? `<div class="bd-gallery bd-sns-shots">${snsShots.map(s=>`<img src="${esc2(s)}" loading="lazy">`).join('')}</div>` : '';
     const snsHtml = (snsIcons||snsShotHtml) ? (snsIcons + snsShotHtml)
       : `${na} <span class="bd-dim">${esc2(tr('bd.sns.dim'))}</span>`;
-    const mktItems = (b.marketingItems||[]).filter(x=>x&&x.img);
-    const mktUrls = (b.marketingUrls||[]).filter(Boolean);
+    const mktItems = (b.marketingItems||[]).filter(x=>x&&x.url);
+    const PR_TYPE = {
+      news:{ic:'📰',k:'pr.news'}, review:{ic:'⭐',k:'pr.review'}, press:{ic:'📣',k:'pr.press'},
+      ambassador:{ic:'🌟',k:'pr.ambassador'}, youtube:{ic:'▶',k:'pr.youtube'}
+    };
+    const PR_ORDER = ['news','press','ambassador','review','youtube'];
+    mktItems.sort((a,c)=> PR_ORDER.indexOf(a.type) - PR_ORDER.indexOf(c.type));
     const mktHtml = mktItems.length
-      ? `<div class="bd-mkt-grid">${mktItems.map(m=>`<a class="bd-mkt" href="${esc2(m.url||'#')}" target="_blank" rel="noopener"><img src="${esc2(m.img)}" loading="lazy">${m.title?`<span>${esc2(m.title)}</span>`:''}</a>`).join('')}</div>`
-      : (mktUrls.length
-        ? `<div class="bd-sns-row">${mktUrls.map((u,i)=>`<a class="bd-sns" href="${esc2(u)}" target="_blank" rel="noopener">${esc2(tr('bd.mkt.item'))} ${i+1} ↗</a>`).join('')}</div>`
-        : `${na} <span class="bd-dim">${esc2(tr('bd.mkt.dim'))}</span>`);
+      ? `<div class="bd-pr-grid">${mktItems.map(m=>{
+          const tm = PR_TYPE[m.type]||PR_TYPE.news;
+          const thumb = m.thumb
+            ? `<img src="${esc2(m.thumb)}" loading="lazy" alt="">`
+            : `<div class="bd-pr-noimg pr-${esc2(m.type)}">${tm.ic}</div>`;
+          return `<a class="bd-pr" href="${esc2(m.url)}" target="_blank" rel="noopener">
+            <div class="bd-pr-thumb">${thumb}<span class="bd-pr-badge pr-${esc2(m.type)}">${tm.ic} ${esc2(tr(tm.k))}</span>${m.type==='youtube'?'<span class="bd-pr-play">▶</span>':''}</div>
+            <div class="bd-pr-meta"><b>${esc2(m.title)}</b><span>${esc2(m.source||'')}${m.date?' · '+esc2(m.date):''}</span></div>
+          </a>`;
+        }).join('')}</div>`
+      : `${na} <span class="bd-dim">${esc2(tr('bd.mkt.dim'))}</span>`;
     const heroImg = b.heroImage
       || (b.marketingItems && b.marketingItems[0] && b.marketingItems[0].img)
       || (b.images && b.images[0]) || (b.shopProducts && b.shopProducts[0]) || '';

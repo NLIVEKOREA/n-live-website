@@ -10332,7 +10332,72 @@
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
+  "marketingItems": [
+   {
+    "type": "press",
+    "title": "비너티(VINNERTY), 다이어트 츄어블 '비너츄 슬림핏' 출시",
+    "source": "패션비즈",
+    "url": "https://fashionbiz.co.kr/article/205065",
+    "thumb": "/brand-pr/b41/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "press",
+    "title": "비너티 신제품(VINNERTY NEW), 다이어트 구미 '비너구미 체리컷' 출시",
+    "source": "비즈월드",
+    "url": "https://www.bizwnews.com/news/articleView.html?idxno=81772",
+    "thumb": "/brand-pr/b41/pr2.jpg",
+    "date": "2024-04-30"
+   },
+   {
+    "type": "youtube",
+    "title": "새해맞이 다이어트 비너톡 산머루 맛 후기 #shorts",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=VwX3B84-J3Q",
+    "thumb": "/brand-pr/b41/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "비너톡 내돈내산 후기(효과 솔직히 말함)",
+    "source": "YouTube Shorts",
+    "url": "https://www.youtube.com/shorts/wukcjQiXXRY",
+    "thumb": "/brand-pr/b41/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "비너톡 2주차 후기 🍇 몸무게 변화, 효과",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=AYeyv-3b4Qc",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "다이어트 보조제 중에 붓기 빼는데 효과 직빵인 제품 비너톡 리얼 내돈내산 후기",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=lRvBreqE3Is",
+    "thumb": "/brand-pr/b41/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "비너톡과 함께한 일주일, 내 몸의 변화는? 비너톡 발포비타민 #비너티서포터즈",
+    "source": "YouTube (비너티 서포터즈)",
+    "url": "https://www.youtube.com/watch?v=UvhONtkKt3k",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "비너티 비너구미 체리컷 공식 인스타그램 릴스",
+    "source": "Instagram (@vinnerty)",
+    "url": "https://www.instagram.com/reel/DHIFbNTt7vT/",
+    "thumb": "",
+    "date": ""
+   }
+  ],
   "heroImage": "/brand-hero/b41.jpg",
   "pricedProducts": [
    {
@@ -10449,7 +10514,40 @@
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
+  "marketingItems": [
+   {
+    "type": "review",
+    "title": "리리룸 - 루미너스 글루타치온 토닝 필오프팩 사용 후기 릴스",
+    "source": "Instagram (@hyeri__k__/리리룸)",
+    "url": "https://www.instagram.com/reel/DHBaTPwpa5W/",
+    "thumb": "",
+    "date": "2025-03-10"
+   },
+   {
+    "type": "review",
+    "title": "박나래 - 루미너스 글루타치온 토닝 필오프팩 올인원 케어 후기 릴스",
+    "source": "Instagram (@_myssong_)",
+    "url": "https://www.instagram.com/_myssong_/reel/DC5eM3sSpO8/",
+    "thumb": "",
+    "date": "2024"
+   },
+   {
+    "type": "review",
+    "title": "권기은 - 루미너스 글루타치온 필오프팩 바르는 방법 릴스",
+    "source": "Instagram (@kini______)",
+    "url": "https://www.instagram.com/kini______/reel/DDUVjZ-TRex/",
+    "thumb": "",
+    "date": "2024"
+   },
+   {
+    "type": "news",
+    "title": "루미너스 (LUMINOUS) 공식 인스타그램",
+    "source": "Instagram (@lmn5_official)",
+    "url": "https://www.instagram.com/lmn5_official/",
+    "thumb": "",
+    "date": ""
+   }
+  ],
   "heroImage": "/brand-hero/b42.jpg",
   "pricedProducts": [
    {
@@ -10580,24 +10678,36 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b43/m1.jpg",
-    "url": "https://raveheal.com/",
-    "title": ""
+    "type": "news",
+    "title": "레이브힐 '브라이드 EGF 타임리스 세럼', 와디즈 오픈 일주일 만에 7천만 원 돌파",
+    "source": "이데일리",
+    "url": "https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=04172166642395240",
+    "thumb": "/brand-pr/b43/pr1.jpg",
+    "date": "2025-12"
    },
    {
-    "img": "/brand-marketing/b43/m2.jpg",
-    "url": "https://raveheal.com/",
-    "title": ""
+    "type": "review",
+    "title": "타임리스 고함량 EGF앰플 세럼 추천 레이브힐 후기",
+    "source": "네이버블로그",
+    "url": "https://www.keyzard.cc/landmark-blog/nb/223893245079",
+    "thumb": "",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b43/m3.jpg",
-    "url": "https://raveheal.com/",
-    "title": ""
+    "type": "youtube",
+    "title": "창업 멤버이자 워킹맘인 레이브힐 BM이 알려주는 8억 펀딩 달성 비법 (게임체인저)",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=NM7IAwL_4-k",
+    "thumb": "/brand-pr/b43/pr3.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b43/m4.jpg",
-    "url": "https://raveheal.com/",
-    "title": ""
+    "type": "youtube",
+    "title": "RaveHeal : 레이브힐 공식 유튜브 채널",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/channel/UCYMouUWQ9csIKQUosXN4cGw",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b43.jpg",
@@ -10718,24 +10828,20 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b44/m1.jpg",
-    "url": "https://arne.kr/",
-    "title": ""
+    "type": "news",
+    "title": "아르네, 고순도 PDRN 앰플 2종 출시",
+    "source": "한국경제",
+    "url": "https://www.hankyung.com/article/2025061057136",
+    "thumb": "/brand-pr/b44/pr1.jpg",
+    "date": "2025-06-10"
    },
    {
-    "img": "/brand-marketing/b44/m2.jpg",
-    "url": "https://arne.kr/",
-    "title": ""
-   },
-   {
-    "img": "/brand-marketing/b44/m3.jpg",
-    "url": "https://arne.kr/",
-    "title": ""
-   },
-   {
-    "img": "/brand-marketing/b44/m4.jpg",
-    "url": "https://arne.kr/",
-    "title": ""
+    "type": "press",
+    "title": "우리는 왜 PDRN 일까요? 제품 개발 스토리",
+    "source": "arne.kr (공식)",
+    "url": "https://arne.kr/article/%EC%A0%9C%ED%92%88-%EA%B0%9C%EB%B0%9C-%EC%8A%A4%ED%86%A0%EB%A6%AC/12/126/",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b44.jpg",
@@ -10866,24 +10972,60 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b45/m1.jpg",
-    "url": "https://earfit.co.kr/",
-    "title": ""
+    "type": "review",
+    "title": "얼핏 - 화해 브랜드 리뷰 (바이옴세라 배리어 토너 등 실사용 후기)",
+    "source": "화해 (Hwahae)",
+    "url": "https://www.hwahae.co.kr/search?q=%EC%96%BC%ED%95%8F",
+    "thumb": "/brand-pr/b45/pr1.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b45/m2.jpg",
-    "url": "https://earfit.co.kr/",
-    "title": ""
+    "type": "review",
+    "title": "얼핏(earfit) 브랜드관 - W컨셉",
+    "source": "W컨셉 (W CONCEPT)",
+    "url": "https://display.wconcept.co.kr/brand/109751?scrollTop=Y",
+    "thumb": "/brand-pr/b45/pr2.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b45/m3.jpg",
-    "url": "https://earfit.co.kr/",
-    "title": ""
+    "type": "review",
+    "title": "[얼핏] 유브이 프로텍터 모이스처 선 50g",
+    "source": "W컨셉 (W CONCEPT)",
+    "url": "https://www.wconcept.co.kr/Product/301515166",
+    "thumb": "/brand-pr/b45/pr3.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b45/m4.jpg",
-    "url": "https://earfit.co.kr/",
-    "title": ""
+    "type": "youtube",
+    "title": "얼핏 earfit official 공식 유튜브 채널",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/@earfitofficial7283",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "파데프리 전용 근본 톤업크림 - 얼핏 에어리 필터 모이스처 톤업 (공식 영상)",
+    "source": "Facebook (얼핏 공식)",
+    "url": "https://www.facebook.com/new.earfit.official/videos/1455506928477373/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "얼핏 에어리 필터 모이스처 톤업 / 톤업 선크림 무기자차 (G마켓)",
+    "source": "G마켓",
+    "url": "https://m.gmarket.co.kr/vi/product/4402779498",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "얼핏(earfit) G마켓 브랜드샵",
+    "source": "G마켓",
+    "url": "https://www.gmarket.co.kr/n/brandshop/earfit",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-marketing/b45/m1.jpg",
@@ -11025,24 +11167,84 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b46/m1.jpg",
-    "url": "https://tambeauty.kr/",
-    "title": ""
+    "type": "press",
+    "title": "인플루언서 '다샤 타란' 신규 색조 브랜드 '탐 뷰티' 론칭",
+    "source": "테넌트뉴스(TENANT news)",
+    "url": "https://tnnews.co.kr/archives/208672",
+    "thumb": "/brand-pr/b46/pr1.jpg",
+    "date": "2024-10-14"
    },
    {
-    "img": "/brand-marketing/b46/m2.jpg",
-    "url": "https://tambeauty.kr/",
-    "title": ""
+    "type": "press",
+    "title": "인플루언서 '다샤 타란', 신규 색조 브랜드 탐 뷰티 런칭",
+    "source": "경상일보(ksilbo)",
+    "url": "https://www.ksilbo.co.kr/news/articleView.html?idxno=1010604",
+    "thumb": "/brand-pr/b46/pr2.jpg",
+    "date": "2024"
    },
    {
-    "img": "/brand-marketing/b46/m3.jpg",
-    "url": "https://tambeauty.kr/",
-    "title": ""
+    "type": "news",
+    "title": "탐뷰티, The Cloud 라인 공개… \"가볍고 매끈하게\"",
+    "source": "시선뉴스",
+    "url": "http://www.sisunnews.co.kr/news/articleView.html?idxno=232373",
+    "thumb": "/brand-pr/b46/pr3.jpg",
+    "date": "2025-12-15"
    },
    {
-    "img": "/brand-marketing/b46/m4.jpg",
-    "url": "https://tambeauty.kr/",
-    "title": ""
+    "type": "news",
+    "title": "탐 뷰티, '2025 올해를 빛낸 브랜드대상' 수상",
+    "source": "이뉴스투데이",
+    "url": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2373895",
+    "thumb": "/brand-pr/b46/pr4.jpg",
+    "date": "2025-12-24"
+   },
+   {
+    "type": "ambassador",
+    "title": "[현장 Pick] \"실물 미쳤다\" 관람객 반응 폭발한 다샤 타란, 왜 탐뷰티 부스에? (코스모뷰티 서울 2025)",
+    "source": "KMJ(코리아메타버스저널)",
+    "url": "https://www.kmjournal.net/news/articleView.html?idxno=1398",
+    "thumb": "/brand-pr/b46/pr5.jpg",
+    "date": "2025-05-29"
+   },
+   {
+    "type": "ambassador",
+    "title": "탐 뷰티 런칭 D-4 / 더 젤리 플럼핑 립 오일 02 인피닛 로즈 (다샤 타란 @taaarannn)",
+    "source": "Instagram @tambeautyme",
+    "url": "https://www.instagram.com/tambeautyme/p/DA2xhQUznab/",
+    "thumb": "",
+    "date": "2024"
+   },
+   {
+    "type": "review",
+    "title": "#광고 젤리광 내 입술 - 다샤 타란과 함께하는 탐뷰티 플럼핑 립 틴트 발색 후기",
+    "source": "Threads @im__bona",
+    "url": "https://www.threads.com/@im__bona/post/DH8p-SgT0ig/",
+    "thumb": "",
+    "date": "2025"
+   },
+   {
+    "type": "review",
+    "title": "탐 뷰티(TAM BEAUTY) 더 젤리 플럼핑 립 오일 (3 colors) - 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/products/4544484",
+    "thumb": "/brand-pr/b46/pr8.jpg",
+    "date": "2024"
+   },
+   {
+    "type": "review",
+    "title": "탐 뷰티(TAM BEAUTY) 더 젤리 플럼핑 립 글로스 히말라야 핑크 - 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/products/4544599",
+    "thumb": "/brand-pr/b46/pr9.jpg",
+    "date": "2024"
+   },
+   {
+    "type": "youtube",
+    "title": "TAM BEAUTY 탐 뷰티 공식 유튜브 채널 (영상)",
+    "source": "YouTube @tambeauty_official",
+    "url": "https://www.youtube.com/@tambeauty_official/videos",
+    "thumb": "",
+    "date": "2025"
    }
   ],
   "heroImage": "/brand-hero/b46.jpg",
@@ -11195,24 +11397,68 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b47/m1.jpg",
-    "url": "https://www.cueshop.co.kr/",
-    "title": ""
+    "type": "news",
+    "title": "화장품기업, 무역의 날 유공자 포상·수출의 탑 빛났다 (씨유스킨 300만불탑 수상)",
+    "source": "코스인코리아닷컴",
+    "url": "https://www.cosinkorea.com/news/article.html?no=56441",
+    "thumb": "/brand-pr/b47/pr1.jpg",
+    "date": "2025-12-04"
    },
    {
-    "img": "/brand-marketing/b47/m2.jpg",
-    "url": "https://www.cueshop.co.kr/",
-    "title": ""
+    "type": "news",
+    "title": "충북중기청, 화장품 수출기업 현장 '㈜씨유스킨에서 듣다'",
+    "source": "충북일보(inews365)",
+    "url": "https://www.inews365.com/news/article.html?no=914864",
+    "thumb": "/brand-pr/b47/pr2.jpg",
+    "date": "2026-04-12"
    },
    {
-    "img": "/brand-marketing/b47/m3.jpg",
-    "url": "https://www.cueshop.co.kr/",
-    "title": ""
+    "type": "news",
+    "title": "제60회 무역의날 수출의탑 수상기업 명단 ((주)씨유스킨 포함)",
+    "source": "스마트투데이",
+    "url": "https://www.smarttoday.co.kr/news/articleView.html?idxno=39219",
+    "thumb": "/brand-pr/b47/pr3.jpg",
+    "date": "2023-12-05"
    },
    {
-    "img": "/brand-marketing/b47/m4.jpg",
-    "url": "https://www.cueshop.co.kr/",
-    "title": ""
+    "type": "news",
+    "title": "충북 기업 68개사 수출의 탑 수상",
+    "source": "충청타임즈",
+    "url": "https://www.cctimes.kr/news/articleView.html?idxno=879937",
+    "thumb": "/brand-pr/b47/pr4.jpg",
+    "date": "2023-12-05"
+   },
+   {
+    "type": "review",
+    "title": "클린업 비타민U CC 크림 [SPF38/PA+++] 내돈내산 리뷰",
+    "source": "글로우픽",
+    "url": "https://www.glowpick.com/products/155921",
+    "thumb": "/brand-pr/b47/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "비타민U CC크림 SPF 38 REVIEW",
+    "source": "룸포레(cleanforet)",
+    "url": "https://cleanforet.com/article/review/4/216/page/5/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "씨유스킨 공식 유튜브 채널",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/channel/UCZrSLsBpV_tKV-16sqayqlA",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "[클린업피부과화장품] 비타민U CC크림",
+    "source": "YouTube Shorts",
+    "url": "https://www.youtube.com/shorts/NhdgcuVrxsk",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-marketing/b47/m1.jpg",
@@ -11365,24 +11611,20 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b48/m1.jpg",
-    "url": "https://luaren.co.kr/",
-    "title": ""
+    "type": "review",
+    "title": "루아렌 글로우 립앤치크 글로우틴트 사용법부터 발색까지",
+    "source": "네이버 블로그 (keyzard)",
+    "url": "https://www.keyzard.cc/w130312/nb/223958624159",
+    "thumb": "",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b48/m2.jpg",
-    "url": "https://luaren.co.kr/",
-    "title": ""
-   },
-   {
-    "img": "/brand-marketing/b48/m3.jpg",
-    "url": "https://luaren.co.kr/",
-    "title": ""
-   },
-   {
-    "img": "/brand-marketing/b48/m4.jpg",
-    "url": "https://luaren.co.kr/",
-    "title": ""
+    "type": "review",
+    "title": "루아렌 틴팅 옴브레 글로우 립앤치크 고객 리뷰 (공식몰)",
+    "source": "LuaRén 공식몰",
+    "url": "https://luaren.co.kr/board/review/4",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b48.jpg",
@@ -11531,7 +11773,32 @@
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
+  "marketingItems": [
+   {
+    "type": "review",
+    "title": "#협찬 볼타씬시아 퀸타 바디로션 후기 — 가볍고 촉촉한 데일리 제형, 끈적임 제로",
+    "source": "Threads (@naeun._.22)",
+    "url": "https://www.threads.com/@naeun._.22/post/DSCbVR6icqA/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "#협찬 볼타씬시아 테르시아 핸드크림(입솜브륀 향) 인플루언서 릴스 후기",
+    "source": "Instagram Reel",
+    "url": "https://www.instagram.com/reel/DSSIrWNE_0E/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "볼타씬시아 — 글로우픽 브랜드 페이지 (소비자 리뷰 플랫폼 등재)",
+    "source": "Glowpick",
+    "url": "https://www.glowpick.com/brands/15273",
+    "thumb": "/brand-pr/b49/pr3.jpg",
+    "date": ""
+   }
+  ],
   "heroImage": "/brand-images/b49/pp1.jpg",
   "pricedProducts": [
    {
