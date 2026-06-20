@@ -275,7 +275,17 @@
      "ラウンドロゴ トラッカーハット_イエロー"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "BARDOT x TRAFFIC HARMONY 콜라보 딥핏 볼캡 (브랜드 협업)",
+    "source": "trafficharmony.kr",
+    "url": "https://trafficharmony.kr/product/bardot-x-traffic-harmony-deep-fit-ballcap/180/",
+    "thumb": "/brand-pr/b02/pr1.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b03",
@@ -435,7 +445,89 @@
      "Spring Field ライトモカ ▶ クーポン適用価格 69,000ウォン"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "ambassador",
+    "title": "아키클래식 전속모델 '(여자)아이들' 발탁",
+    "source": "어패럴뉴스",
+    "url": "http://m.apparelnews.co.kr/news/news_view/?idx=181307",
+    "thumb": "/brand-pr/b03/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "ambassador",
+    "title": "모델 겸 방송인 정혁, 스포츠 브랜드 '아키클래식' 전속 모델 발탁",
+    "source": "경기평화신문",
+    "url": "http://www.ggpyeonghwa.com/news/articleView.html?idxno=89717",
+    "thumb": "/brand-pr/b03/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "아키클래식, 겨울 패딩 부츠 매출 급증",
+    "source": "어패럴뉴스",
+    "url": "https://m.apparelnews.co.kr/news/news_view/?idx=221801",
+    "thumb": "/brand-pr/b03/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "아키클래식, 작년 자사몰 매출 110억",
+    "source": "어패럴뉴스",
+    "url": "http://m.apparelnews.co.kr/news/news_view/?idx=188938",
+    "thumb": "/brand-pr/b03/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "라이프스타일 스포츠 브랜드 아키클래식, 아시아의 뉴발란스 꿈꿔",
+    "source": "한국환경복지신문",
+    "url": "https://www.hkbs.co.kr/news/articleView.html?idxno=625754",
+    "thumb": "/brand-pr/b03/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "아키클래식, 운동화로 아시아의 '뉴발란스' 꿈꿔",
+    "source": "파이낸스투데이",
+    "url": "https://www.fntoday.co.kr/news/articleView.html?idxno=252008",
+    "thumb": "/brand-pr/b03/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "press",
+    "title": "아키클래식, '썸머 블랙프라이데이' 진행",
+    "source": "어패럴뉴스",
+    "url": "https://m.apparelnews.co.kr/news/news_view/?idx=225607",
+    "thumb": "/brand-pr/b03/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "[신발 리뷰] 운동화의 유니클로, 아키클래식",
+    "source": "리뷰타임스",
+    "url": "https://www.reviewtimes.co.kr/news/articleView.html?idxno=6040",
+    "thumb": "/brand-pr/b03/pr8.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "아키클래식 범퍼트레이너 후기('26.4월 내돈내산)",
+    "source": "블로그",
+    "url": "https://toy6518.mycafe24.com/%EC%95%84%ED%82%A4%ED%81%B4%EB%9E%98%EC%8B%9D-%EB%B2%94%ED%8D%BC%ED%8A%B8%EB%A0%88%EC%9D%B4%EB%84%88-%ED%9B%84%EA%B8%B026-4%EC%9B%94-%EB%82%B4%EB%8F%88%EB%82%B4%EC%82%B0/",
+    "thumb": "/brand-pr/b03/pr9.jpg",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "AKIII CLASSIC 아키클래식 공식 유튜브 채널",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/user/akiiclassic",
+    "thumb": "/brand-pr/b03/pr10.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b04",
@@ -488,16 +580,60 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b04/1.jpg",
-    "url": "https://www.threecheers.co.kr/"
+    "type": "news",
+    "title": "하이틴 패션 매거진 MIDWAY(미드웨이) 2026년 1월호, 쓰리치얼스(THREECHEERS) 아이웨어 피처링",
+    "source": "네이트 뉴스 / MIDWAY",
+    "url": "https://news.nate.com/view/20260112n31967",
+    "thumb": "/brand-pr/b04/pr1.jpg",
+    "date": "2026-01-12"
    },
    {
-    "img": "/brand-marketing/b04/2.jpg",
-    "url": "https://www.threecheers.co.kr/"
+    "type": "news",
+    "title": "쓰리치얼스(THREECHEERS) | 무신사 추천 브랜드 (공식 브랜드관)",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/brand/threecheers",
+    "thumb": "/brand-pr/b04/pr2.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b04/3.jpg",
-    "url": "https://www.threecheers.co.kr/"
+    "type": "news",
+    "title": "쓰리치얼스(THREECHEERS) IVY 01 SU BLACK - 사이즈 & 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/products/5501471",
+    "thumb": "/brand-pr/b04/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "쓰리치얼스(THREECHEERS) SHARON 01 OP (CAT EYE) PANDA [블루라이트 차단] - 사이즈 & 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/products/5318432",
+    "thumb": "/brand-pr/b04/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "쓰리치얼스(THREECHEERS) LOTUS 01 SU BLACK - 사이즈 & 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/products/5501474",
+    "thumb": "/brand-pr/b04/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "쓰리치얼스(THREECHEERS) DAHLIA 01 OP BLUE - 사이즈 & 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/products/5501468",
+    "thumb": "/brand-pr/b04/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "쓰리치얼스(THREECHEERS) FLOWER LOGO BALLCAP NAVY 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/review/79927799",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-marketing/b04/1.jpg",
@@ -984,7 +1120,65 @@
     "note": "FILA、SANDRO、LACOSTE、NIKE、DIOR などのブランドを取り扱い",
     "products": []
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "2PM·티아라 전속모델 발탁 — 안경업계 최초 연예인 마케팅 (신촌 1호점 오픈)",
+    "source": "머니투데이",
+    "url": "https://www.mt.co.kr/living/2011/03/28/2011032816512580906",
+    "thumb": "/brand-pr/b05/pr1.jpg",
+    "date": "2011-03-28"
+   },
+   {
+    "type": "news",
+    "title": "'안경은 얼굴이다' 룩옵티컬, 글로벌 인기 캐릭터 'BT21'과 함께한 신제품 출시",
+    "source": "아시아에이",
+    "url": "https://www.asiaa.co.kr/news/articleView.html?idxno=2421",
+    "thumb": "/brand-pr/b05/pr2.jpg",
+    "date": "2020-01-25"
+   },
+   {
+    "type": "news",
+    "title": "룩옵티컬 — 서울대입구역 메가스토어(51호점) 오픈, QR 가상피팅 도입",
+    "source": "TENANT NEWS",
+    "url": "https://tnnews.co.kr/archives/184640",
+    "thumb": "",
+    "date": "2024-05-03"
+   },
+   {
+    "type": "news",
+    "title": "안경은 얼굴이다! 안경 프랜차이즈 룩옵티컬 (기획·특집)",
+    "source": "한국안경신문",
+    "url": "http://www.opticnews.co.kr/news/articleView.html?idxno=17340",
+    "thumb": "/brand-pr/b05/pr4.jpg",
+    "date": "2016"
+   },
+   {
+    "type": "news",
+    "title": "안경 유통전문 '룩옵틱스', 구주 절반 매물로 나왔다",
+    "source": "더벨",
+    "url": "https://www.thebell.co.kr/front/newsview.asp?key=202308281444213200104828",
+    "thumb": "/brand-pr/b05/pr5.jpg",
+    "date": "2023-08-28"
+   },
+   {
+    "type": "news",
+    "title": "룩옵티컬(Look optical) 송승헌 광고 - '안경은 얼굴이다'",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=B8rtaaTlGvo",
+    "thumb": "/brand-pr/b05/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "룩옵티컬 공식 유튜브 채널 (@lookoptical_official)",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/@lookoptical_official",
+    "thumb": "/brand-pr/b05/pr7.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b06",
@@ -1036,16 +1230,44 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b06/1.jpg",
-    "url": "https://www.denustore.com/"
+    "type": "news",
+    "title": "데누(Denu), 감각적인 스타일링 가능한 시그니처 백팩 SAI BAG (사이 백)으로 큰 인기",
+    "source": "",
+    "url": "https://www.wedding21.co.kr/news/articleView.html?idxno=259558",
+    "thumb": "/brand-pr/b06/pr1.jpg",
+    "date": "2023-06-29"
    },
    {
-    "img": "/brand-marketing/b06/2.jpg",
-    "url": "https://www.denustore.com/"
+    "type": "news",
+    "title": "데누(Denu), 올해의 컬러 '모카 무스'에 어울리는 브라운 가방 추천",
+    "source": "",
+    "url": "https://www.baccro.com/news/articleView.html?idxno=53541",
+    "thumb": "/brand-pr/b06/pr2.jpg",
+    "date": "2025-02-17"
    },
    {
-    "img": "/brand-marketing/b06/3.jpg",
-    "url": "https://www.denustore.com/"
+    "type": "news",
+    "title": "데누, 신규 오브제 컬렉션 공개",
+    "source": "",
+    "url": "https://m.apparelnews.co.kr/news/news_view/?idx=218477",
+    "thumb": "/brand-pr/b06/pr3.jpg",
+    "date": "2025-06-30"
+   },
+   {
+    "type": "news",
+    "title": "출근·일상·주말까지 아우르는 '하나의 가방'…데누가 제시한 새로운 소비 방식",
+    "source": "",
+    "url": "https://enuri.com/knowcom/detail.jsp?kbno=4206486&bbsname=news&cateno=0",
+    "thumb": "/brand-pr/b06/pr4.jpg",
+    "date": "2026-01-27"
+   },
+   {
+    "type": "news",
+    "title": "솔직히 이건 데일리백 인정이지🩷핑크맛 가득! 귀엽고 실용적이면… 말 다 했죠?! #데누 #DENU #데누백팩 #여자가방 #봄코디 [데누무료협찬]",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=aZTsdWA2VuA",
+    "thumb": "/brand-pr/b06/pr5.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-marketing/b06/1.jpg",
@@ -1438,7 +1660,49 @@
     "note": "",
     "products": []
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "아라크9 신제품 출시, 순방길에 함께 오른 친환경 비건 가방",
+    "source": "",
+    "url": "https://www.raonnews.com/news/article.html?no=21866",
+    "thumb": "/brand-pr/b07/pr1.jpg",
+    "date": "2023-09-18"
+   },
+   {
+    "type": "news",
+    "title": "김건희 여사 유엔총회 순방 착용 - 아라크나인 옥수수 비건 레더 핸드백",
+    "source": "",
+    "url": "https://www.raonnews.com/news/article.html?no=21866",
+    "thumb": "/brand-pr/b07/pr2.jpg",
+    "date": "2023-09-18"
+   },
+   {
+    "type": "news",
+    "title": "힙하고 트렌디한 패션 아라크나인",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=SJtzx-R4cKc",
+    "thumb": "/brand-pr/b07/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "#패션공장_겸손지갑-아라크나인 김은우대표. 명품 이상의 퀄리티를 담았다 (TBS 뉴스공장 shorts)",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=U0QjFZKvkPo",
+    "thumb": "/brand-pr/b07/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "아라크나인(ARAC.9) 무신사 추천 브랜드 페이지 (상품·후기)",
+    "source": "",
+    "url": "https://www.musinsa.com/brand/arac9",
+    "thumb": "/brand-pr/b07/pr5.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b08",
@@ -1495,16 +1759,44 @@
   ],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b08/1.jpg",
-    "url": "https://meieldew.com/"
+    "type": "news",
+    "title": "「메이엘듀」 30대 여성 잡다",
+    "source": "",
+    "url": "https://fashionbiz.co.kr/article/171587",
+    "thumb": "/brand-pr/b08/pr1.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b08/2.jpg",
-    "url": "https://meieldew.com/"
+    "type": "news",
+    "title": "배우 혜리 메이엘듀 롱부츠 착용 (공항패션)",
+    "source": "",
+    "url": "https://www.threads.com/@sunup1114/post/DDHsDWhhaP-",
+    "thumb": "",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b08/3.jpg",
-    "url": "https://meieldew.com/"
+    "type": "news",
+    "title": "드라마 '지금 거신 전화는' 채수빈 메이엘듀 롱부츠 착용",
+    "source": "",
+    "url": "https://www.facebook.com/100064193823484/posts/968883885261397",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "SBS 드라마 '우주메리미' 메이엘듀 협찬",
+    "source": "",
+    "url": "https://www.instagram.com/p/DQBj4M9DjL6/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "[메이엘듀] '엄지의 제왕' 소유진 착용 패션신발 정보",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=1vzJ6hSxDD8",
+    "thumb": "/brand-pr/b08/pr5.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b08.jpg",
@@ -1869,12 +2161,44 @@
   ],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b09/1.jpg",
-    "url": "https://cahiers-shop.com/"
+    "type": "news",
+    "title": "'미스틱 인도' 선보인 2024 S/S 서울패션위크 '까이에(CAHIERS)' 김아영 디자이너",
+    "source": "국제뉴스",
+    "url": "https://www.gukjenews.com/news/articleView.html?idxno=2821396",
+    "thumb": "/brand-pr/b09/pr1.jpg",
+    "date": "2023-09-30"
    },
    {
-    "img": "/brand-marketing/b09/2.jpg",
-    "url": "https://cahiers-shop.com/"
+    "type": "news",
+    "title": "늘 까이에와 함께! 디자이너 김아영 인터뷰",
+    "source": "우먼센스",
+    "url": "https://www.womansense.co.kr/news/articleView.html?idxno=54874",
+    "thumb": "/brand-pr/b09/pr2.jpg",
+    "date": "2023-11-15"
+   },
+   {
+    "type": "news",
+    "title": "[WSD*DDPF] 김아영, 디자이너 열정 「까이에」에 담다",
+    "source": "패션비즈",
+    "url": "https://fashionbiz.co.kr/article/161746",
+    "thumb": "/brand-pr/b09/pr3.jpg",
+    "date": "2017-07-26"
+   },
+   {
+    "type": "news",
+    "title": "[SFW 2023 SS] 까이에(CAHIERS), 다름을 조합한 새로움",
+    "source": "문화뉴스",
+    "url": "https://www.mhns.co.kr/news/articleView.html?idxno=536323",
+    "thumb": "/brand-pr/b09/pr4.jpg",
+    "date": "2022-10"
+   },
+   {
+    "type": "news",
+    "title": "2024 S/S Seoul Fashion Week #24SS서울패션위크 #CAHIERS #까이에 #김아영디자이너",
+    "source": "YouTube - CAHIERS",
+    "url": "https://www.youtube.com/watch?v=YDuhLp6KtmQ",
+    "thumb": "/brand-pr/b09/pr5.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b09.jpg",
@@ -2584,7 +2908,57 @@
      "ベラ ホルターカーディガンセット [GREEN]"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "제로플래닛(ZEROPLANET) 무신사 추천 브랜드 페이지",
+    "source": "무신사(MUSINSA)",
+    "url": "https://www.musinsa.com/brand/zeroplanet",
+    "thumb": "/brand-pr/b11/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "제로플래닛(ZEROPLANET) - 감도 깊은 취향 셀렉트샵 29CM",
+    "source": "29CM",
+    "url": "https://shop.29cm.co.kr/brand/10424",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "제로플래닛(ZEROPLANET) - W컨셉(W CONCEPT) 브랜드관",
+    "source": "W컨셉",
+    "url": "https://display.wconcept.co.kr/brand/114952",
+    "thumb": "/brand-pr/b11/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "ZEROPLANET - 제로플래닛 (지그재그)",
+    "source": "지그재그(ZIGZAG)",
+    "url": "https://zigzag.kr/zeroplanet",
+    "thumb": "/brand-pr/b11/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "ZEROPLANET(제로플래닛) 실시간 인기 스타일 (온더룩)",
+    "source": "온더룩(OnTheLook)",
+    "url": "https://onthelook.co.kr/brand/3870",
+    "thumb": "/brand-pr/b11/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "제로플래닛(ZEROPLANET) - 후루츠패밀리 빈티지 세컨핸드",
+    "source": "후루츠패밀리(FRUITSFAMILY)",
+    "url": "https://fruitsfamily.com/brand/ZEROPLANET",
+    "thumb": "",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b12",
@@ -2980,7 +3354,73 @@
      "NICOLE レタリング リブ スリムTシャツ_ブラック"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "닉앤니콜, 서예지 앰버서더 발탁… 25SS 컬렉션 화보 공개",
+    "source": "",
+    "url": "https://isplus.com/article/view/isp202503190060",
+    "thumb": "/brand-pr/b12/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "닉앤니콜, 배우 서예지와 함께한 25SS 컬렉션 공개",
+    "source": "",
+    "url": "https://www.mhns.co.kr/news/articleView.html?idxno=718839",
+    "thumb": "/brand-pr/b12/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "화보의 여왕 서예지 닉앤니콜 숨멎 화보 공개",
+    "source": "",
+    "url": "https://www.tenasia.co.kr/article/2025031795364",
+    "thumb": "/brand-pr/b12/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "K-패션 브랜드 '닉앤니콜', 이미스·마리떼 이어 명동에 대형 플래그십 스토어 오픈",
+    "source": "",
+    "url": "https://www.eroun.net/news/articleView.html?idxno=45406",
+    "thumb": "/brand-pr/b12/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "닉앤니콜, 문가영이 제안하는 2024 F/W 발매… 2024 시즌 트렌드 선도",
+    "source": "",
+    "url": "https://fashionbiz.co.kr/article/210269",
+    "thumb": "/brand-pr/b12/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "[4K] 서예지, 어느쪽을 봐야하나요 도리도리 포토타임 | Seo Yea-ji 닉앤니콜 포토콜",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=wephrVh9Qcs",
+    "thumb": "/brand-pr/b12/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "문가영, 완벽 수트핏+러블리 미소 '한남동에 강림한 여신' MunKayoung Photocall [비하인드][4K]",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=fnBrqlGMfZA",
+    "thumb": "/brand-pr/b12/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "닉앤니콜(NICK&NICOLE) 공식 유튜브 채널",
+    "source": "",
+    "url": "https://www.youtube.com/@NICKNICOLE2015",
+    "thumb": "/brand-pr/b12/pr8.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b13",
@@ -3021,8 +3461,60 @@
   "shopProducts": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b13/1.jpg",
-    "url": "https://milloarchive.com/"
+    "type": "news",
+    "title": "밀로아카이브·우먼, '오프라인·글로벌·IP' 3가지 축으로 매출 180억 목표",
+    "source": "패션비즈 (Fashionbiz)",
+    "url": "https://fashionbiz.co.kr/article/222976",
+    "thumb": "/brand-pr/b13/pr1.jpg",
+    "date": "2026-01-16"
+   },
+   {
+    "type": "news",
+    "title": "밀로아카이브·밀로 우먼, 시장 내 입지 선점 (상반기 매출 80억, 전년 대비 40% 성장)",
+    "source": "한국섬유신문 (KTnews)",
+    "url": "https://www.ktnews.com/news/articleView.html?idxno=140257",
+    "thumb": "/brand-pr/b13/pr2.jpg",
+    "date": "2025-07-25"
+   },
+   {
+    "type": "news",
+    "title": "밀로아카이브·밀로우먼, 상반기 매출 40% 성장",
+    "source": "어패럴뉴스 (Apparel News)",
+    "url": "http://www.apparelnews.co.kr/news/news_view/?idx=218780",
+    "thumb": "/brand-pr/b13/pr3.jpg",
+    "date": "2025"
+   },
+   {
+    "type": "news",
+    "title": "'밀로아카이브', 올 목표 매출 100억",
+    "source": "어패럴뉴스 (Apparel News)",
+    "url": "http://www.apparelnews.co.kr/news/news_view/?idx=213025",
+    "thumb": "/brand-pr/b13/pr4.jpg",
+    "date": "2024-09-08"
+   },
+   {
+    "type": "news",
+    "title": "패션에 새 바람을 불어넣다 - 하우스바이하우스 박준재 대표 (밀로아카이브 창업자 인터뷰)",
+    "source": "핸드메이커 (Handmaker)",
+    "url": "https://www.handmk.com/news/articleView.html?idxno=26358",
+    "thumb": "/brand-pr/b13/pr5.jpg",
+    "date": "2024-11-20"
+   },
+   {
+    "type": "news",
+    "title": "밀로 아카이브(MILLO ARCHIVE) | 무신사 브랜드관 (상품·후기·평점 모음)",
+    "source": "무신사 (Musinsa)",
+    "url": "https://www.musinsa.com/brand/millo",
+    "thumb": "/brand-pr/b13/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "Millo Archive Spring 24 (공식 채널 컬렉션 숏츠)",
+    "source": "YouTube @milloarchive",
+    "url": "https://www.youtube.com/shorts/5wY-4_NQDEs",
+    "thumb": "/brand-pr/b13/pr7.jpg",
+    "date": "2024"
    }
   ],
   "heroImage": "/brand-marketing/b13/1.jpg",
@@ -3405,12 +3897,52 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b15/1.jpg",
-    "url": "https://www.maisonrepere.com/"
+    "type": "news",
+    "title": "레페르 REPÈRE 공식 사이트 - 새로운 피트니스룩의 기준, 동시대 여성을 위한 에슐레저 브랜드",
+    "source": "",
+    "url": "https://maisonrepere.com/",
+    "thumb": "/brand-pr/b15/pr1.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b15/2.jpg",
-    "url": "https://www.maisonrepere.com/"
+    "type": "news",
+    "title": "레페르(REPERE) 브랜드관 - 29CM (감도 깊은 취향 셀렉트샵)",
+    "source": "",
+    "url": "https://www.29cm.co.kr/store/brand/16903",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "레페르(REPERE) - 무신사 추천 브랜드관",
+    "source": "",
+    "url": "https://www.musinsa.com/brand/repere",
+    "thumb": "/brand-pr/b15/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "레페르(REPERE) - W컨셉(W CONCEPT) 브랜드관",
+    "source": "",
+    "url": "https://www.wconcept.co.kr/Brand/109292",
+    "thumb": "/brand-pr/b15/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "레페르 브리송 로고 후디 & 푸셰 조거팬츠 세트 구매 후기 (공식몰 리뷰)",
+    "source": "",
+    "url": "https://maisonrepere.com/article/review/4/4234/",
+    "thumb": "/brand-pr/b15/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "사이즈 딱 좋고 옷자체가 너무 편해요 - 레페르 공식몰 구매 후기",
+    "source": "",
+    "url": "https://maisonrepere.com/article/review/4/6822/",
+    "thumb": "/brand-pr/b15/pr6.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b15.jpg",
@@ -4135,7 +4667,73 @@
      "UFC チャンピオン メガフィット 半袖Tシャツ ブラック U2SSX2114BK"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "㈜신한코리아, UFC와 라이센스 계약…UFC 브랜드 의류 제작 및 유통",
+    "source": "서울신문",
+    "url": "https://www.seoul.co.kr/news/Brandnews/2021/04/19/20210419500118",
+    "thumb": "/brand-pr/b16/pr1.jpg",
+    "date": "2021-04-19"
+   },
+   {
+    "type": "news",
+    "title": "UFC, 신한코리아와 손잡고 의류 브랜드 런칭",
+    "source": "어패럴뉴스",
+    "url": "http://m.apparelnews.co.kr/news/news_view/?idx=189662",
+    "thumb": "/brand-pr/b16/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "UFC 스포츠 어패럴 이달 국내 론칭",
+    "source": "조세일보",
+    "url": "http://www.joseilbo.com/news/htmls/2021/09/20210906432419.html",
+    "thumb": "/brand-pr/b16/pr3.jpg",
+    "date": "2021-09-06"
+   },
+   {
+    "type": "news",
+    "title": "UFC 의류, 국내 생산·유통",
+    "source": "UFC 공식(kr.ufc.com)",
+    "url": "https://kr.ufc.com/news/ufc-uilyu-gugnae-saengsanyutong",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "UFC SPORT, 브랜드 모델 새 얼굴로 지코 발탁",
+    "source": "일간스포츠",
+    "url": "https://isplus.com/article/view/isp202302280065",
+    "thumb": "/brand-pr/b16/pr5.jpg",
+    "date": "2023-02-28"
+   },
+   {
+    "type": "news",
+    "title": "지코 'WE ARE UFC' 화보 공개",
+    "source": "텐아시아",
+    "url": "https://www.tenasia.co.kr/article/2023022875424",
+    "thumb": "/brand-pr/b16/pr6.jpg",
+    "date": "2023-03-02"
+   },
+   {
+    "type": "news",
+    "title": "UFC 스포츠, 지코 모델로 마케팅 강화",
+    "source": "어패럴뉴스",
+    "url": "http://m.apparelnews.co.kr/news/news_view/?idx=204172",
+    "thumb": "/brand-pr/b16/pr7.jpg",
+    "date": "2023-03-02"
+   },
+   {
+    "type": "news",
+    "title": "유에프씨 스포츠(UFC SPORT) - 회원후기(REVIEW)",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/brands/ufcsport/reviews?reviewType=style",
+    "thumb": "/brand-pr/b16/pr8.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b17",
@@ -4172,8 +4770,52 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b17/1.jpg",
-    "url": "https://www.yuse.co.kr/"
+    "type": "news",
+    "title": "공구우먼 '유즈(YUSE)' 인수… 브랜드 사업으로 영역 확장",
+    "source": "패션비즈",
+    "url": "https://fashionbiz.co.kr/article/208130",
+    "thumb": "/brand-pr/b17/pr1.jpg",
+    "date": "2024-05-28"
+   },
+   {
+    "type": "news",
+    "title": "패션 브랜드 유즈 인터뷰 — 유즈만의 스타일로 트렌드 해석하기",
+    "source": "마리끌레르 코리아 (Marie Claire Korea)",
+    "url": "https://www.marieclairekorea.com/fashion/2021/08/yuse/",
+    "thumb": "/brand-pr/b17/pr2.jpg",
+    "date": "2021-08"
+   },
+   {
+    "type": "news",
+    "title": "유즈(YUSE) 브랜드관 — 29CM",
+    "source": "29CM",
+    "url": "https://www.29cm.co.kr/store/brand/12435",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "유즈(YUSE) 브랜드 — W컨셉(W CONCEPT)",
+    "source": "W컨셉",
+    "url": "https://m.wconcept.co.kr/Brand/107757",
+    "thumb": "/brand-pr/b17/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "유즈(YUSE) 추천 브랜드 — 무신사",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/brand/yuse",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "Vlog 겨울 데일리룩 … yuse 유즈 … 일주일 브이로그",
+    "source": "유튜브 채널 '지혜사랑'",
+    "url": "https://www.youtube.com/watch?v=meCr-KcmbW8",
+    "thumb": "/brand-pr/b17/pr6.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b17.jpg",
@@ -4841,7 +5483,73 @@
      "商品カラー :"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "REVIEW - 슬로우앤드 (공식 고객 후기 게시판)",
+    "source": "slowand.com",
+    "url": "https://m.slowand.com/board/review/4/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "슬로우앤드 가을 촬영 현장 브이로그 SLOWAND",
+    "source": "YouTube (SLOWAND 공식)",
+    "url": "https://www.youtube.com/watch?v=wu6iWrUBR5k",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "슬로우앤드 자체제작 리뷰 / 과연 자체제작 맛집, 소문대로일까? / 첫인상 하울",
+    "source": "YouTube (인플루언서 하울/리뷰)",
+    "url": "https://www.youtube.com/watch?v=gs3bMa6zQc0",
+    "thumb": "/brand-pr/b19/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "[도영이] 세상의 모든 쇼핑몰리뷰 ⭐ 슬로우앤드 편",
+    "source": "YouTube (도영이)",
+    "url": "https://www.youtube.com/watch?v=2mkw5i3g_Qw",
+    "thumb": "/brand-pr/b19/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "쇼핑몰탐구🔍2편) 슬로우앤드👚 자체제작 가득✨ Slowand So Slow",
+    "source": "YouTube (쇼핑몰탐구 리뷰)",
+    "url": "https://www.youtube.com/watch?v=CbRitNJBGU0",
+    "thumb": "/brand-pr/b19/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "🤔사진에 속은걸까?! 쇼핑몰 리뷰 (프롬비기닝, 파인땡큐, 베니토, 에프터먼데이, 슬로우앤드)",
+    "source": "YouTube (쇼핑몰 비교 리뷰)",
+    "url": "https://www.youtube.com/watch?v=kiGZWYHpIi4",
+    "thumb": "/brand-pr/b19/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "대박 쇼핑몰, 처음 시작은 어땠을까 (슬로우앤드 창업 스토리)",
+    "source": "brunch.co.kr",
+    "url": "https://brunch.co.kr/@sasohanthing/10",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "(주)앤드모어 / 슬로우앤드 기업·채용·투자·뉴스",
+    "source": "rocketpunch.com",
+    "url": "https://www.rocketpunch.com/companies/seulrouaendeu",
+    "thumb": "",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b20",
@@ -4911,12 +5619,52 @@
   ],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b20/1.jpg",
-    "url": "https://rosefrantz.com/"
+    "type": "news",
+    "title": "로제프란츠(ROSÉ FRANTZ) 브랜드 소개",
+    "source": "",
+    "url": "https://echeveau.net/%EB%A1%9C%EC%A0%9C%ED%94%84%EB%9E%80%EC%B8%A0-rose-frantz-%EB%B8%8C%EB%9E%9C%EB%93%9C-%EC%86%8C%EA%B0%9C/",
+    "thumb": "",
+    "date": "2024-06-20"
    },
    {
-    "img": "/brand-marketing/b20/2.jpg",
-    "url": "https://rosefrantz.com/"
+    "type": "news",
+    "title": "로제프란츠(RoséFrantz) - 감도 깊은 취향 셀렉트샵 29CM 브랜드관",
+    "source": "",
+    "url": "https://shop.29cm.co.kr/brand/14310",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "로제프란츠(ROSEFRANTZ) 무신사 추천 브랜드관 (룩북·스타일·매거진)",
+    "source": "",
+    "url": "https://www.musinsa.com/brand/rosefrantz",
+    "thumb": "/brand-pr/b20/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "로제프란츠(Rosefrantz) W컨셉 브랜드관 (신상·룩북·기획전)",
+    "source": "",
+    "url": "https://display.wconcept.co.kr/rn/brand/112319",
+    "thumb": "/brand-pr/b20/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "로제프란츠 지그재그 스토어",
+    "source": "",
+    "url": "https://zigzag.kr/rosefrantz",
+    "thumb": "/brand-pr/b20/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "일반인이 아사 블라우스 입어보면...? #무채색코디 #블라우스추천 #로제프란츠 #데이트룩",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=YMehJwlVj9o",
+    "thumb": "/brand-pr/b20/pr6.jpg",
+    "date": "2025-03-30"
    }
   ],
   "heroImage": "/brand-hero/b20.jpg",
@@ -5226,16 +5974,44 @@
   "shopProducts": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b22/1.jpg",
-    "url": "https://deheve.com/"
+    "type": "news",
+    "title": "DEHEVÉ(드헤베) 2025 겨울 신제품 런칭 및 선착순 사은품 증정",
+    "source": "더퍼블릭",
+    "url": "https://www.thepublic.kr/news/articleView.html?idxno=280868",
+    "thumb": "/brand-pr/b22/pr1.jpg",
+    "date": "2025-10-24"
    },
    {
-    "img": "/brand-marketing/b22/2.jpg",
-    "url": "https://deheve.com/"
+    "type": "news",
+    "title": "드헤베(DEHEVE) | 무신사 추천 브랜드 - 상품 및 구매 후기",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/brand/deheve",
+    "thumb": "/brand-pr/b22/pr2.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b22/3.jpg",
-    "url": "https://deheve.com/"
+    "type": "news",
+    "title": "드헤베 (DEHEVE) Slim U-neck Long Sleeve [Melange] 후기",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/review/80368134",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "드헤베(DEHEVE) - W컨셉(W CONCEPT) 브랜드관",
+    "source": "W컨셉 (W CONCEPT)",
+    "url": "https://display.wconcept.co.kr/brand/111250",
+    "thumb": "/brand-pr/b22/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "DEHEVE - 드헤베 | 지그재그 스토어",
+    "source": "지그재그 (ZIGZAG)",
+    "url": "https://zigzag.kr/deheve",
+    "thumb": "/brand-pr/b22/pr5.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b22.jpg",
@@ -5606,16 +6382,68 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b25/1.jpg",
-    "url": "https://lemouton.co.kr/"
+    "type": "news",
+    "title": "르무통, '올해의 신인' 배우 채원빈 모델 발탁",
+    "source": "패션비즈",
+    "url": "https://fashionbiz.co.kr/article/212677",
+    "thumb": "/brand-pr/b25/pr1.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b25/2.jpg",
-    "url": "https://lemouton.co.kr/"
+    "type": "news",
+    "title": "르무통, '이친자' 배우 채원빈 모델 발탁",
+    "source": "뉴스1",
+    "url": "https://www.news1.kr/industry/general-industry/5644225",
+    "thumb": "/brand-pr/b25/pr2.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b25/3.jpg",
-    "url": "https://lemouton.co.kr/"
+    "type": "news",
+    "title": "르무통, 브랜드 모델로 배우 채원빈 발탁",
+    "source": "어패럴뉴스",
+    "url": "https://www.apparelnews.co.kr/news/news_view/?idx=214803&cat=CAT119",
+    "thumb": "/brand-pr/b25/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "르무통, 채원빈과 함께한 신규 TVC 공개",
+    "source": "르무통 공식 PRESS",
+    "url": "https://m.lemouton.co.kr/article/press/12/208165/",
+    "thumb": "/brand-pr/b25/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "르무통, 2025 브랜드 고객충성도 대상 2년 연속 수상",
+    "source": "서울경제",
+    "url": "https://www.sedaily.com/NewsView/2GSS5MJYUB",
+    "thumb": "/brand-pr/b25/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "국민 편한 신발 '르무통', 대규모 브랜드 캠페인 진행… TV CF 온에어",
+    "source": "세계일보",
+    "url": "https://www.segye.com/newsView/20240315506248",
+    "thumb": "/brand-pr/b25/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "르무통 - 브랜드 정보 정리",
+    "source": "나무위키",
+    "url": "https://namu.wiki/w/%EB%A5%B4%EB%AC%B4%ED%86%B5",
+    "thumb": "/brand-pr/b25/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "르무통 LeMouton 공식 유튜브 채널",
+    "source": "YouTube (Official)",
+    "url": "https://www.youtube.com/channel/UCkftkgj3sfzCEIwBDX23zcA",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-marketing/b25/1.jpg",
@@ -5687,16 +6515,44 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b26/1.jpg",
-    "url": "https://loeka.store/"
+    "type": "news",
+    "title": "제이에스코퍼레이션, 핸드백 브랜드 '로에카' 와디즈서 첫선",
+    "source": "한국경제",
+    "url": "https://www.hankyung.com/economy/article/202012295776i",
+    "thumb": "",
+    "date": "2020-12-29"
    },
    {
-    "img": "/brand-marketing/b26/2.jpg",
-    "url": "https://loeka.store/"
+    "type": "news",
+    "title": "'제이에스코퍼레이션', 핸드백 브랜드 '로에카LOEKA' 론칭",
+    "source": "한국중견기업연합회(중견련) 뉴스룸",
+    "url": "https://www.fomek.or.kr/main/newsroom/mme/mme_view.php?wr_id=1084",
+    "thumb": "/brand-pr/b26/pr2.jpg",
+    "date": "2020-12-30"
    },
    {
-    "img": "/brand-marketing/b26/3.jpg",
-    "url": "https://loeka.store/"
+    "type": "news",
+    "title": "와디즈 메이커 - 제이에스코퍼레이션 (로에카 ACME 백 펀딩)",
+    "source": "와디즈(Wadiz)",
+    "url": "https://www.wadiz.kr/web/maker/detail/1177058",
+    "thumb": "/brand-pr/b26/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "로에카(LOEKA) | 무신사 추천 브랜드",
+    "source": "무신사(MUSINSA)",
+    "url": "https://www.musinsa.com/brand/loeka",
+    "thumb": "/brand-pr/b26/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "로에카 공식몰 고객 리뷰 게시판",
+    "source": "로에카 공식 스토어",
+    "url": "https://loeka.store/board/review/4/",
+    "thumb": "/brand-pr/b26/pr5.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b26.jpg",
@@ -6552,7 +7408,65 @@
      "Maroon バッグ"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "쓰리타임즈(THREETIMES) 제품 후기·사이즈 모음 (무신사)",
+    "source": "",
+    "url": "https://www.musinsa.com/products/5590920",
+    "thumb": "/brand-pr/b27/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "쓰리타임즈(THREETIMES) 브랜드 페이지 (후루츠패밀리)",
+    "source": "",
+    "url": "https://fruitsfamily.com/brand/THREETIMES",
+    "thumb": "/brand-pr/b27/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "쓰리타임즈(Three Times) 브랜드 페이지 (콜렉티브)",
+    "source": "",
+    "url": "https://collectiv.kr/brand/431",
+    "thumb": "/brand-pr/b27/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "Unboxing｜쓰리타임즈(threetimes) 23FW 신상 볼레로 자세한 후기·원브랜드 룩북",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=Uc_wVtjKpEg",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "threetimes 2022 여름 신상 리뷰&룩북",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=SgrSVqcM5Xk",
+    "thumb": "/brand-pr/b27/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "Threetimes lookbook 쓰리타임즈 홀리데이 시즌 룩북",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=8xDiaYZht9k",
+    "thumb": "/brand-pr/b27/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "쓰리타임즈 가을 옷으로 핀터레스트 걸 룩북 가을코디 [ENG]",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=G-eSM9_FRBU",
+    "thumb": "/brand-pr/b27/pr7.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b28",
@@ -6631,7 +7545,65 @@
     "note": "元広告主 · ロゴは別途提供",
     "products": []
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "육심원 캐릭터의 실존 인물 등장! 닮은꼴 찾기 전시회 열려",
+    "source": "bnt뉴스",
+    "url": "https://www.bntnews.co.kr/article/view/bnt201204260282",
+    "thumb": "/brand-pr/b28/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "육심원 작가의 동양화 작품이 패션 아이템으로 탄생하다!",
+    "source": "에너지경제(EKN)",
+    "url": "https://m.ekn.kr/view.php?key=144425",
+    "thumb": "/brand-pr/b28/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "육심원(YOUK SHIM WON) 무신사 추천 브랜드 - 상품·후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/brand/youkshimwon",
+    "thumb": "/brand-pr/b28/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "육심원 가방 상품후기 - 리아 캐릭터 가방 사용 후기",
+    "source": "육심원 공식 아트샵",
+    "url": "https://youkshimwon.com/article/%EC%83%81%ED%92%88%ED%9B%84%EA%B8%B0/4/17180/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "[YOUK SHIM WON] Who is your bias - 육심원 공식 릴스",
+    "source": "Instagram @youkshimwon_official",
+    "url": "https://www.instagram.com/youkshimwon_official/reel/DDblCtGPQpJ/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "Drawing Youk Shim Won Painting/Acrylic Painting/육심원 쉬운 손그림",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=iYlZHLWXrt4",
+    "thumb": "/brand-pr/b28/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "육심원(YOUKSHIMWON) 캐릭터 그리기 / POPART Acrylic Paint",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=aWpzucYx16c",
+    "thumb": "/brand-pr/b28/pr7.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b29",
@@ -7027,7 +7999,57 @@
      "[BAONHAUS] ヒロネン ボタン フリル レイヤード タンクトップ"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "BAON 고객후기 - 나노브 컬러 린넨 밴딩 와이드 썸머 팬츠 (네이버페이 구매 만족 후기)",
+    "source": "ba-on.com",
+    "url": "https://ba-on.com/article/%EA%B3%A0%EA%B0%9D%ED%9B%84%EA%B8%B0/4/448093/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "바온 고객후기 게시판 (실착 후기, 별점 리뷰)",
+    "source": "ba-on.com",
+    "url": "https://m.ba-on.com/article/review/4/327283/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "바온(BAON) 브랜드 - 후루츠패밀리 빈티지/세컨핸드 거래 (115 listings)",
+    "source": "fruitsfamily.com",
+    "url": "https://fruitsfamily.com/brand/BAON",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "BAON(바온) 실시간 인기 스타일 - 온더룩 브랜드 페이지",
+    "source": "onthelook.co.kr",
+    "url": "https://onthelook.co.kr/brand/125",
+    "thumb": "/brand-pr/b29/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "바온 (@ba_on) 공식 인스타그램 - 데일리룩 여성의류 (약 11.5만 팔로워)",
+    "source": "instagram.com",
+    "url": "https://www.instagram.com/ba_on/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "바온 (@dailylookbaon) 공식 페이스북",
+    "source": "facebook.com",
+    "url": "https://www.facebook.com/dailylookbaon/",
+    "thumb": "",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b30",
@@ -7412,7 +8434,65 @@
      "ロジー レース スクエアネック Tシャツ チャコール"
     ]
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "남주미 l 일리고 대표, 'Ig' 로고 기반 데일리 룩",
+    "source": "패션비즈(Fashionbiz)",
+    "url": "https://fashionbiz.co.kr/article/206160",
+    "thumb": "/brand-pr/b30/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "디자이너 브랜드 '일리고' 매출 10배 성장...해외 공략",
+    "source": "패션비즈(Fashionbiz)",
+    "url": "https://fashionbiz.co.kr/article/205262",
+    "thumb": "/brand-pr/b30/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "'일리고', 런칭 2년간 국내외 종횡무진…올 매출 100억 목표",
+    "source": "어패럴뉴스(Apparelnews)",
+    "url": "https://www.apparelnews.co.kr/news/news_view/?idx=218321&cat=CAT100",
+    "thumb": "/brand-pr/b30/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "3년만에 매출 100억 브랜드로 성장… 日서도 통했다 [K스타일 웨이브]",
+    "source": "파이낸셜뉴스(Financial News)",
+    "url": "https://www.fnnews.com/news/202605271806175488",
+    "thumb": "/brand-pr/b30/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "무신사와 함께 일본 시장 공략한 K패션 브랜드 일리고, 매출 성장 비결과 현지화 전략",
+    "source": "한국일보(Hankook Ilbo)",
+    "url": "https://www.hankookilbo.com/News/Read/A2025110309570004118",
+    "thumb": "/brand-pr/b30/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "[NRB] 일상에 러블리한 무드를 더하는 '일리고(ILLIGO)'",
+    "source": "TNNEWS",
+    "url": "https://tnnews.co.kr/archives/264677",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "ILLIGO 공식 유튜브 채널",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/channel/UCPCSNBOmhJo9-qgS-bkXNOw",
+    "thumb": "/brand-pr/b30/pr7.jpg",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b31",
@@ -7499,7 +8579,49 @@
     "note": "過去の広告主 · ロゴ別途提供",
     "products": []
    }
-  }
+  },
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "퍼스텝(PERSTEP) | 무신사 추천 브랜드",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/brand/perstep",
+    "thumb": "/brand-pr/b31/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "브랜드(퍼스텝) - FMJ",
+    "source": "FMJ (운영사)",
+    "url": "https://www.fmj.co.kr/m/page.html?id=14",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "'뭔데, 이거⁉ 왜 잘나가요?' 퍼스텝 디자이너가 직접 얘기하는✨ 뉴필드 후드 & 맨투맨 🛍 ✨",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=fydIN-DFcms",
+    "thumb": "/brand-pr/b31/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "후드집업 이거 사세요🔥 (무신사 블프, 가성비, 품절대란, 회색츄리닝, 기모 브랜디드 브렌슨 페플 퍼스텝 토피)",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=7gGDIYGcLjA",
+    "thumb": "/brand-pr/b31/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "페플 / 제멋 / 더블유브이프로젝트 / TWN / 퍼스텝 / 에즈카톤 / 펀치라인 (@fp142_kr) • Instagram",
+    "source": "Instagram",
+    "url": "https://www.instagram.com/fp142_kr/",
+    "thumb": "",
+    "date": ""
+   }
+  ]
  },
  {
   "id": "b32",
@@ -7569,12 +8691,44 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b32/1.jpg",
-    "url": "https://www.kindlove.co.kr/"
+    "type": "news",
+    "title": "셀럽이 반하다 - 연예인 착용 컬렉션 (곽시양 '재벌X형사', 김남희 'MBC 우리집', 김종국, 이동휘, 전효성)",
+    "source": "kindlove.co.kr",
+    "url": "https://kindlove.co.kr/category/%EC%85%80%EB%9F%BD%EC%9D%B4%EB%B0%98%ED%95%98%EB%8B%A4/81/",
+    "thumb": "/brand-pr/b32/pr1.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b32/2.jpg",
-    "url": "https://www.kindlove.co.kr/"
+    "type": "news",
+    "title": "재벌X형사 곽시양 ESSENTIAL #02 BLK - 배우 곽시양 착용 안경",
+    "source": "kindlove.co.kr",
+    "url": "https://kindlove.co.kr/product/classic-is-forever-04-gol/98/",
+    "thumb": "/brand-pr/b32/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "이제 동글이안경.. 헤어질때도 됐잖아..?!? 동글이 안경에서 넘어가기 좋은 안경 추천! (콤비안경,뿔테안경,티타늄안경) with 카인드러브",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=XtOhmUpZ_8c",
+    "thumb": "/brand-pr/b32/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "카인드러브 공식몰 고객 리뷰 (REVIEW)",
+    "source": "kindlove.co.kr",
+    "url": "https://kindlove.co.kr/board/product/review-list.html",
+    "thumb": "/brand-pr/b32/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "카인드러브 공식 인스타그램 @kindlove_official",
+    "source": "Instagram",
+    "url": "https://www.instagram.com/kindlove_official",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b32.jpg",
@@ -7952,13 +9106,79 @@
    "https://standoil.kr/web/product/big/202605/7954c31b6796937e9d1185c963f652fb.jpg",
    "https://standoil.kr/web/upload/category/editor/2026/06/17/ddbbdf64482fcefb3f7955682b9650e2.jpg"
   ],
-  "marketingUrls": [
-   "https://newsroom.musinsa.com/newsroom-menu/2024-0227-mubwiki-standoil"
-  ],
+  "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b33/1.jpg",
-    "url": "https://newsroom.musinsa.com/newsroom-menu/2024-0227-mubwiki-standoil"
+    "type": "news",
+    "title": "‘핀터레스트 감성’ 가방·모자까지...글로벌 셀럽 녹인 K액세서리 파워↑ (벨라 하디드 스탠드오일 백 착용)",
+    "source": "",
+    "url": "https://www.etoday.co.kr/news/view/2552604",
+    "thumb": "/brand-pr/b33/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "[무브위키] '국민 여대생 가방' 탄생시킨 스탠드오일의 무신사 활용법",
+    "source": "",
+    "url": "https://newsroom.musinsa.com/newsroom-menu/2024-0227-mubwiki-standoil",
+    "thumb": "/brand-pr/b33/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "스탠드오일, 29CM 단독 라인 가방 3종 출시",
+    "source": "",
+    "url": "https://fpost.co.kr/board/bbs/board.php?bo_table=newsinnews&wr_id=7142",
+    "thumb": "/brand-pr/b33/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "스탠드오일, 24 여름 컬렉션 출시",
+    "source": "",
+    "url": "https://www.fpost.co.kr/board/bbs/board.php?bo_table=newsinnews&wr_id=7192",
+    "thumb": "/brand-pr/b33/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "#제작지원 도연이가 선택한 이 가방 뭐죠...?! 스탠드오일 · 김도연(THE LOVE)",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=Tl-B204KJwg",
+    "thumb": "/brand-pr/b33/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "가방 맛집 스탠드오일 사실 신발도... (인플루언서 릴스 리뷰)",
+    "source": "",
+    "url": "https://www.instagram.com/reel/DIiP1-mJffs/",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "무조건 뽕뽑는...!!! 갓성비 디자이너 데일리백 5개 (스탠드오일 외)",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=93QxA1Ryh7I",
+    "thumb": "/brand-pr/b33/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "PD들의 데일리 가방 추천 ｜ STAND OIL 스탠드오일, 프라이탁",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=bU2Cn1bMH88",
+    "thumb": "/brand-pr/b33/pr8.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "Stand Oil Fluffy Bag 3분 리뷰 ｜ 스탠드오일 플러피백 가방리뷰",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=CZju5gl8MXQ",
+    "thumb": "/brand-pr/b33/pr9.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b33.jpg",
@@ -8296,13 +9516,55 @@
    "https://www.soupmall.co.kr/web/product/medium/202606/fcf11ca599d73b6dabca53484b475040.jpg",
    "https://www.soupmall.co.kr/web/product/medium/202606/0faf8bb47aeff697a0c380890f16a75b.jpg"
   ],
-  "marketingUrls": [
-   "https://www.apparelnews.co.kr/news/news_view/?idx=215467"
-  ],
+  "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b34/1.jpg",
-    "url": "https://www.apparelnews.co.kr/news/news_view/?idx=215467"
+    "type": "news",
+    "title": "여성복 '숲(SOUP)' 새얼굴 배우 이세영 발탁... 2025 S/S 컬렉션 화보 공개",
+    "source": "숲몰 브랜드 뉴스 (공식)",
+    "url": "https://soupmall.co.kr/article/%EB%B8%8C%EB%9E%9C%EB%93%9C-%EB%89%B4%EC%8A%A4/20/83406/",
+    "thumb": "/brand-pr/b34/pr1.jpg",
+    "date": "2025-03-21"
+   },
+   {
+    "type": "news",
+    "title": "드라마 '모텔 캘리포니아' 이세영, 숲(SOUP) 뮤즈로 발탁",
+    "source": "더퍼블릭 (보도자료)",
+    "url": "https://www.thepublic.kr/news/articleView.html?idxno=250328",
+    "thumb": "/brand-pr/b34/pr2.jpg",
+    "date": "2025-02-12"
+   },
+   {
+    "type": "news",
+    "title": "여성복 '숲', 새 뮤즈에 모텔 캘리포니아의 이세영",
+    "source": "어패럴뉴스",
+    "url": "https://www.apparelnews.co.kr/news/news_view/?idx=215467",
+    "thumb": "/brand-pr/b34/pr3.jpg",
+    "date": "2025-02-13"
+   },
+   {
+    "type": "news",
+    "title": "'숲(SOUP)'의 뷔스티에 셔츠로 완성한 이세영의 휴가 패션",
+    "source": "어패럴뉴스",
+    "url": "https://www.apparelnews.co.kr/news/news_view/?idx=215906&cat=CAT100",
+    "thumb": "/brand-pr/b34/pr4.jpg",
+    "date": "2025-03-05"
+   },
+   {
+    "type": "news",
+    "title": "숲(SOUP)의 뮤즈 이세영, 푸켓에서 사랑스러운 일상 패션 공개",
+    "source": "데이터뉴스",
+    "url": "https://www.datanews.co.kr/news/article.html?no=137537",
+    "thumb": "/brand-pr/b34/pr5.jpg",
+    "date": "2025-03-12"
+   },
+   {
+    "type": "news",
+    "title": "SOUPMALL TV (숲몰 공식 유튜브 채널)",
+    "source": "YouTube (공식)",
+    "url": "https://www.youtube.com/@SoupmallTV",
+    "thumb": "/brand-pr/b34/pr6.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-marketing/b34/1.jpg",
@@ -8397,8 +9659,36 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b35/1.jpg",
-    "url": "https://www.soupmall.co.kr/product/list.html?cate_no=145"
+    "type": "news",
+    "title": "모델 송해나 화보, 독특한 개성과 매력적인 페이스 빛이나",
+    "source": "",
+    "url": "https://v.daum.net/v/20150319140207947",
+    "thumb": "/brand-pr/b35/pr1.jpg",
+    "date": "2015-03-19"
+   },
+   {
+    "type": "news",
+    "title": "테토녀 VS 에겐녀 🍒 재킷 1개로 코디 4개 완성하기 | LOOKBOOK 📷 비지트인뉴욕 원브랜드 룩북 | 여름 자켓 추천 | 여자 코디",
+    "source": "",
+    "url": "https://www.youtube.com/watch?v=RW8LYYrx7Mo",
+    "thumb": "/brand-pr/b35/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "중계점 비지트인뉴욕 (YouTube 채널)",
+    "source": "",
+    "url": "https://www.youtube.com/channel/UCvCRT8c62RhGBweAmSuPiIg",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "비지트인뉴욕이라는 브랜드는 어때?",
+    "source": "",
+    "url": "https://theqoo.net/index.php?mid=fashion&filter_mode=normal&document_srl=1245701297",
+    "thumb": "",
+    "date": "2019-11-03"
    }
   ],
   "heroImage": "/brand-marketing/b35/1.jpg",
@@ -8482,8 +9772,52 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b36/1.jpg",
-    "url": "https://www.soupmall.co.kr/product/list.html?cate_no=2811"
+    "type": "news",
+    "title": "애드호크(ADHOC), 뮤즈 이재욱과 추동 캠페인 전개",
+    "source": "어패럴뉴스",
+    "url": "http://m.apparelnews.co.kr/news/news_view/?idx=184424",
+    "thumb": "/brand-pr/b36/pr1.jpg",
+    "date": "2020-08-18"
+   },
+   {
+    "type": "news",
+    "title": "애드호크, 리브랜딩 MZ 공략 박차",
+    "source": "한국섬유신문",
+    "url": "https://www.ktnews.com/news/articleView.html?idxno=123887",
+    "thumb": "/brand-pr/b36/pr2.jpg",
+    "date": "2022-05-23"
+   },
+   {
+    "type": "news",
+    "title": "AD HOC, 23 SUMMER 컬렉션 출시",
+    "source": "내외경제TV",
+    "url": "https://www.nbntv.co.kr/news/articleView.html?idxno=1004413",
+    "thumb": "/brand-pr/b36/pr3.jpg",
+    "date": "2023-05-04"
+   },
+   {
+    "type": "news",
+    "title": "애드호크, '반팔 후드 티셔츠' 2차 리오더",
+    "source": "핸드메이커",
+    "url": "https://www.handmk.com/news/articleView.html?idxno=16233",
+    "thumb": "/brand-pr/b36/pr4.jpg",
+    "date": "2023-05-23"
+   },
+   {
+    "type": "news",
+    "title": "AD HOC | 2025 FALL CAMPAIGN",
+    "source": "YouTube (AD HOC 애드호크 공식채널)",
+    "url": "https://www.youtube.com/shorts/_2vdGxxYksA",
+    "thumb": "/brand-pr/b36/pr5.jpg",
+    "date": "2025"
+   },
+   {
+    "type": "news",
+    "title": "ADHOC | 2025 SPRING COLLECTION",
+    "source": "YouTube (AD HOC 애드호크 공식채널)",
+    "url": "https://www.youtube.com/watch?v=wi20zZHocwA",
+    "thumb": "/brand-pr/b36/pr6.jpg",
+    "date": "2025"
    }
   ],
   "heroImage": "/brand-marketing/b36/1.jpg",
@@ -8853,8 +10187,68 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b37/1.jpg",
-    "url": "https://www.soupmall.co.kr/product/list.html?cate_no=2810"
+    "type": "news",
+    "title": "미국 캐주얼 브랜드 'UCLA' 국내 런칭",
+    "source": "",
+    "url": "https://www.apparelnews.co.kr/news/news_view/?idx=188810&cat=CAT100",
+    "thumb": "/brand-pr/b37/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "100년 역사의 아이비리그, 유스 컬처 캐주얼 'UCLA'로 탄생",
+    "source": "",
+    "url": "http://m.apparelnews.co.kr/news/news_view/?idx=192893",
+    "thumb": "/brand-pr/b37/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "라이프스타일 캐주얼 'UCLA', 브랜드 재정비 통해 오프라인 유통망 본격 확장",
+    "source": "",
+    "url": "https://www.enetnews.co.kr/news/articleView.html?idxno=49114",
+    "thumb": "/brand-pr/b37/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "UCLA, 겨울 아우터 판매 호황",
+    "source": "",
+    "url": "https://m.apparelnews.co.kr/news/news_view/?idx=202931",
+    "thumb": "/brand-pr/b37/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "UCLA(유씨엘에이), 경량패딩 '라이트 덕다운 퀄팅 점퍼' 출시",
+    "source": "",
+    "url": "https://www.fashionnet.or.kr/daily-news/102487/",
+    "thumb": "/brand-pr/b37/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "김우석 x UCLA LOOKBOOK",
+    "source": "",
+    "url": "https://www.ucla-lifestyle-korea.com/article/lookbook/13/765/",
+    "thumb": "/brand-pr/b37/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "김우석 패딩 REVIEW",
+    "source": "",
+    "url": "https://uclakorea.co.kr/article/review/4/839/?no=839&board_no=4&spread_flag=T",
+    "thumb": "/brand-pr/b37/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "유씨엘에이(UCLA) 헤비 오버핏 숏 패딩 다운 점퍼 - 사이즈 & 후기",
+    "source": "",
+    "url": "https://www.musinsa.com/products/2946047",
+    "thumb": "/brand-pr/b37/pr8.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-marketing/b37/1.jpg",
@@ -9199,16 +10593,92 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b38/1.jpg",
-    "url": "https://www.discovery-expedition.com/"
+    "type": "news",
+    "title": "디스커버리 익스페디션, 새 앰버서더로 변우석 발탁",
+    "source": "아이즈매거진",
+    "url": "https://www.eyesmag.com/posts/156728/discovery-expedition-ambassodor-byeonwooseok",
+    "thumb": "/brand-pr/b38/pr1.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b38/2.jpg",
-    "url": "https://www.discovery-expedition.com/"
+    "type": "news",
+    "title": "디스커버리 익스페디션, 앰버서더 배우 변우석 효과 '톡톡'",
+    "source": "데일리안",
+    "url": "https://www.dailian.co.kr/news/view/1368698/?sc=rss_economy",
+    "thumb": "/brand-pr/b38/pr2.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b38/3.jpg",
-    "url": "https://www.discovery-expedition.com/"
+    "type": "news",
+    "title": "디스커버리 익스페디션, 배우 고윤정 앰버서더 발탁",
+    "source": "IT조선/ITNK",
+    "url": "https://www.itnk.co.kr/news/articleView.html?idxno=72507",
+    "thumb": "/brand-pr/b38/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "김고은, 공유 또 만났다…디스커버리 익스페디션 모델 발탁",
+    "source": "파이낸셜뉴스",
+    "url": "https://www.fnnews.com/news/202304281407522967",
+    "thumb": "/brand-pr/b38/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "「디스커버리」, 공유 새 CF 공개",
+    "source": "패션비즈",
+    "url": "https://fashionbiz.co.kr/article/135166",
+    "thumb": "/brand-pr/b38/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "디스커버리 익스페디션 × 공유 22FW 'LIFE IS DISCOVERY' 증정 이벤트 기획전",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/app/plan/views/27355",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "디스커버리 익스페디션, 체험형 이벤트…MZ고객 접점 넓혀",
+    "source": "한국경제",
+    "url": "https://www.hankyung.com/article/202511042406g",
+    "thumb": "/brand-pr/b38/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "디스커버리 익스페디션, 25FW 프리미엄 경량패딩 출시…고윤정 화보 공개",
+    "source": "뉴스탭",
+    "url": "https://www.newstap.co.kr/news/articleView.html?idxno=313461",
+    "thumb": "/brand-pr/b38/pr8.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "엠버서더 변우석, 디스커버리 명동점 방문 화제",
+    "source": "한국섬유신문",
+    "url": "https://www.ktnews.com/news/articleView.html?idxno=138504",
+    "thumb": "/brand-pr/b38/pr9.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "DISCOVERY JOURNEY 🌿 with #변우석 ㅣ 디스커버리 25SS",
+    "source": "YouTube (공식 @DISCOVERYEXPEDITION)",
+    "url": "https://www.youtube.com/shorts/1_B4OdR5Uk4",
+    "thumb": "/brand-pr/b38/pr10.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "디스커버리 X 우석 촬영 현장 비하인드 공개!",
+    "source": "YouTube (공식 @DISCOVERYEXPEDITION)",
+    "url": "https://www.youtube.com/watch?v=RX-tOKTrCXM",
+    "thumb": "/brand-pr/b38/pr11.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b38.jpg",
@@ -9568,13 +11038,95 @@
    "https://static-resource.mlb-korea.com/cdn-cgi/image/q=80,w=600,format=auto/images/goods/ec/M26S3ATSB016307SBL/thnail/9CEA21E6A8DF4B56AEDB72D3BDA7D78F.png",
    "https://static-resource.mlb-korea.com/cdn-cgi/image/q=80,w=600,format=auto/images/goods/ec/M21N3ACP8501N50GOS/thnail/5424591A250E4CBDB7E9028ECF442089.png"
   ],
-  "marketingUrls": [
-   "https://news.nate.com/view/20230605n24399"
-  ],
+  "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b39/1.jpg",
-    "url": "https://news.nate.com/view/20230605n24399"
+    "type": "news",
+    "title": "中 휩쓴 'MLB 패션'… F&F, 글로벌·신사업 불 지핀다",
+    "source": "아시아투데이",
+    "url": "https://www.asiatoday.co.kr/kn/view.php?key=20260506010000729",
+    "thumb": "/brand-pr/b39/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "'MLB' 올 해외 매출 2조 넘본다",
+    "source": "어패럴뉴스",
+    "url": "https://www.apparelnews.co.kr/news/news_view/?idx=211096&cat=CAT100",
+    "thumb": "/brand-pr/b39/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "MLB, 캄보디아 오프라인 매장 개점…동남아시아 진출 가속화",
+    "source": "뉴스1",
+    "url": "https://www.news1.kr/industry/fashion/4980362",
+    "thumb": "/brand-pr/b39/pr3.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "F&F, 디스커버리·MLB로 국내 매출 1조 돌파",
+    "source": "어패럴뉴스",
+    "url": "http://m.apparelnews.co.kr/news/news_view/?idx=203280",
+    "thumb": "/brand-pr/b39/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "F&F, 해외 MLB 매장 운영자에 브랜드 운영 전략 소개",
+    "source": "한국NGO신문",
+    "url": "https://www.ngonews.kr/news/articleView.html?idxno=152619",
+    "thumb": "/brand-pr/b39/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "F&F MLB, 성수동에 플래그십 스토어 오픈",
+    "source": "직썰",
+    "url": "https://www.ziksir.com/news/articleView.html?idxno=84898",
+    "thumb": "/brand-pr/b39/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "엠엘비 코리아 - 카리나 MLB 앰버서더 #광고 (공식 스타일픽)",
+    "source": "MLB Korea 공식몰",
+    "url": "https://www.mlb-korea.com/brand/style-pick/trend-picks/1226",
+    "thumb": "/brand-pr/b39/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "앰버서더 콜렉터, 뉴진스가 모델인 브랜드 총정리",
+    "source": "하퍼스 바자 코리아",
+    "url": "https://www.harpersbazaar.co.kr/article/75801",
+    "thumb": "/brand-pr/b39/pr8.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "MLB Korea (MLB 코리아) 공식 유튜브 채널",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/@mlbkoreaofficial",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "[ae:scenes] 감사의 모자 돌리기 퍼포먼스 | 에스파 카리나 MLB Behind",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=KX2wlDanZK8",
+    "thumb": "/brand-pr/b39/pr10.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "엠엘비(MLB) | 무신사 추천 브랜드",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/brand/mlb",
+    "thumb": "/brand-pr/b39/pr11.jpg",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b39.jpg",
@@ -9957,16 +11509,52 @@
   "marketingUrls": [],
   "marketingItems": [
    {
-    "img": "/brand-marketing/b40/1.jpg",
-    "url": "https://ason.kr/"
+    "type": "news",
+    "title": "애즈온(ASON) | 무신사 추천 브랜드",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/brand/ason",
+    "thumb": "/brand-pr/b40/pr1.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b40/2.jpg",
-    "url": "https://ason.kr/"
+    "type": "news",
+    "title": "애즈온(ASON) VICTORY PANTS / BLACK - 사이즈 & 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/products/4542760",
+    "thumb": "/brand-pr/b40/pr2.jpg",
+    "date": ""
    },
    {
-    "img": "/brand-marketing/b40/3.jpg",
-    "url": "https://ason.kr/"
+    "type": "news",
+    "title": "애즈온 (ASON) SSIN SLEEVELESS / BLACK 후기",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/review/79067261",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "홍대 #애즈온 매장에서 6가지 입어보기👚#ason",
+    "source": "YouTube 숏츠",
+    "url": "https://www.youtube.com/shorts/Ch6oTl8tqaU",
+    "thumb": "/brand-pr/b40/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "애즈온 summer essentials \"Dear me\" 택배 뜯어볼게 ~! 💌 #애즈온 #ason",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=KMZjXo_uEPM",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "애즈온 공식 유튜브 채널 (@ason.official)",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/@ason.official",
+    "thumb": "",
+    "date": ""
    }
   ],
   "heroImage": "/brand-hero/b40.jpg",
