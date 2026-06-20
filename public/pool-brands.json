@@ -177,7 +177,105 @@
     "price": "59,000원",
     "url": "https://trafficharmony.kr/product/round-logo-trucker-hatyellow/65/category/61/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A headwear brand expanding its world around two pillars: Traffic and Harmony.",
+    "note": "",
+    "products": [
+     "TH Graffiti Logo Mesh Deep-Fit Ballcap",
+     "Bardot X Traffic Harmony Deep-Fit Ballcap",
+     "TH Sign Logo Rope Deep-Fit Ballcap",
+     "Folded Shoulder Bag",
+     "Pocket Cross Bag",
+     "Flap Backpack",
+     "Basic Backpack",
+     "Wide Visor Logo Ballcap",
+     "Corduroy Drive Logo Deep-Fit 5-Panel Cap_Brown",
+     "Corduroy Round Logo Deep-Fit 5-Panel Cap_Mustard",
+     "Corduroy TH Logo Deep-Fit Ballcap_Brown",
+     "Basic Shape TH Logo Ballcap_Orange",
+     "Basic Shape Full Logo Ballcap_Orange",
+     "Wool Blend TH Applique Logo Deep-Fit Ballcap_Red",
+     "Deep Shape Applique Logo Ballcap_Orange",
+     "Drive Logo Trucker Hat_Washing Yellow",
+     "Traffic Lane Logo Trucker Hat_Yellow",
+     "Round Logo Trucker Hat_Yellow"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "围绕 Traffic 与 Harmony 两大核心不断拓展世界观的头饰品牌。",
+    "note": "",
+    "products": [
+     "TH 涂鸦logo网眼深帽型棒球帽",
+     "Bardot X Traffic Harmony 深帽型棒球帽",
+     "TH 标志logo绳饰深帽型棒球帽",
+     "折叠单肩包",
+     "口袋斜挎包",
+     "翻盖双肩包",
+     "基础款双肩包",
+     "宽檐logo棒球帽",
+     "灯芯绒 Drive logo深帽型五片帽_棕色",
+     "灯芯绒圆形logo深帽型五片帽_芥末黄",
+     "灯芯绒 TH logo深帽型棒球帽_棕色",
+     "基础廓形 TH logo棒球帽_橙色",
+     "基础廓形整体logo棒球帽_橙色",
+     "羊毛混纺 TH 贴布logo深帽型棒球帽_红色",
+     "深帽型贴布logo棒球帽_橙色",
+     "Drive logo卡车帽_水洗黄",
+     "Traffic Lane logo卡车帽_黄色",
+     "圆形logo卡车帽_黄色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "圍繞 Traffic 與 Harmony 兩大核心不斷拓展世界觀的頭飾品牌。",
+    "note": "",
+    "products": [
+     "TH 塗鴉logo網眼深帽型棒球帽",
+     "Bardot X Traffic Harmony 深帽型棒球帽",
+     "TH 標誌logo繩飾深帽型棒球帽",
+     "摺疊單肩包",
+     "口袋斜背包",
+     "翻蓋後背包",
+     "基本款後背包",
+     "寬簷logo棒球帽",
+     "燈芯絨 Drive logo深帽型五片帽_棕色",
+     "燈芯絨圓形logo深帽型五片帽_芥末黃",
+     "燈芯絨 TH logo深帽型棒球帽_棕色",
+     "基本廓形 TH logo棒球帽_橙色",
+     "基本廓形整體logo棒球帽_橙色",
+     "羊毛混紡 TH 貼布logo深帽型棒球帽_紅色",
+     "深帽型貼布logo棒球帽_橙色",
+     "Drive logo卡車帽_水洗黃",
+     "Traffic Lane logo卡車帽_黃色",
+     "圓形logo卡車帽_黃色"
+    ]
+   },
+   "ja": {
+    "slogan": "Traffic と Harmony という二つの軸を中心に世界観を広げていくヘッドウェアブランドです。",
+    "note": "",
+    "products": [
+     "TH グラフィティロゴ メッシュ ディープフィット ボールキャップ",
+     "Bardot X Traffic Harmony ディープフィット ボールキャップ",
+     "TH サインロゴ ロープ ディープフィット ボールキャップ",
+     "フォールデッド ショルダーバッグ",
+     "ポケット クロスバッグ",
+     "フラップ バックパック",
+     "ベーシック バックパック",
+     "ワイドバイザー ロゴ ボールキャップ",
+     "コーデュロイ ドライブロゴ ディープフィット 5パネルキャップ_ブラウン",
+     "コーデュロイ ラウンドロゴ ディープフィット 5パネルキャップ_マスタード",
+     "コーデュロイ TH ロゴ ディープフィット ボールキャップ_ブラウン",
+     "ベーシックシェイプ TH ロゴ ボールキャップ_オレンジ",
+     "ベーシックシェイプ フルロゴ ボールキャップ_オレンジ",
+     "ウールブレンド TH アップリケロゴ ディープフィット ボールキャップ_レッド",
+     "ディープシェイプ アップリケロゴ ボールキャップ_オレンジ",
+     "ドライブロゴ トラッカーハット_ウォッシュイエロー",
+     "トラフィックレーン ロゴ トラッカーハット_イエロー",
+     "ラウンドロゴ トラッカーハット_イエロー"
+    ]
+   }
+  }
  },
  {
   "id": "b03",
@@ -287,7 +385,57 @@
     "price": "69,000원",
     "url": "https://www.akiii.co.kr/shop/shopdetail.html?branduid=1154788&xcode=027&mcode=001&scode=002&type=Y&sort=manual&current_category=027&search=&GfDT=aWt3VlU%3D"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Lightweight, cushioned, and wide-fit lines — full size lineup for men and women, plus exclusive offers.",
+    "note": "",
+    "products": [
+     "Arch Fit Form Flip-Flop Strawberry Milk",
+     "31% Energy Absorption, Foot Fatigue Recovery / Bumper Freelock Lilac Layered, As Worn in the US ▶ Coupon Price",
+     "[2-Pack] Spring Field ▶ Coupon Price 129,600 KRW",
+     "Spring Field Pale Stone ▶ Coupon Price 69,000 KRW",
+     "Spring Field Black ▶ Coupon Price 69,000 KRW",
+     "Spring Field Light Mocha ▶ Coupon Price 69,000 KRW"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "轻量、缓震、宽楦系列，男女全尺码齐全，更多优惠等你查看。",
+    "note": "",
+    "products": [
+     "Arch Fit Form 人字拖 草莓奶昔色",
+     "能量吸收率31% 缓解足部疲劳 Bumper Freelock 淡紫色 层叠款 美国同款▶ 优惠券价",
+     "[2双装] Spring Field▶ 优惠券价 129,600韩元",
+     "Spring Field 浅石色 ▶ 优惠券价 69,000韩元",
+     "Spring Field 黑色 ▶ 优惠券价 69,000韩元",
+     "Spring Field 浅摩卡色 ▶ 优惠券价 69,000韩元"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "輕量、緩震、寬楦系列，男女全尺碼齊全，更多優惠等你查看。",
+    "note": "",
+    "products": [
+     "Arch Fit Form 人字拖 草莓奶昔色",
+     "能量吸收率31% 緩解足部疲勞 Bumper Freelock 淡紫色 層疊款 美國同款▶ 優惠券價",
+     "[2雙裝] Spring Field▶ 優惠券價 129,600韓元",
+     "Spring Field 淺石色 ▶ 優惠券價 69,000韓元",
+     "Spring Field 黑色 ▶ 優惠券價 69,000韓元",
+     "Spring Field 淺摩卡色 ▶ 優惠券價 69,000韓元"
+    ]
+   },
+   "ja": {
+    "slogan": "軽量・クッション性・ワイド設計のライン、メンズ・レディースのフルサイズ展開と特典をチェック。",
+    "note": "",
+    "products": [
+     "Arch Fit Form フリップフロップ ストロベリーミルク",
+     "エネルギー吸収率31% 足の疲労回復 Bumper Freelock ライラック レイヤード 米国着用モデル▶ クーポン適用価格",
+     "[2足セット] Spring Field▶ クーポン適用価格 129,600ウォン",
+     "Spring Field ペールストーン ▶ クーポン適用価格 69,000ウォン",
+     "Spring Field ブラック ▶ クーポン適用価格 69,000ウォン",
+     "Spring Field ライトモカ ▶ クーポン適用価格 69,000ウォン"
+    ]
+   }
+  }
  },
  {
   "id": "b04",
@@ -474,7 +622,113 @@
     "price": "49,000원",
     "url": ""
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "THREECHEERS Shop | I ALWAYS THREECHEERS FOR YOU",
+    "note": "",
+    "products": [
+     "[UV400] Orchid 01 SU Leopard",
+     "[Blue Light Blocking] Sharon 01 OP (Cat Eye) Black",
+     "[Blue Light Blocking] Camelia 01 OP Wine",
+     "Lotus 01 Sunglasses Tea",
+     "Lotus 01 Sunglasses Brown",
+     "Iris 01 Optical Gold",
+     "[Blue Light Blocking] Camelia 01 OP Leopard",
+     "Lotus 01 Sunglasses Green",
+     "Ivy 01 Sunglasses Black",
+     "Dahlia 01 Optical Tea",
+     "Iris 01 Optical Silver",
+     "Lily 01 Optical Black/Gold",
+     "THREECHEERS Flower Logo Denim Bag",
+     "[Blue Light Blocking] Aster 01 Optical Grey/Silver",
+     "THREECHEERS Flower Logo Ballcap Red",
+     "THREECHEERS Flower Logo Ballcap Green",
+     "THREECHEERS Flower Logo Ballcap Beige",
+     "THREECHEERS Flower Logo Ballcap Brown",
+     "THREECHEERS Flower Logo Ballcap Navy",
+     "THREECHEERS Flower Logo Ballcap Black"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "THREECHEERS 商城 | I ALWAYS THREECHEERS FOR YOU",
+    "note": "",
+    "products": [
+     "[UV400] Orchid 01 SU 豹纹",
+     "[防蓝光] Sharon 01 OP（猫眼）黑色",
+     "[防蓝光] Camelia 01 OP 酒红色",
+     "Lotus 01 太阳镜 茶色",
+     "Lotus 01 太阳镜 棕色",
+     "Iris 01 光学镜 金色",
+     "[防蓝光] Camelia 01 OP 豹纹",
+     "Lotus 01 太阳镜 绿色",
+     "Ivy 01 太阳镜 黑色",
+     "Dahlia 01 光学镜 茶色",
+     "Iris 01 光学镜 银色",
+     "Lily 01 光学镜 黑/金",
+     "THREECHEERS 花朵logo牛仔包",
+     "[防蓝光] Aster 01 光学镜 灰/银",
+     "THREECHEERS 花朵logo棒球帽 红色",
+     "THREECHEERS 花朵logo棒球帽 绿色",
+     "THREECHEERS 花朵logo棒球帽 米色",
+     "THREECHEERS 花朵logo棒球帽 棕色",
+     "THREECHEERS 花朵logo棒球帽 藏青色",
+     "THREECHEERS 花朵logo棒球帽 黑色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "THREECHEERS 商城 | I ALWAYS THREECHEERS FOR YOU",
+    "note": "",
+    "products": [
+     "[UV400] Orchid 01 SU 豹紋",
+     "[抗藍光] Sharon 01 OP（貓眼）黑色",
+     "[抗藍光] Camelia 01 OP 酒紅色",
+     "Lotus 01 太陽眼鏡 茶色",
+     "Lotus 01 太陽眼鏡 棕色",
+     "Iris 01 光學鏡 金色",
+     "[抗藍光] Camelia 01 OP 豹紋",
+     "Lotus 01 太陽眼鏡 綠色",
+     "Ivy 01 太陽眼鏡 黑色",
+     "Dahlia 01 光學鏡 茶色",
+     "Iris 01 光學鏡 銀色",
+     "Lily 01 光學鏡 黑/金",
+     "THREECHEERS 花朵logo丹寧包",
+     "[抗藍光] Aster 01 光學鏡 灰/銀",
+     "THREECHEERS 花朵logo棒球帽 紅色",
+     "THREECHEERS 花朵logo棒球帽 綠色",
+     "THREECHEERS 花朵logo棒球帽 米色",
+     "THREECHEERS 花朵logo棒球帽 棕色",
+     "THREECHEERS 花朵logo棒球帽 海軍藍",
+     "THREECHEERS 花朵logo棒球帽 黑色"
+    ]
+   },
+   "ja": {
+    "slogan": "THREECHEERS ショップ | I ALWAYS THREECHEERS FOR YOU",
+    "note": "",
+    "products": [
+     "[UV400] Orchid 01 SU レオパード",
+     "[ブルーライトカット] Sharon 01 OP（キャットアイ）ブラック",
+     "[ブルーライトカット] Camelia 01 OP ワイン",
+     "Lotus 01 サングラス ティー",
+     "Lotus 01 サングラス ブラウン",
+     "Iris 01 オプティカル ゴールド",
+     "[ブルーライトカット] Camelia 01 OP レオパード",
+     "Lotus 01 サングラス グリーン",
+     "Ivy 01 サングラス ブラック",
+     "Dahlia 01 オプティカル ティー",
+     "Iris 01 オプティカル シルバー",
+     "Lily 01 オプティカル ブラック/ゴールド",
+     "THREECHEERS フラワーロゴ デニムバッグ",
+     "[ブルーライトカット] Aster 01 オプティカル グレー/シルバー",
+     "THREECHEERS フラワーロゴ ボールキャップ レッド",
+     "THREECHEERS フラワーロゴ ボールキャップ グリーン",
+     "THREECHEERS フラワーロゴ ボールキャップ ベージュ",
+     "THREECHEERS フラワーロゴ ボールキャップ ブラウン",
+     "THREECHEERS フラワーロゴ ボールキャップ ネイビー",
+     "THREECHEERS フラワーロゴ ボールキャップ ブラック"
+    ]
+   }
+  }
  },
  {
   "id": "b05",
@@ -708,7 +962,29 @@
   ],
   "authorized": true,
   "elite": true,
-  "eyewear": true
+  "eyewear": true,
+  "i18n": {
+   "en": {
+    "slogan": "Bringing you the joy of shopping for glasses and sunglasses. Korea's leading fashion eyewear shop, with the largest selection of luxury brands and 100% authentic products.",
+    "note": "Carrying brands such as FILA, SANDRO, LACOSTE, NIKE, DIOR, and more",
+    "products": []
+   },
+   "zh-Hans": {
+    "slogan": "为您带来选购眼镜/太阳镜的乐趣。韩国代表性时尚眼镜店，奢侈品牌保有量最多，100%正品保证。",
+    "note": "经营 FILA、SANDRO、LACOSTE、NIKE、DIOR 等品牌",
+    "products": []
+   },
+   "zh-Hant": {
+    "slogan": "為您帶來選購眼鏡/太陽眼鏡的樂趣。韓國代表性時尚眼鏡店，精品品牌保有量最多，100%正品保證。",
+    "note": "經營 FILA、SANDRO、LACOSTE、NIKE、DIOR 等品牌",
+    "products": []
+   },
+   "ja": {
+    "slogan": "メガネ・サングラス選びの楽しさをお届けします。韓国を代表するファッションアイウェアショップ。ラグジュアリーブランドの取り扱い数最多、100%正規品。",
+    "note": "FILA、SANDRO、LACOSTE、NIKE、DIOR などのブランドを取り扱い",
+    "products": []
+   }
+  }
  },
  {
   "id": "b06",
@@ -942,7 +1218,145 @@
     "price": "49,900원",
     "url": "https://www.denustore.com/product/vinea-necklace/708/category/402/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Studio DENU Official Online Store",
+    "note": "",
+    "products": [
+     "[As Worn by Lee Joo-bin] Ova Hobo Bag [Suede Brown]",
+     "ETHER Bag [Suede Deepbrown]",
+     "ETHER Bag [Brown]",
+     "ETHER Bag [Ivory]",
+     "Ova Hobo Bag [Suede Camel]",
+     "RIGIDE Bag [Suede Blue]",
+     "RIGIDE Bag [Black]",
+     "Ellen City Tote Bag [Glossy Chestnut Brown]",
+     "Winsome Barrel Bag [Black]",
+     "Jane Boulder Bag [Ivory]",
+     "[Gift Pick] Nice Summer Eco Bag [3 Colors]",
+     "Mono Scarf",
+     "Blossom Ring",
+     "Monno Matte Ring",
+     "Sac26 Bag [Black]",
+     "La Nuit Bag [White]",
+     "La Nuit Bag [Raphia Beige]",
+     "Boite Bag [Black]",
+     "Couvrir Crossbody Bag [Ivory]",
+     "Coee Office Bag [Black]",
+     "Tool Cabinet Bag [Ivory]",
+     "Coee Bag [Ivory]",
+     "Coee Bag [Black]",
+     "Goutte Earring",
+     "Goutte Bubby Earring",
+     "Marmeldi Bag [Deep Brown]",
+     "Marmeldi Bag [Suede Black]",
+     "Vinea Necklace"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "Studio DENU 官方在线商店",
+    "note": "",
+    "products": [
+     "[李珠彬同款] Ova Hobo 包 [麂皮棕色]",
+     "ETHER 包 [麂皮深棕色]",
+     "ETHER 包 [棕色]",
+     "ETHER 包 [象牙白]",
+     "Ova Hobo 包 [麂皮驼色]",
+     "RIGIDE 包 [麂皮蓝色]",
+     "RIGIDE 包 [黑色]",
+     "Ellen City 托特包 [亮面栗棕色]",
+     "Winsome 水桶包 [黑色]",
+     "Jane Boulder 包 [象牙白]",
+     "[送礼推荐] Nice Summer 环保包 [3色]",
+     "Mono 丝巾",
+     "Blossom 戒指",
+     "Monno 哑光戒指",
+     "Sac26 包 [黑色]",
+     "La Nuit 包 [白色]",
+     "La Nuit 包 [拉菲草米色]",
+     "Boite 包 [黑色]",
+     "Couvrir 斜挎包 [象牙白]",
+     "Coee 公文包 [黑色]",
+     "Tool Cabinet 包 [象牙白]",
+     "Coee 包 [象牙白]",
+     "Coee 包 [黑色]",
+     "Goutte 耳环",
+     "Goutte Bubby 耳环",
+     "Marmeldi 包 [深棕色]",
+     "Marmeldi 包 [麂皮黑色]",
+     "Vinea 项链"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "Studio DENU 官方線上商店",
+    "note": "",
+    "products": [
+     "[李珠彬同款] Ova Hobo 包 [麂皮棕色]",
+     "ETHER 包 [麂皮深棕色]",
+     "ETHER 包 [棕色]",
+     "ETHER 包 [象牙白]",
+     "Ova Hobo 包 [麂皮駝色]",
+     "RIGIDE 包 [麂皮藍色]",
+     "RIGIDE 包 [黑色]",
+     "Ellen City 托特包 [亮面栗棕色]",
+     "Winsome 水桶包 [黑色]",
+     "Jane Boulder 包 [象牙白]",
+     "[送禮推薦] Nice Summer 環保包 [3色]",
+     "Mono 絲巾",
+     "Blossom 戒指",
+     "Monno 霧面戒指",
+     "Sac26 包 [黑色]",
+     "La Nuit 包 [白色]",
+     "La Nuit 包 [拉菲草米色]",
+     "Boite 包 [黑色]",
+     "Couvrir 斜背包 [象牙白]",
+     "Coee 公事包 [黑色]",
+     "Tool Cabinet 包 [象牙白]",
+     "Coee 包 [象牙白]",
+     "Coee 包 [黑色]",
+     "Goutte 耳環",
+     "Goutte Bubby 耳環",
+     "Marmeldi 包 [深棕色]",
+     "Marmeldi 包 [麂皮黑色]",
+     "Vinea 項鍊"
+    ]
+   },
+   "ja": {
+    "slogan": "Studio DENU 公式オンラインストア",
+    "note": "",
+    "products": [
+     "[イ・ジュビン着用] Ova Hobo バッグ [スエード ブラウン]",
+     "ETHER バッグ [スエード ディープブラウン]",
+     "ETHER バッグ [ブラウン]",
+     "ETHER バッグ [アイボリー]",
+     "Ova Hobo バッグ [スエード キャメル]",
+     "RIGIDE バッグ [スエード ブルー]",
+     "RIGIDE バッグ [ブラック]",
+     "Ellen City トートバッグ [グロッシー チェスナットブラウン]",
+     "Winsome バレルバッグ [ブラック]",
+     "Jane Boulder バッグ [アイボリー]",
+     "[ギフトにおすすめ] Nice Summer エコバッグ [3カラー]",
+     "Mono スカーフ",
+     "Blossom リング",
+     "Monno マットリング",
+     "Sac26 バッグ [ブラック]",
+     "La Nuit バッグ [ホワイト]",
+     "La Nuit バッグ [ラフィア ベージュ]",
+     "Boite バッグ [ブラック]",
+     "Couvrir クロスボディバッグ [アイボリー]",
+     "Coee オフィスバッグ [ブラック]",
+     "Tool Cabinet バッグ [アイボリー]",
+     "Coee バッグ [アイボリー]",
+     "Coee バッグ [ブラック]",
+     "Goutte イヤリング",
+     "Goutte Bubby イヤリング",
+     "Marmeldi バッグ [ディープブラウン]",
+     "Marmeldi バッグ [スエード ブラック]",
+     "Vinea ネックレス"
+    ]
+   }
+  }
  },
  {
   "id": "b07",
@@ -1002,7 +1416,29 @@
    "https://www.arac9.com/web/product/tiny/202308/897da66729af4c6a8b7cb286701ff47b.jpg"
   ],
   "marketingUrls": [],
-  "heroImage": "/brand-images/b07/p1.jpg"
+  "heroImage": "/brand-images/b07/p1.jpg",
+  "i18n": {
+   "en": {
+    "slogan": "A hip, sophisticated, and trendy designer brand",
+    "note": "",
+    "products": []
+   },
+   "zh-Hans": {
+    "slogan": "潮流、精致、时尚的设计师品牌",
+    "note": "",
+    "products": []
+   },
+   "zh-Hant": {
+    "slogan": "潮流、精緻、時尚的設計師品牌",
+    "note": "",
+    "products": []
+   },
+   "ja": {
+    "slogan": "ヒップで洗練された、トレンディなデザイナーズブランド",
+    "note": "",
+    "products": []
+   }
+  }
  },
  {
   "id": "b08",
@@ -1241,7 +1677,145 @@
     "price": "248,000원",
     "url": "https://meieldew.com/product/md1131s-cutout-detail-platform-mule-sandalssilver/324/category/33/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A premium shoe brand embodying classic elegance",
+    "note": "",
+    "products": [
+     "MD1127f Two Strap Mesh Flats_Black",
+     "MD1127f Two Strap Mesh Flats_Silver",
+     "MD1128p Strap Detail Point Pumps_Black",
+     "MD1128p Strap Detail Point Pumps_Skin Beige",
+     "MD1126f Classic Two-Tone Loafer_Black & White",
+     "MD1138f Ribbon Platform Flat_Black_Patent",
+     "[As Worn by Celeb] MD1129p Eyelet Detail Strap Slingback_Black",
+     "MD1129p Eyelet Detail Strap Slingback_Silver",
+     "MD1122b Classic Strap Half Boots_Black",
+     "MD1112f Ballerina Ribbon Flats_Pink",
+     "MD1065 Wave Line Point Slingback_Pink",
+     "MD1125b Buckle Point Ankle Boots_Brown",
+     "MD1113f Square Detail Classic Loafer_Ivory SOLD OUT",
+     "MD1107s Flip Flop Flat Sandals_Black",
+     "MD1130s Cutout Detail Platform Sandals_Black",
+     "MD1100s Cutout Slingback Flat Sandals_Black",
+     "MD1135s Round Toe Strap Sandals_Gold",
+     "[As Worn by Celeb] MD1065 Wave Line Point Slingback_Black",
+     "MD1116p Pointed Toe Ribbon Slingback_Red SOLD OUT",
+     "MD1115p Ribbon Point Mule_Black SOLD OUT",
+     "MD1105f Chunky Platform Loafer_Ivory",
+     "MD1104f Chunky Platform Loafer_Tan Brown",
+     "[As Worn by Celeb] MD1104f Chunky Platform Loafer_Ivory",
+     "[As Worn by Celeb] MD1104f Chunky Platform Loafer_Choco Brown",
+     "MD1134s Buckle Flip-Flop Mule Sandals_Beige",
+     "MD1133s Ring Cross Strap Sandals_Beige",
+     "MD1132s Two Strap Point Mule Sandals_Black",
+     "MD1131s Cutout Detail Platform Mule Sandals_Silver"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "演绎经典优雅的高端鞋履品牌",
+    "note": "",
+    "products": [
+     "MD1127f 双绑带网眼平底鞋_黑色",
+     "MD1127f 双绑带网眼平底鞋_银色",
+     "MD1128p 绑带细节尖头高跟鞋_黑色",
+     "MD1128p 绑带细节尖头高跟鞋_肤色米",
+     "MD1126f 经典双色乐福鞋_黑白",
+     "MD1138f 蝴蝶结厚底平底鞋_黑色_漆皮",
+     "[明星同款] MD1129p 气眼细节绑带露跟鞋_黑色",
+     "MD1129p 气眼细节绑带露跟鞋_银色",
+     "MD1122b 经典绑带短靴_黑色",
+     "MD1112f 芭蕾蝴蝶结平底鞋_粉色",
+     "MD1065 波浪线条尖头露跟鞋_粉色",
+     "MD1125b 搭扣尖头踝靴_棕色",
+     "MD1113f 方形细节经典乐福鞋_象牙白 SOLD OUT",
+     "MD1107s 人字平底凉鞋_黑色",
+     "MD1130s 镂空细节厚底凉鞋_黑色",
+     "MD1100s 镂空露跟平底凉鞋_黑色",
+     "MD1135s 圆头绑带凉鞋_金色",
+     "[明星同款] MD1065 波浪线条尖头露跟鞋_黑色",
+     "MD1116p 尖头蝴蝶结露跟鞋_红色 SOLD OUT",
+     "MD1115p 蝴蝶结尖头穆勒鞋_黑色 SOLD OUT",
+     "MD1105f 厚底乐福鞋_象牙白",
+     "MD1104f 厚底乐福鞋_棕褐色",
+     "[明星同款] MD1104f 厚底乐福鞋_象牙白",
+     "[明星同款] MD1104f 厚底乐福鞋_巧克力棕",
+     "MD1134s 搭扣人字穆勒凉鞋_米色",
+     "MD1133s 环形交叉绑带凉鞋_米色",
+     "MD1132s 双绑带尖头穆勒凉鞋_黑色",
+     "MD1131s 镂空细节厚底穆勒凉鞋_银色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "詮釋經典優雅的高端鞋履品牌",
+    "note": "",
+    "products": [
+     "MD1127f 雙綁帶網眼平底鞋_黑色",
+     "MD1127f 雙綁帶網眼平底鞋_銀色",
+     "MD1128p 綁帶細節尖頭高跟鞋_黑色",
+     "MD1128p 綁帶細節尖頭高跟鞋_膚色米",
+     "MD1126f 經典雙色樂福鞋_黑白",
+     "MD1138f 蝴蝶結厚底平底鞋_黑色_漆皮",
+     "[明星同款] MD1129p 氣眼細節綁帶露跟鞋_黑色",
+     "MD1129p 氣眼細節綁帶露跟鞋_銀色",
+     "MD1122b 經典綁帶短靴_黑色",
+     "MD1112f 芭蕾蝴蝶結平底鞋_粉色",
+     "MD1065 波浪線條尖頭露跟鞋_粉色",
+     "MD1125b 釦環尖頭踝靴_棕色",
+     "MD1113f 方形細節經典樂福鞋_象牙白 SOLD OUT",
+     "MD1107s 人字平底涼鞋_黑色",
+     "MD1130s 鏤空細節厚底涼鞋_黑色",
+     "MD1100s 鏤空露跟平底涼鞋_黑色",
+     "MD1135s 圓頭綁帶涼鞋_金色",
+     "[明星同款] MD1065 波浪線條尖頭露跟鞋_黑色",
+     "MD1116p 尖頭蝴蝶結露跟鞋_紅色 SOLD OUT",
+     "MD1115p 蝴蝶結尖頭穆勒鞋_黑色 SOLD OUT",
+     "MD1105f 厚底樂福鞋_象牙白",
+     "MD1104f 厚底樂福鞋_棕褐色",
+     "[明星同款] MD1104f 厚底樂福鞋_象牙白",
+     "[明星同款] MD1104f 厚底樂福鞋_巧克力棕",
+     "MD1134s 釦環人字穆勒涼鞋_米色",
+     "MD1133s 環形交叉綁帶涼鞋_米色",
+     "MD1132s 雙綁帶尖頭穆勒涼鞋_黑色",
+     "MD1131s 鏤空細節厚底穆勒涼鞋_銀色"
+    ]
+   },
+   "ja": {
+    "slogan": "クラシックな優雅さを宿したプレミアムシューズブランド",
+    "note": "",
+    "products": [
+     "MD1127f ツーストラップ メッシュ フラット_ブラック",
+     "MD1127f ツーストラップ メッシュ フラット_シルバー",
+     "MD1128p ストラップディテール ポインテッドパンプス_ブラック",
+     "MD1128p ストラップディテール ポインテッドパンプス_スキンベージュ",
+     "MD1126f クラシック ツートーン ローファー_ブラック&ホワイト",
+     "MD1138f リボン プラットフォーム フラット_ブラック_パテント",
+     "[セレブ着用] MD1129p アイレットディテール ストラップ スリングバック_ブラック",
+     "MD1129p アイレットディテール ストラップ スリングバック_シルバー",
+     "MD1122b クラシック ストラップ ハーフブーツ_ブラック",
+     "MD1112f バレリーナ リボン フラット_ピンク",
+     "MD1065 ウェーブライン ポイント スリングバック_ピンク",
+     "MD1125b バックル ポイント アンクルブーツ_ブラウン",
+     "MD1113f スクエアディテール クラシック ローファー_アイボリー SOLD OUT",
+     "MD1107s フリップフロップ フラットサンダル_ブラック",
+     "MD1130s カットアウトディテール プラットフォームサンダル_ブラック",
+     "MD1100s カットアウト スリングバック フラットサンダル_ブラック",
+     "MD1135s ラウンドトゥ ストラップサンダル_ゴールド",
+     "[セレブ着用] MD1065 ウェーブライン ポイント スリングバック_ブラック",
+     "MD1116p ポインテッドトゥ リボン スリングバック_レッド SOLD OUT",
+     "MD1115p リボン ポイント ミュール_ブラック SOLD OUT",
+     "MD1105f チャンキー プラットフォーム ローファー_アイボリー",
+     "MD1104f チャンキー プラットフォーム ローファー_タンブラウン",
+     "[セレブ着用] MD1104f チャンキー プラットフォーム ローファー_アイボリー",
+     "[セレブ着用] MD1104f チャンキー プラットフォーム ローファー_チョコブラウン",
+     "MD1134s バックル フリップフロップ ミュールサンダル_ベージュ",
+     "MD1133s リング クロスストラップ サンダル_ベージュ",
+     "MD1132s ツーストラップ ポイント ミュールサンダル_ブラック",
+     "MD1131s カットアウトディテール プラットフォーム ミュールサンダル_シルバー"
+    ]
+   }
+  }
  },
  {
   "id": "b09",
@@ -1485,7 +2059,153 @@
     "price": "348,000원",
     "url": "https://cahiers-shop.com/product/%ED%94%8C%EB%A6%AC%EC%B8%A0-%ED%8E%98%ED%94%8C%EB%9F%BC-%ED%83%B1%ED%81%AC%ED%83%91-%EB%B8%94%EB%9D%BC%EC%9A%B0%EC%8A%A4/2408/category/162/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Through delicate, couture-inspired pieces, we share their value and joy while sharing the finest moments of your life.",
+    "note": "",
+    "products": [
+     "[Cahisienne] Boat Neck Daily Knit, Glossy Grape",
+     "[Cahisienne] Puff Sleeve Drape Wrap Blouse",
+     "[Cahisienne] Slim Fit Sleeveless Slit Asymmetric Knit Dress, Languid Lavender",
+     "[Cahisienne] Slit Sleeve Long Cardigan, Light Beige",
+     "[CAHIERS 26SS] Neck String Set V-Neck Crinkle Cancan Frill Sleeveless Blouse",
+     "[CAHISIENNE 26SS] Gold Dot Asymmetric Balloon Bustier",
+     "Lace Collar Pink T-Shirt",
+     "Frill Detail Orange Dress",
+     "Shoulder Frill Puff Sleeve Blouse",
+     "Frill Detail Pink Dress",
+     "[Cahisienne] Mermaid Asymmetric Midi Skirt, Black",
+     "[Cahisienne 26SS] Pintuck Indigo Wide Slacks",
+     "Organza Pleated Detail Silk Blouse",
+     "Accordion Pleated Blouse, Light Yellow [Celebrity Worn]",
+     "Cotton Silk Ruffle Blouse (Celebrity Worn)",
+     "Gold Trimmed Ruffle Blouse",
+     "V-Neck Ruffle Trimmed Silk Blouse, White",
+     "Asymmetric Open Neck Tie Blouse [Celebrity Worn]",
+     "Asymmetric Flare Collar Slit Sleeve Blouse",
+     "Two-Tier Ruffle Contrast V-Neck Blouse",
+     "Drape Detail Sleeveless Blouse",
+     "Ruffle Sleeveless Lace Blouse Top",
+     "Ruffle Trimmed Sleeveless Peplum Blouse",
+     "Halter Neck Wrap Style Peplum Blouse, Dark Goldenrod",
+     "Halter Neck Wrap Style Two-Tier Peplum Blouse, Pink Beige",
+     "Rainbow Sequin Camisole",
+     "Shiny Sleeveless Top, Beige",
+     "Shiny Sleeveless Top, Gray",
+     "White Sequin Strap Camisole Top",
+     "Pleated Peplum Tank Top Blouse"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "我们以细腻、充满高定气质的单品传递其价值与愉悦，同时陪伴您度过人生最美好的时刻。",
+    "note": "",
+    "products": [
+     "[Cahisienne] 船领日常针织衫 亮泽葡萄色",
+     "[Cahisienne] 泡泡袖垂坠系带衬衫",
+     "[Cahisienne] 修身无袖开衩不对称针织连衣裙 慵懒薰衣草色",
+     "[Cahisienne] 开衩袖长开衫 浅米色",
+     "[CAHIERS 26SS] 颈部系带套装 V领褶皱坎坎荷叶边吊带衬衫",
+     "[CAHISIENNE 26SS] 金色波点不对称气球抹胸",
+     "蕾丝领粉色T恤",
+     "荷叶边细节橙色连衣裙",
+     "肩部荷叶边泡泡袖衬衫",
+     "荷叶边细节粉色连衣裙",
+     "[Cahisienne] 美人鱼不对称中长半身裙 黑色",
+     "[Cahisienne 26SS] 压褶靛蓝色阔腿西裤",
+     "欧根纱压褶细节真丝衬衫",
+     "手风琴压褶衬衫_浅黄色 [明星同款]",
+     "棉丝荷叶边衬衫 (明星同款)",
+     "金色滚边荷叶边衬衫",
+     "V领荷叶边滚边真丝衬衫_白色",
+     "不对称开领系带衬衫 [明星同款]",
+     "不对称喇叭领开衩袖衬衫",
+     "双层荷叶边撞色V领衬衫",
+     "垂坠细节无袖衬衫",
+     "荷叶边无袖蕾丝衬衫上衣",
+     "荷叶边滚边无袖裙摆衬衫",
+     "挂脖裹身式裙摆衬衫_暗金菊色",
+     "挂脖裹身式双层裙摆衬衫_粉米色",
+     "彩虹亮片吊带背心",
+     "闪亮无袖上衣_米色",
+     "闪亮无袖上衣_灰色",
+     "白色亮片细带吊带背心上衣",
+     "压褶裙摆背心衬衫"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "我們以細膩、充滿高訂氣質的單品傳遞其價值與愉悅，同時陪伴您度過人生最美好的時刻。",
+    "note": "",
+    "products": [
+     "[Cahisienne] 船領日常針織衫 亮澤葡萄色",
+     "[Cahisienne] 泡泡袖垂墜綁帶襯衫",
+     "[Cahisienne] 修身無袖開衩不對稱針織連身裙 慵懶薰衣草色",
+     "[Cahisienne] 開衩袖長版開襟衫 淺米色",
+     "[CAHIERS 26SS] 頸部綁帶套裝 V領皺褶坎坎荷葉邊細肩帶襯衫",
+     "[CAHISIENNE 26SS] 金色波點不對稱氣球馬甲",
+     "蕾絲領粉色T恤",
+     "荷葉邊細節橘色連身裙",
+     "肩部荷葉邊泡泡袖襯衫",
+     "荷葉邊細節粉色連身裙",
+     "[Cahisienne] 美人魚不對稱中長半身裙 黑色",
+     "[Cahisienne 26SS] 壓褶靛藍色寬版西裝褲",
+     "歐根紗壓褶細節真絲襯衫",
+     "手風琴壓褶襯衫_淺黃色 [明星同款]",
+     "棉絲荷葉邊襯衫 (明星同款)",
+     "金色滾邊荷葉邊襯衫",
+     "V領荷葉邊滾邊真絲襯衫_白色",
+     "不對稱開領綁帶襯衫 [明星同款]",
+     "不對稱喇叭領開衩袖襯衫",
+     "雙層荷葉邊撞色V領襯衫",
+     "垂墜細節無袖襯衫",
+     "荷葉邊無袖蕾絲襯衫上衣",
+     "荷葉邊滾邊無袖裙襬襯衫",
+     "掛脖綁身式裙襬襯衫_暗金菊色",
+     "掛脖綁身式雙層裙襬襯衫_粉米色",
+     "彩虹亮片細肩帶背心",
+     "閃亮無袖上衣_米色",
+     "閃亮無袖上衣_灰色",
+     "白色亮片細帶吊帶背心上衣",
+     "壓褶裙襬背心襯衫"
+    ]
+   },
+   "ja": {
+    "slogan": "繊細でクチュール的な感性のアイテムを通して、その価値と喜びをお届けするとともに、あなたの人生で最高の瞬間に寄り添いたいと願っています。",
+    "note": "",
+    "products": [
+     "[Cahisienne] ボートネック デイリーニット グロッシーグレープ",
+     "[Cahisienne] パフスリーブ ドレープ ラップブラウス",
+     "[Cahisienne] スリムフィット ノースリーブ スリット アシンメトリー ニットワンピース ラングイッドラベンダー",
+     "[Cahisienne] スリットスリーブ ロングカーディガン ライトベージュ",
+     "[CAHIERS 26SS] ネックストリングセット Vネック クリンクル カンカン フリル キャミブラウス",
+     "[CAHISIENNE 26SS] ゴールドドット アシンメトリー バルーンビスチェ",
+     "レースカラー ピンクTシャツ",
+     "フリルディテール オレンジワンピース",
+     "ショルダーフリル パフスリーブブラウス",
+     "フリルディテール ピンクワンピース",
+     "[Cahisienne] マーメイド アシンメトリー ミディスカート ブラック",
+     "[Cahisienne 26SS] ピンタック インディゴ ワイドスラックス",
+     "オーガンザ プリーツディテール シルクブラウス",
+     "アコーディオンプリーツ ブラウス ライトイエロー [セレブ着用]",
+     "コットンシルク ラッフルブラウス (セレブ着用)",
+     "ゴールドトリミング ラッフルブラウス",
+     "Vネック ラッフルトリミング シルクブラウス ホワイト",
+     "アシンメトリー オープンネック タイブラウス [セレブ着用]",
+     "アシンメトリー フレアカラー スリットスリーブ ブラウス",
+     "2段ラッフル 配色Vネックブラウス",
+     "ドレープディテール ノースリーブブラウス",
+     "ラッフル ノースリーブ レースブラウストップ",
+     "ラッフルトリミング ノースリーブ ペプラムブラウス",
+     "ホルターネック ラップスタイル ペプラムブラウス ダークゴールデンロッド",
+     "ホルターネック ラップスタイル 2段ペプラムブラウス ピンクベージュ",
+     "レインボー スパンコール キャミソール",
+     "シャイニー ノースリーブトップ ベージュ",
+     "シャイニー ノースリーブトップ グレー",
+     "ホワイト スパンコール ストラップ キャミソールトップ",
+     "プリーツ ペプラム タンクトップブラウス"
+    ]
+   }
+  }
  },
  {
   "id": "b11",
@@ -1718,7 +2438,153 @@
     "price": "97,000원",
     "url": "https://zero-planet.co.kr/product/detail.html?product_no=1092&cate_no=202&display_group=1"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Zeroplanet = For you",
+    "note": "",
+    "products": [
+     "Pudding Puff Crop Collar Cardigan [BLUE]",
+     "Summer Drop Bucket Hat [3 COLORS]",
+     "Clara Ribbon Bustier [BLUE]_Worn by Hani",
+     "Wendy Flare Lace Skirt [BLACK]",
+     "Reilly Draping Skirt Pants [BEIGE]",
+     "Elena Square Bustier [BEIGE]",
+     "ZPB1 Zigzag Knit Vest [4 COLORS]",
+     "Hi-Teen Crop Shirt [CHECK]",
+     "Clara Pleated Mini Skirt [BLUE]_Worn by Hani",
+     "Daisy Shirring Skirt Pants [MELANGE]",
+     "Becca Half Shirring Top [IVORY]",
+     "Elena Wide Cargo Jogger Pants [BEIGE]",
+     "Helena Soft Layered Set [BLACK]",
+     "Crown Collar Crop Top [WHITE]",
+     "Lauren Asymmetric Slim Top [WHITE]",
+     "Raya Lace Baby Top [WHITE]",
+     "[Signature] Square Knit [BLACK]",
+     "Shirring Off-Shoulder Crop Top [WHITE]_STAYC Jaeyi",
+     "Aisha Sailor Collar Midi Dress [BLACK]",
+     "[Signature] Square Slim Mini Dress [BLACK]",
+     "Luna Twinkle Baby Top [WHITE]",
+     "Graphic Layered Set [WHITE]",
+     "[Signature] Shirring Turtleneck Mini Dress [BLACK]",
+     "Kitty Mini Dress [WHITE]",
+     "#ZPA3 Malena Knit Dress [BROWN]",
+     "Ria Ribbon Shirring Dress [IVORY]",
+     "Crystal Long Sleeve Top [PINK]_Worn by OH MY GIRL Yubin",
+     "ZPB1 Glam Wide Pants [BLUE]",
+     "Angora Ribbon Knit Beanie [2 COLORS]_Worn by OH MY GIRL Hyojung",
+     "Bella Halter Cardigan Set [GREEN]"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "Zeroplanet = For you",
+    "note": "",
+    "products": [
+     "布丁泡泡短款翻领开衫 [BLUE]",
+     "夏日垂坠渔夫帽 [3色]",
+     "克拉拉蝴蝶结抹胸 [BLUE]_Hani同款",
+     "温蒂荷叶边蕾丝半身裙 [BLACK]",
+     "蕾莉垂坠裙裤 [BEIGE]",
+     "艾莲娜方领抹胸 [BEIGE]",
+     "ZPB1 锯齿针织背心 [4色]",
+     "甜美少女短款衬衫 [CHECK]",
+     "克拉拉压褶迷你半身裙 [BLUE]_Hani同款",
+     "黛西褶皱裙裤 [MELANGE]",
+     "贝卡半身褶皱上衣 [IVORY]",
+     "艾莲娜阔腿工装束脚裤 [BEIGE]",
+     "海莲娜柔软叠穿套装 [BLACK]",
+     "皇冠领短款上衣 [WHITE]",
+     "劳伦不对称修身上衣 [WHITE]",
+     "拉雅蕾丝俏皮上衣 [WHITE]",
+     "[标志款] 方领针织衫 [BLACK]",
+     "褶皱一字肩短款上衣 [WHITE]_STAYC 才怡",
+     "艾莎水手领中长连衣裙 [BLACK]",
+     "[标志款] 方领修身迷你连衣裙 [BLACK]",
+     "露娜闪耀俏皮上衣 [WHITE]",
+     "图案叠穿套装 [WHITE]",
+     "[标志款] 褶皱高领迷你连衣裙 [BLACK]",
+     "凯蒂迷你连衣裙 [WHITE]",
+     "#ZPA3 玛莲娜针织连衣裙 [BROWN]",
+     "莉亚蝴蝶结褶皱连衣裙 [IVORY]",
+     "水晶长袖上衣 [PINK]_OH MY GIRL 侑彬同款",
+     "ZPB1 魅力阔腿裤 [BLUE]",
+     "安哥拉蝴蝶结针织毛线帽 [2色]_OH MY GIRL 孝定同款",
+     "贝拉挂脖开衫套装 [GREEN]"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "Zeroplanet = For you",
+    "note": "",
+    "products": [
+     "布丁泡泡短版翻領開襟衫 [BLUE]",
+     "夏日垂墜漁夫帽 [3色]",
+     "克拉拉蝴蝶結馬甲 [BLUE]_Hani同款",
+     "溫蒂荷葉邊蕾絲半身裙 [BLACK]",
+     "蕾莉垂墜裙褲 [BEIGE]",
+     "艾蓮娜方領馬甲 [BEIGE]",
+     "ZPB1 鋸齒針織背心 [4色]",
+     "甜美少女短版襯衫 [CHECK]",
+     "克拉拉壓褶迷你半身裙 [BLUE]_Hani同款",
+     "黛西褶皺裙褲 [MELANGE]",
+     "貝卡半身褶皺上衣 [IVORY]",
+     "艾蓮娜寬版工裝縮口褲 [BEIGE]",
+     "海蓮娜柔軟層次套裝 [BLACK]",
+     "皇冠領短版上衣 [WHITE]",
+     "蘿倫不對稱修身上衣 [WHITE]",
+     "拉雅蕾絲俏皮上衣 [WHITE]",
+     "[經典款] 方領針織衫 [BLACK]",
+     "褶皺一字領短版上衣 [WHITE]_STAYC 才怡",
+     "艾莎水手領中長連身裙 [BLACK]",
+     "[經典款] 方領修身迷你連身裙 [BLACK]",
+     "露娜閃耀俏皮上衣 [WHITE]",
+     "圖案層次套裝 [WHITE]",
+     "[經典款] 褶皺高領迷你連身裙 [BLACK]",
+     "凱蒂迷你連身裙 [WHITE]",
+     "#ZPA3 瑪蓮娜針織連身裙 [BROWN]",
+     "莉亞蝴蝶結褶皺連身裙 [IVORY]",
+     "水晶長袖上衣 [PINK]_OH MY GIRL 侑彬同款",
+     "ZPB1 魅力寬褲 [BLUE]",
+     "安哥拉蝴蝶結針織毛帽 [2色]_OH MY GIRL 孝定同款",
+     "貝拉掛脖開襟衫套裝 [GREEN]"
+    ]
+   },
+   "ja": {
+    "slogan": "Zeroplanet = For you",
+    "note": "",
+    "products": [
+     "プリン パフ クロップ カラーカーディガン [BLUE]",
+     "サマードロップ バケットハット [3COLOR]",
+     "クララ リボンビスチェ [BLUE]_ハニ着用",
+     "ウェンディ フレアレーススカート [BLACK]",
+     "レイリー ドレーピングスカートパンツ [BEIGE]",
+     "エレナ スクエアビスチェ [BEIGE]",
+     "ZPB1 ジグザグ ニットベスト [4COLOR]",
+     "ハイティーン クロップシャツ [CHECK]",
+     "クララ プリーツミニスカート [BLUE]_ハニ着用",
+     "デイジー シャーリングスカートパンツ [MELANGE]",
+     "ベッカ ハーフシャーリングトップ [IVORY]",
+     "エレナ ワイドカーゴジョガーパンツ [BEIGE]",
+     "ヘレナ ソフトレイヤードセット [BLACK]",
+     "クラウン カラークロップトップ [WHITE]",
+     "ローレン アシンメトリースリムトップ [WHITE]",
+     "ラヤ レースベビートップ [WHITE]",
+     "[シグネチャー] スクエアニット [BLACK]",
+     "シャーリング オフショルダー クロップトップ [WHITE]_STAYC ジェイ",
+     "アイシャ セーラーカラー ミディワンピース [BLACK]",
+     "[シグネチャー] スクエアスリム ミニワンピース [BLACK]",
+     "ルナ トゥインクル ベビートップ [WHITE]",
+     "グラフィック レイヤードセット [WHITE]",
+     "[シグネチャー] シャーリング タートルネック ミニワンピース [BLACK]",
+     "キティ ミニワンピース [WHITE]",
+     "#ZPA3 マレナ ニットドレス [BROWN]",
+     "リア リボンシャーリングワンピース [IVORY]",
+     "クリスタル ロングスリーブトップ [PINK]_OH MY GIRL ユビン着用",
+     "ZPB1 グラム ワイドパンツ [BLUE]",
+     "アンゴラ リボンニットビーニー [2COLOR]_OH MY GIRL ヒョジョン着用",
+     "ベラ ホルターカーディガンセット [GREEN]"
+    ]
+   }
+  }
  },
  {
   "id": "b12",
@@ -1968,7 +2834,153 @@
     "price": "48,000원",
     "url": "https://www.nicknnicole.co.kr/product/nicole-lettering-ribbed-slim-t-shirtblack/6662/category/1/display/3/?icid=MAIN.product_listmain_2"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Outerwear, Tops, Dresses, Bottoms, Accessories",
+    "note": "",
+    "products": [
+     "[Seo Ye-ji PICK] NICOLE BUTTERFLY SLEEVE TOP_16 COLORS",
+     "NICOLE ROSE SLEEVE TOP_YELLOW BLUE",
+     "NICOLE BUTTERFLY SLEEVE TOP_CHARCOAL YELLOW",
+     "BUTTERFLY RINGER CROP TOP_IVORY",
+     "DRAPE HALTER LONG SLEEVE_CREAM",
+     "COTTON FLARE MIDI SKIRT_CHARCOAL",
+     "DRAPE TIE LONG SLEEVE TOP_CREAM",
+     "POLKA DOT FRILL SKIRT_IVORY",
+     "ASYMMETRY DRAPE SHIRRING TOP_CHARCOAL",
+     "HENLEY NECK LAYERED SLEEVE TOP_BLUE",
+     "SLEEVE SHIRRING BOAT NECK TOP_BLACK",
+     "STRIPED HENLEY NECK TOP_GRAY",
+     "SIDE SLIT BUTTON RIBBED TOP_LIGHT BEIGE",
+     "SOFT BUTTON SLIM TOP_GRAY",
+     "BUTTON HENLEY NECK TOP_CHARCOAL",
+     "LACE PEPLUM SLEEVELESS TOP_BLACK",
+     "MARBLE DRAPE SHIRRING TOP_BROWN",
+     "WRINKLE V-NECK TOP_CHARCOAL",
+     "SATIN CAMI SLEEVELESS TOP_BEIGE",
+     "DRAPED SHIRRING SLEEVELESS TOP_CHARCOAL",
+     "DOT SHIRRING DRAPE SLEEVELESS TOP_SKY BLUE",
+     "MINI BUTTERFLY GRAPHIC TOP_WHITE",
+     "NICOLE SLIM FIT SHIRT_CHARCOAL",
+     "NICOLE SHIRRING SLEEVELESS TOP_BROWN",
+     "PASTEL BUTTERFLY GRAPHIC TOP_WHITE",
+     "LAYERED SHIRRING SLIM TOP_OLIVE",
+     "[NICK&NICOLE × YOUNGER SONG] Melting Butterfly Washed Cap_BL",
+     "STRIPED COTTON LONG SLEEVE_IVORY",
+     "BUTTERFLY BERMUDA DENIM PANTS_BLACK",
+     "NICOLE LETTERING RIBBED SLIM T-SHIRT_BLACK"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "外套、上衣、连衣裙、下装、配饰",
+    "note": "",
+    "products": [
+     "[徐睿知 PICK] NICOLE 蝴蝶袖上衣_16色",
+     "NICOLE 玫瑰袖上衣_黄色 蓝色",
+     "NICOLE 蝴蝶袖上衣_炭灰色 黄色",
+     "蝴蝶撞色边短款上衣_象牙白",
+     "垂坠挂脖长袖_奶油色",
+     "棉质喇叭中长半身裙_炭灰色",
+     "垂坠系带长袖上衣_奶油色",
+     "波点荷叶边半身裙_象牙白",
+     "不对称垂坠褶皱上衣_炭灰色",
+     "亨利领叠袖上衣_蓝色",
+     "袖部褶皱船领上衣_黑色",
+     "条纹亨利领上衣_灰色",
+     "侧开衩纽扣螺纹上衣_浅米色",
+     "柔软纽扣修身上衣_灰色",
+     "纽扣亨利领上衣_炭灰色",
+     "蕾丝裙摆无袖上衣_黑色",
+     "大理石纹垂坠褶皱上衣_棕色",
+     "褶皱V领上衣_炭灰色",
+     "缎面吊带无袖上衣_米色",
+     "垂坠褶皱无袖上衣_炭灰色",
+     "波点褶皱垂坠无袖上衣_天蓝色",
+     "迷你蝴蝶图案上衣_白色",
+     "NICOLE 修身衬衫_炭灰色",
+     "NICOLE 褶皱无袖上衣_棕色",
+     "粉彩蝴蝶图案上衣_白色",
+     "叠穿褶皱修身上衣_橄榄色",
+     "[NICK&NICOLE × YOUNGER SONG] 融化蝴蝶水洗帽_BL",
+     "条纹棉质长袖_象牙白",
+     "蝴蝶百慕大牛仔短裤_黑色",
+     "NICOLE 字母螺纹修身T恤_黑色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "外套、上衣、連身裙、下身、配件",
+    "note": "",
+    "products": [
+     "[徐睿知 PICK] NICOLE 蝴蝶袖上衣_16色",
+     "NICOLE 玫瑰袖上衣_黃色 藍色",
+     "NICOLE 蝴蝶袖上衣_炭灰色 黃色",
+     "蝴蝶撞色邊短版上衣_象牙白",
+     "垂墜掛脖長袖_奶油色",
+     "棉質喇叭中長半身裙_炭灰色",
+     "垂墜綁帶長袖上衣_奶油色",
+     "波點荷葉邊半身裙_象牙白",
+     "不對稱垂墜褶皺上衣_炭灰色",
+     "亨利領疊袖上衣_藍色",
+     "袖部褶皺船領上衣_黑色",
+     "條紋亨利領上衣_灰色",
+     "側開衩鈕扣羅紋上衣_淺米色",
+     "柔軟鈕扣修身上衣_灰色",
+     "鈕扣亨利領上衣_炭灰色",
+     "蕾絲裙襬無袖上衣_黑色",
+     "大理石紋垂墜褶皺上衣_棕色",
+     "褶皺V領上衣_炭灰色",
+     "緞面細肩帶無袖上衣_米色",
+     "垂墜褶皺無袖上衣_炭灰色",
+     "波點褶皺垂墜無袖上衣_天藍色",
+     "迷你蝴蝶圖案上衣_白色",
+     "NICOLE 修身襯衫_炭灰色",
+     "NICOLE 褶皺無袖上衣_棕色",
+     "粉彩蝴蝶圖案上衣_白色",
+     "層次褶皺修身上衣_橄欖色",
+     "[NICK&NICOLE × YOUNGER SONG] 融化蝴蝶水洗帽_BL",
+     "條紋棉質長袖_象牙白",
+     "蝴蝶百慕達牛仔短褲_黑色",
+     "NICOLE 字母羅紋修身T恤_黑色"
+    ]
+   },
+   "ja": {
+    "slogan": "アウター、トップス、ワンピース、ボトムス、アクセサリー",
+    "note": "",
+    "products": [
+     "[ソ・イェジ PICK] NICOLE バタフライスリーブトップ_16カラー",
+     "NICOLE ローズスリーブトップ_イエロー ブルー",
+     "NICOLE バタフライスリーブトップ_チャコール イエロー",
+     "バタフライ リンガークロップトップ_アイボリー",
+     "ドレープ ホルター ロングスリーブ_クリーム",
+     "コットン フレアミディスカート_チャコール",
+     "ドレープ タイ ロングスリーブトップ_クリーム",
+     "ポルカドット フリルスカート_アイボリー",
+     "アシンメトリー ドレープ シャーリングトップ_チャコール",
+     "ヘンリーネック レイヤードスリーブトップ_ブルー",
+     "スリーブシャーリング ボートネックトップ_ブラック",
+     "ストライプ ヘンリーネックトップ_グレー",
+     "サイドスリット ボタン リブトップ_ライトベージュ",
+     "ソフトボタン スリムトップ_グレー",
+     "ボタン ヘンリーネックトップ_チャコール",
+     "レース ペプラム ノースリーブトップ_ブラック",
+     "マーブル ドレープ シャーリングトップ_ブラウン",
+     "リンクル Vネックトップ_チャコール",
+     "サテン キャミ ノースリーブトップ_ベージュ",
+     "ドレープ シャーリング ノースリーブトップ_チャコール",
+     "ドット シャーリング ドレープ ノースリーブトップ_スカイブルー",
+     "ミニ バタフライ グラフィックトップ_ホワイト",
+     "NICOLE スリムフィットシャツ_チャコール",
+     "NICOLE シャーリング ノースリーブトップ_ブラウン",
+     "パステル バタフライ グラフィックトップ_ホワイト",
+     "レイヤード シャーリング スリムトップ_オリーブ",
+     "[NICK&NICOLE × YOUNGER SONG] Melting Butterfly ウォッシュドキャップ_BL",
+     "ストライプ コットン ロングスリーブ_アイボリー",
+     "バタフライ バミューダ デニムパンツ_ブラック",
+     "NICOLE レタリング リブ スリムTシャツ_ブラック"
+    ]
+   }
+  }
  },
  {
   "id": "b13",
@@ -2183,7 +3195,145 @@
     "price": "62,000원",
     "url": "https://milloarchive.com/product/detail.html?product_no=4157&cate_no=171&display_group=1"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Milo Woman Official Online Store",
+    "note": "",
+    "products": [
+     "Signature Logo Folding Fan [Black]",
+     "Wave Soft Blanket [Black]",
+     "Multi Shape Bandana [Melange Gray]",
+     "Errant Bead Bracelet [Multi]",
+     "Eve Bracelet [Silver]",
+     "Keshi Bead Bracelet [Multi]",
+     "Bonbi Necklace [Multi]",
+     "Virts Gemstone Necklace [Multi]",
+     "Perr Leather Tote Bag [Black]",
+     "Vegas Stud Pants [Denim Blue]",
+     "Rector Cargo Bermuda Pants [Ash Brown]",
+     "Segment T-Shirt [Melange Gray]",
+     "Crop Easy Knit [Charcoal]",
+     "Layered Raw Cut T-Shirt [Melange Gray]",
+     "Essential Pigment Dyeing T-Shirt [Indigo Red]",
+     "Double Incision T-Shirt [White Melange]",
+     "Leather Card Holder [Black]",
+     "Rough Atypical Ring [Silver]",
+     "Trinity Ring [Silver]",
+     "Repeat Stripe T-Shirt [Light Gray]",
+     "Para Dyeing Stripe T-Shirt [Navy]",
+     "Prometheus T-Shirt [White]",
+     "Custom Frame Cat T-Shirt [White]",
+     "Ombre Check Half Shirt [Grayish Green]",
+     "(Pre-order, ships 6/9) Separate Denim Pants [Denim Black]",
+     "Ser Denim Pants [Denim Blue]",
+     "Dip Waffle Henley Neck [Mocha Beige]",
+     "Skin Layered Henley Neck T-Shirt [Navy]"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "Milo Woman 官方在线商店",
+    "note": "",
+    "products": [
+     "标志Logo折扇 [Black]",
+     "波纹柔软毯 [Black]",
+     "多变造型头巾 [Melange Gray]",
+     "Errant 串珠手链 [Multi]",
+     "Eve 手链 [Silver]",
+     "Keshi 串珠手链 [Multi]",
+     "Bonbi 项链 [Multi]",
+     "Virts 宝石项链 [Multi]",
+     "Perr 皮革托特包 [Black]",
+     "Vegas 铆钉裤 [Denim Blue]",
+     "Rector 工装百慕大短裤 [Ash Brown]",
+     "Segment T恤 [Melange Gray]",
+     "短款慵懒针织衫 [Charcoal]",
+     "叠层毛边T恤 [Melange Gray]",
+     "Essential 颜料染色T恤 [Indigo Red]",
+     "双切口T恤 [White Melange]",
+     "皮革卡包 [Black]",
+     "粗犷异形戒指 [Silver]",
+     "Trinity 三环戒指 [Silver]",
+     "重复条纹T恤 [Light Gray]",
+     "Para 染色条纹T恤 [Navy]",
+     "Prometheus T恤 [White]",
+     "定制相框猫咪T恤 [White]",
+     "渐变格纹半袖衬衫 [Grayish Green]",
+     "(6/9 预约发货) Separate 牛仔裤 [Denim Black]",
+     "Ser 牛仔裤 [Denim Blue]",
+     "Dip 华夫格亨利领 [Mocha Beige]",
+     "Skin 叠层亨利领T恤 [Navy]"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "Milo Woman 官方線上商店",
+    "note": "",
+    "products": [
+     "標誌Logo摺扇 [Black]",
+     "波紋柔軟毯 [Black]",
+     "多變造型頭巾 [Melange Gray]",
+     "Errant 串珠手鍊 [Multi]",
+     "Eve 手鍊 [Silver]",
+     "Keshi 串珠手鍊 [Multi]",
+     "Bonbi 項鍊 [Multi]",
+     "Virts 寶石項鍊 [Multi]",
+     "Perr 皮革托特包 [Black]",
+     "Vegas 鉚釘褲 [Denim Blue]",
+     "Rector 工裝百慕達短褲 [Ash Brown]",
+     "Segment T恤 [Melange Gray]",
+     "短版慵懶針織衫 [Charcoal]",
+     "層次毛邊T恤 [Melange Gray]",
+     "Essential 顏料染色T恤 [Indigo Red]",
+     "雙切口T恤 [White Melange]",
+     "皮革卡片夾 [Black]",
+     "粗獷異形戒指 [Silver]",
+     "Trinity 三環戒指 [Silver]",
+     "重複條紋T恤 [Light Gray]",
+     "Para 染色條紋T恤 [Navy]",
+     "Prometheus T恤 [White]",
+     "客製相框貓咪T恤 [White]",
+     "漸層格紋半袖襯衫 [Grayish Green]",
+     "(6/9 預約配送) Separate 牛仔褲 [Denim Black]",
+     "Ser 牛仔褲 [Denim Blue]",
+     "Dip 鬆餅格亨利領 [Mocha Beige]",
+     "Skin 層次亨利領T恤 [Navy]"
+    ]
+   },
+   "ja": {
+    "slogan": "Milo Woman 公式オンラインストア",
+    "note": "",
+    "products": [
+     "シグネチャーロゴ 扇子 [Black]",
+     "ウェーブ ソフトブランケット [Black]",
+     "マルチシェイプ バンダナ [Melange Gray]",
+     "エラント ビーズブレスレット [Multi]",
+     "イヴ ブレスレット [Silver]",
+     "ケシ ビーズブレスレット [Multi]",
+     "ボンビ ネックレス [Multi]",
+     "ヴァーツ ジェムストーンネックレス [Multi]",
+     "ペル レザートートバッグ [Black]",
+     "ベガス スタッズパンツ [Denim Blue]",
+     "レクター カーゴバミューダパンツ [Ash Brown]",
+     "セグメント Tシャツ [Melange Gray]",
+     "クロップ イージーニット [Charcoal]",
+     "レイヤード ローカットTシャツ [Melange Gray]",
+     "エッセンシャル ピグメントダイTシャツT [Indigo Red]",
+     "ダブルインシジョン Tシャツ [White Melange]",
+     "レザー カードホルダー [Black]",
+     "ラフ アティピカルリング [Silver]",
+     "トリニティリング [Silver]",
+     "リピート ストライプTシャツ [Light Gray]",
+     "パラ ダイイング ストライプTシャツ [Navy]",
+     "プロメテウス Tシャツ [White]",
+     "カスタムフレーム キャットTシャツ [White]",
+     "オンブレ チェック ハーフシャツ [Grayish Green]",
+     "(6/9 予約配送) セパレート デニムパンツ [Denim Black]",
+     "サー デニムパンツ [Denim Blue]",
+     "ディップ ワッフル ヘンリーネック [Mocha Beige]",
+     "スキン レイヤード ヘンリーネックTシャツ [Navy]"
+    ]
+   }
+  }
  },
  {
   "id": "b15",
@@ -2445,7 +3595,153 @@
     "price": "189,000원",
     "url": "https://www.maisonrepere.com/product/%EB%B6%80%EC%9D%B4%EC%97%90-%ED%83%80%EC%9B%94-%EC%8A%A4%EC%BB%A4%ED%8A%B8/712/category/49/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "From ballet to athleisure, and into everyday life. A brand setting a new standard for the fitness look.",
+    "note": "",
+    "products": [
+     "Oria Wrinkle Long Skirt",
+     "Florence Lace Cardigan Set",
+     "Merced Boat Neck Knit Short Sleeve",
+     "Aurelie Crochet Knit Cover-Up",
+     "[1st Reorder] Selendis Sleeveless",
+     "Krista Frill Knit Cardigan",
+     "Ruel Long Sleeve",
+     "Salerno Slit Cowl Neck Dress",
+     "Florence Layered Skirt",
+     "Diana One-Piece Swimsuit",
+     "Elena Stripe Short Sleeve",
+     "Mirazur Layered Cover-Up",
+     "Roxanne One-Piece Swimsuit",
+     "Eloisa Ribbon Sleeveless",
+     "Carmen Off-Shoulder Knit Short Sleeve",
+     "Miguel Wrinkle Sleeveless",
+     "Ariel Halter Neck Sleeveless",
+     "Opium Short Sleeve",
+     "Sandrone One-Piece Swimsuit",
+     "Erica Stripe Knit Pique Shirt",
+     "Florence Cardigan & Skirt Set",
+     "Miguel Wrinkle Sleeveless & Oria Wrinkle Long Skirt Set",
+     "[1st Reorder] Hayden Shirring Layered Skirt Short Pants",
+     "[13th Reorder] Orche Knit Cardigan [Color Added]",
+     "Natalie Knit Cardigan",
+     "Sabrina Swimsuit",
+     "[6th Reorder] Hayden Shirring Layered Skirt Pants",
+     "Iriles Layered Long Sleeve",
+     "Meursault Layered Knit Cardigan",
+     "Bouille Towel Skirt"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "从芭蕾到运动休闲，再到日常。这是一个为健身造型树立全新标准的品牌。",
+    "note": "",
+    "products": [
+     "Oria 褶皱长半身裙",
+     "Florence 蕾丝开衫套装",
+     "Merced 船领针织短袖",
+     "Aurelie 钩织针织罩衫",
+     "[首次返单] Selendis 无袖上衣",
+     "Krista 荷叶边针织开衫",
+     "Ruel 长袖上衣",
+     "Salerno 开衩堆领连衣裙",
+     "Florence 叠层半身裙",
+     "Diana 连体泳衣",
+     "Elena 条纹短袖",
+     "Mirazur 叠层罩衫",
+     "Roxanne 连体泳衣",
+     "Eloisa 蝴蝶结无袖上衣",
+     "Carmen 一字肩针织短袖",
+     "Miguel 褶皱无袖上衣",
+     "Ariel 挂脖无袖上衣",
+     "Opium 短袖上衣",
+     "Sandrone 连体泳衣",
+     "Erica 条纹针织珠地衬衫",
+     "Florence 开衫&半身裙套装",
+     "Miguel 褶皱无袖上衣&Oria 褶皱长半身裙套装",
+     "[首次返单] Hayden 褶皱叠层半身裙短裤",
+     "[第13次返单] Orche 针织开衫 [新增颜色]",
+     "Natalie 针织开衫",
+     "Sabrina 泳衣",
+     "[第6次返单] Hayden 褶皱叠层半身裙裤",
+     "Iriles 叠层长袖上衣",
+     "Meursault 叠层针织开衫",
+     "Bouille 毛巾半身裙"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "從芭蕾到運動休閒，再到日常。這是一個為健身造型樹立全新標準的品牌。",
+    "note": "",
+    "products": [
+     "Oria 褶皺長版半身裙",
+     "Florence 蕾絲開襟衫套裝",
+     "Merced 船領針織短袖",
+     "Aurelie 鉤織針織罩衫",
+     "[首次返單] Selendis 無袖上衣",
+     "Krista 荷葉邊針織開襟衫",
+     "Ruel 長袖上衣",
+     "Salerno 開衩堆領連身裙",
+     "Florence 層次半身裙",
+     "Diana 連身泳衣",
+     "Elena 條紋短袖",
+     "Mirazur 層次罩衫",
+     "Roxanne 連身泳衣",
+     "Eloisa 蝴蝶結無袖上衣",
+     "Carmen 一字肩針織短袖",
+     "Miguel 褶皺無袖上衣",
+     "Ariel 掛脖無袖上衣",
+     "Opium 短袖上衣",
+     "Sandrone 連身泳衣",
+     "Erica 條紋針織珠地襯衫",
+     "Florence 開襟衫&半身裙套裝",
+     "Miguel 褶皺無袖上衣&Oria 褶皺長版半身裙套裝",
+     "[首次返單] Hayden 褶皺層次半身裙短褲",
+     "[第13次返單] Orche 針織開襟衫 [新增顏色]",
+     "Natalie 針織開襟衫",
+     "Sabrina 泳衣",
+     "[第6次返單] Hayden 褶皺層次半身裙褲",
+     "Iriles 層次長袖上衣",
+     "Meursault 層次針織開襟衫",
+     "Bouille 毛巾半身裙"
+    ]
+   },
+   "ja": {
+    "slogan": "バレエからアスレジャー、そして日常まで。新しいフィットネスルックの基準をつくるブランドです。",
+    "note": "",
+    "products": [
+     "オリア リンクル ロングスカート",
+     "フローレンス レースカーディガンセット",
+     "メルセド ボートネック ニット 半袖",
+     "オーレリー クロシェニット カバーアップ",
+     "[1次リオーダー] セレンディス ノースリーブ",
+     "クリスタ フリルニットカーディガン",
+     "ルエル 長袖",
+     "サレルノ スリット カウルネックワンピース",
+     "フローレンス レイヤードスカート",
+     "ダイアナ ワンピース水着",
+     "エレナ ストライプ 半袖",
+     "ミラズール レイヤードカバーアップ",
+     "ロクサーヌ ワンピース水着",
+     "エロイサ リボン ノースリーブ",
+     "カルメン オフショルダー ニット 半袖",
+     "ミゲル リンクル ノースリーブ",
+     "アリエル ホルターネック ノースリーブ",
+     "オピウム 半袖",
+     "サンドローネ ワンピース水着",
+     "エリカ ストライプ ニットピケシャツ",
+     "フローレンス カーディガン&スカート セットアップ",
+     "ミゲル リンクル ノースリーブ&オリア リンクル ロングスカート セットアップ",
+     "[1次リオーダー] ハイデン シャーリング レイヤードスカート ショートパンツ",
+     "[13次リオーダー] オルシェ ニットカーディガン [カラー追加]",
+     "ナタリー ニットカーディガン",
+     "サブリナ 水着",
+     "[6次リオーダー] ハイデン シャーリング レイヤードスカートパンツ",
+     "イリレス レイヤード 長袖",
+     "ムルソー レイヤードニットカーディガン",
+     "ブイエ タオルスカート"
+    ]
+   }
+  }
  },
  {
   "id": "b16",
@@ -2693,7 +3989,153 @@
     "price": "69,000원",
     "url": "https://ufcsport.co.kr/product/ufc-%EC%B1%94%ED%94%BC%EC%96%B8-%EB%A9%94%EA%B0%80%ED%95%8F-%EB%B0%98%ED%8C%94-%ED%8B%B0%EC%85%94%EC%B8%A0-%EB%B8%94%EB%9E%99-u2ssx2114bk/3656/category/126/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "The official UFCSPORT store, infused with the spirit of combat sports. Add confidence with activewear optimized for everyday life and workouts.",
+    "note": "",
+    "products": [
+     "UFC Champ Relaxed Fit Dyed Short Sleeve T-Shirt Charcoal U2SSX2320CH",
+     "UFC Combat Relaxed Fit Dyed Short Sleeve T-Shirt Charcoal U2SSX2321CH",
+     "UFC Spray Dyed Relaxed Fit Short Sleeve T-Shirt Charcoal U2SSX2308CH",
+     "UFC Denim-Like Relaxed Fit Short Sleeve T-Shirt U2SSX2319ID",
+     "UFC Standard Relaxed Fit Short Sleeve T-Shirt White U2SSX2310WH",
+     "UFC Fade Dyed Relaxed Fit Shorts Charcoal U2SPX2307CH",
+     "UFC Octagon Warrior Oversized Fit Sleeveless Charcoal U2SLX2104CH",
+     "UFC Fade Dyed Sleeveless & Shorts Charcoal SET UP",
+     "UFC FREEDOM 250 Relaxed Fit Short Sleeve T-Shirt Black U2SSX2129BK",
+     "UFC Combat Sleeveless & Leggings Black SET UP",
+     "UFC Performance Muscle Fit Sleeveless Black U4SLX2105BK",
+     "UFC Combat Slim Fit Leggings Black U4SPX2105BK",
+     "UFC Ice Relaxed Fit Short Sleeve T-Shirt Violet U4SSX2102VI",
+     "UFC Performance Regular Fit Short Sleeve T-Shirt Black U4SSX2101BK",
+     "UFC Elite Relaxed Fit Shorts Black U4SPX2101BK",
+     "UFC Active Slim Fit Bra Top Black U4SLX2207BK",
+     "UFC Winner Oversized Fit Football Jersey T-Shirt Black U2SSX2118BK",
+     "UFC Force Majeure Slides Black U2FWX2302BK",
+     "UFC SPON DAILY Relaxed Fit Short Sleeve T-Shirt Black U2SSX2306BK",
+     "UFC Max Relaxed Fit Shorts Light Gray U2SPX2306LG",
+     "UFC Warrior Relaxed Fit Short Sleeve T-Shirt Dark Navy U2SSX2103DN",
+     "UFC Move Relaxed Fit Short Sleeve Piste Black U2SSX2115BK",
+     "UFC Zero 100 Oversized Fit Short Sleeve T-Shirt Black U4SSX2312BK",
+     "UFC Physical Regular Fit Short Sleeve T-Shirt Black U2SSX2132BK",
+     "UFC Football Jersey Oversized Fit Short Sleeve T-Shirt Black U2SSX2344BK",
+     "UFC Force Majeure 3.0 Relaxed Fit Short Sleeve T-Shirt Black U2SSX2305BK",
+     "UFC Force Majeure III Mega Fit Bermuda Shorts Melange Gray U2SPX2304MG",
+     "UFC Big Logo Bermuda Shorts Black U2SPX2322BK",
+     "UFC Gothic Mega Fit Bermuda Shorts Black U2SPX2102BK",
+     "UFC Champion Mega Fit Short Sleeve T-Shirt Black U2SSX2114BK"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "凝聚格斗运动之魂的 UFCSPORT 官方商城。以专为日常与运动打造的运动服，为你增添自信。",
+    "note": "",
+    "products": [
+     "UFC 冠军宽松版染色短袖T恤 炭灰色 U2SSX2320CH",
+     "UFC 格斗宽松版染色短袖T恤 炭灰色 U2SSX2321CH",
+     "UFC 喷染宽松版短袖T恤 炭灰色 U2SSX2308CH",
+     "UFC 仿牛仔宽松版短袖T恤 U2SSX2319ID",
+     "UFC 标准宽松版短袖T恤 白色 U2SSX2310WH",
+     "UFC 渐变染色宽松版短裤 炭灰色 U2SPX2307CH",
+     "UFC 八角笼战士落肩版无袖 炭灰色 U2SLX2104CH",
+     "UFC 渐变染色无袖&短裤 炭灰色 套装",
+     "UFC FREEDOM 250 宽松版短袖T恤 黑色 U2SSX2129BK",
+     "UFC 格斗无袖&紧身裤 黑色 套装",
+     "UFC 性能肌肉版无袖 黑色 U4SLX2105BK",
+     "UFC 格斗修身版紧身裤 黑色 U4SPX2105BK",
+     "UFC 冰爽宽松版短袖T恤 紫罗兰色 U4SSX2102VI",
+     "UFC 性能标准版短袖T恤 黑色 U4SSX2101BK",
+     "UFC 精英宽松版短裤 黑色 U4SPX2101BK",
+     "UFC 运动修身版内衣式上衣 黑色 U4SLX2207BK",
+     "UFC 胜者落肩版足球球衣T恤 黑色 U2SSX2118BK",
+     "UFC 不可抗力拖鞋 黑色 U2FWX2302BK",
+     "UFC SPON DAILY 宽松版短袖T恤 黑色 U2SSX2306BK",
+     "UFC MAX 宽松版短裤 浅灰色 U2SPX2306LG",
+     "UFC 战士宽松版短袖T恤 深藏青色 U2SSX2103DN",
+     "UFC MOVE 宽松版短袖运动衫 黑色 U2SSX2115BK",
+     "UFC ZERO 100 落肩版短袖T恤 黑色 U4SSX2312BK",
+     "UFC 体能标准版短袖T恤 黑色 U2SSX2132BK",
+     "UFC 足球球衣落肩版短袖T恤 黑色 U2SSX2344BK",
+     "UFC 不可抗力 3.0 宽松版短袖T恤 黑色 U2SSX2305BK",
+     "UFC 不可抗力III 超大版百慕大短裤 麻灰色 U2SPX2304MG",
+     "UFC 大Logo百慕大短裤 黑色 U2SPX2322BK",
+     "UFC 哥特超大版百慕大短裤 黑色 U2SPX2102BK",
+     "UFC 冠军超大版短袖T恤 黑色 U2SSX2114BK"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "凝聚格鬥運動之魂的 UFCSPORT 官方商城。以專為日常與運動打造的運動服，為你增添自信。",
+    "note": "",
+    "products": [
+     "UFC 冠軍寬鬆版染色短袖T恤 炭灰色 U2SSX2320CH",
+     "UFC 格鬥寬鬆版染色短袖T恤 炭灰色 U2SSX2321CH",
+     "UFC 噴染寬鬆版短袖T恤 炭灰色 U2SSX2308CH",
+     "UFC 仿牛仔寬鬆版短袖T恤 U2SSX2319ID",
+     "UFC 標準寬鬆版短袖T恤 白色 U2SSX2310WH",
+     "UFC 漸層染色寬鬆版短褲 炭灰色 U2SPX2307CH",
+     "UFC 八角籠戰士落肩版無袖 炭灰色 U2SLX2104CH",
+     "UFC 漸層染色無袖&短褲 炭灰色 套裝",
+     "UFC FREEDOM 250 寬鬆版短袖T恤 黑色 U2SSX2129BK",
+     "UFC 格鬥無袖&緊身褲 黑色 套裝",
+     "UFC 性能肌肉版無袖 黑色 U4SLX2105BK",
+     "UFC 格鬥修身版緊身褲 黑色 U4SPX2105BK",
+     "UFC 冰爽寬鬆版短袖T恤 紫羅蘭色 U4SSX2102VI",
+     "UFC 性能標準版短袖T恤 黑色 U4SSX2101BK",
+     "UFC 菁英寬鬆版短褲 黑色 U4SPX2101BK",
+     "UFC 運動修身版內衣式上衣 黑色 U4SLX2207BK",
+     "UFC 勝者落肩版足球球衣T恤 黑色 U2SSX2118BK",
+     "UFC 不可抗力拖鞋 黑色 U2FWX2302BK",
+     "UFC SPON DAILY 寬鬆版短袖T恤 黑色 U2SSX2306BK",
+     "UFC MAX 寬鬆版短褲 淺灰色 U2SPX2306LG",
+     "UFC 戰士寬鬆版短袖T恤 深藏青色 U2SSX2103DN",
+     "UFC MOVE 寬鬆版短袖運動衫 黑色 U2SSX2115BK",
+     "UFC ZERO 100 落肩版短袖T恤 黑色 U4SSX2312BK",
+     "UFC 體能標準版短袖T恤 黑色 U2SSX2132BK",
+     "UFC 足球球衣落肩版短袖T恤 黑色 U2SSX2344BK",
+     "UFC 不可抗力 3.0 寬鬆版短袖T恤 黑色 U2SSX2305BK",
+     "UFC 不可抗力III 超大版百慕達短褲 麻灰色 U2SPX2304MG",
+     "UFC 大Logo百慕達短褲 黑色 U2SPX2322BK",
+     "UFC 哥德超大版百慕達短褲 黑色 U2SPX2102BK",
+     "UFC 冠軍超大版短袖T恤 黑色 U2SSX2114BK"
+    ]
+   },
+   "ja": {
+    "slogan": "格闘スポーツの魂を込めたUFCSPORT公式モール。日常とトレーニングに最適化されたアクティブウェアで、自信をプラスしましょう。",
+    "note": "",
+    "products": [
+     "UFC チャンプ リラックスフィット ダイイング 半袖Tシャツ チャコール U2SSX2320CH",
+     "UFC コンバット リラックスフィット ダイイング 半袖Tシャツ チャコール U2SSX2321CH",
+     "UFC スプレー ダイイング リラックスフィット 半袖Tシャツ チャコール U2SSX2308CH",
+     "UFC デニムライク リラックスフィット 半袖Tシャツ U2SSX2319ID",
+     "UFC スタンダード リラックスフィット 半袖Tシャツ ホワイト U2SSX2310WH",
+     "UFC フェード ダイイング リラックスフィット ショーツ チャコール U2SPX2307CH",
+     "UFC オクタゴン ウォリアー オーバーフィット ノースリーブ チャコール U2SLX2104CH",
+     "UFC フェード ダイイング ノースリーブ＆ショーツ チャコール セットアップ",
+     "UFC FREEDOM 250 リラックスフィット 半袖Tシャツ ブラック U2SSX2129BK",
+     "UFC コンバット ノースリーブ＆レギンス ブラック セットアップ",
+     "UFC パフォーマンス マッスルフィット ノースリーブ ブラック U4SLX2105BK",
+     "UFC コンバット スリムフィット レギンス ブラック U4SPX2105BK",
+     "UFC アイス リラックスフィット 半袖Tシャツ バイオレット U4SSX2102VI",
+     "UFC パフォーマンス レギュラーフィット 半袖Tシャツ ブラック U4SSX2101BK",
+     "UFC エリート リラックスフィット ショーツ ブラック U4SPX2101BK",
+     "UFC アクティブ スリムフィット ブラトップ ブラック U4SLX2207BK",
+     "UFC ウィナー オーバーフィット フットボールジャージー Tシャツ ブラック U2SSX2118BK",
+     "UFC フォースマジュール スライド ブラック U2FWX2302BK",
+     "UFC SPON DAILY リラックスフィット 半袖Tシャツ ブラック U2SSX2306BK",
+     "UFC マックス リラックスフィット ショーツ ライトグレー U2SPX2306LG",
+     "UFC ウォリアー リラックスフィット 半袖Tシャツ ダークネイビー U2SSX2103DN",
+     "UFC ムーブ リラックスフィット 半袖ピステ ブラック U2SSX2115BK",
+     "UFC ゼロ 100 オーバーフィット 半袖Tシャツ ブラック U4SSX2312BK",
+     "UFC フィジカル レギュラーフィット 半袖Tシャツ ブラック U2SSX2132BK",
+     "UFC フットボールジャージー オーバーフィット 半袖Tシャツ ブラック U2SSX2344BK",
+     "UFC フォースマジュール 3.0 リラックスフィット 半袖Tシャツ ブラック U2SSX2305BK",
+     "UFC フォースマジュールIII メガフィット バミューダショーツ メランジグレー U2SPX2304MG",
+     "UFC ビッグロゴ バミューダショーツ ブラック U2SPX2322BK",
+     "UFC ゴシック メガフィット バミューダショーツ ブラック U2SPX2102BK",
+     "UFC チャンピオン メガフィット 半袖Tシャツ ブラック U2SSX2114BK"
+    ]
+   }
+  }
  },
  {
   "id": "b17",
@@ -2916,7 +4358,153 @@
     "price": "149,000원",
     "url": "https://www.yuse.co.kr/product/bustier-rough-cutting-denim-dress-top-black/1261/category/262/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "YUZ is a unisex brand that infuses each season's ever-changing trends with our own brand's CREATIVE sensibility.",
+    "note": "",
+    "products": [
+     "HIGH NECK HAIRY FUR ZIP-UP - BEIGE",
+     "PINTUCK WIDE WOOL SLACKS PANTS - CREAM",
+     "WOOL KNITTED BLOCK SHIRT TOP - BLACK/CHARCOAL",
+     "[SAMPLE SALE] STITCH POINT MUFFLER KNIT BALACLAVA - RED",
+     "[SAMPLE SALE] UNBALANCE WAIST FULL PRINTED MINI SKIRT - BEIGE",
+     "[SAMPLE SALE] BELTED DENIM TUBE TOP - RAW INDIGO",
+     "[SAMPLE SALE] LACE-UP DENIM TUBE TOP - INDIGO",
+     "[SAMPLE SALE] PANELED VINTAGE WASHING MIDI DENIM SKIRT - INDIGO",
+     "[SAMPLE SALE] RIBBON FLATFORM FLIP FLOP - BEIGE",
+     "[SAMPLE SALE] SILVER LINE SUNGLASSES - LIGHT GRAY/BLACK",
+     "BELTED DENIM TUBE TOP - RAW INDIGO",
+     "WOOL BLENDED JACQUARD ZIP-UP KNIT - PURPLE",
+     "ONE SHOULDER LAYERED TOP - LIGHT GRAY",
+     "CHIFFON LACE PRINT SCARF - BLACK",
+     "FRONT POINT SLIM BOOTS CUT PANTS - CHARCOAL",
+     "RIBBON SLEEVELESS DRESS TOP - IVORY",
+     "COTTON LOOSE FIT JUMPER - KHAKI",
+     "BELTED DESTROYED DENIM JACKET - BLACK KHAKI",
+     "SHEARLING SUEDE LONG SKIRT - BLACK",
+     "MESH FULL PRINTED LONG SLEEVE T-SHIRT - BLACK",
+     "SHIRRING NYLON LOOSE FIT JUMPER - CREAM GRAY",
+     "ECO-SHEARLING SHORT JACKET - BLACK",
+     "LACE LAYERED COTTON WIDE PANTS - IVORY",
+     "COLOR BLOCK WASHING GRAPHIC RAGLAN TOP - RUST PURPLE",
+     "Y SYMBOL SLIM LONG SLEEVE T-SHIRT - BROWN",
+     "NYLON SHOULDER BAG - CHARCOAL",
+     "COLOR PIGMENT DYEING WIDE DENIM PANTS - BEIGE",
+     "STITCH ALPACA KNIT BOOTS CUT PANTS - KHAKI BROWN",
+     "COLLAR LINE LEATHER LOOSE FIT JACKET - BLACK",
+     "BUSTIER ROUGH CUTTING DENIM DRESS TOP - BLACK"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "YUZ 是一个将每季不断变化的潮流融入自有品牌 CREATIVE 创意感性的中性品牌。",
+    "note": "",
+    "products": [
+     "高领毛绒拉链外套 - 米色",
+     "压褶宽版羊毛西裤 - 奶油色",
+     "羊毛针织拼块衬衫上衣 - 黑色/炭灰色",
+     "[样品特卖] 缝线点缀围巾针织头套 - 红色",
+     "[样品特卖] 不对称腰部满印迷你半身裙 - 米色",
+     "[样品特卖] 系带牛仔抹胸上衣 - 原色靛蓝",
+     "[样品特卖] 系带牛仔抹胸上衣 - 靛蓝",
+     "[样品特卖] 拼接复古水洗中长牛仔半身裙 - 靛蓝",
+     "[样品特卖] 蝴蝶结厚底人字拖 - 米色",
+     "[样品特卖] 银线太阳镜 - 浅灰色/黑色",
+     "系带牛仔抹胸上衣 - 原色靛蓝",
+     "羊毛混纺提花拉链针织衫 - 紫色",
+     "单肩叠层上衣 - 浅灰色",
+     "雪纺蕾丝印花丝巾 - 黑色",
+     "前侧点缀修身靴型裤 - 炭灰色",
+     "蝴蝶结无袖连衣裙上衣 - 象牙白",
+     "棉质宽松夹克 - 卡其色",
+     "系带破坏感牛仔夹克 - 黑卡其色",
+     "羊羔毛绒面长半身裙 - 黑色",
+     "网眼满印长袖T恤 - 黑色",
+     "褶皱尼龙宽松夹克 - 奶油灰色",
+     "环保羊羔毛短款夹克 - 黑色",
+     "蕾丝叠层棉质阔腿裤 - 象牙白",
+     "撞色水洗图案插肩上衣 - 锈红紫色",
+     "Y 标志修身长袖T恤 - 棕色",
+     "尼龙单肩包 - 炭灰色",
+     "颜料染色宽版牛仔裤 - 米色",
+     "缝线羊驼绒针织靴型裤 - 卡其棕色",
+     "领线皮革宽松夹克 - 黑色",
+     "抹胸毛边牛仔连衣裙上衣 - 黑色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "YUZ 是一個將每季不斷變化的潮流融入自有品牌 CREATIVE 創意感性的中性品牌。",
+    "note": "",
+    "products": [
+     "高領毛絨拉鍊外套 - 米色",
+     "壓褶寬版羊毛西裝褲 - 奶油色",
+     "羊毛針織拼塊襯衫上衣 - 黑色/炭灰色",
+     "[樣品特賣] 縫線點綴圍巾針織頭套 - 紅色",
+     "[樣品特賣] 不對稱腰部滿版印花迷你半身裙 - 米色",
+     "[樣品特賣] 綁帶牛仔平口上衣 - 原色靛藍",
+     "[樣品特賣] 綁帶牛仔平口上衣 - 靛藍",
+     "[樣品特賣] 拼接復古水洗中長牛仔半身裙 - 靛藍",
+     "[樣品特賣] 蝴蝶結厚底夾腳拖 - 米色",
+     "[樣品特賣] 銀線太陽眼鏡 - 淺灰色/黑色",
+     "綁帶牛仔平口上衣 - 原色靛藍",
+     "羊毛混紡提花拉鍊針織衫 - 紫色",
+     "單肩層次上衣 - 淺灰色",
+     "雪紡蕾絲印花絲巾 - 黑色",
+     "前側點綴修身靴型褲 - 炭灰色",
+     "蝴蝶結無袖連身裙上衣 - 象牙白",
+     "棉質寬鬆夾克 - 卡其色",
+     "綁帶破壞感牛仔夾克 - 黑卡其色",
+     "羊羔毛麂皮長版半身裙 - 黑色",
+     "網眼滿版印花長袖T恤 - 黑色",
+     "褶皺尼龍寬鬆夾克 - 奶油灰色",
+     "環保羊羔毛短版夾克 - 黑色",
+     "蕾絲層次棉質寬褲 - 象牙白",
+     "撞色水洗圖案插肩上衣 - 鏽紅紫色",
+     "Y 標誌修身長袖T恤 - 棕色",
+     "尼龍單肩包 - 炭灰色",
+     "顏料染色寬版牛仔褲 - 米色",
+     "縫線羊駝絨針織靴型褲 - 卡其棕色",
+     "領線皮革寬鬆夾克 - 黑色",
+     "馬甲毛邊牛仔連身裙上衣 - 黑色"
+    ]
+   },
+   "ja": {
+    "slogan": "YUZは、毎シーズン変わるトレンドに自社ブランドのCREATIVEな感性を落とし込むユニセックスブランドです。",
+    "note": "",
+    "products": [
+     "ハイネック ヘアリーファー ジップアップ - ベージュ",
+     "ピンタック ワイド ウールスラックスパンツ - クリーム",
+     "ウールニット ブロックシャツトップ - ブラック/チャコール",
+     "[サンプルセール] ステッチポイント マフラーニット バラクラバ - レッド",
+     "[サンプルセール] アンバランスウエスト 総柄プリント ミニスカート - ベージュ",
+     "[サンプルセール] ベルテッド デニムチューブトップ - ロウインディゴ",
+     "[サンプルセール] レースアップ デニムチューブトップ - インディゴ",
+     "[サンプルセール] パネル ヴィンテージウォッシュ ミディデニムスカート - インディゴ",
+     "[サンプルセール] リボン フラットフォーム フリップフロップ - ベージュ",
+     "[サンプルセール] シルバーライン サングラス - ライトグレー/ブラック",
+     "ベルテッド デニムチューブトップ - ロウインディゴ",
+     "ウールブレンド ジャカード ジップアップニット - パープル",
+     "ワンショルダー レイヤードトップ - ライトグレー",
+     "シフォン レースプリント スカーフ - ブラック",
+     "フロントポイント スリム ブーツカットパンツ - チャコール",
+     "リボン ノースリーブ ドレストップ - アイボリー",
+     "コットン ルーズフィットジャンパー - カーキ",
+     "ベルテッド ダメージデニムジャケット - ブラックカーキ",
+     "シャーリング スエード ロングスカート - ブラック",
+     "メッシュ 総柄プリント 長袖Tシャツ - ブラック",
+     "シャーリング ナイロン ルーズフィットジャンパー - クリームグレー",
+     "エコシャーリング ショートジャケット - ブラック",
+     "レース レイヤード コットンワイドパンツ - アイボリー",
+     "カラーブロック ウォッシュ グラフィック ラグラントップ - ラストパープル",
+     "Yシンボル スリム 長袖Tシャツ - ブラウン",
+     "ナイロン ショルダーバッグ - チャコール",
+     "カラーピグメント ダイイング ワイドデニムパンツ - ベージュ",
+     "ステッチ アルパカニット ブーツカットパンツ - カーキブラウン",
+     "カラーライン レザー ルーズフィットジャケット - ブラック",
+     "ビスチェ ラフカッティング デニムドレストップ - ブラック"
+    ]
+   }
+  }
  },
  {
   "id": "b19",
@@ -3131,7 +4719,129 @@
     "price": "42,000원",
     "url": ""
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Real daily looks — comfortable and understated, that's our SLOW&",
+    "note": "",
+    "products": [
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :",
+     "Color :"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "真实日常穿搭，舒适而简约，这就是我们的 SLOW&",
+    "note": "",
+    "products": [
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :",
+     "商品颜色 :"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "真實日常穿搭，舒適而簡約，這就是我們的 SLOW&",
+    "note": "",
+    "products": [
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :",
+     "商品顏色 :"
+    ]
+   },
+   "ja": {
+    "slogan": "リアルなデイリールック、心地よく上品な私たちの SLOW&",
+    "note": "",
+    "products": [
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :",
+     "商品カラー :"
+    ]
+   }
+  }
  },
  {
   "id": "b20",
@@ -3355,7 +5065,129 @@
     "price": "46,000원",
     "url": ""
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "ROSEFRANTZ Official Online Store",
+    "note": "",
+    "products": [
+     "Check Shirring Crop Blouse [Navy]",
+     "Check Shirring Crop Blouse [Red]",
+     "Puff Sleeve Peplum Check Blouse [Navy]",
+     "Puff Sleeve Peplum Check Blouse [Sky Blue]",
+     "Soft Punching Lace T-shirt [Black]",
+     "Soft Punching Lace T-shirt [Ivory]",
+     "Tiny Dot Trim T-shirt [Black]",
+     "Tiny Dot Trim T-shirt [Ivory]",
+     "Sparkle Angel Wing T-shirt [Black]",
+     "Sparkle Angel Wing T-shirt [White]",
+     "Floral Sketch Graphic T-shirt [Charcoal]",
+     "Floral Sketch Graphic T-shirt [Pink]",
+     "Floral Sketch Graphic T-shirt [White]",
+     "Stripe One-shoulder T-shirt [Navy]",
+     "[Pre-order, ships 6/26] Stripe One-shoulder T-shirt [Gray]",
+     "Stripe One-shoulder T-shirt [Pink]",
+     "Sweet Angel Patchwork T-shirt [Charcoal]",
+     "[Pre-order, ships 7/14] Sweet Angel Patchwork T-shirt [Pink]",
+     "Sweet Angel Patchwork T-shirt [White]",
+     "[Pre-order, ships 6/26] R Star Logo T-shirt [Black]",
+     "[Pre-order, ships 6/26] R Star Logo T-shirt [White]",
+     "Soft Punching Lace Sleeveless [Black]",
+     "Soft Punching Lace Sleeveless [Ivory]",
+     "Wrap V-neck Sleeveless [Black]"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "ROSEFRANTZ 官方在线商店",
+    "note": "",
+    "products": [
+     "格纹缩褶短款衬衫 [藏青]",
+     "格纹缩褶短款衬衫 [红色]",
+     "泡泡袖荷叶下摆格纹衬衫 [藏青]",
+     "泡泡袖荷叶下摆格纹衬衫 [天蓝]",
+     "柔软镂空蕾丝T恤 [黑色]",
+     "柔软镂空蕾丝T恤 [象牙白]",
+     "迷你波点镶边T恤 [黑色]",
+     "迷你波点镶边T恤 [象牙白]",
+     "闪亮天使翅膀T恤 [黑色]",
+     "闪亮天使翅膀T恤 [白色]",
+     "花卉手绘印花T恤 [炭灰]",
+     "花卉手绘印花T恤 [粉色]",
+     "花卉手绘印花T恤 [白色]",
+     "条纹单肩T恤 [藏青]",
+     "[6/26 预订发货] 条纹单肩T恤 [灰色]",
+     "条纹单肩T恤 [粉色]",
+     "甜美天使拼接T恤 [炭灰]",
+     "[7/14 预订发货] 甜美天使拼接T恤 [粉色]",
+     "甜美天使拼接T恤 [白色]",
+     "[6/26 预订发货] R星标志T恤 [黑色]",
+     "[6/26 预订发货] R星标志T恤 [白色]",
+     "柔软镂空蕾丝无袖上衣 [黑色]",
+     "柔软镂空蕾丝无袖上衣 [象牙白]",
+     "裹身V领无袖上衣 [黑色]"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "ROSEFRANTZ 官方線上商店",
+    "note": "",
+    "products": [
+     "格紋縮褶短版襯衫 [藏青]",
+     "格紋縮褶短版襯衫 [紅色]",
+     "泡泡袖荷葉下擺格紋襯衫 [藏青]",
+     "泡泡袖荷葉下擺格紋襯衫 [天藍]",
+     "柔軟鏤空蕾絲T恤 [黑色]",
+     "柔軟鏤空蕾絲T恤 [象牙白]",
+     "迷你點點滾邊T恤 [黑色]",
+     "迷你點點滾邊T恤 [象牙白]",
+     "閃亮天使翅膀T恤 [黑色]",
+     "閃亮天使翅膀T恤 [白色]",
+     "花卉手繪印花T恤 [炭灰]",
+     "花卉手繪印花T恤 [粉色]",
+     "花卉手繪印花T恤 [白色]",
+     "條紋單肩T恤 [藏青]",
+     "[6/26 預購出貨] 條紋單肩T恤 [灰色]",
+     "條紋單肩T恤 [粉色]",
+     "甜美天使拼接T恤 [炭灰]",
+     "[7/14 預購出貨] 甜美天使拼接T恤 [粉色]",
+     "甜美天使拼接T恤 [白色]",
+     "[6/26 預購出貨] R星標誌T恤 [黑色]",
+     "[6/26 預購出貨] R星標誌T恤 [白色]",
+     "柔軟鏤空蕾絲無袖上衣 [黑色]",
+     "柔軟鏤空蕾絲無袖上衣 [象牙白]",
+     "裹身V領無袖上衣 [黑色]"
+    ]
+   },
+   "ja": {
+    "slogan": "ROSEFRANTZ 公式オンラインストア",
+    "note": "",
+    "products": [
+     "チェックシャーリングクロップブラウス [ネイビー]",
+     "チェックシャーリングクロップブラウス [レッド]",
+     "パフスリーブペプラムチェックブラウス [ネイビー]",
+     "パフスリーブペプラムチェックブラウス [スカイブルー]",
+     "ソフトパンチングレースTシャツ [ブラック]",
+     "ソフトパンチングレースTシャツ [アイボリー]",
+     "タイニードットトリムTシャツ [ブラック]",
+     "タイニードットトリムTシャツ [アイボリー]",
+     "スパークルエンジェルウィングTシャツ [ブラック]",
+     "スパークルエンジェルウィングTシャツ [ホワイト]",
+     "フローラルスケッチグラフィックTシャツ [チャコール]",
+     "フローラルスケッチグラフィックTシャツ [ピンク]",
+     "フローラルスケッチグラフィックTシャツ [ホワイト]",
+     "ストライプワンショルダーTシャツ [ネイビー]",
+     "[6/26 予約発送] ストライプワンショルダーTシャツ [グレー]",
+     "ストライプワンショルダーTシャツ [ピンク]",
+     "スウィートエンジェルパッチワークTシャツ [チャコール]",
+     "[7/14 予約発送] スウィートエンジェルパッチワークTシャツ [ピンク]",
+     "スウィートエンジェルパッチワークTシャツ [ホワイト]",
+     "[6/26 予約発送] Rスターロゴ Tシャツ [ブラック]",
+     "[6/26 予約発送] Rスターロゴ Tシャツ [ホワイト]",
+     "ソフトパンチングレースノースリーブ [ブラック]",
+     "ソフトパンチングレースノースリーブ [アイボリー]",
+     "ラップVネックノースリーブ [ブラック]"
+    ]
+   }
+  }
  },
  {
   "id": "b22",
@@ -3588,7 +5420,153 @@
     "price": "120,000원",
     "url": "https://deheve.com/product/frill-puff-crop-blouse-black/1000/category/78/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "DEHEVÉ Official Online Store",
+    "note": "",
+    "products": [
+     "Ribbon Smocked Blouse [Ivory]",
+     "Check Ruffle Blouse [Ivory]",
+     "Puff Sleeve Ribbon Blouse [Ivory]",
+     "[Pre-order, ships 6/26] Cowl Neck Scarf Blouse [Butter]",
+     "[Pre-order, ships 7/3] Cowl Neck Scarf Blouse [Black]",
+     "Balloon Ruffle Blouse [Ivory]",
+     "Wrap Drape Blouse [Ivory]",
+     "Pocket Cotton Jumper [Black]",
+     "Volume Bomber Jacket [Black]",
+     "Back Logo Leather Jacket [Black]",
+     "Back Logo Suede Jacket [Beige]",
+     "Hidden Stripe Single Jacket [Black]",
+     "Classic Leather Half Jacket [Black]",
+     "Collar Point Work Jacket [Ivory]",
+     "Point Half Trench Coat [Beige]",
+     "Twist Lace Sleeve Blouse [Beige]",
+     "Unbalanced Twist Blouse [Ivory]",
+     "Unbalanced Frill Blouse [Beige]",
+     "Layered Eyelet T-Shirt [Ivory]",
+     "Basic Waffle T-Shirt [Ivory]",
+     "Frill Layered Collar T-Shirt [Navy]",
+     "Minimal Logo Stripe T-shirt [Gray]",
+     "Label Point Puff T-shirt [Black]",
+     "Flower Lace T-shirt [Navy]",
+     "Punching Boat Neck T-shirt [Sky Blue]",
+     "Round Neck Smocked Blouse [Black]",
+     "[Pre-order, ships 6/26] Drape Strap Blouse [Cream]",
+     "Strap Sleeveless Blouse [Black]",
+     "Lace String Sleeveless [Ivory]",
+     "Frill Puff Crop Blouse [Black]"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "DEHEVÉ 官方在线商店",
+    "note": "",
+    "products": [
+     "蝴蝶结缩褶衬衫 [象牙白]",
+     "格纹荷叶边衬衫 [象牙白]",
+     "泡泡袖蝴蝶结衬衫 [象牙白]",
+     "[6/26 预订发货] 堆领围巾衬衫 [奶油色]",
+     "[7/3 预订发货] 堆领围巾衬衫 [黑色]",
+     "气球袖荷叶边衬衫 [象牙白]",
+     "裹身垂坠衬衫 [象牙白]",
+     "口袋棉质夹克 [黑色]",
+     "蓬松飞行员夹克 [黑色]",
+     "后背logo皮革夹克 [黑色]",
+     "后背logo麂皮夹克 [米色]",
+     "暗条纹单排扣西装外套 [黑色]",
+     "经典皮革短款夹克 [黑色]",
+     "翻领工装夹克 [象牙白]",
+     "翻领短款风衣 [米色]",
+     "扭结蕾丝袖衬衫 [米色]",
+     "不对称扭结衬衫 [象牙白]",
+     "不对称荷叶边衬衫 [米色]",
+     "层叠镂空孔T恤 [象牙白]",
+     "基础华夫格T恤 [象牙白]",
+     "荷叶边层叠领T恤 [藏青]",
+     "极简logo条纹T恤 [灰色]",
+     "标签点缀泡泡袖T恤 [黑色]",
+     "花卉蕾丝T恤 [藏青]",
+     "镂空一字领T恤 [天蓝]",
+     "圆领缩褶衬衫 [黑色]",
+     "[6/26 预订发货] 垂坠吊带衬衫 [奶油色]",
+     "吊带无袖衬衫 [黑色]",
+     "蕾丝系带无袖上衣 [象牙白]",
+     "荷叶边泡泡短款衬衫 [黑色]"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "DEHEVÉ 官方線上商店",
+    "note": "",
+    "products": [
+     "蝴蝶結縮褶襯衫 [象牙白]",
+     "格紋荷葉邊襯衫 [象牙白]",
+     "泡泡袖蝴蝶結襯衫 [象牙白]",
+     "[6/26 預購出貨] 堆領圍巾襯衫 [奶油色]",
+     "[7/3 預購出貨] 堆領圍巾襯衫 [黑色]",
+     "氣球袖荷葉邊襯衫 [象牙白]",
+     "裹身垂墜襯衫 [象牙白]",
+     "口袋棉質外套 [黑色]",
+     "蓬鬆飛行員外套 [黑色]",
+     "後背logo皮革外套 [黑色]",
+     "後背logo麂皮外套 [米色]",
+     "暗條紋單排扣西裝外套 [黑色]",
+     "經典皮革短版外套 [黑色]",
+     "翻領工裝外套 [象牙白]",
+     "翻領短版風衣 [米色]",
+     "扭結蕾絲袖襯衫 [米色]",
+     "不對稱扭結襯衫 [象牙白]",
+     "不對稱荷葉邊襯衫 [米色]",
+     "層疊鏤空孔T恤 [象牙白]",
+     "基本款鬆餅紋T恤 [象牙白]",
+     "荷葉邊層疊領T恤 [藏青]",
+     "極簡logo條紋T恤 [灰色]",
+     "標籤點綴泡泡袖T恤 [黑色]",
+     "花卉蕾絲T恤 [藏青]",
+     "鏤空一字領T恤 [天藍]",
+     "圓領縮褶襯衫 [黑色]",
+     "[6/26 預購出貨] 垂墜細肩帶襯衫 [奶油色]",
+     "細肩帶無袖襯衫 [黑色]",
+     "蕾絲綁帶無袖上衣 [象牙白]",
+     "荷葉邊泡泡短版襯衫 [黑色]"
+    ]
+   },
+   "ja": {
+    "slogan": "DEHEVÉ 公式オンラインストア",
+    "note": "",
+    "products": [
+     "リボンスモッキングブラウス [アイボリー]",
+     "チェックフリルブラウス [アイボリー]",
+     "パフスリーブリボンブラウス [アイボリー]",
+     "[6/26 予約発送] カウルネックスカーフブラウス [バター]",
+     "[7/3 予約発送] カウルネックスカーフブラウス [ブラック]",
+     "バルーンフリルブラウス [アイボリー]",
+     "ラップドレープブラウス [アイボリー]",
+     "ポケットコットンジャンパー [ブラック]",
+     "ボリュームボンバージャケット [ブラック]",
+     "バックロゴレザージャケット [ブラック]",
+     "バックロゴスエードジャケット [ベージュ]",
+     "ヒドゥンストライプシングルジャケット [ブラック]",
+     "クラシックレザーハーフジャケット [ブラック]",
+     "カラーポイントワークジャケット [アイボリー]",
+     "ポイントハーフトレンチコート [ベージュ]",
+     "ツイストレーススリーブブラウス [ベージュ]",
+     "アンバランスツイストブラウス [アイボリー]",
+     "アンバランスフリルブラウス [ベージュ]",
+     "レイヤードアイレットTシャツ [アイボリー]",
+     "ベーシックワッフルTシャツ [アイボリー]",
+     "フリルレイヤードカラーTシャツ [ネイビー]",
+     "ミニマルロゴストライプTシャツ [グレー]",
+     "ラベルポイントパフTシャツ [ブラック]",
+     "フラワーレースTシャツ [ネイビー]",
+     "パンチングボートネックTシャツ [スカイブルー]",
+     "ラウンドネックスモッキングブラウス [ブラック]",
+     "[6/26 予約発送] ドレープストラップブラウス [クリーム]",
+     "ストラップノースリーブブラウス [ブラック]",
+     "レースストリングノースリーブ [アイボリー]",
+     "フリルパフクロップブラウス [ブラック]"
+    ]
+   }
+  }
  },
  {
   "id": "b25",
@@ -3640,7 +5618,29 @@
     "url": "https://lemouton.co.kr/"
    }
   ],
-  "heroImage": "/brand-marketing/b25/1.jpg"
+  "heroImage": "/brand-marketing/b25/1.jpg",
+  "i18n": {
+   "en": {
+    "slogan": "Walk on — the world's lightest, most comfortable steps in premium merino wool",
+    "note": "",
+    "products": []
+   },
+   "zh-Hans": {
+    "slogan": "迈步前行，以优质美利奴羊毛带来全世界最轻盈舒适的体验",
+    "note": "",
+    "products": []
+   },
+   "zh-Hant": {
+    "slogan": "邁步前行，以優質美麗諾羊毛帶來全世界最輕盈舒適的體驗",
+    "note": "",
+    "products": []
+   },
+   "ja": {
+    "slogan": "歩こう、プレミアムメリノウールで世界一軽く心地よく",
+    "note": "",
+    "products": []
+   }
+  }
  },
  {
   "id": "b26",
@@ -3881,7 +5881,153 @@
     "price": "149,000원",
     "url": "https://loeka.store/product/objet-sblack/96/category/95/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A designer bag brand built on a NEWTRO·MINIMAL·CLASSIC concept, offering cowhide daily bags at reasonable prices.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "OBJET FLAP BAG",
+     "TOP LAYER BAG",
+     "BELTED BIG TOTE BAG",
+     "MINI BOSTON BAG_BLACK",
+     "EMMA BAG_CREAM",
+     "Objet M_BLACK",
+     "EMMA BAG_BROWN",
+     "EMMA BAG_BLACK",
+     "GOTA BAG S_BROWN",
+     "GOLD ROPE SILVER CHAIN BRACELET",
+     "DOUBLE U TWO-TONE NECKLACE",
+     "BOLD CLEAR GLASS BRACELET",
+     "CLASSIC COIN PENDANT NECKLACE_GOLD",
+     "New Acme_CREAM",
+     "Loar Mini_ORANGE + chain strap gift",
+     "[Oh Yu-jin's Pick] Matilda_BLACK",
+     "GOTA BAG S_BLACK",
+     "LIA SHOULDER BAG_BLACK",
+     "LIA BUCKET BAG MINI",
+     "LIA BUCKET BAG",
+     "LIA TOTE BAG",
+     "New Acme S Combi_BLACK",
+     "GOTA BAG S_CREAM",
+     "Millie Backpack_FOG BLUE",
+     "FAVE CARD BAG_BLACK",
+     "FAVE CARD BAG_BROWN",
+     "FAVE CARD BAG_CREAM",
+     "Objet S_DARK BROWN",
+     "Objet S_VANILLA",
+     "Objet S_BLACK"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以 NEWTRO·MINIMAL·CLASSIC 为概念的设计师包袋品牌，以合理价位呈现牛皮日常包。",
+    "note": "前广告主 · 标志另行提供",
+    "products": [
+     "OBJET FLAP BAG",
+     "TOP LAYER BAG",
+     "BELTED BIG TOTE BAG",
+     "MINI BOSTON BAG_黑色",
+     "EMMA BAG_奶油色",
+     "Objet M_黑色",
+     "EMMA BAG_棕色",
+     "EMMA BAG_黑色",
+     "GOTA BAG S_棕色",
+     "GOLD ROPE SILVER CHAIN BRACELET",
+     "DOUBLE U TWO-TONE NECKLACE",
+     "BOLD CLEAR GLASS BRACELET",
+     "CLASSIC COIN PENDANT NECKLACE_金色",
+     "New Acme_奶油色",
+     "Loar Mini_橙色 + 赠送链条肩带",
+     "[吴有真Pick] Matilda_黑色",
+     "GOTA BAG S_黑色",
+     "LIA SHOULDER BAG_黑色",
+     "LIA BUCKET BAG MINI",
+     "LIA BUCKET BAG",
+     "LIA TOTE BAG",
+     "New Acme S Combi_黑色",
+     "GOTA BAG S_奶油色",
+     "Millie Backpack_雾蓝",
+     "FAVE CARD BAG_黑色",
+     "FAVE CARD BAG_棕色",
+     "FAVE CARD BAG_奶油色",
+     "Objet S_深棕色",
+     "Objet S_香草色",
+     "Objet S_黑色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以 NEWTRO·MINIMAL·CLASSIC 為概念的設計師包袋品牌，以合理價位呈現牛皮日常包。",
+    "note": "前廣告主 · 標誌另行提供",
+    "products": [
+     "OBJET FLAP BAG",
+     "TOP LAYER BAG",
+     "BELTED BIG TOTE BAG",
+     "MINI BOSTON BAG_黑色",
+     "EMMA BAG_奶油色",
+     "Objet M_黑色",
+     "EMMA BAG_棕色",
+     "EMMA BAG_黑色",
+     "GOTA BAG S_棕色",
+     "GOLD ROPE SILVER CHAIN BRACELET",
+     "DOUBLE U TWO-TONE NECKLACE",
+     "BOLD CLEAR GLASS BRACELET",
+     "CLASSIC COIN PENDANT NECKLACE_金色",
+     "New Acme_奶油色",
+     "Loar Mini_橘色 + 贈送鏈條肩帶",
+     "[吳有真Pick] Matilda_黑色",
+     "GOTA BAG S_黑色",
+     "LIA SHOULDER BAG_黑色",
+     "LIA BUCKET BAG MINI",
+     "LIA BUCKET BAG",
+     "LIA TOTE BAG",
+     "New Acme S Combi_黑色",
+     "GOTA BAG S_奶油色",
+     "Millie Backpack_霧藍",
+     "FAVE CARD BAG_黑色",
+     "FAVE CARD BAG_棕色",
+     "FAVE CARD BAG_奶油色",
+     "Objet S_深棕色",
+     "Objet S_香草色",
+     "Objet S_黑色"
+    ]
+   },
+   "ja": {
+    "slogan": "NEWTRO・MINIMAL・CLASSIC をコンセプトにしたデザイナーズバッグブランドで、本革のデイリーバッグをリーズナブルな価格で提案します。",
+    "note": "元広告主 · ロゴは別途提供",
+    "products": [
+     "OBJET FLAP BAG",
+     "TOP LAYER BAG",
+     "BELTED BIG TOTE BAG",
+     "MINI BOSTON BAG_ブラック",
+     "EMMA BAG_クリーム",
+     "Objet M_ブラック",
+     "EMMA BAG_ブラウン",
+     "EMMA BAG_ブラック",
+     "GOTA BAG S_ブラウン",
+     "GOLD ROPE SILVER CHAIN BRACELET",
+     "DOUBLE U TWO-TONE NECKLACE",
+     "BOLD CLEAR GLASS BRACELET",
+     "CLASSIC COIN PENDANT NECKLACE_ゴールド",
+     "New Acme_クリーム",
+     "Loar Mini_オレンジ + チェーンストラッププレゼント",
+     "[オ・ユジンPick] Matilda_ブラック",
+     "GOTA BAG S_ブラック",
+     "LIA SHOULDER BAG_ブラック",
+     "LIA BUCKET BAG MINI",
+     "LIA BUCKET BAG",
+     "LIA TOTE BAG",
+     "New Acme S Combi_ブラック",
+     "GOTA BAG S_クリーム",
+     "Millie Backpack_フォグブルー",
+     "FAVE CARD BAG_ブラック",
+     "FAVE CARD BAG_ブラウン",
+     "FAVE CARD BAG_クリーム",
+     "Objet S_ダークブラウン",
+     "Objet S_バニラ",
+     "Objet S_ブラック"
+    ]
+   }
+  }
  },
  {
   "id": "b27",
@@ -4220,7 +6366,193 @@
     "price": "154,000원",
     "url": "https://threetimes333.com/products/maroon-bag-charcoal"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A women's fashion brand launched in Seoul in 2018, championing 'born in seoul' and presenting stylish, trendy designs each season.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "threetimes gift card",
+     "Paige jogger pants",
+     "Paige jogger pants",
+     "Daisy dress",
+     "Roselle top",
+     "Roselle top",
+     "Cosette lace top",
+     "Cosette lace top",
+     "Glaze top",
+     "Glaze top",
+     "Glaze skirt",
+     "Glaze skirt",
+     "Sheer halter dress",
+     "Sheer halter dress",
+     "Loose snap tee",
+     "Loose snap tee",
+     "Teacup top",
+     "Teacup skirt",
+     "Connie cotton pants",
+     "Connie cotton pants",
+     "Sugar bikini top",
+     "Sugar bikini top",
+     "Sugar bikini skirt",
+     "Sugar bikini skirt",
+     "Sugar swim top",
+     "Sugar swim top",
+     "Sugar swim shorts",
+     "Sugar swim shorts",
+     "Mix stud bikini top",
+     "Mix stud bikini top",
+     "Mix stud bikini bottom",
+     "Mix stud bikini bottom",
+     "Mix stud swim pants",
+     "Mix stud swim pants",
+     "Churro frill muffler",
+     "Churro frill muffler",
+     "Churro frill muffler",
+     "Churro frill muffler",
+     "Maroon bag",
+     "Maroon bag"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "2018年始于首尔的女装品牌，以 'born in seoul' 为理念，每季推出别具品味、紧跟潮流的设计。",
+    "note": "前广告主 · 标志另行提供",
+    "products": [
+     "threetimes 礼品卡",
+     "Paige 慢跑裤",
+     "Paige 慢跑裤",
+     "Daisy 连衣裙",
+     "Roselle 上衣",
+     "Roselle 上衣",
+     "Cosette 蕾丝上衣",
+     "Cosette 蕾丝上衣",
+     "Glaze 上衣",
+     "Glaze 上衣",
+     "Glaze 半身裙",
+     "Glaze 半身裙",
+     "Sheer 露背连衣裙",
+     "Sheer 露背连衣裙",
+     "Loose 按扣T恤",
+     "Loose 按扣T恤",
+     "Teacup 上衣",
+     "Teacup 半身裙",
+     "Connie 棉质长裤",
+     "Connie 棉质长裤",
+     "Sugar 比基尼上衣",
+     "Sugar 比基尼上衣",
+     "Sugar 比基尼裙",
+     "Sugar 比基尼裙",
+     "Sugar 泳装上衣",
+     "Sugar 泳装上衣",
+     "Sugar 泳装短裤",
+     "Sugar 泳装短裤",
+     "Mix stud 比基尼上衣",
+     "Mix stud 比基尼上衣",
+     "Mix stud 比基尼下装",
+     "Mix stud 比基尼下装",
+     "Mix stud 泳裤",
+     "Mix stud 泳裤",
+     "Churro 荷叶边围巾",
+     "Churro 荷叶边围巾",
+     "Churro 荷叶边围巾",
+     "Churro 荷叶边围巾",
+     "Maroon 包",
+     "Maroon 包"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "2018年始於首爾的女裝品牌，以 'born in seoul' 為理念，每季推出別具品味、緊跟潮流的設計。",
+    "note": "前廣告主 · 標誌另行提供",
+    "products": [
+     "threetimes 禮品卡",
+     "Paige 慢跑褲",
+     "Paige 慢跑褲",
+     "Daisy 洋裝",
+     "Roselle 上衣",
+     "Roselle 上衣",
+     "Cosette 蕾絲上衣",
+     "Cosette 蕾絲上衣",
+     "Glaze 上衣",
+     "Glaze 上衣",
+     "Glaze 半身裙",
+     "Glaze 半身裙",
+     "Sheer 露背洋裝",
+     "Sheer 露背洋裝",
+     "Loose 按扣T恤",
+     "Loose 按扣T恤",
+     "Teacup 上衣",
+     "Teacup 半身裙",
+     "Connie 棉質長褲",
+     "Connie 棉質長褲",
+     "Sugar 比基尼上衣",
+     "Sugar 比基尼上衣",
+     "Sugar 比基尼裙",
+     "Sugar 比基尼裙",
+     "Sugar 泳裝上衣",
+     "Sugar 泳裝上衣",
+     "Sugar 泳裝短褲",
+     "Sugar 泳裝短褲",
+     "Mix stud 比基尼上衣",
+     "Mix stud 比基尼上衣",
+     "Mix stud 比基尼下著",
+     "Mix stud 比基尼下著",
+     "Mix stud 泳褲",
+     "Mix stud 泳褲",
+     "Churro 荷葉邊圍巾",
+     "Churro 荷葉邊圍巾",
+     "Churro 荷葉邊圍巾",
+     "Churro 荷葉邊圍巾",
+     "Maroon 包",
+     "Maroon 包"
+    ]
+   },
+   "ja": {
+    "slogan": "2018年にソウルで誕生した女性ファッションブランドで、'born in seoul' を掲げ、シーズンごとにセンスのあるトレンディなデザインを提案します。",
+    "note": "元広告主 · ロゴは別途提供",
+    "products": [
+     "threetimes ギフトカード",
+     "Paige ジョガーパンツ",
+     "Paige ジョガーパンツ",
+     "Daisy ワンピース",
+     "Roselle トップス",
+     "Roselle トップス",
+     "Cosette レーストップス",
+     "Cosette レーストップス",
+     "Glaze トップス",
+     "Glaze トップス",
+     "Glaze スカート",
+     "Glaze スカート",
+     "Sheer ホルターワンピース",
+     "Sheer ホルターワンピース",
+     "Loose スナップT",
+     "Loose スナップT",
+     "Teacup トップス",
+     "Teacup スカート",
+     "Connie コットンパンツ",
+     "Connie コットンパンツ",
+     "Sugar ビキニトップ",
+     "Sugar ビキニトップ",
+     "Sugar ビキニスカート",
+     "Sugar ビキニスカート",
+     "Sugar スイムトップ",
+     "Sugar スイムトップ",
+     "Sugar スイムショーツ",
+     "Sugar スイムショーツ",
+     "Mix stud ビキニトップ",
+     "Mix stud ビキニトップ",
+     "Mix stud ビキニボトム",
+     "Mix stud ビキニボトム",
+     "Mix stud スイムパンツ",
+     "Mix stud スイムパンツ",
+     "Churro フリルマフラー",
+     "Churro フリルマフラー",
+     "Churro フリルマフラー",
+     "Churro フリルマフラー",
+     "Maroon バッグ",
+     "Maroon バッグ"
+    ]
+   }
+  }
  },
  {
   "id": "b28",
@@ -4277,7 +6609,29 @@
    "https://youkshimwon.com/web/product/medium/202601/f602972b49600491c115e6bc9ee7c09e.jpg"
   ],
   "marketingUrls": [],
-  "heroImage": "/brand-images/b28/p1.jpg"
+  "heroImage": "/brand-images/b28/p1.jpg",
+  "i18n": {
+   "en": {
+    "slogan": "An art-shop brand of women's clothing and accessories based on the paintings of artist Yook Sim-won.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": []
+   },
+   "zh-Hans": {
+    "slogan": "以画家陆心源的画作为基础的女装及配饰艺术店品牌。",
+    "note": "前广告主 · 标志另行提供",
+    "products": []
+   },
+   "zh-Hant": {
+    "slogan": "以畫家陸心源的畫作為基礎的女裝及配飾藝術店品牌。",
+    "note": "前廣告主 · 標誌另行提供",
+    "products": []
+   },
+   "ja": {
+    "slogan": "画家ユク・シムウォンの絵をベースにした女性衣料・雑貨のアートショップブランド。",
+    "note": "元広告主 · ロゴは別途提供",
+    "products": []
+   }
+  }
  },
  {
   "id": "b29",
@@ -4527,7 +6881,153 @@
     "price": "23,400원",
     "url": "https://www.ba-on.com/product/baonhaus-%ED%9E%88%EB%A1%9C%EB%84%A8-%EB%B2%84%ED%8A%BC-%ED%94%84%EB%A6%B4-%EB%A0%88%EC%9D%B4%EC%96%B4%EB%93%9C-%EB%82%98%EC%8B%9C/23565/category/39/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A brand offering contemporary women's apparel and accessories centered on everyday looks. Operating the BAONHAUS, BASIC_BAON, and UNISEX lines.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "[5-Day New 10% Sale] Kaze Vintage Cargo Pumpkin Balloon Shorts",
+     "Pineb Vintage Layered Sleeveless Top",
+     "Ryoka Summer Layered V-Neck Wrap Hooded Knit",
+     "[90,000+ Sold][Free Shipping][BAON] Lovely Stripe Seersucker Linen Summer Shirt (5 Colors)",
+     "[Unisex] Suzuna Basic Color-Block Roll-Up Short-Sleeve Tee",
+     "[BAONHAUS] Motren Stripe Linen Banded Pants",
+     "Munil Stripe V-Neck Half-Button Blouse",
+     "[Free Shipping][BAONHAUS] Efnin Shirring Layered Short-Sleeve Tee",
+     "Hochimi Ruffle Layered Sleeveless Top",
+     "Soha Layered Stripe Short-Sleeve Tee",
+     "Tsukami Cargo Nylon Parachute Banded Pants",
+     "Basta Shirring Banded Long Skirt",
+     "Korining Vintage Lace Layered Sleeveless Dress",
+     "[Free Shipping][100,000+ Sold][BAON] Nanob Color Linen Banded Wide Summer Pants (8 Colors)",
+     "Lumib Button Roll-Up Color-Block Short-Sleeve Tee",
+     "Dason Button Parachute Banded Drawstring Pants",
+     "Uhari Vintage Lace Shirring Bustier Sleeveless Top",
+     "Gyuni Shirring Pocket Balloon Wide Cotton Pants",
+     "[Unisex] Pusil Check Oversized Short-Sleeve Shirt",
+     "Haboil Loose-Fit V-Neck Slub Short-Sleeve Tee",
+     "[Unisex] Garaki Banded Cargo Cotton Bermuda Pants",
+     "[BAONHAUS] Pochel Dot Scarf",
+     "[BAONHAUS] Korinen Floral Shirring Sleeveless Blouse",
+     "[BAONHAUS] Roenin Cotton Strap Bermuda Pants",
+     "[BAONHAUS] Dairen Roll-Up Banded Wide Pants",
+     "[BAONHAUS] Podenne Print Cropped Short-Sleeve Tee",
+     "[BAONHAUS] Polyni Shirring Layered Sleeveless Mini Dress",
+     "[BAONHAUS] Kemini Check Asymmetric Long Skirt",
+     "[BAONHAUS] Pironi Double Short-Sleeve Blouse",
+     "[BAONHAUS] Hironen Button Ruffle Layered Sleeveless Top"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以日常穿搭为核心，提供当代女装与配饰的品牌。运营 BAONHAUS、BASIC_BAON、UNISEX 系列。",
+    "note": "曾投放广告 · 标识另行提供",
+    "products": [
+     "[5天新品9折特卖] Kaze 复古工装南瓜球形短裤",
+     "Pineb 复古叠搭吊带背心",
+     "Ryoka 夏季叠搭V领系带连帽针织衫",
+     "[销量突破9万][免运费][BAON] Lovely 条纹泡泡纱亚麻夏季衬衫 (5色)",
+     "[中性] Suzuna 基础拼色卷边短袖T恤",
+     "[BAONHAUS] Motren 条纹亚麻松紧裤",
+     "Munil 条纹V领半扣衬衫",
+     "[免运费][BAONHAUS] Efnin 抽褶叠搭短袖T恤",
+     "Hochimi 荷叶边叠搭吊带背心",
+     "Soha 叠搭条纹短袖T恤",
+     "Tsukami 工装尼龙伞兵松紧裤",
+     "Basta 抽褶松紧长裙",
+     "Korining 复古蕾丝叠搭吊带连衣裙",
+     "[免运费][销量突破10万][BAON] Nanob 彩色亚麻松紧阔腿夏季裤 (8色)",
+     "Lumib 纽扣卷边拼色短袖T恤",
+     "Dason 纽扣伞兵松紧抽绳裤",
+     "Uhari 复古蕾丝抽褶抹胸吊带背心",
+     "Gyuni 抽褶口袋球形阔腿棉裤",
+     "[中性] Pusil 格纹宽松短袖衬衫",
+     "Haboil 宽松V领竹节棉短袖T恤",
+     "[中性] Garaki 松紧工装棉质百慕大短裤",
+     "[BAONHAUS] Pochel 波点丝巾",
+     "[BAONHAUS] Korinen 花卉抽褶无袖衬衫",
+     "[BAONHAUS] Roenin 棉质吊带百慕大短裤",
+     "[BAONHAUS] Dairen 卷边松紧阔腿裤",
+     "[BAONHAUS] Podenne 印花短款短袖T恤",
+     "[BAONHAUS] Polyni 抽褶叠搭无袖迷你连衣裙",
+     "[BAONHAUS] Kemini 格纹不规则长裙",
+     "[BAONHAUS] Pironi 双层短袖衬衫",
+     "[BAONHAUS] Hironen 纽扣荷叶边叠搭吊带背心"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以日常穿搭為核心，提供當代女裝與配飾的品牌。經營 BAONHAUS、BASIC_BAON、UNISEX 系列。",
+    "note": "曾投放廣告 · 標誌另行提供",
+    "products": [
+     "[5天新品9折特賣] Kaze 復古工裝南瓜球形短褲",
+     "Pineb 復古疊搭吊帶背心",
+     "Ryoka 夏季疊搭V領綁帶連帽針織衫",
+     "[銷量突破9萬][免運費][BAON] Lovely 條紋泡泡紗亞麻夏季襯衫 (5色)",
+     "[中性] Suzuna 基礎拼色捲邊短袖T恤",
+     "[BAONHAUS] Motren 條紋亞麻鬆緊褲",
+     "Munil 條紋V領半釦襯衫",
+     "[免運費][BAONHAUS] Efnin 抽褶疊搭短袖T恤",
+     "Hochimi 荷葉邊疊搭吊帶背心",
+     "Soha 疊搭條紋短袖T恤",
+     "Tsukami 工裝尼龍傘兵鬆緊褲",
+     "Basta 抽褶鬆緊長裙",
+     "Korining 復古蕾絲疊搭吊帶連身裙",
+     "[免運費][銷量突破10萬][BAON] Nanob 彩色亞麻鬆緊寬褲夏季褲 (8色)",
+     "Lumib 鈕釦捲邊拼色短袖T恤",
+     "Dason 鈕釦傘兵鬆緊抽繩褲",
+     "Uhari 復古蕾絲抽褶平口吊帶背心",
+     "Gyuni 抽褶口袋球形寬棉褲",
+     "[中性] Pusil 格紋寬鬆短袖襯衫",
+     "Haboil 寬鬆V領竹節棉短袖T恤",
+     "[中性] Garaki 鬆緊工裝棉質百慕達短褲",
+     "[BAONHAUS] Pochel 波點絲巾",
+     "[BAONHAUS] Korinen 花卉抽褶無袖襯衫",
+     "[BAONHAUS] Roenin 棉質吊帶百慕達短褲",
+     "[BAONHAUS] Dairen 捲邊鬆緊寬褲",
+     "[BAONHAUS] Podenne 印花短版短袖T恤",
+     "[BAONHAUS] Polyni 抽褶疊搭無袖迷你連身裙",
+     "[BAONHAUS] Kemini 格紋不規則長裙",
+     "[BAONHAUS] Pironi 雙層短袖襯衫",
+     "[BAONHAUS] Hironen 鈕釦荷葉邊疊搭吊帶背心"
+    ]
+   },
+   "ja": {
+    "slogan": "デイリールックを軸に、コンテンポラリーなレディースウェアとアクセサリーを展開するブランド。BAONHAUS・BASIC_BAON・UNISEXラインを運営。",
+    "note": "過去の広告主 · ロゴ別途提供",
+    "products": [
+     "[5日間 new 10%SALE] カゼ ヴィンテージ カーゴ パンプキン バルーン ショートパンツ",
+     "パインブ ヴィンテージ レイヤード タンクトップ",
+     "リョカ サマー レイヤード Vネック ラップ フード ニット",
+     "[9万枚突破][送料無料][BAON] ラブリー ストライプ シアサッカー リネン サマーシャツ (5color)",
+     "[unisex] スズナ ベーシック 配色 ロールアップ 半袖Tシャツ",
+     "[BAONHAUS] モトレン ストライプ リネン バンディングパンツ",
+     "ムニル ストライプ Vネック ハーフボタン ブラウス",
+     "[送料無料][BAONHAUS] エフニン シャーリング レイヤード 半袖Tシャツ",
+     "ホチミ フリル レイヤード タンクトップ",
+     "ソハ レイヤード ストライプ 半袖Tシャツ",
+     "ツカミ カーゴ ナイロン パラシュート バンディングパンツ",
+     "バスタ シャーリング バンディング ロングスカート",
+     "コリニング ヴィンテージ レース レイヤード タンクトップ ワンピース",
+     "[送料無料][10万枚突破][BAON] ナノブ カラー リネン バンディング ワイド サマーパンツ (8color)",
+     "ルミブ ボタン ロールアップ 配色 半袖Tシャツ",
+     "ダソン ボタン パラシュート バンディング ストリングパンツ",
+     "ウハリ ヴィンテージ レース シャーリング ビスチェ タンクトップ",
+     "ギュニ シャーリングポケット バルーン ワイド コットンパンツ",
+     "[unisex] ピュシル チェック オーバー 半袖シャツ",
+     "ハボイル ルーズフィット Vネック スラブ 半袖Tシャツ",
+     "[unisex] ガラキ バンディング カーゴ コットン バミューダパンツ",
+     "[BAONHAUS] ポチェル ドット スカーフ",
+     "[BAONHAUS] コリネン フラワー シャーリング ノースリーブ ブラウス",
+     "[BAONHAUS] ロエニン コットン ストラップ バミューダパンツ",
+     "[BAONHAUS] ダイレン ロールアップ バンディング ワイドパンツ",
+     "[BAONHAUS] ポデンヌ プリント クロップ 半袖Tシャツ",
+     "[BAONHAUS] ポリニ シャーリング レイヤード タンクトップ ミニワンピース",
+     "[BAONHAUS] ケミニ チェック アンバランス ロングスカート",
+     "[BAONHAUS] ピロニ ダブル 半袖ブラウス",
+     "[BAONHAUS] ヒロネン ボタン フリル レイヤード タンクトップ"
+    ]
+   }
+  }
  },
  {
   "id": "b30",
@@ -4766,7 +7266,153 @@
     "price": "62,000원",
     "url": "https://www.illigo.co.kr/product/%EB%A1%9C%EC%A7%80-%EB%A0%88%EC%9D%B4%EC%8A%A4-%EC%8A%A4%ED%80%98%EC%96%B4%EB%84%A5-%ED%8B%B0-%EC%B0%A8%EC%BD%9C/3236/category/111/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A women's apparel brand championing \"the beginning of romantic sensibility.\" Based in Seongsu-dong, Seoul.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "[Pre-order Ships 06/29] Dot Button Newsboy Cap Black",
+     "[Pre-order Ships 06/29] 129 Dot Fitted T-Shirt Pink Dot",
+     "129 Dot Eco Bag White Dot",
+     "[Pre-order Ships 07/06] Ribbon Pleated Short-Sleeve Blouse White",
+     "Ribbon Pleated Short-Sleeve Blouse Gray",
+     "[Pre-order Ships 07/03] Mandarin Button Collar Top Black Stripe",
+     "Mandarin Button Collar Top Charcoal",
+     "Petite Puff Collar Tee White",
+     "Petite Puff Collar Tee Melange",
+     "Petite Puff Collar Tee Black",
+     "129 One-Shoulder Hotfix Top White",
+     "129 One-Shoulder Hotfix Top Black",
+     "129 One-Shoulder Hotfix Top Melange",
+     "Glitter Boat-Neck T-Shirt White",
+     "Glitter Boat-Neck T-Shirt Pink",
+     "Glitter Boat-Neck T-Shirt Black",
+     "Pattern Point Top Dot Melange",
+     "Pattern Point Top Dot White",
+     "Pattern Point Top Floral",
+     "Lace Trim T-Shirt Mint",
+     "Lace Trim T-Shirt Yellow",
+     "Rose Pleated Mini Dress White",
+     "Rose Pleated Mini Dress Charcoal",
+     "[Pre-order Ships 06/24] Rose Pleated Mini Dress Black",
+     "Sera Puff Blouse White",
+     "Sera Puff Blouse Pink",
+     "Sera Puff Blouse Gray",
+     "Rosy Lace Square-Neck Tee Black",
+     "Rosy Lace Square-Neck Tee Pink",
+     "Rosy Lace Square-Neck Tee Charcoal"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "标榜「浪漫情怀的起点」的女装品牌。立足于首尔圣水洞。",
+    "note": "曾投放广告 · 标识另行提供",
+    "products": [
+     "[06/29 预约发货] 波点纽扣报童帽 黑色",
+     "[06/29 预约发货] 129 波点修身T恤 粉色波点",
+     "129 波点环保袋 白色波点",
+     "[07/06 预约发货] 蝴蝶结百褶短袖衬衫 白色",
+     "蝴蝶结百褶短袖衬衫 灰色",
+     "[07/03 预约发货] 立领纽扣上衣 黑色条纹",
+     "立领纽扣上衣 炭灰色",
+     "小泡泡领T恤 白色",
+     "小泡泡领T恤 混色",
+     "小泡泡领T恤 黑色",
+     "129 单肩烫钻上衣 白色",
+     "129 单肩烫钻上衣 黑色",
+     "129 单肩烫钻上衣 混色",
+     "闪粉一字领T恤 白色",
+     "闪粉一字领T恤 粉色",
+     "闪粉一字领T恤 黑色",
+     "图案点缀上衣 波点混色",
+     "图案点缀上衣 波点白色",
+     "图案点缀上衣 花卉",
+     "蕾丝镶边T恤 薄荷绿",
+     "蕾丝镶边T恤 黄色",
+     "玫瑰百褶迷你连衣裙 白色",
+     "玫瑰百褶迷你连衣裙 炭灰色",
+     "[06/24 预约发货] 玫瑰百褶迷你连衣裙 黑色",
+     "Sera 泡泡袖衬衫 白色",
+     "Sera 泡泡袖衬衫 粉色",
+     "Sera 泡泡袖衬衫 灰色",
+     "Rosy 蕾丝方领T恤 黑色",
+     "Rosy 蕾丝方领T恤 粉色",
+     "Rosy 蕾丝方领T恤 炭灰色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "標榜「浪漫情懷的起點」的女裝品牌。立足於首爾聖水洞。",
+    "note": "曾投放廣告 · 標誌另行提供",
+    "products": [
+     "[06/29 預約發貨] 波點鈕釦報童帽 黑色",
+     "[06/29 預約發貨] 129 波點修身T恤 粉色波點",
+     "129 波點環保袋 白色波點",
+     "[07/06 預約發貨] 蝴蝶結百褶短袖襯衫 白色",
+     "蝴蝶結百褶短袖襯衫 灰色",
+     "[07/03 預約發貨] 立領鈕釦上衣 黑色條紋",
+     "立領鈕釦上衣 炭灰色",
+     "小泡泡領T恤 白色",
+     "小泡泡領T恤 混色",
+     "小泡泡領T恤 黑色",
+     "129 單肩燙鑽上衣 白色",
+     "129 單肩燙鑽上衣 黑色",
+     "129 單肩燙鑽上衣 混色",
+     "亮粉一字領T恤 白色",
+     "亮粉一字領T恤 粉色",
+     "亮粉一字領T恤 黑色",
+     "圖案點綴上衣 波點混色",
+     "圖案點綴上衣 波點白色",
+     "圖案點綴上衣 花卉",
+     "蕾絲鑲邊T恤 薄荷綠",
+     "蕾絲鑲邊T恤 黃色",
+     "玫瑰百褶迷你連身裙 白色",
+     "玫瑰百褶迷你連身裙 炭灰色",
+     "[06/24 預約發貨] 玫瑰百褶迷你連身裙 黑色",
+     "Sera 泡泡袖襯衫 白色",
+     "Sera 泡泡袖襯衫 粉色",
+     "Sera 泡泡袖襯衫 灰色",
+     "Rosy 蕾絲方領T恤 黑色",
+     "Rosy 蕾絲方領T恤 粉色",
+     "Rosy 蕾絲方領T恤 炭灰色"
+    ]
+   },
+   "ja": {
+    "slogan": "「ロマンティックな感性の始まり」を掲げるレディースウェアブランド。ソウル・聖水洞（ソンスドン）拠点。",
+    "note": "過去の広告主 · ロゴ別途提供",
+    "products": [
+     "[06/29 予約発送] ドット ボタン ニュースボーイ キャップ ブラック",
+     "[06/29 予約発送] 129 ドット フィッテッド Tシャツ ピンクドット",
+     "129 ドット エコバッグ ホワイトドット",
+     "[07/06 予約発送] リボン プリーツ 半袖ブラウス ホワイト",
+     "リボン プリーツ 半袖ブラウス グレー",
+     "[07/03 予約発送] チャイナ ボタン カラー トップ ブラックストライプ",
+     "チャイナ ボタン カラー トップ チャコール",
+     "プティ パフ カラー Tシャツ ホワイト",
+     "プティ パフ カラー Tシャツ メランジ",
+     "プティ パフ カラー Tシャツ ブラック",
+     "129 ワンショルダー ホットフィックス トップ ホワイト",
+     "129 ワンショルダー ホットフィックス トップ ブラック",
+     "129 ワンショルダー ホットフィックス トップ メランジ",
+     "グリッター ボートネック Tシャツ ホワイト",
+     "グリッター ボートネック Tシャツ ピンク",
+     "グリッター ボートネック Tシャツ ブラック",
+     "パターン ポイント トップ ドット メランジ",
+     "パターン ポイント トップ ドット ホワイト",
+     "パターン ポイント トップ フラワー",
+     "レース トリミング Tシャツ ミント",
+     "レース トリミング Tシャツ イエロー",
+     "ローズ プリーツ ミニワンピース ホワイト",
+     "ローズ プリーツ ミニワンピース チャコール",
+     "[06/24 予約発送] ローズ プリーツ ミニワンピース ブラック",
+     "セラ パフ ブラウス ホワイト",
+     "セラ パフ ブラウス ピンク",
+     "セラ パフ ブラウス グレー",
+     "ロジー レース スクエアネック Tシャツ ブラック",
+     "ロジー レース スクエアネック Tシャツ ピンク",
+     "ロジー レース スクエアネック Tシャツ チャコール"
+    ]
+   }
+  }
  },
  {
   "id": "b31",
@@ -4831,7 +7477,29 @@
    "https://cdn5-aka.makeshop.co.kr/shopimages/efairplay/1140030000402.jpg"
   ],
   "marketingUrls": [],
-  "heroImage": "/brand-images/b31/p1.jpg"
+  "heroImage": "/brand-images/b31/p1.jpg",
+  "i18n": {
+   "en": {
+    "slogan": "A unisex casual brand from SPA company Fairplay (fairplay142). Offering everyday casualwear at reasonable prices.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": []
+   },
+   "zh-Hans": {
+    "slogan": "由 SPA 企业 Fairplay（fairplay142）打造的中性休闲品牌。以合理价格呈现日常休闲服饰。",
+    "note": "曾投放广告 · 标识另行提供",
+    "products": []
+   },
+   "zh-Hant": {
+    "slogan": "由 SPA 企業 Fairplay（fairplay142）打造的中性休閒品牌。以合理價格呈現日常休閒服飾。",
+    "note": "曾投放廣告 · 標誌另行提供",
+    "products": []
+   },
+   "ja": {
+    "slogan": "SPA企業フェアプレイ（fairplay142）が展開するユニセックスカジュアルブランド。デイリーカジュアルをリーズナブルな価格で提案。",
+    "note": "過去の広告主 · ロゴ別途提供",
+    "products": []
+   }
+  }
  },
  {
   "id": "b32",
@@ -5091,7 +7759,153 @@
     "price": "298,000원",
     "url": "https://www.kindlove.co.kr/product/detail.html?product_no=419&cate_no=101&display_group=1"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "An eyewear brand offering glasses and sunglasses built on over 30 years of expertise. Includes a 1-year free replacement service.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "kindlove Ball Cap",
+     "[1+1 on Selected Items] Daily Color Blue-Light-Blocking Fashion Glasses",
+     "Kim Nam-hee_MBC Our House Oxford St. BRN",
+     "Chaebol x Detective Kwak Si-yang ESSENTIAL #02 BLK",
+     "[Limited Restock] Classic is Forever #01 GRY",
+     "[Class B] Kim Nam-hee_MBC Our House King's Rd. C.YEL",
+     "[Class B] Sunshine Mood #11 CLE",
+     "ESSENTIAL_BL Premium #14 BLK",
+     "Classic is Forever #03 C.YEL",
+     "Find Your Fit #21 ROS",
+     "Find Your Fit #04 ROS_BLK",
+     "Sunshine Mood #13 GRY",
+     "Kim Nam-hee_MBC Our House King's Rd. C.YEL",
+     "King's Rd. L.GRY",
+     "King's Rd. KHA",
+     "King's Rd. GRY",
+     "Oxford St. C.YEL",
+     "Oxford St. GRY",
+     "Carnaby St. KHA",
+     "Carnaby St. L.GRY",
+     "Carnaby St. C.YEL",
+     "Carnaby St. GRY",
+     "Abbey Rd. BRN",
+     "Abbey Rd. L.GRY",
+     "Abbey Rd. GRY",
+     "Abbey Rd. BLK",
+     "Regent St. GRY",
+     "Regent St. BRN",
+     "Regent St. KHA",
+     "Regent St. BLK"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "凭借30余年眼镜专业积累，推出眼镜与太阳镜的品牌。提供1年免费更换服务。",
+    "note": "曾投放广告 · 标识另行提供",
+    "products": [
+     "kindlove 棒球帽",
+     "[指定商品1+1] 日常彩色防蓝光时尚眼镜",
+     "金南姬_MBC我们家 Oxford St. BRN",
+     "财阀X刑警 郭时旸 ESSENTIAL #02 BLK",
+     "[限量补货] Classic is Forever #01 GRY",
+     "[Class B] 金南姬_MBC我们家 King's Rd. C.YEL",
+     "[Class B] Sunshine Mood #11 CLE",
+     "ESSENTIAL_BL Premium #14 BLK",
+     "Classic is Forever #03 C.YEL",
+     "Find Your Fit #21 ROS",
+     "Find Your Fit #04 ROS_BLK",
+     "Sunshine Mood #13 GRY",
+     "金南姬_MBC我们家 King's Rd. C.YEL",
+     "King's Rd. L.GRY",
+     "King's Rd. KHA",
+     "King's Rd. GRY",
+     "Oxford St. C.YEL",
+     "Oxford St. GRY",
+     "Carnaby St. KHA",
+     "Carnaby St. L.GRY",
+     "Carnaby St. C.YEL",
+     "Carnaby St. GRY",
+     "Abbey Rd. BRN",
+     "Abbey Rd. L.GRY",
+     "Abbey Rd. GRY",
+     "Abbey Rd. BLK",
+     "Regent St. GRY",
+     "Regent St. BRN",
+     "Regent St. KHA",
+     "Regent St. BLK"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "憑藉30餘年眼鏡專業積累，推出眼鏡與太陽眼鏡的品牌。提供1年免費更換服務。",
+    "note": "曾投放廣告 · 標誌另行提供",
+    "products": [
+     "kindlove 棒球帽",
+     "[指定商品1+1] 日常彩色抗藍光時尚眼鏡",
+     "金南姬_MBC我們家 Oxford St. BRN",
+     "財閥X刑警 郭時暘 ESSENTIAL #02 BLK",
+     "[限量補貨] Classic is Forever #01 GRY",
+     "[Class B] 金南姬_MBC我們家 King's Rd. C.YEL",
+     "[Class B] Sunshine Mood #11 CLE",
+     "ESSENTIAL_BL Premium #14 BLK",
+     "Classic is Forever #03 C.YEL",
+     "Find Your Fit #21 ROS",
+     "Find Your Fit #04 ROS_BLK",
+     "Sunshine Mood #13 GRY",
+     "金南姬_MBC我們家 King's Rd. C.YEL",
+     "King's Rd. L.GRY",
+     "King's Rd. KHA",
+     "King's Rd. GRY",
+     "Oxford St. C.YEL",
+     "Oxford St. GRY",
+     "Carnaby St. KHA",
+     "Carnaby St. L.GRY",
+     "Carnaby St. C.YEL",
+     "Carnaby St. GRY",
+     "Abbey Rd. BRN",
+     "Abbey Rd. L.GRY",
+     "Abbey Rd. GRY",
+     "Abbey Rd. BLK",
+     "Regent St. GRY",
+     "Regent St. BRN",
+     "Regent St. KHA",
+     "Regent St. BLK"
+    ]
+   },
+   "ja": {
+    "slogan": "30年以上のアイウェアノウハウを基に、メガネ・サングラスを展開するブランド。1年間無償交換サービスを提供。",
+    "note": "過去の広告主 · ロゴ別途提供",
+    "products": [
+     "kindlove ボールキャップ",
+     "[対象商品1+1] デイリーカラー ブルーライトカット ファッションメガネ",
+     "キム・ナムヒ_MBCうちの家 Oxford St. BRN",
+     "財閥×刑事 クァク・シヤン ESSENTIAL #02 BLK",
+     "[数量限定 再入荷] Classic is Forever #01 GRY",
+     "[クラスB] キム・ナムヒ_MBCうちの家 King's Rd. C.YEL",
+     "[クラスB] Sunshine Mood #11 CLE",
+     "ESSENTIAL_BL Premium #14 BLK",
+     "Classic is Forever #03 C.YEL",
+     "Find Your Fit #21 ROS",
+     "Find Your Fit #04 ROS_BLK",
+     "Sunshine Mood #13 GRY",
+     "キム・ナムヒ_MBCうちの家 King's Rd. C.YEL",
+     "King's Rd. L.GRY",
+     "King's Rd. KHA",
+     "King's Rd. GRY",
+     "Oxford St. C.YEL",
+     "Oxford St. GRY",
+     "Carnaby St. KHA",
+     "Carnaby St. L.GRY",
+     "Carnaby St. C.YEL",
+     "Carnaby St. GRY",
+     "Abbey Rd. BRN",
+     "Abbey Rd. L.GRY",
+     "Abbey Rd. GRY",
+     "Abbey Rd. BLK",
+     "Regent St. GRY",
+     "Regent St. BRN",
+     "Regent St. KHA",
+     "Regent St. BLK"
+    ]
+   }
+  }
  },
  {
   "id": "b33",
@@ -5293,7 +8107,129 @@
     "price": "89,000원",
     "url": ""
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A women's bag brand inspired by stand oil (an oil-painting medium), offering daily bags that reinterpret everyday life.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "Mingle Bag / Sand",
+     "Mingle Bag / Pink",
+     "Mingle Bag / Maroon",
+     "Plico Backpack / Olive",
+     "Plico Backpack / Blue",
+     "Dual Chain Keyring / Silver",
+     "Dust Link Charm / Silver",
+     "STAND Cat Charm / Baby Pink",
+     "[Pre-order] Ringo Bag Mini / Raffia Brown",
+     "Breezy Bag Mini / Misty White",
+     "Breezy Bag Mini / Lemon",
+     "Breezy Bag Mini / Metallic Gray",
+     "Breezy Bag Mini / Plum",
+     "Lene Bag / Brown",
+     "Lene Bag / Pink",
+     "Lene Bag / Black",
+     "[Pre-order] Tickle Bag / Olive",
+     "[Pre-order] Tickle Bag / Maroon",
+     "Mushy Bag Mini / Maroon",
+     "[Pre-order] Mio Bucket Bag / Sand",
+     "[Pre-order] Velow Bag / Sand",
+     "[Pre-order] Tovi Bag / Blue",
+     "[Pre-order] Tovi Bag / Metallic Gray",
+     "Plico Backpack / Lavender"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "灵感源自油画媒介（stand oil）的女包品牌，呈现重新诠释日常的百搭日用包。",
+    "note": "曾投放广告 · 标识另行提供",
+    "products": [
+     "Mingle Bag · 缤纷包 / 沙色",
+     "Mingle Bag · 缤纷包 / 粉色",
+     "Mingle Bag · 缤纷包 / 栗棕色",
+     "Plico Backpack · 普利可双肩包 / 橄榄绿",
+     "Plico Backpack · 普利可双肩包 / 蓝色",
+     "Dual Chain Keyring · 双链钥匙扣 / 银色",
+     "Dust Link Charm · 链节挂饰 / 银色",
+     "STAND Cat Charm · 猫咪挂饰 / 浅粉色",
+     "[预约发货] Ringo Bag Mini · 林戈包迷你 / 拉菲草棕",
+     "Breezy Bag Mini · 微风包迷你 / 雾白色",
+     "Breezy Bag Mini · 微风包迷你 / 柠檬黄",
+     "Breezy Bag Mini · 微风包迷你 / 金属灰",
+     "Breezy Bag Mini · 微风包迷你 / 梅紫色",
+     "Lene Bag · 蕾妮包 / 棕色",
+     "Lene Bag · 蕾妮包 / 粉色",
+     "Lene Bag · 蕾妮包 / 黑色",
+     "[预约发货] Tickle Bag · 缇克包 / 橄榄绿",
+     "[预约发货] Tickle Bag · 缇克包 / 栗棕色",
+     "Mushy Bag Mini · 玛希包迷你 / 栗棕色",
+     "[预约发货] Mio Bucket Bag · 米欧水桶包 / 沙色",
+     "[预约发货] Velow Bag · 维洛包 / 沙色",
+     "[预约发货] Tovi Bag · 托比包 / 蓝色",
+     "[预约发货] Tovi Bag · 托比包 / 金属灰",
+     "Plico Backpack · 普利可双肩包 / 薰衣草紫"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "靈感源自油畫媒介（stand oil）的女包品牌，呈現重新詮釋日常的百搭日用包。",
+    "note": "曾投放廣告 · 標誌另行提供",
+    "products": [
+     "Mingle Bag · 繽紛包 / 沙色",
+     "Mingle Bag · 繽紛包 / 粉色",
+     "Mingle Bag · 繽紛包 / 栗棕色",
+     "Plico Backpack · 普利可後背包 / 橄欖綠",
+     "Plico Backpack · 普利可後背包 / 藍色",
+     "Dual Chain Keyring · 雙鏈鑰匙圈 / 銀色",
+     "Dust Link Charm · 鏈節吊飾 / 銀色",
+     "STAND Cat Charm · 貓咪吊飾 / 淺粉色",
+     "[預約發貨] Ringo Bag Mini · 林戈包迷你 / 拉菲草棕",
+     "Breezy Bag Mini · 微風包迷你 / 霧白色",
+     "Breezy Bag Mini · 微風包迷你 / 檸檬黃",
+     "Breezy Bag Mini · 微風包迷你 / 金屬灰",
+     "Breezy Bag Mini · 微風包迷你 / 梅紫色",
+     "Lene Bag · 蕾妮包 / 棕色",
+     "Lene Bag · 蕾妮包 / 粉色",
+     "Lene Bag · 蕾妮包 / 黑色",
+     "[預約發貨] Tickle Bag · 緹克包 / 橄欖綠",
+     "[預約發貨] Tickle Bag · 緹克包 / 栗棕色",
+     "Mushy Bag Mini · 瑪希包迷你 / 栗棕色",
+     "[預約發貨] Mio Bucket Bag · 米歐水桶包 / 沙色",
+     "[預約發貨] Velow Bag · 維洛包 / 沙色",
+     "[預約發貨] Tovi Bag · 托比包 / 藍色",
+     "[預約發貨] Tovi Bag · 托比包 / 金屬灰",
+     "Plico Backpack · 普利可後背包 / 薰衣草紫"
+    ]
+   },
+   "ja": {
+    "slogan": "油彩用メディウム（スタンドオイル）から着想を得たレディースバッグブランドで、日常を再解釈したデイリーバッグを提案。",
+    "note": "過去の広告主 · ロゴ別途提供",
+    "products": [
+     "Mingle Bag · ミングルバッグ / サンド",
+     "Mingle Bag · ミングルバッグ / ピンク",
+     "Mingle Bag · ミングルバッグ / マロン",
+     "Plico Backpack · プリコ バックパック / オリーブ",
+     "Plico Backpack · プリコ バックパック / ブルー",
+     "Dual Chain Keyring · デュアルチェーン キーリング / シルバー",
+     "Dust Link Charm · ダストリンク チャーム / シルバー",
+     "STAND Cat Charm · スタンドキャット チャーム / ベビーピンク",
+     "[予約配送] Ringo Bag Mini · リンゴバッグ ミニ / ラフィア ブラウン",
+     "Breezy Bag Mini · ブリージーバッグ ミニ / ミスティ ホワイト",
+     "Breezy Bag Mini · ブリージーバッグ ミニ / レモン",
+     "Breezy Bag Mini · ブリージーバッグ ミニ / メタリック グレー",
+     "Breezy Bag Mini · ブリージーバッグ ミニ / プラム",
+     "Lene Bag · レネバッグ / ブラウン",
+     "Lene Bag · レネバッグ / ピンク",
+     "Lene Bag · レネバッグ / ブラック",
+     "[予約配送] Tickle Bag · ティクルバッグ / オリーブ",
+     "[予約配送] Tickle Bag · ティクルバッグ / マロン",
+     "Mushy Bag Mini · マッシュバッグ ミニ / マロン",
+     "[予約配送] Mio Bucket Bag · ミオ バケットバッグ / サンド",
+     "[予約配送] Velow Bag · ベローバッグ / サンド",
+     "[予約配送] Tovi Bag · トビバッグ / ブルー",
+     "[予約配送] Tovi Bag · トビバッグ / メタリック グレー",
+     "Plico Backpack · プリコ バックパック / ラベンダー"
+    ]
+   }
+  }
  },
  {
   "id": "b34",
@@ -5369,7 +8305,29 @@
     "url": "https://www.apparelnews.co.kr/news/news_view/?idx=215467"
    }
   ],
-  "heroImage": "/brand-marketing/b34/1.jpg"
+  "heroImage": "/brand-marketing/b34/1.jpg",
+  "i18n": {
+   "en": {
+    "slogan": "A young-character casual women's apparel brand with a romantic and feminine mood. (2025 Muse: actress Lee Se-young)",
+    "note": "Former advertiser · Same advertiser · Logo provided separately",
+    "products": []
+   },
+   "zh-Hans": {
+    "slogan": "走浪漫与女性化情调的年轻个性休闲女装品牌。（2025缪斯：演员李世荣）",
+    "note": "曾投放广告 · 同一广告主 · 标识另行提供",
+    "products": []
+   },
+   "zh-Hant": {
+    "slogan": "走浪漫與女性化情調的年輕個性休閒女裝品牌。（2025繆斯：演員李世榮）",
+    "note": "曾投放廣告 · 同一廣告主 · 標誌另行提供",
+    "products": []
+   },
+   "ja": {
+    "slogan": "ロマンティック＆フェミニンなムードのヤングキャラクターカジュアルなレディースウェアブランド。（2025ミューズ：女優イ・セヨン）",
+    "note": "過去の広告主 · 同一広告主 · ロゴ別途提供",
+    "products": []
+   }
+  }
  },
  {
   "id": "b35",
@@ -5443,7 +8401,29 @@
     "url": "https://www.soupmall.co.kr/product/list.html?cate_no=145"
    }
   ],
-  "heroImage": "/brand-marketing/b35/1.jpg"
+  "heroImage": "/brand-marketing/b35/1.jpg",
+  "i18n": {
+   "en": {
+    "slogan": "A young-character casual women's apparel brand pursuing modern chic with a New Yorker sensibility.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": []
+   },
+   "zh-Hans": {
+    "slogan": "追求纽约客情怀现代时尚风格的年轻个性休闲女装品牌。",
+    "note": "曾投放广告 · 标识另行提供",
+    "products": []
+   },
+   "zh-Hant": {
+    "slogan": "追求紐約客情懷現代時尚風格的年輕個性休閒女裝品牌。",
+    "note": "曾投放廣告 · 標誌另行提供",
+    "products": []
+   },
+   "ja": {
+    "slogan": "ニューヨーカー感覚のモダンシックを志向するヤングキャラクターカジュアルなレディースウェアブランド。",
+    "note": "過去の広告主 · ロゴ別途提供",
+    "products": []
+   }
+  }
  },
  {
   "id": "b36",
@@ -5676,7 +8656,145 @@
     "price": "59,000원",
     "url": "https://adhoc.co.kr/product/detail.html?product_no=1629&cate_no=27&display_group=1"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A men's casual brand championing 'Urban New Business Contemporary Casual.' Sold on its own store (adhoc.co.kr) and soupmall.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "Unisex ADHOC Logo Ball Cap (HCRACA1) 2color",
+     "Men's Full-Banding Cooling Cargo Woven Pants (HC6LPC2) 2color",
+     "Men's Pigment Artwork T-Shirt (HC6STAD) 2color",
+     "Men's Stripe Short-Sleeve Basic T-Shirt (HC6STA8) 2color",
+     "Men's Pigment Artwork T-Shirt (HC6ST45) 2color",
+     "Men's Full-Banding Terry Bermuda Cargo Pants (HC5SP16) 2color",
+     "Men's Full-Banding String Cooling Pants (HC6LPC1) 2color",
+     "2PACK Unisex Standard-Fit Short-Sleeve T-Shirt (HCRST30) 2color",
+     "[Members Only] Unisex Smudge AD HOC Graphic T-Shirt (HC6STA7) 4color",
+     "[Members Only] Unisex Splatter Graphic T-Shirt (HC6STA6) 4color",
+     "[Members Only] Men's Check Short-Sleeve Basic Shirt (HC6SSA1) 2color",
+     "[Members Only] Unisex Collie Skateboard Artwork T-Shirt (HC6STA5) 4color",
+     "[Members Only] Men's Stripe Short-Sleeve Collar Knit (HC4SK03) 2color",
+     "[Members Only] Men's Summer Open-Collar Knit (HC4SKA2) 3color",
+     "[Members Only] Men's Summer Short-Sleeve Collar Knit (HC4SKA1) 3color",
+     "[Members Only] Men's Classic Collar Knit Cardigan (HC2GDK1) 2color",
+     "Men's Button-Closure Collar Cardigan (HC3GD05) 3color",
+     "Men's Basic Round-Neck Knit (HBWLKC2) 2color",
+     "Unisex Oversized Basic Cardigan (HY9GD80)",
+     "Men's Basic Round-Neck Button Cardigan (HB9GD01) 2color",
+     "Unisex Nordic Zip-Up Cardigan (HBBGD50) 3color",
+     "Men's Button Collar-Neck Loose-Fit Cardigan (HB9GD02) 2color",
+     "Men's Jacquard Lettering Oversized Knit (HBALK10) 1color",
+     "Men's Mock-Neck Sweater (HBALK90) 3color",
+     "[Members Only] Unisex Lettering Arch Artwork T-Shirt (HC6STA4) 4color",
+     "[Members Only] Men's Cat Artwork T-Shirt (HC6STA3) 3color",
+     "[Members Only] Men's Collar-Neck Woven Short-Sleeve Shirt (HC5ST40) 2color",
+     "[Members Only] Men's Surfing Artwork Sleeveless T-Shirt (HC6STA1) 2color"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "主打“都市新商务当代休闲”的男装休闲品牌。在自营商城（adhoc.co.kr）及soupmall销售。",
+    "note": "前广告主 · 商标另行提供",
+    "products": [
+     "男女同款 ADHOC 标志棒球帽（HCRACA1）2色",
+     "男士全松紧凉感工装梭织裤（HC6LPC2）2色",
+     "男士颜料印花艺术T恤（HC6STAD）2色",
+     "男士条纹短袖基础T恤（HC6STA8）2色",
+     "男士颜料印花艺术T恤（HC6ST45）2色",
+     "男士全松紧毛圈百慕大工装裤（HC5SP16）2色",
+     "男士全松紧抽绳凉感裤（HC6LPC1）2色",
+     "2件装 男女同款标准版型短袖T恤（HCRST30）2色",
+     "[会员专享] 男女同款晕染 AD HOC 图案T恤（HC6STA7）4色",
+     "[会员专享] 男女同款泼墨图案T恤（HC6STA6）4色",
+     "[会员专享] 男士格纹短袖基础衬衫（HC6SSA1）2色",
+     "[会员专享] 男女同款柯利犬滑板艺术T恤（HC6STA5）4色",
+     "[会员专享] 男士条纹短袖翻领针织衫（HC4SK03）2色",
+     "[会员专享] 男士夏季开领针织衫（HC4SKA2）3色",
+     "[会员专享] 男士夏季短袖翻领针织衫（HC4SKA1）3色",
+     "[会员专享] 男士经典翻领针织开衫（HC2GDK1）2色",
+     "男士纽扣门襟翻领开衫（HC3GD05）3色",
+     "男士基础圆领针织衫（HBWLKC2）2色",
+     "男女同款宽松基础开衫（HY9GD80）",
+     "男士基础圆领纽扣开衫（HB9GD01）2色",
+     "男女同款北欧拉链开衫（HBBGD50）3色",
+     "男士纽扣翻领宽松版型开衫（HB9GD02）2色",
+     "男士提花字母宽松针织衫（HBALK10）1色",
+     "男士半高领毛衣（HBALK90）3色",
+     "[会员专享] 男女同款字母拱形艺术T恤（HC6STA4）4色",
+     "[会员专享] 男士猫咪艺术T恤（HC6STA3）3色",
+     "[会员专享] 男士翻领梭织短袖衬衫（HC5ST40）2色",
+     "[会员专享] 男士冲浪艺术背心T恤（HC6STA1）2色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "主打“都市新商務當代休閒”的男裝休閒品牌。於自營商城（adhoc.co.kr）及soupmall販售。",
+    "note": "前廣告主 · 商標另行提供",
+    "products": [
+     "男女同款 ADHOC 標誌棒球帽（HCRACA1）2色",
+     "男士全鬆緊涼感工裝梭織褲（HC6LPC2）2色",
+     "男士顏料印花藝術T恤（HC6STAD）2色",
+     "男士條紋短袖基礎T恤（HC6STA8）2色",
+     "男士顏料印花藝術T恤（HC6ST45）2色",
+     "男士全鬆緊毛圈百慕達工裝褲（HC5SP16）2色",
+     "男士全鬆緊抽繩涼感褲（HC6LPC1）2色",
+     "2件裝 男女同款標準版型短袖T恤（HCRST30）2色",
+     "[會員專享] 男女同款暈染 AD HOC 圖案T恤（HC6STA7）4色",
+     "[會員專享] 男女同款潑墨圖案T恤（HC6STA6）4色",
+     "[會員專享] 男士格紋短袖基礎襯衫（HC6SSA1）2色",
+     "[會員專享] 男女同款柯利犬滑板藝術T恤（HC6STA5）4色",
+     "[會員專享] 男士條紋短袖翻領針織衫（HC4SK03）2色",
+     "[會員專享] 男士夏季開領針織衫（HC4SKA2）3色",
+     "[會員專享] 男士夏季短袖翻領針織衫（HC4SKA1）3色",
+     "[會員專享] 男士經典翻領針織開衫（HC2GDK1）2色",
+     "男士鈕扣門襟翻領開衫（HC3GD05）3色",
+     "男士基礎圓領針織衫（HBWLKC2）2色",
+     "男女同款寬鬆基礎開衫（HY9GD80）",
+     "男士基礎圓領鈕扣開衫（HB9GD01）2色",
+     "男女同款北歐拉鏈開衫（HBBGD50）3色",
+     "男士鈕扣翻領寬鬆版型開衫（HB9GD02）2色",
+     "男士提花字母寬鬆針織衫（HBALK10）1色",
+     "男士半高領毛衣（HBALK90）3色",
+     "[會員專享] 男女同款字母拱形藝術T恤（HC6STA4）4色",
+     "[會員專享] 男士貓咪藝術T恤（HC6STA3）3色",
+     "[會員專享] 男士翻領梭織短袖襯衫（HC5ST40）2色",
+     "[會員專享] 男士衝浪藝術背心T恤（HC6STA1）2色"
+    ]
+   },
+   "ja": {
+    "slogan": "「アーバンニュービジネスコンテンポラリーカジュアル」を掲げるメンズカジュアルブランド。自社モール（adhoc.co.kr）・soupmallで販売。",
+    "note": "前広告主 · ロゴは別途提供",
+    "products": [
+     "ユニセックス ADHOC ロゴボールキャップ（HCRACA1）2color",
+     "メンズ フルバンディング クーリングカーゴウーブンパンツ（HC6LPC2）2color",
+     "メンズ ピグメントアートワークTシャツ（HC6STAD）2color",
+     "メンズ ストライプ半袖ベーシックTシャツ（HC6STA8）2color",
+     "メンズ ピグメントアートワークTシャツ（HC6ST45）2color",
+     "メンズ フルバンディング テリーバミューダカーゴパンツ（HC5SP16）2color",
+     "メンズ フルバンディング ストリングクーリングパンツ（HC6LPC1）2color",
+     "2PACK ユニセックス スタンダードフィット半袖Tシャツ（HCRST30）2color",
+     "[会員限定] ユニセックス スマッジ AD HOC グラフィックTシャツ（HC6STA7）4color",
+     "[会員限定] ユニセックス スプラッターグラフィックTシャツ（HC6STA6）4color",
+     "[会員限定] メンズ チェック半袖ベーシックシャツ（HC6SSA1）2color",
+     "[会員限定] ユニセックス コリースケートボードアートワークTシャツ（HC6STA5）4color",
+     "[会員限定] メンズ ストライプ半袖カラーニット（HC4SK03）2color",
+     "[会員限定] メンズ サマーオープンカラーニット（HC4SKA2）3color",
+     "[会員限定] メンズ サマー半袖カラーニット（HC4SKA1）3color",
+     "[会員限定] メンズ クラシックカラーニットカーディガン（HC2GDK1）2color",
+     "メンズ ボタン開きカラーカーディガン（HC3GD05）3color",
+     "メンズ ベーシックラウンドネックニット（HBWLKC2）2color",
+     "ユニセックス オーバーフィットベーシックカーディガン（HY9GD80）",
+     "メンズ ベーシックラウンドネックボタンカーディガン（HB9GD01）2color",
+     "ユニセックス ノルディックジップアップカーディガン（HBBGD50）3color",
+     "メンズ ボタンカラーネックルーズフィットカーディガン（HB9GD02）2color",
+     "メンズ ジャカードレタリングオーバーフィットニット（HBALK10）1color",
+     "メンズ モックネックセーター（HBALK90）3color",
+     "[会員限定] ユニセックス レタリングアーチアートワークTシャツ（HC6STA4）4color",
+     "[会員限定] メンズ キャットアートワークTシャツ（HC6STA3）3color",
+     "[会員限定] メンズ カラーネックウーブン半袖シャツ（HC5ST40）2color",
+     "[会員限定] メンズ サーフィングアートワークノースリーブTシャツ（HC6STA1）2color"
+    ]
+   }
+  }
  },
  {
   "id": "b37",
@@ -5897,7 +9015,137 @@
     "price": "49,000원",
     "url": "https://uclakorea.co.kr/product/detail.html?product_no=5895&cate_no=244&display_group=1"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A Korean unisex casual brand built on a U.S. UCLA license (American new preppy look). Sold on its own store (uclakorea.co.kr) and soupmall.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "Unisex Cat-Brush Bermuda Denim Pants [GREY] (UC6DHA1_35)",
+     "Unisex Pigment Vintage Graphic Oversized T-Shirt [G-BLUE] (UC6ST29_48)",
+     "Women's Basic Brush Long Bermuda Denim Pants [GREY] (UC6DHA2_35)",
+     "Unisex Back-Banding Wide Denim Pants [DK-GREY] (UC4DPC5_36)",
+     "Unisex UCLA Layout Ball Cap [DK-GREEN] (UCRACA5_68)",
+     "Unisex Bruins Logo Embroidered Ball Cap [BLACK] (UCRACA4_39)",
+     "Unisex Nylon Logo Half Pants [BLACK] (UC4SP40_39)",
+     "[Express Shipping] Women's Carpenter Bermuda Wide Denim Pants [DP-INDIGO] (UC3DHC1_08)",
+     "[Express Shipping] Women's Fading 3D Balloon Denim Pants [VINTAGE] (UC3DPC2_10)",
+     "[Express Shipping] Women's Inner-Banding Slim Bootcut Denim Pants [VINTAGE] (UC3DPC1_10)",
+     "Women's Basic Long Wide Pants [M-GREY] (UC4LPC1_51)",
+     "Women's Big Bruins Oversized Short-Sleeve Tee [CH-GREY] (UC6STAB_37)",
+     "Women's Comfort Crop T-Shirt [SKY BLUE] (UC6STA9_41)",
+     "Unisex Comfort Crop T-Shirt [NAVY] (UC6STA8_45)",
+     "Women's Comfort Crop T-Shirt [WHITE] (UC6STA9_31)",
+     "Women's Comfort Crop T-Shirt [BLACK] (UC6STA9_39)",
+     "Women's Comfort Crop T-Shirt [OATMEAL] (UC6STA9_24)",
+     "Women's Layered Henley-Neck Ribbed T-Shirt [G-BLUE] (UC5STA6_48)",
+     "[Members Only] Unisex Embroidery Joe Oversized T-Shirt [BLACK] (UC4STA3_39)",
+     "Unisex Nylon Paneled T-Shirt [BLACK] (UC4ST40_39)",
+     "Women's Color-Block Multi-Stripe Crop Short-Sleeve Tee [GREEN] (UC6STAA_66)",
+     "UCLA Color-Block Half-Zip Rash Guard [BLACK] (UCRLT41_39)",
+     "[Members Only] Women's Pure Check Shirt [LT-PINK] (UC3LSC1_80)",
+     "[Members Only] Women's Marine Stripe Long-Sleeve Tee [BURGUNDY] (UC4LTC1_88)",
+     "[Members Only] Women's UCLA Emblem Basic Round Long-Sleeve Tee [BLACK] (UC3LTC5_39)",
+     "[Members Only] Women's 19NUMBER UCLA Long-Sleeve T-Shirt [SKY BLUE] (UC3LTC1_41)"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "运用美国UCLA授权的韩国中性休闲品牌（美式新学院风）。在自营商城（uclakorea.co.kr）及soupmall销售。",
+    "note": "前广告主 · 商标另行提供",
+    "products": [
+     "男女同款猫抓百慕大牛仔裤[GREY]（UC6DHA1_35）",
+     "男女同款颜料水洗复古图案宽松T恤[G-BLUE]（UC6ST29_48）",
+     "女士基础刷色长款百慕大牛仔裤[GREY]（UC6DHA2_35）",
+     "男女同款后松紧阔腿牛仔裤[DK-GREY]（UC4DPC5_36）",
+     "男女同款UCLA排版棒球帽[DK-GREEN]（UCRACA5_68）",
+     "男女同款Bruins标志刺绣棒球帽[BLACK]（UCRACA4_39）",
+     "男女同款尼龙标志短裤[BLACK]（UC4SP40_39）",
+     "[即时发货] 女士工装百慕大阔腿牛仔裤[DP-INDIGO]（UC3DHC1_08）",
+     "[即时发货] 女士做旧立体气球牛仔裤[VINTAGE]（UC3DPC2_10）",
+     "[即时发货] 女士内松紧修身靴型牛仔裤[VINTAGE]（UC3DPC1_10）",
+     "女士基础长款阔腿裤[M-GREY]（UC4LPC1_51）",
+     "女士大Bruins宽松短袖T恤[CH-GREY]（UC6STAB_37）",
+     "女士舒适短款T恤[SKY BLUE]（UC6STA9_41）",
+     "男女同款舒适短款T恤[NAVY]（UC6STA8_45）",
+     "女士舒适短款T恤[WHITE]（UC6STA9_31）",
+     "女士舒适短款T恤[BLACK]（UC6STA9_39）",
+     "女士舒适短款T恤[OATMEAL]（UC6STA9_24）",
+     "女士叠穿亨利领螺纹T恤[G-BLUE]（UC5STA6_48）",
+     "[会员专享] 男女同款刺绣Joe宽松T恤[BLACK]（UC4STA3_39）",
+     "男女同款尼龙拼接T恤[BLACK]（UC4ST40_39）",
+     "女士撞色多条纹短款短袖T恤[GREEN]（UC6STAA_66）",
+     "UCLA撞色半拉链防晒衣[BLACK]（UCRLT41_39）",
+     "[会员专享] 女士纯色格纹衬衫[LT-PINK]（UC3LSC1_80）",
+     "[会员专享] 女士海军条纹长袖T恤[BURGUNDY]（UC4LTC1_88）",
+     "[会员专享] 女士UCLA徽章基础圆领长袖T恤[BLACK]（UC3LTC5_39）",
+     "[会员专享] 女士19NUMBER UCLA长袖T恤[SKY BLUE]（UC3LTC1_41）"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "運用美國UCLA授權的韓國中性休閒品牌（美式新學院風）。於自營商城（uclakorea.co.kr）及soupmall販售。",
+    "note": "前廣告主 · 商標另行提供",
+    "products": [
+     "男女同款貓抓百慕達牛仔褲[GREY]（UC6DHA1_35）",
+     "男女同款顏料水洗復古圖案寬鬆T恤[G-BLUE]（UC6ST29_48）",
+     "女士基礎刷色長款百慕達牛仔褲[GREY]（UC6DHA2_35）",
+     "男女同款後鬆緊闊腿牛仔褲[DK-GREY]（UC4DPC5_36）",
+     "男女同款UCLA排版棒球帽[DK-GREEN]（UCRACA5_68）",
+     "男女同款Bruins標誌刺繡棒球帽[BLACK]（UCRACA4_39）",
+     "男女同款尼龍標誌短褲[BLACK]（UC4SP40_39）",
+     "[即時發貨] 女士工裝百慕達闊腿牛仔褲[DP-INDIGO]（UC3DHC1_08）",
+     "[即時發貨] 女士做舊立體氣球牛仔褲[VINTAGE]（UC3DPC2_10）",
+     "[即時發貨] 女士內鬆緊修身靴型牛仔褲[VINTAGE]（UC3DPC1_10）",
+     "女士基礎長款闊腿褲[M-GREY]（UC4LPC1_51）",
+     "女士大Bruins寬鬆短袖T恤[CH-GREY]（UC6STAB_37）",
+     "女士舒適短款T恤[SKY BLUE]（UC6STA9_41）",
+     "男女同款舒適短款T恤[NAVY]（UC6STA8_45）",
+     "女士舒適短款T恤[WHITE]（UC6STA9_31）",
+     "女士舒適短款T恤[BLACK]（UC6STA9_39）",
+     "女士舒適短款T恤[OATMEAL]（UC6STA9_24）",
+     "女士疊穿亨利領螺紋T恤[G-BLUE]（UC5STA6_48）",
+     "[會員專享] 男女同款刺繡Joe寬鬆T恤[BLACK]（UC4STA3_39）",
+     "男女同款尼龍拼接T恤[BLACK]（UC4ST40_39）",
+     "女士撞色多條紋短款短袖T恤[GREEN]（UC6STAA_66）",
+     "UCLA撞色半拉鏈防曬衣[BLACK]（UCRLT41_39）",
+     "[會員專享] 女士純色格紋襯衫[LT-PINK]（UC3LSC1_80）",
+     "[會員專享] 女士海軍條紋長袖T恤[BURGUNDY]（UC4LTC1_88）",
+     "[會員專享] 女士UCLA徽章基礎圓領長袖T恤[BLACK]（UC3LTC5_39）",
+     "[會員專享] 女士19NUMBER UCLA長袖T恤[SKY BLUE]（UC3LTC1_41）"
+    ]
+   },
+   "ja": {
+    "slogan": "米国UCLAライセンスを活用した韓国のユニセックスカジュアルブランド（アメリカンニュープレッピールック）。自社モール（uclakorea.co.kr）・soupmallで販売。",
+    "note": "前広告主 · ロゴは別途提供",
+    "products": [
+     "ユニセックス キャットブラッシュバミューダデニムパンツ[GREY]（UC6DHA1_35）",
+     "ユニセックス ピグメントビンテージグラフィックオーバーフィットTシャツ[G-BLUE]（UC6ST29_48）",
+     "レディース ベーシックブラッシュロングバミューダデニムパンツ[GREY]（UC6DHA2_35）",
+     "ユニセックス バックバンディングワイドデニムパンツ[DK-GREY]（UC4DPC5_36）",
+     "ユニセックス UCLAレイアウトボールキャップ[DK-GREEN]（UCRACA5_68）",
+     "ユニセックス ブルーインズロゴ刺繍ボールキャップ[BLACK]（UCRACA4_39）",
+     "ユニセックス ナイロンロゴハーフパンツ[BLACK]（UC4SP40_39）",
+     "[即日発送] レディース カーペンターバミューダワイドデニムパンツ[DP-INDIGO]（UC3DHC1_08）",
+     "[即日発送] レディース フェイディング立体バルーンデニムパンツ[VINTAGE]（UC3DPC2_10）",
+     "[即日発送] レディース インバンディングスリムブーツカットデニムパンツ[VINTAGE]（UC3DPC1_10）",
+     "レディース ベーシックロングワイドパンツ[M-GREY]（UC4LPC1_51）",
+     "レディース ビッグブルーインズオーバーフィット半袖Tシャツ[CH-GREY]（UC6STAB_37）",
+     "レディース コンフォートクロップTシャツ[SKY BLUE]（UC6STA9_41）",
+     "ユニセックス コンフォートクロップTシャツ[NAVY]（UC6STA8_45）",
+     "レディース コンフォートクロップTシャツ[WHITE]（UC6STA9_31）",
+     "レディース コンフォートクロップTシャツ[BLACK]（UC6STA9_39）",
+     "レディース コンフォートクロップTシャツ[OATMEAL]（UC6STA9_24）",
+     "レディース レイヤードヘンリーネックリブTシャツ[G-BLUE]（UC5STA6_48）",
+     "[会員限定] ユニセックス エンブロイダリージョーオーバーフィットTシャツ[BLACK]（UC4STA3_39）",
+     "ユニセックス ナイロン切り替えTシャツ[BLACK]（UC4ST40_39）",
+     "レディース 配色マルチストライプクロップ半袖Tシャツ[GREEN]（UC6STAA_66）",
+     "UCLA カラーブロックハーフジップラッシュガード[BLACK]（UCRLT41_39）",
+     "[会員限定] レディース ピュアチェックシャツ[LT-PINK]（UC3LSC1_80）",
+     "[会員限定] レディース マリンストライプ長袖Tシャツ[BURGUNDY]（UC4LTC1_88）",
+     "[会員限定] レディース UCLAエンブレムベーシックラウンド長袖Tシャツ[BLACK]（UC3LTC5_39）",
+     "[会員限定] レディース 19NUMBER UCLA長袖Tシャツ[SKY BLUE]（UC3LTC1_41）"
+    ]
+   }
+  }
  },
  {
   "id": "b38",
@@ -6133,7 +9381,145 @@
     "price": "49,000원",
     "url": "https://www.discovery-expedition.com/product-detail/DWRS96063-WHS?category=DXMB02B08"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A lifestyle outdoor brand launched in 2012 by F&F under a Warner Bros. Discovery license.",
+    "note": "Former advertiser · Same advertiser · Logo provided separately",
+    "products": [
+     "Women's Freshvent Lettering Semi-Crop Ringer T-Shirt",
+     "Women's Freshvent Nature Graphic Short-Sleeve Tee",
+     "Women's Lightweight Woven Training Cropped Pants Skirt",
+     "Women's 2-IN-1 A-Line Set-Up Shorts",
+     "Mireron Vest Bag",
+     "Women's Tech Knit Training Semi-Wide Cargo Pants",
+     "Cliber Sling Bag",
+     "Women's Short-Sleeve Crop Rash Guard",
+     "Mireron Vest Bag",
+     "Women's Ribbed String Bra Top",
+     "Women's Logo-Point Running T-Shirt",
+     "Freshvent Women's Wide Cargo Pants",
+     "Women's Pertex Running Windbreaker",
+     "Freshvent Women's Cargo Skirt",
+     "Women's Pertex Running Windbreaker",
+     "Women's Athleisure Bootcut Pants",
+     "Women's Semi-Crop Collar Tee",
+     "Women's Freshvent Lightweight Woven Training Short-Sleeve Hooded Anorak",
+     "Discovery Runners Ripstop Side-Hole Cap",
+     "Reflex Pocket Backpack S",
+     "Women's Performance Running T-Shirt",
+     "Women's Small-Logo Hoodie",
+     "Women's Pertex 2-IN-1 Running Shorts",
+     "Women's Tech Knit Training Hooded Jacket",
+     "Women's Performance Running T-Shirt",
+     "Women's Freshvent 2.0 UV Hooded Brim Jacket",
+     "Women's PrimaLoft Padded Jacket",
+     "Women's Freshvent Paneled Short-Sleeve T-Shirt"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "F&F获华纳兄弟探索（Warner Bros. Discovery）授权，于2012年推出的生活方式户外品牌。",
+    "note": "前广告主 · 同一广告主 · 商标另行提供",
+    "products": [
+     "女士Freshvent字母半短款罗纹圈领T恤",
+     "女士Freshvent自然图案短袖T恤",
+     "女士轻量梭织训练七分裤裙",
+     "女士2IN1 A字版型套装短裤",
+     "Mireron马甲包",
+     "女士科技针织训练半阔腿工装裤",
+     "Cliber单肩包",
+     "女士短袖短款防晒衣",
+     "Mireron马甲包",
+     "女士螺纹抽绳运动内衣",
+     "女士Logo点缀跑步T恤",
+     "Freshvent女士阔腿工装裤",
+     "女士Pertex跑步防风衣",
+     "Freshvent女士工装半身裙",
+     "女士Pertex跑步防风衣",
+     "女士运动休闲靴型裤",
+     "女士半短款翻领T恤",
+     "女士Freshvent轻量梭织训练短袖连帽冲锋衣",
+     "Discovery Runners格子布侧孔帽",
+     "Reflex口袋双肩包 S",
+     "女士功能性跑步T恤",
+     "女士小Logo连帽卫衣",
+     "女士Pertex 2IN1跑步短裤",
+     "女士科技针织训练连帽夹克",
+     "女士功能性跑步T恤",
+     "女士Freshvent2.0 UV连帽遮阳夹克",
+     "女士PrimaLoft棉服夹克",
+     "女士Freshvent剪裁拼接短袖T恤"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "F&F獲華納兄弟探索（Warner Bros. Discovery）授權，於2012年推出的生活風格戶外品牌。",
+    "note": "前廣告主 · 同一廣告主 · 商標另行提供",
+    "products": [
+     "女士Freshvent字母半短款羅紋圈領T恤",
+     "女士Freshvent自然圖案短袖T恤",
+     "女士輕量梭織訓練七分褲裙",
+     "女士2IN1 A字版型套裝短褲",
+     "Mireron馬甲包",
+     "女士科技針織訓練半闊腿工裝褲",
+     "Cliber單肩包",
+     "女士短袖短款防曬衣",
+     "Mireron馬甲包",
+     "女士螺紋抽繩運動內衣",
+     "女士Logo點綴跑步T恤",
+     "Freshvent女士闊腿工裝褲",
+     "女士Pertex跑步防風衣",
+     "Freshvent女士工裝半身裙",
+     "女士Pertex跑步防風衣",
+     "女士運動休閒靴型褲",
+     "女士半短款翻領T恤",
+     "女士Freshvent輕量梭織訓練短袖連帽衝鋒衣",
+     "Discovery Runners格子布側孔帽",
+     "Reflex口袋後背包 S",
+     "女士機能性跑步T恤",
+     "女士小Logo連帽衛衣",
+     "女士Pertex 2IN1跑步短褲",
+     "女士科技針織訓練連帽夾克",
+     "女士機能性跑步T恤",
+     "女士Freshvent2.0 UV連帽遮陽夾克",
+     "女士PrimaLoft棉服夾克",
+     "女士Freshvent剪裁拼接短袖T恤"
+    ]
+   },
+   "ja": {
+    "slogan": "F&Fがワーナー・ブラザース・ディスカバリーのライセンスを受け、2012年にローンチしたライフスタイルアウトドアブランド。",
+    "note": "前広告主 · 同一広告主 · ロゴは別途提供",
+    "products": [
+     "レディース フレッシュベントレタリングセミクロップリンガーTシャツ",
+     "レディース フレッシュベントネイチャーグラフィック半袖Tシャツ",
+     "レディース 軽量ウーブントレーニング七分丈パンツスカート",
+     "レディース 2IN1 Aラインセットアップショーツ",
+     "ミレロン ベストバッグ",
+     "レディース テックニットレーニングセミワイドカーゴパンツ",
+     "クライバー スリングバッグ",
+     "レディース 半袖クロップラッシュガード",
+     "ミレロン ベストバッグ",
+     "レディース リブストリングブラトップ",
+     "レディース ロゴポイントランニングTシャツ",
+     "フレッシュベント レディースワイドカーゴパンツ",
+     "レディース パーテックスランニングウィンドブレーカー",
+     "フレッシュベント レディースカーゴスカート",
+     "レディース パーテックスランニングウィンドブレーカー",
+     "レディース アスレジャーブーツカットパンツ",
+     "レディース セミクロップカラーTシャツ",
+     "レディース フレッシュベント軽量ウーブントレーニング半袖フードアノラック",
+     "ディスカバリーランナーズリップストップサイドホールキャップ",
+     "リフレックス ポケットバックパック S",
+     "レディース 機能性ランニングTシャツ",
+     "レディース スモールロゴパーカー",
+     "レディース パーテックス 2IN1 ランニングショーツ",
+     "レディース テックニットレーニングフードジャケット",
+     "レディース 機能性ランニングTシャツ",
+     "レディース フレッシュベント2.0 UVフードツバジャケット",
+     "レディース プリマロフトパディングジャケット",
+     "レディース フレッシュベント切り替え半袖Tシャツ"
+    ]
+   }
+  }
  },
  {
   "id": "b39",
@@ -6361,7 +9747,145 @@
     "price": "89,000원",
     "url": "https://www.mlb-korea.com/product-detail/3ASMB1463-43SAL?category=MBMWEEK"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A street casual brand operated by F&F under a U.S. Major League Baseball (MLB) license. Ball caps, apparel, footwear, and bags.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "Basic Comfortable-Fit Short-Sleeve T-Shirt New York Yankees",
+     "Basic Simple Street Logo Oversized Short-Sleeve T-Shirt New York Yankees",
+     "Basic Lightweight Oversized Short-Sleeve T-Shirt New York Yankees",
+     "Bunny Back-Graphic Oversized Short-Sleeve T-Shirt LA Dodgers",
+     "Basic Street Color-Letter Oversized Short-Sleeve T-Shirt New York Yankees",
+     "Basic Street Back-Letter Oversized Short-Sleeve T-Shirt New York Yankees",
+     "Megabear Back-Graphic Oversized Short-Sleeve T-Shirt Boston Red Sox",
+     "Vintage Back-Graphic Short-Sleeve T-Shirt Boston Red Sox",
+     "Basic Small-Logo Semi-Oversized Short-Sleeve T-Shirt San Francisco Giants",
+     "Basic Small-Logo Cropped Shorts New York Yankees",
+     "Women's Vintage Slim Ribbed Short-Sleeve T-Shirt Boston Red Sox",
+     "Hot Summer Graphic Oversized Short-Sleeve T-Shirt Boston Red Sox",
+     "Women's Basic Small-Logo Running Dolphin Pants New York Yankees",
+     "Basic Back Street Logo Oversized Short-Sleeve T-Shirt LA Dodgers",
+     "Vintage Sportive Cursive Graphic Short-Sleeve T-Shirt New York Yankees",
+     "Vintage Washed Graphic Short-Sleeve T-Shirt Boston Red Sox",
+     "Basic Gorpcore Nylon Cargo Cropped Shorts New York Yankees",
+     "Women's Sportive Ripstop Ultra-Light See-Through Shorts Boston Red Sox",
+     "Women's Basic Off-Shoulder Short-Sleeve T-Shirt New York Yankees",
+     "Women's Slim Crop-Fit Cap-Sleeve Short-Sleeve T-Shirt New York Yankees",
+     "Basic Vintage Stitch Cooperstown Bermuda Pants New York Yankees",
+     "Basic Small-Logo Cotton-Touch Woven Shorts New York Yankees",
+     "Basic Mega-Logo Cropped Shorts New York Yankees",
+     "Classic Monogram Big Lux Oversized Short-Sleeve T-Shirt New York Yankees",
+     "Skipper Flip-Flops New York Yankees",
+     "Pepper Slides New York Yankees",
+     "Skipper Slides New York Yankees",
+     "Basic Cotton-Touch Ripstop Shorts Boston Red Sox"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "F&F基于美国职业棒球大联盟（MLB）授权运营的街头休闲品牌。涵盖棒球帽、服装、鞋履、箱包。",
+    "note": "前广告主 · 商标另行提供",
+    "products": [
+     "基础舒适版型短袖T恤 纽约扬基队",
+     "基础简约街头标志宽松短袖T恤 纽约扬基队",
+     "基础轻量宽松短袖T恤 纽约扬基队",
+     "兔子背部图案宽松短袖T恤 洛杉矶道奇队",
+     "基础街头彩色字母宽松短袖T恤 纽约扬基队",
+     "基础街头背部字母宽松短袖T恤 纽约扬基队",
+     "巨熊背部图案宽松短袖T恤 波士顿红袜队",
+     "复古背部图案短袖T恤 波士顿红袜队",
+     "基础小标志半宽松短袖T恤 旧金山巨人队",
+     "基础小标志六分短裤 纽约扬基队",
+     "女士复古修身螺纹短袖T恤 波士顿红袜队",
+     "热夏图案宽松短袖T恤 波士顿红袜队",
+     "女士基础小标志跑步海豚裤 纽约扬基队",
+     "基础背部街头标志宽松短袖T恤 洛杉矶道奇队",
+     "复古运动手写体图案短袖T恤 纽约扬基队",
+     "复古水洗图案短袖T恤 波士顿红袜队",
+     "基础Gorpcore尼龙工装六分短裤 纽约扬基队",
+     "女士运动格子布超轻透视三分短裤 波士顿红袜队",
+     "女士基础一字肩短袖T恤 纽约扬基队",
+     "女士修身短款盖袖短袖T恤 纽约扬基队",
+     "基础复古缝线Cooperstown百慕大裤 纽约扬基队",
+     "基础小标志棉感梭织四分短裤 纽约扬基队",
+     "基础大标志六分短裤 纽约扬基队",
+     "经典Monogram大奢华宽松短袖T恤 纽约扬基队",
+     "Skipper人字拖 纽约扬基队",
+     "Pepper拖鞋 纽约扬基队",
+     "Skipper拖鞋 纽约扬基队",
+     "基础棉感格子布六分短裤 波士顿红袜队"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "F&F基於美國職業棒球大聯盟（MLB）授權營運的街頭休閒品牌。涵蓋棒球帽、服裝、鞋履、箱包。",
+    "note": "前廣告主 · 商標另行提供",
+    "products": [
+     "基礎舒適版型短袖T恤 紐約洋基隊",
+     "基礎簡約街頭標誌寬鬆短袖T恤 紐約洋基隊",
+     "基礎輕量寬鬆短袖T恤 紐約洋基隊",
+     "兔子背部圖案寬鬆短袖T恤 洛杉磯道奇隊",
+     "基礎街頭彩色字母寬鬆短袖T恤 紐約洋基隊",
+     "基礎街頭背部字母寬鬆短袖T恤 紐約洋基隊",
+     "巨熊背部圖案寬鬆短袖T恤 波士頓紅襪隊",
+     "復古背部圖案短袖T恤 波士頓紅襪隊",
+     "基礎小標誌半寬鬆短袖T恤 舊金山巨人隊",
+     "基礎小標誌六分短褲 紐約洋基隊",
+     "女士復古修身螺紋短袖T恤 波士頓紅襪隊",
+     "盛夏圖案寬鬆短袖T恤 波士頓紅襪隊",
+     "女士基礎小標誌跑步海豚褲 紐約洋基隊",
+     "基礎背部街頭標誌寬鬆短袖T恤 洛杉磯道奇隊",
+     "復古運動手寫體圖案短袖T恤 紐約洋基隊",
+     "復古水洗圖案短袖T恤 波士頓紅襪隊",
+     "基礎Gorpcore尼龍工裝六分短褲 紐約洋基隊",
+     "女士運動格子布超輕透視三分短褲 波士頓紅襪隊",
+     "女士基礎一字肩短袖T恤 紐約洋基隊",
+     "女士修身短款蓋袖短袖T恤 紐約洋基隊",
+     "基礎復古縫線Cooperstown百慕達褲 紐約洋基隊",
+     "基礎小標誌棉感梭織四分短褲 紐約洋基隊",
+     "基礎大標誌六分短褲 紐約洋基隊",
+     "經典Monogram大奢華寬鬆短袖T恤 紐約洋基隊",
+     "Skipper人字拖 紐約洋基隊",
+     "Pepper拖鞋 紐約洋基隊",
+     "Skipper拖鞋 紐約洋基隊",
+     "基礎棉感格子布六分短褲 波士頓紅襪隊"
+    ]
+   },
+   "ja": {
+    "slogan": "F&Fが米国メジャーリーグ（MLB）のライセンスを基に展開するストリートカジュアルブランド。ボールキャップ・ウェア・シューズ・バッグを展開。",
+    "note": "前広告主 · ロゴは別途提供",
+    "products": [
+     "ベーシックコンフォータブルフィット半袖Tシャツ ニューヨーク・ヤンキース",
+     "ベーシックシンプルストリートロゴオーバーフィット半袖Tシャツ ニューヨーク・ヤンキース",
+     "ベーシックライトウェイトオーバーフィット半袖Tシャツ ニューヨーク・ヤンキース",
+     "バニーバックグラフィックオーバーフィット半袖Tシャツ LAドジャース",
+     "ベーシックストリートカラーレターオーバーフィット半袖Tシャツ ニューヨーク・ヤンキース",
+     "ベーシックストリートバックレターオーバーフィット半袖Tシャツ ニューヨーク・ヤンキース",
+     "メガベアバックグラフィックオーバーフィット半袖Tシャツ ボストン・レッドソックス",
+     "ヴィンテージバックグラフィック半袖Tシャツ ボストン・レッドソックス",
+     "ベーシックスモールロゴセミオーバーフィット半袖Tシャツ サンフランシスコ・ジャイアンツ",
+     "ベーシックスモールロゴハーフパンツ ニューヨーク・ヤンキース",
+     "レディース ヴィンテージスリムリブ半袖Tシャツ ボストン・レッドソックス",
+     "ホットサマーグラフィックオーバーフィット半袖Tシャツ ボストン・レッドソックス",
+     "レディース ベーシックスモールロゴランニングドルフィンパンツ ニューヨーク・ヤンキース",
+     "ベーシックバックストリートロゴオーバーフィット半袖Tシャツ LAドジャース",
+     "ヴィンテージスポーティブカーシブグラフィック半袖Tシャツ ニューヨーク・ヤンキース",
+     "ヴィンテージウォッシュグラフィック半袖Tシャツ ボストン・レッドソックス",
+     "ベーシックゴープコアナイロンカーゴハーフパンツ ニューヨーク・ヤンキース",
+     "レディース スポーティブリップストップ超軽量シースルーショーツ ボストン・レッドソックス",
+     "レディース ベーシックオフショルダー半袖Tシャツ ニューヨーク・ヤンキース",
+     "レディース スリムクロップフィットキャップスリーブ半袖Tシャツ ニューヨーク・ヤンキース",
+     "ベーシックヴィンテージステッチクーパーズバミューダパンツ ニューヨーク・ヤンキース",
+     "ベーシックスモールロゴコットンタッチウーブンショーツ ニューヨーク・ヤンキース",
+     "ベーシックメガロゴショーツ ニューヨーク・ヤンキース",
+     "クラシックモノグラムビッグラックスオーバーフィット半袖Tシャツ ニューヨーク・ヤンキース",
+     "スキッパー ビーチサンダル ニューヨーク・ヤンキース",
+     "ペッパー スライド ニューヨーク・ヤンキース",
+     "スキッパー スライド ニューヨーク・ヤンキース",
+     "ベーシックコットンタッチリップストップショーツ ボストン・レッドソックス"
+    ]
+   }
+  }
  },
  {
   "id": "b40",
@@ -6627,7 +10151,153 @@
     "price": "42,000원",
     "url": "https://ason.kr/product/rin-stripe-sleeveless-black/2015/category/186/display/1/"
    }
-  ]
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A women's apparel brand offering reasonable, wearable daily wear including knits, denim, and outerwear.",
+    "note": "Former advertiser · Logo provided separately",
+    "products": [
+     "PIECE STITCH BALL CAP / BLACK",
+     "LITE MESH BALL CAP / BLACK",
+     "DUO STRIPE BALL CAP / GRAY",
+     "TWO TONE PATCH BALL CAP",
+     "DENIM PATCH BALL CAP / BLACK",
+     "CHECK PATCH BALL CAP",
+     "[Sequential shipping from July 1] MUL STRIPE BEANIE",
+     "ASON LOGO BANDANA",
+     "EVENING SHOPPER BAG / BLACK",
+     "DRAW STRING BAG / DARK NAVY",
+     "SOI ZIP-UP / BLACK (SUMMER VER.)",
+     "SOI ZIP-UP / WHITE (SUMMER VER.)",
+     "LAVE STRIPE SHIRT / LIGHT BLUE",
+     "SILHOUETTE KNIT / BLACK",
+     "MISTY CABLE KNIT / BLACK",
+     "[2PACK] PLAIN SLIM TEE / BLACK & WHITE",
+     "PLAIN SLIM TEE / BLACK",
+     "CRINKLE PUFF TEE / BLACK",
+     "KIKI SLIM TEE / DUSTY PURPLE",
+     "[Sequential shipping from July 1] RAIL STRIPE TEE / IVORY",
+     "RAIL STRIPE TEE / BROWN",
+     "TULI LACE SLEEVELESS / BLACK",
+     "STILL SLEEVELESS / BLACK",
+     "DAISY PUFF DRESS / BLACK",
+     "[SET] COZY CARDIGAN & WIDE PANTS / BLUE",
+     "[SET] COZY SLEEVELESS & SHORT PANTS / PINK",
+     "[SET] RIN STRIPE SLEEVELESS & PANTS / BLACK",
+     "COZY CARDIGAN / PINK",
+     "COZY SLEEVELESS / PINK",
+     "RIN STRIPE SLEEVELESS / BLACK"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "主打针织、牛仔、外套等高性价比、易穿搭日常服饰的女装品牌。",
+    "note": "前广告主 · 商标另行提供",
+    "products": [
+     "拼接缝线棒球帽 / BLACK",
+     "轻量网眼棒球帽 / BLACK",
+     "双色条纹棒球帽 / GRAY",
+     "双色拼贴棒球帽",
+     "牛仔贴布棒球帽 / BLACK",
+     "格纹贴布棒球帽",
+     "[7月1日陆续发货] 多色条纹针织帽",
+     "ASON标志头巾",
+     "晚间购物袋 / BLACK",
+     "抽绳束口袋 / DARK NAVY",
+     "SOI拉链外套 / BLACK（夏季款）",
+     "SOI拉链外套 / WHITE（夏季款）",
+     "LAVE条纹衬衫 / LIGHT BLUE",
+     "廓形针织衫 / BLACK",
+     "雾感麻花针织衫 / BLACK",
+     "[2件装] 纯色修身T恤 / BLACK & WHITE",
+     "纯色修身T恤 / BLACK",
+     "褶皱泡泡T恤 / BLACK",
+     "KIKI修身T恤 / DUSTY PURPLE",
+     "[7月1日陆续发货] 轨道条纹T恤 / IVORY",
+     "轨道条纹T恤 / BROWN",
+     "TULI蕾丝无袖上衣 / BLACK",
+     "STILL无袖上衣 / BLACK",
+     "雏菊泡泡连衣裙 / BLACK",
+     "[套装] 慵懒开衫 & 阔腿裤 / BLUE",
+     "[套装] 慵懒无袖上衣 & 短裤 / PINK",
+     "[套装] RIN条纹无袖上衣 & 长裤 / BLACK",
+     "慵懒开衫 / PINK",
+     "慵懒无袖上衣 / PINK",
+     "RIN条纹无袖上衣 / BLACK"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "主打針織、牛仔、外套等高性價比、易穿搭日常服飾的女裝品牌。",
+    "note": "前廣告主 · 商標另行提供",
+    "products": [
+     "拼接縫線棒球帽 / BLACK",
+     "輕量網眼棒球帽 / BLACK",
+     "雙色條紋棒球帽 / GRAY",
+     "雙色拼貼棒球帽",
+     "牛仔貼布棒球帽 / BLACK",
+     "格紋貼布棒球帽",
+     "[7月1日陸續發貨] 多色條紋針織帽",
+     "ASON標誌頭巾",
+     "晚間購物袋 / BLACK",
+     "抽繩束口袋 / DARK NAVY",
+     "SOI拉鏈外套 / BLACK（夏季款）",
+     "SOI拉鏈外套 / WHITE（夏季款）",
+     "LAVE條紋襯衫 / LIGHT BLUE",
+     "廓形針織衫 / BLACK",
+     "霧感麻花針織衫 / BLACK",
+     "[2件裝] 純色修身T恤 / BLACK & WHITE",
+     "純色修身T恤 / BLACK",
+     "褶皺泡泡T恤 / BLACK",
+     "KIKI修身T恤 / DUSTY PURPLE",
+     "[7月1日陸續發貨] 軌道條紋T恤 / IVORY",
+     "軌道條紋T恤 / BROWN",
+     "TULI蕾絲無袖上衣 / BLACK",
+     "STILL無袖上衣 / BLACK",
+     "雛菊泡泡連衣裙 / BLACK",
+     "[套裝] 慵懶開衫 & 闊腿褲 / BLUE",
+     "[套裝] 慵懶無袖上衣 & 短褲 / PINK",
+     "[套裝] RIN條紋無袖上衣 & 長褲 / BLACK",
+     "慵懶開衫 / PINK",
+     "慵懶無袖上衣 / PINK",
+     "RIN條紋無袖上衣 / BLACK"
+    ]
+   },
+   "ja": {
+    "slogan": "ニット・デニム・アウターなど、手頃で着やすいデイリーウェアを提案するレディースアパレルブランド。",
+    "note": "前広告主 · ロゴは別途提供",
+    "products": [
+     "PIECE STITCH BALL CAP / BLACK",
+     "LITE MESH BALL CAP / BLACK",
+     "DUO STRIPE BALL CAP / GRAY",
+     "TWO TONE PATCH BALL CAP",
+     "DENIM PATCH BALL CAP / BLACK",
+     "CHECK PATCH BALL CAP",
+     "[7月1日順次発送] MUL STRIPE BEANIE",
+     "ASON LOGO BANDANA",
+     "EVENING SHOPPER BAG / BLACK",
+     "DRAW STRING BAG / DARK NAVY",
+     "SOI ZIP-UP / BLACK (SUMMER VER.)",
+     "SOI ZIP-UP / WHITE (SUMMER VER.)",
+     "LAVE STRIPE SHIRT / LIGHT BLUE",
+     "SILHOUETTE KNIT / BLACK",
+     "MISTY CABLE KNIT / BLACK",
+     "[2PACK] PLAIN SLIM TEE / BLACK & WHITE",
+     "PLAIN SLIM TEE / BLACK",
+     "CRINKLE PUFF TEE / BLACK",
+     "KIKI SLIM TEE / DUSTY PURPLE",
+     "[7月1日順次発送] RAIL STRIPE TEE / IVORY",
+     "RAIL STRIPE TEE / BROWN",
+     "TULI LACE SLEEVELESS / BLACK",
+     "STILL SLEEVELESS / BLACK",
+     "DAISY PUFF DRESS / BLACK",
+     "[SET] COZY CARDIGAN & WIDE PANTS / BLUE",
+     "[SET] COZY SLEEVELESS & SHORT PANTS / PINK",
+     "[SET] RIN STRIPE SLEEVELESS & PANTS / BLACK",
+     "COZY CARDIGAN / PINK",
+     "COZY SLEEVELESS / PINK",
+     "RIN STRIPE SLEEVELESS / BLACK"
+    ]
+   }
+  }
  },
  {
   "id": "b41",
@@ -6696,7 +10366,53 @@
     "url": "https://vinnerty.com/product/detail.html?product_no=37&cate_no=43&display_group=1"
    }
   ],
-  "supplyRate": "39%"
+  "supplyRate": "39%",
+  "i18n": {
+   "en": {
+    "slogan": "A beauty brand offering daily beauty solutions centered on inner beauty, such as collagen and slim-fit care.",
+    "note": "",
+    "products": [
+     "Vinerty Viner Shake Weight-Management Protein Shake Grain",
+     "Vinerty Vinerchew Slim-Fit Garcinia Diet Body-Fat & Carb Cutter 30 Tablets 1 box",
+     "Vinerty Vinersu No-Need-to-Worry-About-Water-Retention Pumpkin Tea Pregnancy Tea 120ml",
+     "Vinerty Vinertalk Lemon Flavor",
+     "Vinerty Vinertalk Wild Grape Flavor"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以胶原蛋白、紧致塑形等内在美为核心，提供日常美容解决方案的美妆品牌。",
+    "note": "",
+    "products": [
+     "Vinerty 비너 蛋白奶昔 体重管理用蛋白奶昔 谷物味",
+     "Vinerty 비너츄 紧致塑形 藤黄果减脂碳水阻断片 30片 1盒",
+     "Vinerty 비너수 无需担心水肿的南瓜茶 孕妇茶 120ml",
+     "Vinerty 비너톡 柠檬味",
+     "Vinerty 비너톡 山葡萄味"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以膠原蛋白、緊緻塑形等內在美為核心，提供日常美容解決方案的美妝品牌。",
+    "note": "",
+    "products": [
+     "Vinerty 비너 蛋白奶昔 體重管理用蛋白奶昔 穀物味",
+     "Vinerty 비너츄 緊緻塑形 藤黃果減脂碳水阻斷片 30片 1盒",
+     "Vinerty 비너수 無需擔心水腫的南瓜茶 孕婦茶 120ml",
+     "Vinerty 비너톡 檸檬味",
+     "Vinerty 비너톡 山葡萄味"
+    ]
+   },
+   "ja": {
+    "slogan": "コラーゲン・スリムフィットなど、インナービューティーを中心にデイリーなビューティーソリューションを提案するビューティーブランド。",
+    "note": "",
+    "products": [
+     "ヴィナティ ビナーシェイク 体重管理用プロテインシェイク グレイン",
+     "ヴィナティ ビナチュー スリムフィット ガルシニアダイエット体脂肪・炭水化物カット剤 30錠 1box",
+     "ヴィナティ ビナス むくみが気にならないかぼちゃ茶 妠婦茶 120ml",
+     "ヴィナティ ビナトーク レモン味",
+     "ヴィナティ ビナトーク ヤマブドウ味"
+    ]
+   }
+  }
  },
  {
   "id": "b42",
@@ -6773,7 +10489,57 @@
     "url": "https://lbfashion.co.kr/product/luminous-%EC%BF%A8%EB%A7%81-%ED%8C%A9-31%EC%84%B8%ED%8A%B8/813/category/1/display/3/?icid=MAIN.product_listmain_2"
    }
   ],
-  "supplyRate": "40~42%"
+  "supplyRate": "40~42%",
+  "i18n": {
+   "en": {
+    "slogan": "A K-beauty brand that brightens the skin through basic skincare and base makeup.",
+    "note": "",
+    "products": [
+     "LUMINOUS Sun Cushion & Regeneration Cushion & Tone-Up Cream",
+     "[LUMINOUS] Glutathione Pack (3+1 Set)",
+     "[LUMINOUS] Peptide 100 Serum",
+     "[LUMINOUS] Peptide 500 Cream",
+     "Luminous Cooling Pack",
+     "[LUMINOUS] Cooling Pack (3+1 Set)"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "通过基础护肤与底妆让肌肤焕亮的K-beauty品牌。",
+    "note": "",
+    "products": [
+     "LUMINOUS 防晒气垫 & 再生气垫 & 提亮霜",
+     "[LUMINOUS] 谷胱甘肽面膜（3+1套装）",
+     "[LUMINOUS] 胜肽100精华",
+     "[LUMINOUS] 胜肽500面霜",
+     "LUMINOUS 冰镇面膜",
+     "[LUMINOUS] 冰镇面膜（3+1套装）"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "透過基礎護膚與底妝讓肌膚煥亮的K-beauty品牌。",
+    "note": "",
+    "products": [
+     "LUMINOUS 防曬氣墊 & 再生氣墊 & 提亮霜",
+     "[LUMINOUS] 穀胱甘肽面膜（3+1套裝）",
+     "[LUMINOUS] 胜肽100精華",
+     "[LUMINOUS] 胜肽500面霜",
+     "LUMINOUS 冰鎮面膜",
+     "[LUMINOUS] 冰鎮面膜（3+1套裝）"
+    ]
+   },
+   "ja": {
+    "slogan": "スキンケアとベースメイクで肌を明るく輝かせるKビューティーブランド。",
+    "note": "",
+    "products": [
+     "LUMINOUS サンクッション & 再生クッション & トーンアップクリーム",
+     "[LUMINOUS] グルタチオンパック（3+1セット）",
+     "[LUMINOUS] ペプチド100セラム",
+     "[LUMINOUS] ペプチド500クリーム",
+     "LUMINOUS クーリングパック",
+     "[LUMINOUS] クーリングパック（3+1セット）"
+    ]
+   }
+  }
  },
  {
   "id": "b43",
@@ -6867,7 +10633,53 @@
     "url": "https://raveheal.com/product/detail.html?product_no=11&cate_no=1&display_group=5"
    }
   ],
-  "supplyRate": ""
+  "supplyRate": "",
+  "i18n": {
+   "en": {
+    "slogan": "A skincare brand leading high elasticity and anti-aging with high concentrations of active EGF and 6GF — EGF ampoules and bridal serums.",
+    "note": "",
+    "products": [
+     "Mela Zero EGF Ampoule",
+     "Bride EGF Bridal Firming Cream",
+     "Bride EGF Serum Mist",
+     "Bride EGF Serum Mask",
+     "Bride EGF Timeless Serum"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以高浓度活性 EGF·6GF 主打高弹力与抗衰老的 EGF 安瓶·新娘精华护肤品牌。",
+    "note": "",
+    "products": [
+     "Mela Zero EGF 安瓶",
+     "Bride EGF 新娘紧致霜",
+     "Bride EGF 精华喷雾",
+     "Bride EGF 精华面膜",
+     "Bride EGF 焕颜精华"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以高濃度活性 EGF·6GF 主打高彈力與抗老化的 EGF 安瓶·新娘精華護膚品牌。",
+    "note": "",
+    "products": [
+     "Mela Zero EGF 安瓶",
+     "Bride EGF 新娘緊緻霜",
+     "Bride EGF 精華噴霧",
+     "Bride EGF 精華面膜",
+     "Bride EGF 煥顏精華"
+    ]
+   },
+   "ja": {
+    "slogan": "高濃度の活性EGF・6GFで高弾力・アンチエイジングを打ち出すEGFアンプル・ブライダルセラムのスキンケアブランド。",
+    "note": "",
+    "products": [
+     "メラゼロ EGFアンプル",
+     "ブライド EGF ブライダル弾力クリーム",
+     "ブライド EGF セラムミスト",
+     "ブライド EGF セラムマスク",
+     "ブライド EGF タイムレスセラム"
+    ]
+   }
+  }
  },
  {
   "id": "b44",
@@ -6965,7 +10777,57 @@
     "url": "https://arne.kr/product/pdrn-%EC%95%B0%ED%94%8C-%EC%8A%A4%ED%8E%98%EC%85%9C-set-%EC%95%B0%ED%94%8C-%EB%B3%B8%ED%92%88-%EB%AF%B8%EB%8B%88%EC%96%B4%EC%B2%98-%ED%83%9D-1/32/category/23/display/1/"
    }
   ],
-  "supplyRate": ""
+  "supplyRate": "",
+  "i18n": {
+   "en": {
+    "slogan": "‘Rewrite your skin’ — a derma skincare brand centered on PDRN regenerating ampoules and skin boosters.",
+    "note": "",
+    "products": [
+     "Arne Exceline PDRN Rejuvenating Sun Cream",
+     "Arne Exceline PDRN Skin Booster Ampoule 1+1 (30ml*2)",
+     "Arne Lastello PDRN White Glow Ampoule",
+     "Celjuran Hydrating Repair Highly Concentrated PDRN Cream Jumbo 300g",
+     "[PDRN Sun Cream + Ampoule SET] Full-size Sun Cream + Full-size Ampoule (choose 1)",
+     "[PDRN Ampoule Special SET] Full-size Ampoule + Miniature (choose 1)"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "‘重写你的肌肤’——以 PDRN 再生安瓶·肌底液为核心的医美级护肤品牌。",
+    "note": "",
+    "products": [
+     "Arne 艾克塞琳 PDRN 焕活防晒霜",
+     "Arne 艾克塞琳 PDRN 肌底安瓶 1+1（30ml*2）",
+     "Arne 拉斯特洛 PDRN 净白焕亮安瓶",
+     "Celjuran 保湿修护高浓缩 PDRN 面霜 大容量 300g",
+     "[PDRN 防晒霜 + 安瓶 套装] 防晒霜正装 + 安瓶正装（任选 1）",
+     "[PDRN 安瓶特别套装] 安瓶正装 + 小样（任选 1）"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "‘重寫你的肌膚’——以 PDRN 再生安瓶·肌底液為核心的醫美級護膚品牌。",
+    "note": "",
+    "products": [
+     "Arne 艾克塞琳 PDRN 煥活防曬霜",
+     "Arne 艾克塞琳 PDRN 肌底安瓶 1+1（30ml*2）",
+     "Arne 拉斯特洛 PDRN 淨白煥亮安瓶",
+     "Celjuran 保濕修護高濃縮 PDRN 面霜 大容量 300g",
+     "[PDRN 防曬霜 + 安瓶 套組] 防曬霜正裝 + 安瓶正裝（任選 1）",
+     "[PDRN 安瓶特別套組] 安瓶正裝 + 小樣（任選 1）"
+    ]
+   },
+   "ja": {
+    "slogan": "『肌を書き直す』——PDRN再生アンプル・スキンブースターを中心としたダーマスキンケアブランド。",
+    "note": "",
+    "products": [
+     "アルネ エクセリニュ PDRN リジュビネイティング サンクリーム",
+     "アルネ エクセリニュ PDRN スキンブースター アンプル 1+1（30ml*2）",
+     "アルネ ラステロ PDRN ホワイトグロウ アンプル",
+     "セルジュラン 保湿リペア 高濃縮PDRNクリーム 大容量300g",
+     "[PDRNサンクリーム + アンプル SET] サンクリーム本品 + アンプル本品（いずれか1点）",
+     "[PDRNアンプル スペシャルSET] アンプル本品 + ミニチュア（いずれか1点）"
+    ]
+   }
+  }
  },
  {
   "id": "b45",
@@ -7069,7 +10931,61 @@
     "url": "https://earfit.co.kr/shop_all/?idx=2"
    }
   ],
-  "supplyRate": ""
+  "supplyRate": "",
+  "i18n": {
+   "en": {
+    "slogan": "‘Slower, more beautiful’ slow aging — a vegan, deeply hydrating daily skincare brand.",
+    "note": "",
+    "products": [
+     "Airy Filter Moisture Tone Up",
+     "UV Protector Moisture Sun",
+     "Jam Pack Cleanser",
+     "Biomecera Barrier Cleansing Gel",
+     "Biomecera Barrier Toner",
+     "Biomecera Barrier Serum",
+     "Biomecera Barrier Cream"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "‘慢一点，更美一点’的慢龄护理——纯素·高保湿的日常护肤品牌。",
+    "note": "",
+    "products": [
+     "轻盈滤镜保湿提亮霜",
+     "UV 防护保湿防晒",
+     "果酱补水洁面",
+     "Biomecera 屏障洁面啫喱",
+     "Biomecera 屏障爽肤水",
+     "Biomecera 屏障精华",
+     "Biomecera 屏障面霜"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "‘慢一點，更美一點’的慢齡護理——純素·高保濕的日常護膚品牌。",
+    "note": "",
+    "products": [
+     "輕盈濾鏡保濕提亮霜",
+     "UV 防護保濕防曬",
+     "果醬補水潔面",
+     "Biomecera 屏障潔面凝膠",
+     "Biomecera 屏障化妝水",
+     "Biomecera 屏障精華",
+     "Biomecera 屏障面霜"
+    ]
+   },
+   "ja": {
+    "slogan": "『ゆっくり、もっと美しく』のスローエイジング——ヴィーガン・高保湿のデイリースキンケアブランド。",
+    "note": "",
+    "products": [
+     "エアリーフィルター モイスチャー トーンアップ",
+     "UVプロテクター モイスチャー サン",
+     "ジャムパック クレンザー",
+     "バイオムセラ バリア クレンジングジェル",
+     "バイオムセラ バリア トナー",
+     "バイオムセラ バリア セラム",
+     "バイオムセラ バリア クリーム"
+    ]
+   }
+  }
  },
  {
   "id": "b46",
@@ -7180,7 +11096,65 @@
     "url": "https://tambeauty.kr/product/%EB%8D%94-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%ED%95%98%ED%8A%B8-%EC%89%90%EC%9D%B4%EB%94%A9-%EB%93%80%EC%98%A4/109/category/78/display/1/"
    }
   ],
-  "supplyRate": ""
+  "supplyRate": "",
+  "i18n": {
+   "en": {
+    "slogan": "‘Makeup you crave more every day’ — a daily color makeup brand for base, lip and cheek.",
+    "note": "",
+    "products": [
+     "The Cloud Easy Brow Mascara",
+     "The Cloud Plumping Lip Liner",
+     "The Cloud Easy Brow Pencil",
+     "The Cloud Skin Concealer",
+     "The Cloud Blur Lip Tint",
+     "The Cloud Filter Powder Balm",
+     "The Cloud Blur Cream Blusher",
+     "The Cloud Heart Shading Duo"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "‘每天都更让人心动的妆容’——主打底妆·唇·腮红的日常彩妆品牌。",
+    "note": "",
+    "products": [
+     "The Cloud 轻松眉睫膏",
+     "The Cloud 丰盈唇线笔",
+     "The Cloud 轻松画眉笔",
+     "The Cloud 裸肌遮瑕",
+     "The Cloud 雾感唇釉",
+     "The Cloud 滤镜粉饼膏",
+     "The Cloud 雾感膏状腮红",
+     "The Cloud 爱心修容双色盘"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "‘每天都更令人心動的妝容’——主打底妝·唇·腮紅的日常彩妝品牌。",
+    "note": "",
+    "products": [
+     "The Cloud 輕鬆眉睫膏",
+     "The Cloud 豐盈唇線筆",
+     "The Cloud 輕鬆畫眉筆",
+     "The Cloud 裸肌遮瑕",
+     "The Cloud 霧感唇釉",
+     "The Cloud 濾鏡粉餅膏",
+     "The Cloud 霧感膏狀腮紅",
+     "The Cloud 愛心修容雙色盤"
+    ]
+   },
+   "ja": {
+    "slogan": "『毎日もっと欲しくなるメイク』——ベース・リップ・チークのデイリーカラーメイクブランド。",
+    "note": "",
+    "products": [
+     "ザ・クラウド イージーブロウ マスカラ",
+     "ザ・クラウド プランピング リップライナー",
+     "ザ・クラウド イージーブロウ ペンシル",
+     "ザ・クラウド スキンコンシーラー",
+     "ザ・クラウド ブラー リップティント",
+     "ザ・クラウド フィルター パウダーバーム",
+     "ザ・クラウド ブラー クリームブラッシャー",
+     "ザ・クラウド ハート シェーディングデュオ"
+    ]
+   }
+  }
  },
  {
   "id": "b47",
@@ -7292,7 +11266,65 @@
     "url": "https://www.cueshop.co.kr/goods/goods_view.php?goodsNo=793"
    }
   ],
-  "supplyRate": ""
+  "supplyRate": "",
+  "i18n": {
+   "en": {
+    "slogan": "CU SKIN, a derma cosmetics brand from Cleanup Cosmetics featuring the Vitamin U and Dr. Solution lines.",
+    "note": "",
+    "products": [
+     "[CU Vitamin U] Cover Fit Cushion Pact No.23 15g (+Refill 15g)",
+     "[CU Vitamin U] Serum Mist 48ml",
+     "[CU Vitamin U] Sun Cream 50ml",
+     "[CU Dr. Solution] Panthenol Spicule Serum 30ml",
+     "[CU Dr. Solution] Camellia Grinding Cleansing Balm 50ml",
+     "[CU Vitamin U] Collagen Hydrogel Mask 34g",
+     "[CU Vitamin U] Oil to Foam Cleanser 250ml",
+     "[CU Vitamin U] Sun Serum 50g"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "拥有维生素U·Dr. Solution 系列的 Cleanup 化妆品旗下医美护肤品牌 CU SKIN。",
+    "note": "",
+    "products": [
+     "[CU 维生素U] 服帖气垫粉饼 23号 15g（+替换装 15g）",
+     "[CU 维生素U] 精华喷雾 48ml",
+     "[CU 维生素U] 防晒霜 50ml",
+     "[CU Dr. Solution] 泛醇微针精华 30ml",
+     "[CU Dr. Solution] 山茶花研磨卸妆膏 50ml",
+     "[CU 维生素U] 胶原蛋白水凝胶面膜 34g",
+     "[CU 维生素U] 油转泡洁面 250ml",
+     "[CU 维生素U] 防晒精华 50g"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "擁有維生素U·Dr. Solution 系列的 Cleanup 化妝品旗下醫美護膚品牌 CU SKIN。",
+    "note": "",
+    "products": [
+     "[CU 維生素U] 服貼氣墊粉餅 23號 15g（+替換裝 15g）",
+     "[CU 維生素U] 精華噴霧 48ml",
+     "[CU 維生素U] 防曬霜 50ml",
+     "[CU Dr. Solution] 泛醇微針精華 30ml",
+     "[CU Dr. Solution] 山茶花研磨卸妝膏 50ml",
+     "[CU 維生素U] 膠原蛋白水凝膠面膜 34g",
+     "[CU 維生素U] 油轉泡潔面 250ml",
+     "[CU 維生素U] 防曬精華 50g"
+    ]
+   },
+   "ja": {
+    "slogan": "ビタミンU・ドクターソリューションのラインを擁する、クリーンアップ化粧品のダーマコスメブランド CU SKIN。",
+    "note": "",
+    "products": [
+     "[CU ビタミンU] カバーフィット クッションパクト 23号 15g（+リフィル 15g）",
+     "[CU ビタミンU] セラムミスト 48ml",
+     "[CU ビタミンU] サンクリーム 50ml",
+     "[CU ドクターソリューション] パンテノール スピキュールセラム 30ml",
+     "[CU ドクターソリューション] カメリア グラインディング クレンジングバーム 50ml",
+     "[CU ビタミンU] コラーゲン ハイドロゲルマスク 34g",
+     "[CU ビタミンU] オイル トゥ フォームクレンザー 250ml",
+     "[CU ビタミンU] サンセラム 50g"
+    ]
+   }
+  }
  },
  {
   "id": "b48",
@@ -7404,7 +11436,65 @@
     "url": "https://luaren.co.kr/product/%EA%B0%80%EC%A0%95%EC%9D%98%EB%8B%AC-%EA%B8%B0%ED%9A%8D%EB%A9%94%EC%9D%B4%ED%81%AC%EC%97%85-%EB%B6%80%EC%8A%A4%ED%8C%85-%ED%82%A4%ED%8A%B8-%ED%80%B5-%ED%8F%AC%EB%B0%8D-%EC%8A%A4%ED%82%A8-%ED%8C%A9%ED%81%B4%EB%A0%8C%EC%A0%80-%EB%AA%A8%EC%9D%B4%EC%8A%A4%ED%8A%B8-30%EA%B0%9C%EC%9E%85%ED%8B%B4%ED%8C%85-%EC%98%B4%EB%B8%8C%EB%A0%88-%EA%B8%80%EB%A1%9C%EC%9A%B0-%EB%A6%BD%EC%95%A4%EC%B9%98%ED%81%AC-%ED%83%9D1/43/category/48/display/1/"
    }
   ],
-  "supplyRate": ""
+  "supplyRate": "",
+  "i18n": {
+   "en": {
+    "slogan": "‘Efficient time to care for yourself’ — a daily beauty brand of cleansers, sunscreens and lip color.",
+    "note": "",
+    "products": [
+     "Cica Sunscreen",
+     "Tinting Ombre Glow Lip & Cheek",
+     "Tinting Ombre Glow Lip & Cheek Signature Set",
+     "Quick Foaming Skin Pack Cleanser Moist 7pcs",
+     "[Full Package] Tinting Ombre Glow Lip & Cheek 8 Shades",
+     "[Family Month Edition / Radiance-Packed Glow Cheat Set] Tinting Ombre Glow Lip & Cheek (choose 1) & Cica Sunscreen",
+     "[Family Month Edition / Skin Barrier Duo] Quick Foaming Skin Pack Cleanser Moist 30pcs & Cica Sunscreen",
+     "[Family Month Edition / Makeup Boosting Kit] Quick Foaming Skin Pack Cleanser Moist 30pcs & Tinting Ombre Glow Lip & Cheek"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "‘高效率的自我呵护时光’——主打洁面·防晒·唇部彩妆的日常美妆品牌。",
+    "note": "",
+    "products": [
+     "积雪草防晒",
+     "渐变水光唇颊彩",
+     "渐变水光唇颊彩 标志套装",
+     "速泡肌肤洁面包 保湿型 7片装",
+     "[全套装] 渐变水光唇颊彩 8色",
+     "[家庭月企划/满满元气·水光必杀技套装] 渐变水光唇颊彩 任选1 & 积雪草防晒",
+     "[家庭月企划/肌肤屏障双件套] 速泡肌肤洁面包 保湿型 30片装 & 积雪草防晒",
+     "[家庭月企划/妆容增效套装] 速泡肌肤洁面包 保湿型 30片装 & 渐变水光唇颊彩"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "‘高效率的自我呵護時光’——主打潔面·防曬·唇部彩妝的日常美妝品牌。",
+    "note": "",
+    "products": [
+     "積雪草防曬",
+     "漸層水光唇頰彩",
+     "漸層水光唇頰彩 經典套組",
+     "速泡肌膚潔面包 保濕型 7片裝",
+     "[全套組] 漸層水光唇頰彩 8色",
+     "[家庭月企劃/滿滿元氣·水光必殺技套組] 漸層水光唇頰彩 任選1 & 積雪草防曬",
+     "[家庭月企劃/肌膚屏障雙件組] 速泡肌膚潔面包 保濕型 30片裝 & 積雪草防曬",
+     "[家庭月企劃/妝容增效套組] 速泡肌膚潔面包 保濕型 30片裝 & 漸層水光唇頰彩"
+    ]
+   },
+   "ja": {
+    "slogan": "『自分をいたわる効率的な時間』——クレンザー・日焼け止め・リップカラーのデイリービューティーブランド。",
+    "note": "",
+    "products": [
+     "シカ サンスクリーン",
+     "ティンティング オンブレ グロウ リップ＆チーク",
+     "ティンティング オンブレ グロウ リップ＆チーク シグネチャーセット",
+     "クイックフォーミング スキンパッククレンザー モイスト 7個入り",
+     "[フルパッケージ] ティンティング オンブレ グロウ リップ＆チーク 8種",
+     "[ファミリーマンス企画/うるおいたっぷり・ツヤ肌チートキーセット] ティンティング オンブレ グロウ リップ＆チーク いずれか1点 & シカ サンスクリーン",
+     "[ファミリーマンス企画/スキンバリア デュオ] クイックフォーミング スキンパッククレンザー モイスト 30個入り & シカ サンスクリーン",
+     "[ファミリーマンス企画/メイクアップ ブースティングキット] クイックフォーミング スキンパッククレンザー モイスト 30個入り & ティンティング オンブレ グロウ リップ＆チーク"
+    ]
+   }
+  }
  },
  {
   "id": "b49",
@@ -7493,6 +11583,64 @@
     "url": "https://www.ousiainnollostore.com/voltasynthia/?idx=14"
    }
   ],
-  "supplyRate": ""
+  "supplyRate": "",
+  "i18n": {
+   "en": {
+    "slogan": "Voltasynthia, a vegan skin & body beauty brand built around the Olive Balancing line.",
+    "note": "",
+    "products": [
+     "Olive Balancing Tint Cream",
+     "Voltasynthia Hand Cream",
+     "Olive Glow Cleanser",
+     "Sexta Body Wash",
+     "Osillasynthia GIFT 001",
+     "Olive Balancing Sun Cream",
+     "Osillasynthia GIFT 002",
+     "Quinta Body Lotion"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以橄榄平衡系列为核心的纯素肌肤·身体美妆品牌 Voltasynthia。",
+    "note": "",
+    "products": [
+     "Olive Balancing 橄榄平衡修颜霜",
+     "Voltasynthia 护手霜",
+     "Olive Glow 橄榄焕亮洁面",
+     "Sexta 沐浴露",
+     "Osillasynthia GIFT 001",
+     "Olive Balancing 橄榄平衡防晒霜",
+     "Osillasynthia GIFT 002",
+     "Quinta 身体乳"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以橄欖平衡系列為核心的純素肌膚·身體美妝品牌 Voltasynthia。",
+    "note": "",
+    "products": [
+     "Olive Balancing 橄欖平衡修顏霜",
+     "Voltasynthia 護手霜",
+     "Olive Glow 橄欖煥亮潔面",
+     "Sexta 沐浴乳",
+     "Osillasynthia GIFT 001",
+     "Olive Balancing 橄欖平衡防曬霜",
+     "Osillasynthia GIFT 002",
+     "Quinta 身體乳"
+    ]
+   },
+   "ja": {
+    "slogan": "オリーブバランシングラインを中心としたヴィーガンスキン・ボディビューティーブランド、ヴォルタシンシア。",
+    "note": "",
+    "products": [
+     "オリーブバランシング ティントクリーム",
+     "ヴォルタシンシア ハンドクリーム",
+     "オリーブグロウ クレンザー",
+     "セクスタ ボディウォッシュ",
+     "オシラシンシア GIFT 001",
+     "オリーブバランシング サンクリーム",
+     "オシラシンシア GIFT 002",
+     "クインタ ボディローション"
+    ]
+   }
+  }
  }
 ]
