@@ -6804,12 +6804,37 @@
   ],
   "note": "",
   "shopUrl": "https://raveheal.com/product/list.html?cate_no=45",
-  "snsUrls": [],
+  "snsUrls": [
+   "https://instagram.com/raveheal",
+   "https://pf.kakao.com/_WxgxmFxj",
+   "https://www.youtube.com/@raveheal_official"
+  ],
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
-  "heroImage": "",
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b43/m1.jpg",
+    "url": "https://raveheal.com/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b43/m2.jpg",
+    "url": "https://raveheal.com/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b43/m3.jpg",
+    "url": "https://raveheal.com/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b43/m4.jpg",
+    "url": "https://raveheal.com/",
+    "title": ""
+   }
+  ],
+  "heroImage": "/brand-hero/b43.jpg",
   "pricedProducts": [
    {
     "img": "/brand-images/b43/pp1.jpg",
@@ -6873,12 +6898,35 @@
   ],
   "note": "",
   "shopUrl": "https://arne.kr/product/list.html?cate_no=23",
-  "snsUrls": [],
+  "snsUrls": [
+   "https://instagram.com/arne.official.kr"
+  ],
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
-  "heroImage": "",
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b44/m1.jpg",
+    "url": "https://arne.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b44/m2.jpg",
+    "url": "https://arne.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b44/m3.jpg",
+    "url": "https://arne.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b44/m4.jpg",
+    "url": "https://arne.kr/",
+    "title": ""
+   }
+  ],
+  "heroImage": "/brand-hero/b44.jpg",
   "pricedProducts": [
    {
     "img": "/brand-images/b44/pp1.jpg",
@@ -6948,12 +6996,35 @@
   ],
   "note": "",
   "shopUrl": "https://earfit.co.kr/shop_all",
-  "snsUrls": [],
+  "snsUrls": [
+   "https://instagram.com/earfit_official"
+  ],
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
-  "heroImage": "",
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b45/m1.jpg",
+    "url": "https://earfit.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b45/m2.jpg",
+    "url": "https://earfit.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b45/m3.jpg",
+    "url": "https://earfit.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b45/m4.jpg",
+    "url": "https://earfit.co.kr/",
+    "title": ""
+   }
+  ],
+  "heroImage": "/brand-marketing/b45/m1.jpg",
   "pricedProducts": [
    {
     "img": "/brand-images/b45/pp1.jpg",
@@ -7029,12 +7100,36 @@
   ],
   "note": "",
   "shopUrl": "https://tambeauty.kr/product/list.html?cate_no=78",
-  "snsUrls": [],
+  "snsUrls": [
+   "https://pf.kakao.com/_nxhIxhn",
+   "https://instagram.com/tambeautyme"
+  ],
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
-  "heroImage": "",
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b46/m1.jpg",
+    "url": "https://tambeauty.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b46/m2.jpg",
+    "url": "https://tambeauty.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b46/m3.jpg",
+    "url": "https://tambeauty.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b46/m4.jpg",
+    "url": "https://tambeauty.kr/",
+    "title": ""
+   }
+  ],
+  "heroImage": "/brand-hero/b46.jpg",
   "pricedProducts": [
    {
     "img": "/brand-images/b46/pp1.jpg",
@@ -7116,12 +7211,37 @@
   ],
   "note": "",
   "shopUrl": "https://www.cueshop.co.kr/goods/goods_list.php?cateCd=010",
-  "snsUrls": [],
+  "snsUrls": [
+   "https://instagram.com/cuskin_official",
+   "https://facebook.com/cuskinkorea",
+   "https://www.youtube.com/channel/UCZrSLsBpV_tKV-16sqayqlA"
+  ],
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
-  "heroImage": "",
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b47/m1.jpg",
+    "url": "https://www.cueshop.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b47/m2.jpg",
+    "url": "https://www.cueshop.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b47/m3.jpg",
+    "url": "https://www.cueshop.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b47/m4.jpg",
+    "url": "https://www.cueshop.co.kr/",
+    "title": ""
+   }
+  ],
+  "heroImage": "/brand-marketing/b47/m1.jpg",
   "pricedProducts": [
    {
     "img": "/brand-images/b47/pp1.jpg",
@@ -7203,12 +7323,37 @@
   ],
   "note": "",
   "shopUrl": "https://luaren.co.kr/product/list.html?cate_no=53",
-  "snsUrls": [],
+  "snsUrls": [
+   "http://pf.kakao.com/_rxcXzX",
+   "https://instagram.com/luaren.official",
+   "https://x.com/luaren_official"
+  ],
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
-  "marketingItems": [],
-  "heroImage": "",
+  "marketingItems": [
+   {
+    "img": "/brand-marketing/b48/m1.jpg",
+    "url": "https://luaren.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b48/m2.jpg",
+    "url": "https://luaren.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b48/m3.jpg",
+    "url": "https://luaren.co.kr/",
+    "title": ""
+   },
+   {
+    "img": "/brand-marketing/b48/m4.jpg",
+    "url": "https://luaren.co.kr/",
+    "title": ""
+   }
+  ],
+  "heroImage": "/brand-hero/b48.jpg",
   "pricedProducts": [
    {
     "img": "/brand-images/b48/pp1.jpg",
@@ -7290,12 +7435,14 @@
   ],
   "note": "",
   "shopUrl": "https://www.ousiainnollostore.com/voltasynthia/",
-  "snsUrls": [],
+  "snsUrls": [
+   "https://instagram.com/voltasynthia_official"
+  ],
   "repProductUrls": [],
   "shopProducts": [],
   "marketingUrls": [],
   "marketingItems": [],
-  "heroImage": "",
+  "heroImage": "/brand-images/b49/pp1.jpg",
   "pricedProducts": [
    {
     "img": "/brand-images/b49/pp1.jpg",
