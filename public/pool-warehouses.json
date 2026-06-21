@@ -7,30 +7,497 @@
   "tagline": "소싱·촬영·라이브를 한 곳에서 — 정식·덤핑 재고를 상시 보유한 라이브커머스 소싱 창고",
   "hero": "/warehouse-images/showlive/hero.jpg",
   "location": "경기 OO시",
-  "stats": { "brands": "120+", "cats": "패션 · 뷰티 · 리빙", "studio": "4실", "margin": "50~75%" },
-  "chips": ["정식", "덤핑", "소량 가능", "스튜디오 제공"],
+  "stats": {
+   "brands": "120+",
+   "cats": "패션 · 뷰티 · 리빙",
+   "studio": "4실",
+   "margin": "50~75%"
+  },
+  "chips": [
+   "정식",
+   "덤핑",
+   "소량 가능",
+   "스튜디오 제공"
+  ],
   "ranges": [
-   { "cat": "패션", "icon": "shirt", "range": "소싱가 5,000~15,000원 · 마진 50~70%" },
-   { "cat": "뷰티", "icon": "beauty", "range": "소싱가 4,000~20,000원 · 마진 55~75%" },
-   { "cat": "리빙·침구", "icon": "home", "range": "소싱가 20,000~60,000원 · 마진 50~65%" }
+   {
+    "cat": "패션",
+    "icon": "shirt",
+    "range": "소싱가 5,000~15,000원 · 마진 50~70%"
+   },
+   {
+    "cat": "뷰티",
+    "icon": "beauty",
+    "range": "소싱가 4,000~20,000원 · 마진 55~75%"
+   },
+   {
+    "cat": "리빙·침구",
+    "icon": "home",
+    "range": "소싱가 20,000~60,000원 · 마진 50~65%"
+   }
   ],
   "gallery": [
-   { "img": "/warehouse-images/showlive/hero.jpg", "zone": "창고 전경", "cap": "의류·리빙 메인홀" },
-   { "img": "/warehouse-images/showlive/g1.jpg", "zone": "뷰티 브랜드 진열존", "cap": "브랜드별 쇼케이스" },
-   { "img": "/warehouse-images/showlive/g3.jpg", "zone": "Skin & Beauty 스튜디오", "cap": "화장품 진열·촬영" },
-   { "img": "/warehouse-images/showlive/g2.jpg", "zone": "라이브 스튜디오", "cap": "촬영·방송 세팅" },
-   { "img": "/warehouse-images/showlive/g4.jpg", "zone": "뷰티 소싱존", "cap": "다브랜드 상품 진열" },
-   { "img": "/warehouse-images/showlive/g6.jpg", "zone": "검수·보관", "cap": "출고 전 검수·포장" }
+   {
+    "img": "/warehouse-images/showlive/hero.jpg",
+    "zone": "창고 전경",
+    "cap": "의류·리빙 메인홀"
+   },
+   {
+    "img": "/warehouse-images/showlive/g1.jpg",
+    "zone": "뷰티 브랜드 진열존",
+    "cap": "브랜드별 쇼케이스"
+   },
+   {
+    "img": "/warehouse-images/showlive/g3.jpg",
+    "zone": "Skin & Beauty 스튜디오",
+    "cap": "화장품 진열·촬영"
+   },
+   {
+    "img": "/warehouse-images/showlive/g2.jpg",
+    "zone": "라이브 스튜디오",
+    "cap": "촬영·방송 세팅"
+   },
+   {
+    "img": "/warehouse-images/showlive/g4.jpg",
+    "zone": "뷰티 소싱존",
+    "cap": "다브랜드 상품 진열"
+   },
+   {
+    "img": "/warehouse-images/showlive/g6.jpg",
+    "zone": "검수·보관",
+    "cap": "출고 전 검수·포장"
+   }
   ],
-  "process": ["소싱", "촬영", "라이브", "검수", "출고"],
+  "process": [
+   "소싱",
+   "촬영",
+   "라이브",
+   "검수",
+   "출고"
+  ],
   "perks": [
-   ["무재고 소싱", "재고 부담 0, 팔린 만큼만"],
-   ["소량도 가능", "소량·다품종 대응"],
-   ["매주 신상", "빠른 회전, 늘 새 물건"],
-   ["스튜디오 제공", "촬영·라이브 공간 지원"],
-   ["고마진 딜", "덤핑 클리어런스 상시"]
+   [
+    "무재고 소싱",
+    "재고 부담 0, 팔린 만큼만"
+   ],
+   [
+    "소량도 가능",
+    "소량·다품종 대응"
+   ],
+   [
+    "매주 신상",
+    "빠른 회전, 늘 새 물건"
+   ],
+   [
+    "스튜디오 제공",
+    "촬영·라이브 공간 지원"
+   ],
+   [
+    "고마진 딜",
+    "덤핑 클리어런스 상시"
+   ]
   ],
-  "steps": ["셀러 등록", "소싱 상담", "라이브 판매", "정산"],
-  "trust": ["법인 · 주식회사 쇼라이브", "대규모 소싱·물류 창고 운영", "출고 전 상품 검수·포장", "경기 OO시 · 방문 소싱 가능"]
+  "steps": [
+   "셀러 등록",
+   "소싱 상담",
+   "라이브 판매",
+   "정산"
+  ],
+  "trust": [
+   "법인 · 주식회사 쇼라이브",
+   "대규모 소싱·물류 창고 운영",
+   "출고 전 상품 검수·포장",
+   "경기 OO시 · 방문 소싱 가능"
+  ],
+  "i18n": {
+   "en": {
+    "tagline": "Sourcing, shooting & live selling under one roof — a live-commerce sourcing warehouse with regular and clearance stock always on hand",
+    "location": "OO-si, Gyeonggi-do",
+    "stats": {
+     "brands": "120+",
+     "studio": "4 studios",
+     "cats": "Fashion · Beauty · Living",
+     "margin": "50~75%"
+    },
+    "chips": [
+     "Regular Stock",
+     "Clearance",
+     "Small MOQ OK",
+     "Studio Provided"
+    ],
+    "ranges": [
+     [
+      "Fashion",
+      "Sourcing 5,000~15,000 KRW · Margin 50~70%"
+     ],
+     [
+      "Beauty",
+      "Sourcing 4,000~20,000 KRW · Margin 55~75%"
+     ],
+     [
+      "Living & Bedding",
+      "Sourcing 20,000~60,000 KRW · Margin 50~65%"
+     ]
+    ],
+    "gallery": [
+     [
+      "Warehouse Overview",
+      "Apparel & living main hall"
+     ],
+     [
+      "Beauty Brand Display Zone",
+      "Showcases by brand"
+     ],
+     [
+      "Skin & Beauty Studio",
+      "Cosmetics display & shooting"
+     ],
+     [
+      "Live Studio",
+      "Shooting & broadcast setup"
+     ],
+     [
+      "Beauty Sourcing Zone",
+      "Multi-brand product display"
+     ],
+     [
+      "Inspection & Storage",
+      "Pre-shipment inspection & packing"
+     ]
+    ],
+    "process": [
+     "Sourcing",
+     "Shooting",
+     "Live",
+     "Inspection",
+     "Shipping"
+    ],
+    "perks": [
+     [
+      "Zero-Inventory Sourcing",
+      "No stock burden, pay only for what sells"
+     ],
+     [
+      "Small Orders Welcome",
+      "Small-volume, multi-SKU friendly"
+     ],
+     [
+      "Weekly New Arrivals",
+      "Fast turnover, always fresh stock"
+     ],
+     [
+      "Studio Provided",
+      "Shooting & live-streaming space supported"
+     ],
+     [
+      "High-Margin Deals",
+      "Clearance dumping always available"
+     ]
+    ],
+    "steps": [
+     "Seller Sign-Up",
+     "Sourcing Consultation",
+     "Live Selling",
+     "Settlement"
+    ],
+    "trust": [
+     "Incorporated · Show Live Co., Ltd.",
+     "Operating a large-scale sourcing & logistics warehouse",
+     "Pre-shipment product inspection & packing",
+     "OO-si, Gyeonggi-do · On-site sourcing visits welcome"
+    ]
+   },
+   "zh-Hans": {
+    "tagline": "选品·拍摄·直播一站式搞定 —— 常备正品与尾货库存的直播电商选品仓",
+    "location": "京畿道OO市",
+    "stats": {
+     "brands": "120+",
+     "studio": "4间影棚",
+     "cats": "服饰 · 美妆 · 家居",
+     "margin": "50~75%"
+    },
+    "chips": [
+     "正品",
+     "尾货",
+     "可小量",
+     "提供影棚"
+    ],
+    "ranges": [
+     [
+      "服饰",
+      "选品价 5,000~15,000 KRW · 利润 50~70%"
+     ],
+     [
+      "美妆",
+      "选品价 4,000~20,000 KRW · 利润 55~75%"
+     ],
+     [
+      "家居·寝具",
+      "选品价 20,000~60,000 KRW · 利润 50~65%"
+     ]
+    ],
+    "gallery": [
+     [
+      "仓库全景",
+      "服饰·家居主展厅"
+     ],
+     [
+      "美妆品牌陈列区",
+      "各品牌专属展位"
+     ],
+     [
+      "Skin & Beauty 影棚",
+      "化妆品陈列·拍摄"
+     ],
+     [
+      "直播影棚",
+      "拍摄·直播布景"
+     ],
+     [
+      "美妆选品区",
+      "多品牌商品陈列"
+     ],
+     [
+      "质检·仓储",
+      "出库前质检·包装"
+     ]
+    ],
+    "process": [
+     "选品",
+     "拍摄",
+     "直播",
+     "质检",
+     "出库"
+    ],
+    "perks": [
+     [
+      "无库存选品",
+      "零库存压力，卖多少结多少"
+     ],
+     [
+      "可接小量",
+      "支持小量·多品类"
+     ],
+     [
+      "每周上新",
+      "周转快，常有新货"
+     ],
+     [
+      "提供影棚",
+      "支持拍摄·直播场地"
+     ],
+     [
+      "高利润货盘",
+      "尾货清仓常年供应"
+     ]
+    ],
+    "steps": [
+     "卖家注册",
+     "选品洽谈",
+     "直播销售",
+     "结算"
+    ],
+    "trust": [
+     "法人 · 株式会社 Show Live",
+     "运营大型选品·物流仓",
+     "出库前商品质检·包装",
+     "京畿道OO市 · 可到场选品"
+    ]
+   },
+   "zh-Hant": {
+    "tagline": "選品·拍攝·直播一站式搞定 —— 常備正品與出清庫存的直播電商選品倉",
+    "location": "京畿道OO市",
+    "stats": {
+     "brands": "120+",
+     "studio": "4間攝影棚",
+     "cats": "服飾 · 美妝 · 居家",
+     "margin": "50~75%"
+    },
+    "chips": [
+     "正品",
+     "出清",
+     "可小量",
+     "提供攝影棚"
+    ],
+    "ranges": [
+     [
+      "服飾",
+      "選品價 5,000~15,000 KRW · 利潤 50~70%"
+     ],
+     [
+      "美妝",
+      "選品價 4,000~20,000 KRW · 利潤 55~75%"
+     ],
+     [
+      "居家·寢具",
+      "選品價 20,000~60,000 KRW · 利潤 50~65%"
+     ]
+    ],
+    "gallery": [
+     [
+      "倉庫全景",
+      "服飾·居家主展廳"
+     ],
+     [
+      "美妝品牌陳列區",
+      "各品牌專屬展位"
+     ],
+     [
+      "Skin & Beauty 攝影棚",
+      "化妝品陳列·拍攝"
+     ],
+     [
+      "直播攝影棚",
+      "拍攝·直播佈景"
+     ],
+     [
+      "美妝選品區",
+      "多品牌商品陳列"
+     ],
+     [
+      "檢驗·倉儲",
+      "出貨前檢驗·包裝"
+     ]
+    ],
+    "process": [
+     "選品",
+     "拍攝",
+     "直播",
+     "檢驗",
+     "出貨"
+    ],
+    "perks": [
+     [
+      "無庫存選品",
+      "零庫存壓力，賣多少結多少"
+     ],
+     [
+      "可接小量",
+      "支援小量·多品類"
+     ],
+     [
+      "每週上新",
+      "週轉快，常有新貨"
+     ],
+     [
+      "提供攝影棚",
+      "支援拍攝·直播場地"
+     ],
+     [
+      "高利潤貨盤",
+      "出清清倉常年供應"
+     ]
+    ],
+    "steps": [
+     "賣家註冊",
+     "選品洽談",
+     "直播銷售",
+     "結算"
+    ],
+    "trust": [
+     "法人 · 株式會社 Show Live",
+     "營運大型選品·物流倉",
+     "出貨前商品檢驗·包裝",
+     "京畿道OO市 · 可到場選品"
+    ]
+   },
+   "ja": {
+    "tagline": "仕入れ・撮影・ライブをワンストップで —— 正規・アウトレット在庫を常時保有するライブコマース仕入れ倉庫",
+    "location": "京畿道OO市",
+    "stats": {
+     "brands": "120+",
+     "studio": "4スタジオ",
+     "cats": "ファッション · ビューティー · リビング",
+     "margin": "50~75%"
+    },
+    "chips": [
+     "正規品",
+     "アウトレット",
+     "小ロット可",
+     "スタジオ提供"
+    ],
+    "ranges": [
+     [
+      "ファッション",
+      "仕入れ価格 5,000~15,000 KRW · 利益率 50~70%"
+     ],
+     [
+      "ビューティー",
+      "仕入れ価格 4,000~20,000 KRW · 利益率 55~75%"
+     ],
+     [
+      "リビング·寝具",
+      "仕入れ価格 20,000~60,000 KRW · 利益率 50~65%"
+     ]
+    ],
+    "gallery": [
+     [
+      "倉庫全景",
+      "アパレル·リビングメインホール"
+     ],
+     [
+      "ビューティーブランド陳列ゾーン",
+      "ブランド別ショーケース"
+     ],
+     [
+      "Skin & Beauty スタジオ",
+      "化粧品の陳列·撮影"
+     ],
+     [
+      "ライブスタジオ",
+      "撮影·配信セッティング"
+     ],
+     [
+      "ビューティー仕入れゾーン",
+      "マルチブランド商品陳列"
+     ],
+     [
+      "検品·保管",
+      "出荷前の検品·梱包"
+     ]
+    ],
+    "process": [
+     "仕入れ",
+     "撮影",
+     "ライブ",
+     "検品",
+     "出荷"
+    ],
+    "perks": [
+     [
+      "無在庫仕入れ",
+      "在庫リスク0、売れた分だけ"
+     ],
+     [
+      "小ロットも可",
+      "小ロット·多品種に対応"
+     ],
+     [
+      "毎週新作",
+      "回転が速く、常に新商品"
+     ],
+     [
+      "スタジオ提供",
+      "撮影·ライブ配信スペースを支援"
+     ],
+     [
+      "高利益ディール",
+      "アウトレットクリアランス常時"
+     ]
+    ],
+    "steps": [
+     "セラー登録",
+     "仕入れ相談",
+     "ライブ販売",
+     "精算"
+    ],
+    "trust": [
+     "法人 · 株式会社 Show Live",
+     "大規模な仕入れ·物流倉庫を運営",
+     "出荷前の商品検品·梱包",
+     "京畿道OO市 · 訪問仕入れ可能"
+    ]
+   }
+  }
  }
 ]
