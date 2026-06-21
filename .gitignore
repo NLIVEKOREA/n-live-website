@@ -10,3 +10,6 @@ out/
 _pr2_*.json
 _pr_all.json
 _untrans.json
+_b50_stage.json
+_pr_b50.json
+_i18n_b50.json
