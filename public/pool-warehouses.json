@@ -1,0 +1,36 @@
+[
+ {
+  "id": "w1",
+  "name": "쇼라이브",
+  "en": "SHOW LIVE",
+  "type": "선품창고",
+  "tagline": "소싱·촬영·라이브를 한 곳에서 — 정식·덤핑 재고를 상시 보유한 라이브커머스 보세 창고",
+  "hero": "/warehouse-images/showlive/hero.jpg",
+  "location": "경기 OO시",
+  "stats": { "brands": "120+", "cats": "패션 · 뷰티 · 리빙", "studio": "4실", "margin": "50~75%" },
+  "chips": ["정식", "덤핑", "소량 가능", "스튜디오 제공"],
+  "ranges": [
+   { "cat": "패션", "icon": "shirt", "range": "소싱가 5,000~15,000원 · 마진 50~70%" },
+   { "cat": "뷰티", "icon": "beauty", "range": "소싱가 4,000~20,000원 · 마진 55~75%" },
+   { "cat": "리빙·침구", "icon": "home", "range": "소싱가 20,000~60,000원 · 마진 50~65%" }
+  ],
+  "gallery": [
+   { "img": "/warehouse-images/showlive/hero.jpg", "zone": "창고 전경", "cap": "의류·리빙 메인홀" },
+   { "img": "/warehouse-images/showlive/g1.jpg", "zone": "뷰티 브랜드 진열존", "cap": "브랜드별 쇼케이스" },
+   { "img": "/warehouse-images/showlive/g3.jpg", "zone": "Skin & Beauty 스튜디오", "cap": "화장품 진열·촬영" },
+   { "img": "/warehouse-images/showlive/g2.jpg", "zone": "라이브 스튜디오", "cap": "촬영·방송 세팅" },
+   { "img": "/warehouse-images/showlive/g4.jpg", "zone": "뷰티 소싱존", "cap": "다브랜드 상품 진열" },
+   { "img": "/warehouse-images/showlive/g6.jpg", "zone": "검수·보관", "cap": "정품 검수 라인" }
+  ],
+  "process": ["소싱", "검수", "촬영", "라이브", "출고"],
+  "perks": [
+   ["무재고 소싱", "재고 부담 0, 팔린 만큼만"],
+   ["소량도 가능", "소량·다품종 대응"],
+   ["매주 신상", "빠른 회전, 늘 새 물건"],
+   ["스튜디오 제공", "촬영·라이브 공간 지원"],
+   ["고마진 딜", "덤핑 클리어런스 상시"]
+  ],
+  "steps": ["셀러 등록", "소싱 상담", "라이브 판매", "정산"],
+  "trust": ["법인 · 주식회사 쇼라이브", "관세청 보세창고 운영", "입고 전 정품 검수", "경기 OO시 · 방문 소싱 가능"]
+ }
+]

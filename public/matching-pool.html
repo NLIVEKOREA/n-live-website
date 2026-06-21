@@ -163,6 +163,62 @@
   }
   .tab:not(.active):hover { color: var(--text); }
 
+  /* ── 선품창고(보세) — 5712(master)일 때만 탭 노출 ── */
+  .tab-warehouse { display:none; }
+  body.master .tab-warehouse { display:inline-block; }
+  .tab-warehouse.active { background:#2f6fdb; color:#fff; }
+  .wh-intro { max-width:1200px; margin:8px auto 0; padding:0 22px; }
+  .wh-intro .wh-eyebrow { color:var(--amber); font-size:12px; font-weight:700; letter-spacing:.12em; }
+  .wh-intro h2 { font-size:22px; margin:8px 0 6px; color:var(--text); }
+  .wh-intro p { color:var(--text-dim); font-size:14px; max-width:760px; line-height:1.6; }
+  .wh-grid { max-width:1200px; margin:18px auto 0; padding:0 22px; display:flex; flex-direction:column; gap:16px; }
+  .wh-card { border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:var(--bg-elev); display:flex; flex-wrap:wrap; }
+  .wh-card-photo { flex:1; min-width:200px; min-height:190px; background-size:cover; background-position:center; position:relative; }
+  .wh-card-type, .wh-card-live { position:absolute; top:12px; color:#fff; font-size:11px; padding:4px 10px; border-radius:999px; background:rgba(0,0,0,.6); }
+  .wh-card-type { left:12px; } .wh-card-live { right:12px; }
+  .wh-card-body { flex:1.5; min-width:260px; padding:18px 20px; }
+  .wh-card-head { display:flex; align-items:baseline; gap:8px; }
+  .wh-card-name { font-size:19px; font-weight:800; color:var(--text); }
+  .wh-card-en { font-size:13px; color:var(--text-dim); }
+  .wh-card-tag { font-size:13px; color:var(--text-dim); margin:4px 0 14px; line-height:1.5; }
+  .wh-card-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:8px 18px; margin-bottom:14px; }
+  .wh-card-stats div { font-size:13px; }
+  .wh-card-stats span { color:var(--text-mute); }
+  .wh-card-stats b { color:var(--text); font-weight:700; }
+  .wh-card-stats b.hl { color:#1d9e75; }
+  .wh-card-chips { display:flex; gap:6px; flex-wrap:wrap; }
+  .wh-chip { font-size:11px; padding:4px 10px; border-radius:999px; background:var(--line); color:var(--text-dim); }
+  .wh-chip.official { background:rgba(47,111,219,.16); color:#5a9bf0; }
+  .wh-chip.dump { background:rgba(214,162,58,.18); color:#d6a23a; }
+  .wh-card-foot { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:16px; }
+  .wh-card-loc { font-size:12px; color:var(--text-dim); }
+  .wh-empty-slot { border:1px dashed var(--line); border-radius:var(--radius); padding:26px; text-align:center; color:var(--text-mute); font-size:13px; }
+  .wh-stats4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border-radius:var(--radius); overflow:hidden; margin:0 0 4px; }
+  .wh-stats4 div { background:var(--bg-elev); padding:14px 8px; text-align:center; }
+  .wh-stats4 span { display:block; font-size:11px; color:var(--text-mute); margin-bottom:4px; }
+  .wh-stats4 b { font-size:15px; color:var(--text); }
+  .wh-galgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+  .wh-gal { margin:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .wh-gal-img { height:104px; background-size:cover; background-position:center; }
+  .wh-gal figcaption { padding:7px 9px; }
+  .wh-gal figcaption b { display:block; font-size:12px; color:var(--text); }
+  .wh-gal figcaption span { font-size:11px; color:var(--text-mute); }
+  .wh-ranges { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; }
+  .wh-range { border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+  .wh-range b { display:block; font-size:13px; color:var(--text); margin-bottom:2px; }
+  .wh-range span { font-size:12px; color:var(--text-dim); }
+  .wh-flow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .wh-flow-step { border:1px solid var(--line); border-radius:999px; padding:8px 16px; font-size:13px; color:var(--text); font-weight:600; }
+  .wh-flow-arr { color:var(--text-mute); }
+  .wh-step { display:inline-flex; align-items:center; gap:8px; }
+  .wh-step-n { width:24px; height:24px; border-radius:50%; background:var(--amber); color:#000; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+  .wh-perks, .wh-trusts { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:8px; }
+  .wh-perk { border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+  .wh-perk b { display:block; font-size:13px; color:var(--text); margin-bottom:2px; }
+  .wh-perk span { font-size:11px; color:var(--text-dim); }
+  .wh-trust { font-size:13px; color:var(--text-dim); }
+  @media (max-width:720px){ .wh-stats4 { grid-template-columns:repeat(2,1fr); } }
+
   /* ── Auth strip (compact, sits below hero) ── */
   .auth-strip {
     max-width: 1200px;
@@ -1186,6 +1242,7 @@ Object.assign(window.MP_I18N, {
       <button class="tab active" data-tab="brands" data-i18n="tab.brands">K-브랜드 보기 (셀러용)</button>
       <button class="tab" data-tab="sellers" data-i18n="tab.sellers">글로벌 셀러 보기 (브랜드용)</button>
       <button class="tab tab-china" data-tab="china" data-i18n="tab.china">🇨🇳 중국관</button>
+      <button class="tab tab-warehouse" data-tab="warehouses">🏬 선품창고 <span style="opacity:.55;font-weight:400">選品倉</span></button>
     </div>
     <div class="hero-msg">
       <div class="hmsg-row">
@@ -1295,6 +1352,24 @@ Object.assign(window.MP_I18N, {
       <p data-i18n="cta.p.seller">검증된 <b>글로벌 셀러·왕홍 전체 리스트</b>와 팔로워·섭외비용·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 원하시는 매칭·입점 방향을 알려주시면 맞춤 리스트를 준비해 드려요.</p>
     </div>
     <a class="pool-cta-btn" href="/contact/?type=matching" data-i18n="cta.btn.seller">글로벌 셀러 매칭·입점 문의 →</a>
+  </div>
+</div>
+
+<!-- ── 선품창고(보세) 카드 ── -->
+<div class="view" id="warehouses">
+  <div class="wh-intro">
+    <div class="wh-eyebrow">SELECT WAREHOUSE · 選品倉</div>
+    <h2>여러 브랜드 재고를 한 창고에서 — 골라 떼다 라이브로</h2>
+    <p>정식·덤핑 상품을 상시 보유한 보세 소싱 창고입니다. 셀러는 재고 부담 없이 골라 소싱하고, 촬영·라이브까지 한 곳에서 진행합니다. 해외 셀러도 현장에서 방송할 수 있어요.</p>
+  </div>
+  <div class="wh-grid" id="warehouseGrid"></div>
+  <div class="pool-cta">
+    <div class="pool-cta-text">
+      <span class="pool-cta-eyebrow">🏬 선품창고 소싱</span>
+      <h3>여기 보이는 창고는 일부 예시예요</h3>
+      <p>검증된 <b>선품창고(보세 소싱처)</b>의 입고 카테고리·소싱 조건·정산 정보는 <b>셀러 등록·상담 후</b> 제공됩니다. 원하시는 소싱 방향을 알려주시면 맞춤 창고를 연결해 드려요.</p>
+    </div>
+    <a class="pool-cta-btn" href="/contact/?type=sourcing">선품창고 소싱 문의 →</a>
   </div>
 </div>
 
@@ -1441,6 +1516,82 @@ Object.assign(window.MP_I18N, {
     </div>`;
   }
 
+  // ─── 선품창고(보세) 카드 ───
+  function warehouseCard(w){
+    const chips = (w.chips||[]).map(ch=>{
+      const cls = ch==='덤핑' ? 'wh-chip dump' : (ch==='정식' ? 'wh-chip official' : 'wh-chip');
+      return `<span class="${cls}">${esc(ch)}</span>`;
+    }).join('');
+    const st = w.stats||{};
+    return `<div class="wh-card">
+      <div class="wh-card-photo" style="background-image:url('${esc(w.hero)}')">
+        <span class="wh-card-type">${esc(w.type||'선품창고')} 選品倉</span>
+        ${st.studio?`<span class="wh-card-live">🔴 라이브 스튜디오 ${esc(st.studio)}</span>`:''}
+      </div>
+      <div class="wh-card-body">
+        <div class="wh-card-head"><span class="wh-card-name">${esc(w.name)}</span><span class="wh-card-en">${esc(w.en||'')}</span></div>
+        <p class="wh-card-tag">${esc(w.tagline||'')}</p>
+        <div class="wh-card-stats">
+          <div><span>취급 브랜드</span> <b>${esc(st.brands||'—')}</b></div>
+          <div><span>스튜디오</span> <b>${esc(st.studio||'—')}</b></div>
+          <div><span>카테고리</span> <b>${esc(st.cats||'—')}</b></div>
+          <div><span>셀러 마진</span> <b class="hl">${esc(st.margin||'—')}</b></div>
+        </div>
+        <div class="wh-card-chips">${chips}</div>
+        <div class="wh-card-foot">
+          <span class="wh-card-loc">📍 ${esc(w.location||'')}</span>
+          <button class="btn-cta btn-cta-after" onclick="openWarehouseDetail('${esc(w.id)}')">자세히 보기 →</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  window.openWarehouseDetail = function(id){
+    const w = (window.__WAREHOUSES||{})[id]; if(!w) return;
+    let ov = document.getElementById('warehouseDetail');
+    if(!ov){
+      ov = document.createElement('div'); ov.id='warehouseDetail'; ov.className='detail-overlay';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', e=>{ if(e.target===ov || e.target.closest('.bd-close')) window.closeWarehouseDetail(); });
+    }
+    const st = w.stats||{};
+    const gallery = (w.gallery||[]).map(g=>`<figure class="wh-gal"><div class="wh-gal-img" style="background-image:url('${esc(g.img)}')"></div><figcaption><b>${esc(g.zone)}</b><span>${esc(g.cap||'')}</span></figcaption></figure>`).join('');
+    const ranges = (w.ranges||[]).map(r=>`<div class="wh-range"><b>${esc(r.cat)}</b><span>${esc(r.range)}</span></div>`).join('');
+    const chips = (w.chips||[]).map(ch=>{ const cls = ch==='덤핑'?'wh-chip dump':(ch==='정식'?'wh-chip official':'wh-chip'); return `<span class="${cls}">${esc(ch)}</span>`; }).join('');
+    const proc = w.process||[];
+    const flow = proc.map((p,i)=>`<span class="wh-flow-step">${esc(p)}</span>${i<proc.length-1?'<span class="wh-flow-arr">→</span>':''}`).join('');
+    const perks = (w.perks||[]).map(p=>`<div class="wh-perk"><b>${esc(p[0])}</b><span>${esc(p[1]||'')}</span></div>`).join('');
+    const steps = w.steps||[];
+    const stepHtml = steps.map((s,i)=>`<span class="wh-step"><span class="wh-step-n">${i+1}</span>${esc(s)}</span>${i<steps.length-1?'<span class="wh-flow-arr">→</span>':''}`).join('');
+    const trust = (w.trust||[]).map(t=>`<div class="wh-trust">✓ ${esc(t)}</div>`).join('');
+    ov.innerHTML = `<div class="bd-panel">
+      <button class="bd-close" aria-label="닫기">✕</button>
+      <div class="bd-hero" style="background-image:url('${esc(w.hero)}')">
+        <div class="bd-hero-info"><h2>${esc(w.name)} <span style="font-size:15px;opacity:.7">${esc(w.en||'')}</span></h2><span class="bd-hero-cat">${esc(w.type||'선품창고')} 選品倉 · ${esc(w.location||'')}</span></div>
+      </div>
+      <div class="wh-stats4">
+        <div><span>취급 브랜드</span><b>${esc(st.brands||'—')}</b></div>
+        <div><span>카테고리</span><b>${esc(st.cats||'—')}</b></div>
+        <div><span>라이브 스튜디오</span><b>${esc(st.studio||'—')}</b></div>
+        <div><span>셀러 마진</span><b>${esc(st.margin||'—')}</b></div>
+      </div>
+      <section class="bd-sec"><h3>시설 갤러리</h3><div class="wh-galgrid">${gallery}</div></section>
+      <section class="bd-sec"><h3>취급 범위</h3><div class="wh-ranges">${ranges}</div><div class="wh-card-chips" style="margin-top:12px">${chips}</div></section>
+      <section class="bd-sec"><h3>원스톱 프로세스</h3><div class="wh-flow">${flow}</div></section>
+      <section class="bd-sec"><h3>셀러 혜택</h3><div class="wh-perks">${perks}</div></section>
+      <section class="bd-sec"><h3>이용 방법</h3><div class="wh-flow">${stepHtml}</div></section>
+      <section class="bd-sec"><h3>신뢰 정보</h3><div class="wh-trusts">${trust}</div></section>
+      <p class="bd-foot">상세 소싱 조건·정산 방식은 셀러 등록·상담 후 안내됩니다.</p>
+    </div>`;
+    ov.classList.add('show'); document.body.style.overflow='hidden';
+  };
+  window.closeWarehouseDetail = function(){
+    const ov=document.getElementById('warehouseDetail');
+    if(ov){ ov.classList.remove('show'); document.body.style.overflow=''; }
+  };
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ const ov=document.getElementById('warehouseDetail'); if(ov && ov.classList.contains('show')) window.closeWarehouseDetail(); }
+  });
+
   // 셀러 카드: 플랫폼·팔로우·닉네임·방송시간대·국적·섭외비용 (채널/플랫폼ID 노출 X)
   function sellerCard(s){
     const ava = s.image
@@ -1540,6 +1691,16 @@ Object.assign(window.MP_I18N, {
       document.getElementById('sellerGrid').innerHTML = sellers.map(sellerCard).join('');
     } catch(e){
       document.getElementById('sellerGrid').innerHTML = SELLERS.map(sellerCard).join('');
+    }
+    try {
+      const wres = await fetch('/pool-warehouses.json', {cache:'no-store'});
+      const whs = await wres.json();
+      window.__WAREHOUSES = {}; whs.forEach(w => window.__WAREHOUSES[w.id] = w);
+      const wg = document.getElementById('warehouseGrid');
+      if (wg) wg.innerHTML = whs.map(warehouseCard).join('') + '<div class="wh-empty-slot">＋ 선품창고 입점 모집중 — 다음 파트너 자리</div>';
+    } catch(e){
+      const wg = document.getElementById('warehouseGrid');
+      if (wg) wg.innerHTML = '<p style="color:var(--text-mute);padding:20px">창고 데이터를 불러오지 못했습니다.</p>';
     }
     try {
       const cres = await fetch('/pool-china.json', {cache:'no-store'});
@@ -2017,6 +2178,9 @@ Object.assign(window.MP_I18N, {
   function applyLockedOut() {
     // 잠금 상태에선 패션·패션잡화 항상 숨김
     if (window.MP_REVEAL) { window.MP_REVEAL = false; if (window.renderBrandGrid) window.renderBrandGrid(); }
+    // 선품창고 탭은 master 전용 → 잠그면 브랜드 탭으로 복귀
+    var _wv = document.getElementById('warehouses');
+    if (_wv && _wv.classList.contains('active')) switchTab('brands');
     document.body.classList.remove('authed');
     document.body.classList.remove('master');
     tabs.forEach(t => { t.style.opacity = ''; t.title = ''; t.style.display = ''; });
