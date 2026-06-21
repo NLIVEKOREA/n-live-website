@@ -1,0 +1,76 @@
+{
+ "products": [
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20251226/f34450deecfd50cf9bcac0cda80081d8.jpg",
+   "name": "엑소-디펜시브 아이베리어 크림",
+   "price": "168,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250410/ae62beef6d437b99a26f28ba2fa2d11b.jpg",
+   "name": "나인테일즈 엑소-바이탈 바이오셀 에너지 마스크팩 1장",
+   "price": "11,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20251216/5bfdb06bf38027834686262abf4b63e5.jpg",
+   "name": "[지안 Pick!]나인테일즈 엑소-나노 리바이브 크림 17ml",
+   "price": "46,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20251226/d2fc84ca4722a58f9cf5a32be49603bf.jpg",
+   "name": "리바이브 실속 세트 50ml+17ml",
+   "price": "140,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250410/f9ae278f33f5c3b9a3b6cafee11b47ae.jpg",
+   "name": "엑소-나노 인텐시브 크레마",
+   "price": "3,200,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250411/b9005b9d9323b58607bb7b8032616f05.jpg",
+   "name": "타마누 세트",
+   "price": "110,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250411/2b3488ff43ac25b04646bce7172b05bc.jpg",
+   "name": "[초마드 Pick!]나인테일즈 엑소 하이드로 캡슐 브라이트닝 프로텍터",
+   "price": "64,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250410/077ccd529568a6b5c85e3447df9b24e5.jpg",
+   "name": "[초마드 Pick]! 나인테일즈 엑소 비타 울트라 브라이트닝 하이드라 마스크팩",
+   "price": "41,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250410/c149646e043b85da1adb9c321297afd9.jpg",
+   "name": "나인테일즈 엑소 콜라겐 90 프로 퍼펙트 세럼",
+   "price": "58,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250410/4bc875476713c63898f396b108ee4582.jpg",
+   "name": "[초마드 문신템]나인테일즈 래디언스 리프트 시트 마스크",
+   "price": "45,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250410/118158943aad0a61207b24340dd42dbc.jpg",
+   "name": "[초마드 Pick!] 나인테일즈 리밸런싱 부스터",
+   "price": "58,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20250410/094b02a4b878843c7569524b0e762f97.jpg",
+   "name": "나인테일즈 어드밴스드 라인 리프트 세럼",
+   "price": "89,000원"
+  },
+  {
+   "img": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/product/medium/20251226/86faf96d01728b00568299a874ee13d1.jpg",
+   "name": "나인테일즈 더블 드롭 앰플",
+   "price": "65,000원"
+  }
+ ],
+ "logo": "https://img.cafe24.com/img/common/global/ko_KR_53x36.png",
+ "sns": {
+  "instagram": "https://www.instagram.com/ninetails_kr/",
+  "youtube": "https://www.youtube.com/@ninetails_kr",
+  "tiktok": "https://www.tiktok.com/@ninetails_official"
+ },
+ "hero": "https://ecimg.cafe24img.com/pg1624b55722400027/gibestcorp/web/upload/NNEditor/20260331/9e1a48dc9a5d6d2568c0aada16b71acf.jpg"
+}

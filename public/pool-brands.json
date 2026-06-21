@@ -12129,7 +12129,8 @@
      "ヴィナティ ビナトーク ヤマブドウ味"
     ]
    }
-  }
+  },
+  "minSalesPerLive": 2000000
  },
  {
   "id": "b42",
@@ -12305,7 +12306,8 @@
      "[LUMINOUS] クーリングパック（3+1セット）"
     ]
    }
-  }
+  },
+  "minSalesPerLive": 2000000
  },
  {
   "id": "b43",
@@ -12489,7 +12491,8 @@
      "ブライド EGF タイムレスセラム"
     ]
    }
-  }
+  },
+  "minSalesPerLive": 3000000
  },
  {
   "id": "b44",
@@ -12723,7 +12726,8 @@
      "[PDRNアンプル スペシャルSET] アンプル本品 + ミニチュア（いずれか1点）"
     ]
    }
-  }
+  },
+  "minSalesPerLive": 2000000
  },
  {
   "id": "b45",
@@ -12914,7 +12918,8 @@
      "バイオムセラ バリア クリーム"
     ]
    }
-  }
+  },
+  "minSalesPerLive": 3000000
  },
  {
   "id": "b46",
@@ -13225,7 +13230,8 @@
      "ザ・クラウド ハート シェーディングデュオ"
     ]
    }
-  }
+  },
+  "minSalesPerLive": 5000000
  },
  {
   "id": "b47",
@@ -13563,7 +13569,8 @@
      "[CU ビタミンU] サンセラム 50g"
     ]
    }
-  }
+  },
+  "minSalesPerLive": 5000000
  },
  {
   "id": "b48",
@@ -13761,7 +13768,8 @@
      "[ファミリーマンス企画/メイクアップ ブースティングキット] クイックフォーミング スキンパッククレンザー モイスト 30個入り & ティンティング オンブレ グロウ リップ＆チーク"
     ]
    }
-  }
+  },
+  "minSalesPerLive": 2000000
  },
  {
   "id": "b49",
@@ -13938,6 +13946,318 @@
      "オリーブバランシング サンクリーム",
      "オシラシンシア GIFT 002",
      "クインタ ボディローション"
+    ]
+   }
+  },
+  "minSalesPerLive": 2000000
+ },
+ {
+  "id": "b50",
+  "no": 50,
+  "realName": "나인테일즈 (Ninetails)",
+  "nickname": "K-브랜드 #B50",
+  "category": "뷰티",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "11,000~168,000원",
+  "url": "https://ninetails-cos.co.kr/",
+  "logo": "/brand-images/b50/logo.png",
+  "images": [
+   "/brand-images/b50/pp1.jpg",
+   "/brand-images/b50/pp2.jpg",
+   "/brand-images/b50/pp3.jpg",
+   "/brand-images/b50/pp4.jpg",
+   "/brand-images/b50/pp5.jpg"
+  ],
+  "slogan": "안티에이징을 넘어 '고백에이징'을 실현하는 메디컬 코스메틱 브랜드, 나인테일즈. 주름개선 세럼으로 프랑스·미국 등 글로벌 시장에서 인정받았습니다.",
+  "logoLight": false,
+  "score": 8,
+  "salesMethod": "사입",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://ninetails-cos.co.kr/",
+  "snsUrls": [
+   "https://www.instagram.com/ninetails_kr/",
+   "https://www.youtube.com/@ninetails_kr",
+   "https://www.tiktok.com/@ninetails_official"
+  ],
+  "repProductUrls": [],
+  "shopProducts": [],
+  "marketingUrls": [],
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "주름개선제 '나인테일즈' 홈쇼핑 완판 행진",
+    "source": "아시아경제",
+    "url": "https://www.asiae.co.kr/article/2019030617035231757",
+    "thumb": "/brand-pr/b50/pr1.jpg",
+    "date": "2019-03-06"
+   },
+   {
+    "type": "news",
+    "title": "나인테일즈, 프랑스서 110만불 수출 달성",
+    "source": "베타뉴스",
+    "url": "https://www.betanews.net/article/view/beta201912190086",
+    "thumb": "/brand-pr/b50/pr2.jpg",
+    "date": "2019-12-19"
+   },
+   {
+    "type": "news",
+    "title": "기베스트 나인테일즈, 프랑스서 '110만불 수출탑' 달성",
+    "source": "매일일보",
+    "url": "https://www.m-i.kr/news/articleView.html?idxno=665721",
+    "thumb": "/brand-pr/b50/pr3.jpg",
+    "date": "2019-12-19"
+   },
+   {
+    "type": "news",
+    "title": "나인테일즈, 프랑스에 110만달러 수출탑 달성",
+    "source": "뉴스웨이",
+    "url": "https://www.newsway.co.kr/news/view?ud=2019121911023748022",
+    "thumb": "/brand-pr/b50/pr4.jpg",
+    "date": "2019-12-19"
+   },
+   {
+    "type": "news",
+    "title": "[넥스트K] 프랑스 휩쓴 'K세럼'…3년 연구로 잔주름 싹",
+    "source": "한국경제",
+    "url": "https://www.hankyung.com/article/2020070115346",
+    "thumb": "",
+    "date": "2020-07-01"
+   },
+   {
+    "type": "news",
+    "title": "기서철 기베스트 대표 브랜드K 날개단 나인테일즈, 프랑스 시장 사로잡았죠",
+    "source": "아주경제",
+    "url": "https://www.ajunews.com/view/20200106155844274",
+    "thumb": "/brand-pr/b50/pr6.jpg",
+    "date": "2020-01-06"
+   },
+   {
+    "type": "news",
+    "title": "나인테일즈, 미국 SHOP LC 첫 런칭 목표 300% 돌파",
+    "source": "다음뉴스",
+    "url": "https://v.daum.net/v/20260213121216941",
+    "thumb": "/brand-pr/b50/pr7.jpg",
+    "date": "2026-02-13"
+   },
+   {
+    "type": "news",
+    "title": "나인테일즈, 미국 SHOP LC서 판매 성과 이어가 추가 방송 편성",
+    "source": "IDSN",
+    "url": "https://idsn.co.kr/news/view/1065598816825353",
+    "thumb": "/brand-pr/b50/pr8.jpg",
+    "date": "2026-02"
+   },
+   {
+    "type": "press",
+    "title": "미국 SHOP LC서 전량 매진 달성 메디컬 코스메틱 나인테일즈 글로벌 확장 가속",
+    "source": "이넷뉴스",
+    "url": "https://www.enetnews.co.kr/news/articleView.html?idxno=47011",
+    "thumb": "",
+    "date": "2026-02"
+   },
+   {
+    "type": "press",
+    "title": "메디컬 코스메틱 나인테일즈, 홍콩 코스모프로프 2025 참가",
+    "source": "시선뉴스",
+    "url": "https://www.sisunnews.co.kr/news/articleView.html?idxno=231480",
+    "thumb": "",
+    "date": "2025-11"
+   },
+   {
+    "type": "review",
+    "title": "나인테일즈 9tails 추천 제품 TOP20 (브랜드 후기·평점)",
+    "source": "글로우픽",
+    "url": "https://www.glowpick.com/brands/7164",
+    "thumb": "/brand-pr/b50/pr11.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "나인테일즈 링클파워필링 (소비자평점 4.75 리뷰)",
+    "source": "글로우픽",
+    "url": "https://www.glowpick.com/products/93933",
+    "thumb": "/brand-pr/b50/pr12.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "나인테일즈링클세럼 성분 및 효과 사용방법 내돈내산 후기 총정리",
+    "source": "블로그(allwisdomsavyy)",
+    "url": "https://allwisdomsavyy.kr/나인테일즈링클세럼-성분-및-효과-사용방법-내돈내",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "나인테일즈링클세럼 내돈내산 후기 및 효과 부작용 소개",
+    "source": "블로그",
+    "url": "https://zzalmunga.com/나인테일즈링클세럼-내돈내산-후기-및-효과-부작용",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "나인테일즈 링클세럼 목 주름 개선 효과 및 가격 공유",
+    "source": "블로그",
+    "url": "https://mainservice.co.kr/entry/나인테일즈-링클세럼-목-주름-개선-효과-가격",
+    "thumb": "",
+    "date": ""
+   }
+  ],
+  "heroImage": "/brand-hero/b50.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b50/pp1.jpg",
+    "name": "엑소-디펜시브 아이베리어 크림",
+    "price": "168,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp2.jpg",
+    "name": "나인테일즈 엑소-바이탈 바이오셀 에너지 마스크팩 1장",
+    "price": "11,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp3.jpg",
+    "name": "[지안 Pick!]나인테일즈 엑소-나노 리바이브 크림 17ml",
+    "price": "46,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp4.jpg",
+    "name": "리바이브 실속 세트 50ml+17ml",
+    "price": "140,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp5.jpg",
+    "name": "타마누 세트",
+    "price": "110,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp6.jpg",
+    "name": "[초마드 Pick!]나인테일즈 엑소 하이드로 캡슐 브라이트닝 프로텍터",
+    "price": "64,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp7.jpg",
+    "name": "[초마드 Pick]! 나인테일즈 엑소 비타 울트라 브라이트닝 하이드라 마스크팩",
+    "price": "41,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp8.jpg",
+    "name": "나인테일즈 엑소 콜라겐 90 프로 퍼펙트 세럼",
+    "price": "58,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp9.jpg",
+    "name": "[초마드 문신템]나인테일즈 래디언스 리프트 시트 마스크",
+    "price": "45,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp10.jpg",
+    "name": "[초마드 Pick!] 나인테일즈 리밸런싱 부스터",
+    "price": "58,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp11.jpg",
+    "name": "나인테일즈 어드밴스드 라인 리프트 세럼",
+    "price": "89,000원",
+    "url": ""
+   },
+   {
+    "img": "/brand-images/b50/pp12.jpg",
+    "name": "나인테일즈 더블 드롭 앰플",
+    "price": "65,000원",
+    "url": ""
+   }
+  ],
+  "supplyRate": "",
+  "minSalesPerLive": 3000000,
+  "i18n": {
+   "en": {
+    "slogan": "Beyond anti-aging — Ninetails, a medical cosmetic brand that delivers 'confession-aging.' Recognized in global markets including France and the U.S. with its wrinkle-correcting serum.",
+    "note": "",
+    "products": [
+     "EXO-Defensive Eye Barrier Cream",
+     "Ninetails EXO-Vital Bio-Cell Energy Mask Pack (1 sheet)",
+     "Ninetails EXO-Nano Revive Cream 17ml",
+     "Revive Value Set 50ml+17ml",
+     "Tamanu Set",
+     "Ninetails EXO Hydro Capsule Brightening Protector",
+     "Ninetails EXO Vita Ultra Brightening Hydra Mask Pack",
+     "Ninetails EXO Collagen 90 Pro Perfect Serum",
+     "Ninetails Radiance Lift Sheet Mask",
+     "Ninetails Rebalancing Booster",
+     "Ninetails Advanced Line Lift Serum",
+     "Ninetails Double Drop Ampoule"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "超越抗衰，实现\"逆龄告白\"的医学护肤品牌——Ninetails（九尾）。凭借抗皱精华，已在法国、美国等全球市场获得认可。",
+    "note": "",
+    "products": [
+     "EXO-防御眼部屏障霜",
+     "Ninetails EXO-焕活生物细胞能量面膜 1片",
+     "Ninetails EXO-纳米复活面霜 17ml",
+     "复活实惠套装 50ml+17ml",
+     "塔玛努套装",
+     "Ninetails EXO 水胶囊亮白防护霜",
+     "Ninetails EXO 维他超亮白补水面膜",
+     "Ninetails EXO 胶原蛋白90 Pro 完美精华",
+     "Ninetails 焕亮提拉面膜贴",
+     "Ninetails 再平衡导入精华",
+     "Ninetails 进阶紧致提拉精华",
+     "Ninetails 双效安瓶"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "超越抗老，實現\"逆齡告白\"的醫學護膚品牌——Ninetails（九尾）。憑藉抗皺精華，已在法國、美國等全球市場獲得認可。",
+    "note": "",
+    "products": [
+     "EXO-防禦眼部屏障霜",
+     "Ninetails EXO-煥活生物細胞能量面膜 1片",
+     "Ninetails EXO-奈米復活面霜 17ml",
+     "復活實惠套裝 50ml+17ml",
+     "塔瑪努套裝",
+     "Ninetails EXO 水膠囊亮白防護霜",
+     "Ninetails EXO 維他超亮白補水面膜",
+     "Ninetails EXO 膠原蛋白90 Pro 完美精華",
+     "Ninetails 煥亮拉提面膜",
+     "Ninetails 再平衡導入精華",
+     "Ninetails 進階緊緻拉提精華",
+     "Ninetails 雙效安瓶"
+    ]
+   },
+   "ja": {
+    "slogan": "アンチエイジングを超えて\"告白エイジング\"を実現するメディカルコスメブランド、Ninetails（ナインテイルズ）。シワ改善セラムでフランス・アメリカなど世界市場で認められました。",
+    "note": "",
+    "products": [
+     "EXO-ディフェンシブ アイバリア クリーム",
+     "Ninetails EXO-バイタル バイオセル エナジー マスクパック 1枚",
+     "Ninetails EXO-ナノ リバイブ クリーム 17ml",
+     "リバイブ お得セット 50ml+17ml",
+     "タマヌ セット",
+     "Ninetails EXO ハイドロ カプセル ブライトニング プロテクター",
+     "Ninetails EXO ヴィータ ウルトラ ブライトニング ハイドラ マスクパック",
+     "Ninetails EXO コラーゲン90 プロ パーフェクト セラム",
+     "Ninetails ラディアンス リフト シートマスク",
+     "Ninetails リバランシング ブースター",
+     "Ninetails アドバンスド ライン リフト セラム",
+     "Ninetails ダブル ドロップ アンプル"
     ]
    }
   }
