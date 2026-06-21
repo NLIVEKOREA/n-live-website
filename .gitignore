@@ -5,3 +5,8 @@ out/
 .DS_Store
 *.log
 *.tsbuildinfo
+
+# scratch/research files
+_pr2_*.json
+_pr_all.json
+_untrans.json
