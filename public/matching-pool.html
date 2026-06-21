@@ -163,7 +163,7 @@
   }
   .tab:not(.active):hover { color: var(--text); }
 
-  /* ── 선품창고(보세) — 5712(master)일 때만 탭 노출 ── */
+  /* ── 선품창고(選品倉) — 5712(master)일 때만 탭 노출 ── */
   .tab-warehouse { display:none; }
   body.master .tab-warehouse { display:inline-block; }
   .tab-warehouse.active { background:#2f6fdb; color:#fff; }
@@ -198,7 +198,12 @@
   .wh-stats4 span { display:block; font-size:11px; color:var(--text-mute); margin-bottom:4px; }
   .wh-stats4 b { font-size:15px; color:var(--text); }
   .wh-galgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
-  .wh-gal { margin:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .wh-gal { margin:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; cursor:pointer; transition:border-color .15s; }
+  .wh-gal:hover { border-color:var(--amber); }
+  .wh-lightbox { position:fixed; inset:0; background:rgba(0,0,0,.9); z-index:99999; display:none; align-items:center; justify-content:center; padding:30px; }
+  .wh-lightbox.show { display:flex; }
+  .wh-lightbox img { max-width:94%; max-height:92%; border-radius:8px; box-shadow:0 10px 50px rgba(0,0,0,.6); }
+  .wh-lb-close { position:absolute; top:16px; right:24px; color:#fff; font-size:30px; background:none; border:0; cursor:pointer; line-height:1; }
   .wh-gal-img { height:104px; background-size:cover; background-position:center; }
   .wh-gal figcaption { padding:7px 9px; }
   .wh-gal figcaption b { display:block; font-size:12px; color:var(--text); }
@@ -1355,19 +1360,19 @@ Object.assign(window.MP_I18N, {
   </div>
 </div>
 
-<!-- ── 선품창고(보세) 카드 ── -->
+<!-- ── 선품창고(選品倉) 카드 ── -->
 <div class="view" id="warehouses">
   <div class="wh-intro">
     <div class="wh-eyebrow">SELECT WAREHOUSE · 選品倉</div>
     <h2>여러 브랜드 재고를 한 창고에서 — 골라 떼다 라이브로</h2>
-    <p>정식·덤핑 상품을 상시 보유한 보세 소싱 창고입니다. 셀러는 재고 부담 없이 골라 소싱하고, 촬영·라이브까지 한 곳에서 진행합니다. 해외 셀러도 현장에서 방송할 수 있어요.</p>
+    <p>정식·덤핑 상품을 상시 보유한 소싱 창고입니다. 셀러는 재고 부담 없이 골라 소싱하고, 촬영·라이브까지 한 곳에서 진행합니다. 해외 셀러도 현장에서 방송할 수 있어요.</p>
   </div>
   <div class="wh-grid" id="warehouseGrid"></div>
   <div class="pool-cta">
     <div class="pool-cta-text">
       <span class="pool-cta-eyebrow">🏬 선품창고 소싱</span>
       <h3>여기 보이는 창고는 일부 예시예요</h3>
-      <p>검증된 <b>선품창고(보세 소싱처)</b>의 입고 카테고리·소싱 조건·정산 정보는 <b>셀러 등록·상담 후</b> 제공됩니다. 원하시는 소싱 방향을 알려주시면 맞춤 창고를 연결해 드려요.</p>
+      <p>검증된 <b>선품창고(소싱처)</b>의 입고 카테고리·소싱 조건·정산 정보는 <b>셀러 등록·상담 후</b> 제공됩니다. 원하시는 소싱 방향을 알려주시면 맞춤 창고를 연결해 드려요.</p>
     </div>
     <a class="pool-cta-btn" href="/contact/?type=sourcing">선품창고 소싱 문의 →</a>
   </div>
@@ -1516,7 +1521,7 @@ Object.assign(window.MP_I18N, {
     </div>`;
   }
 
-  // ─── 선품창고(보세) 카드 ───
+  // ─── 선품창고(選品倉) 카드 ───
   function warehouseCard(w){
     const chips = (w.chips||[]).map(ch=>{
       const cls = ch==='덤핑' ? 'wh-chip dump' : (ch==='정식' ? 'wh-chip official' : 'wh-chip');
@@ -1554,7 +1559,7 @@ Object.assign(window.MP_I18N, {
       ov.addEventListener('click', e=>{ if(e.target===ov || e.target.closest('.bd-close')) window.closeWarehouseDetail(); });
     }
     const st = w.stats||{};
-    const gallery = (w.gallery||[]).map(g=>`<figure class="wh-gal"><div class="wh-gal-img" style="background-image:url('${esc(g.img)}')"></div><figcaption><b>${esc(g.zone)}</b><span>${esc(g.cap||'')}</span></figcaption></figure>`).join('');
+    const gallery = (w.gallery||[]).map(g=>`<figure class="wh-gal" onclick="openWhImg('${esc(g.img)}')" title="크게 보기"><div class="wh-gal-img" style="background-image:url('${esc(g.img)}')"></div><figcaption><b>${esc(g.zone)}</b><span>${esc(g.cap||'')}</span></figcaption></figure>`).join('');
     const ranges = (w.ranges||[]).map(r=>`<div class="wh-range"><b>${esc(r.cat)}</b><span>${esc(r.range)}</span></div>`).join('');
     const chips = (w.chips||[]).map(ch=>{ const cls = ch==='덤핑'?'wh-chip dump':(ch==='정식'?'wh-chip official':'wh-chip'); return `<span class="${cls}">${esc(ch)}</span>`; }).join('');
     const proc = w.process||[];
@@ -1588,6 +1593,20 @@ Object.assign(window.MP_I18N, {
     const ov=document.getElementById('warehouseDetail');
     if(ov){ ov.classList.remove('show'); document.body.style.overflow=''; }
   };
+  window.openWhImg = function(src){
+    let lb = document.getElementById('whLightbox');
+    if(!lb){
+      lb = document.createElement('div'); lb.id='whLightbox'; lb.className='wh-lightbox';
+      lb.innerHTML = '<button class="wh-lb-close" aria-label="닫기">✕</button><img alt="">';
+      document.body.appendChild(lb);
+      lb.addEventListener('click', e=>{ if(e.target===lb || e.target.closest('.wh-lb-close')) lb.classList.remove('show'); });
+    }
+    lb.querySelector('img').src = src;
+    lb.classList.add('show');
+  };
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ const lb=document.getElementById('whLightbox'); if(lb && lb.classList.contains('show')){ lb.classList.remove('show'); e.stopPropagation(); } }
+  });
   document.addEventListener('keydown', e=>{
     if(e.key==='Escape'){ const ov=document.getElementById('warehouseDetail'); if(ov && ov.classList.contains('show')) window.closeWarehouseDetail(); }
   });
