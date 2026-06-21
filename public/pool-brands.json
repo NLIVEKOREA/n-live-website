@@ -12129,8 +12129,7 @@
      "ヴィナティ ビナトーク ヤマブドウ味"
     ]
    }
-  },
-  "minSalesPerLive": 2000000
+  }
  },
  {
   "id": "b42",
@@ -12306,8 +12305,7 @@
      "[LUMINOUS] クーリングパック（3+1セット）"
     ]
    }
-  },
-  "minSalesPerLive": 2000000
+  }
  },
  {
   "id": "b43",
@@ -12491,8 +12489,7 @@
      "ブライド EGF タイムレスセラム"
     ]
    }
-  },
-  "minSalesPerLive": 3000000
+  }
  },
  {
   "id": "b44",
@@ -12726,8 +12723,7 @@
      "[PDRNアンプル スペシャルSET] アンプル本品 + ミニチュア（いずれか1点）"
     ]
    }
-  },
-  "minSalesPerLive": 2000000
+  }
  },
  {
   "id": "b45",
@@ -12918,8 +12914,7 @@
      "バイオムセラ バリア クリーム"
     ]
    }
-  },
-  "minSalesPerLive": 3000000
+  }
  },
  {
   "id": "b46",
@@ -13230,8 +13225,7 @@
      "ザ・クラウド ハート シェーディングデュオ"
     ]
    }
-  },
-  "minSalesPerLive": 5000000
+  }
  },
  {
   "id": "b47",
@@ -13569,8 +13563,7 @@
      "[CU ビタミンU] サンセラム 50g"
     ]
    }
-  },
-  "minSalesPerLive": 5000000
+  }
  },
  {
   "id": "b48",
@@ -13768,8 +13761,7 @@
      "[ファミリーマンス企画/メイクアップ ブースティングキット] クイックフォーミング スキンパッククレンザー モイスト 30個入り & ティンティング オンブレ グロウ リップ＆チーク"
     ]
    }
-  },
-  "minSalesPerLive": 2000000
+  }
  },
  {
   "id": "b49",
@@ -13948,8 +13940,7 @@
      "クインタ ボディローション"
     ]
    }
-  },
-  "minSalesPerLive": 2000000
+  }
  },
  {
   "id": "b50",
@@ -14186,7 +14177,6 @@
    }
   ],
   "supplyRate": "",
-  "minSalesPerLive": 3000000,
   "i18n": {
    "en": {
     "slogan": "Beyond anti-aging — Ninetails, a medical cosmetic brand that delivers 'confession-aging.' Recognized in global markets including France and the U.S. with its wrinkle-correcting serum.",
