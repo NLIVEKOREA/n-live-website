@@ -39,12 +39,9 @@ export async function GET(req: Request) {
         return c;
       });
   }
-  // 공개(미인증) 응답은 CDN 캐시(빠름) / 인증 응답은 캐시 금지(사용자별)
-  const cache = authed
-    ? "no-store"
-    : "public, s-maxage=300, stale-while-revalidate=600";
+  // 응답이 쿠키(인증)에 따라 달라지므로 공유 캐시 금지 — 잘못된 데이터 노출 방지
   return NextResponse.json(
     { authed, role: role || null, brands },
-    { headers: { "Cache-Control": cache } }
+    { headers: { "Cache-Control": "no-store" } }
   );
 }
