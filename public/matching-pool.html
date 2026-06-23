@@ -812,7 +812,7 @@
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .brand-name .name-masked { color:var(--text); }
-  .brand-name .name-real { color:#e7cf9b; display:none; }
+  .brand-name .name-real { color:var(--text); display:none; }
   body.authed .brand-name .name-masked { display:none; }
   body.authed .brand-name .name-real { display:inline; }
   .brand-slogan {
@@ -825,8 +825,8 @@
   .brand-tags { display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; margin:0 0 8px; min-height:20px; }
   .btag { font-size:10px; font-weight:600; letter-spacing:.02em; color:var(--text-dim);
     background:rgba(11,18,32,.04); border:1px solid var(--line-strong); padding:2px 9px; border-radius:999px; }
-  .btag.studio { color:#9fe3c4; border-color:rgba(93,202,143,.35); background:rgba(93,202,143,.08); }
-  .btag.flag { color:#cbb896; border-color:var(--gold-line-on); background:rgba(196,160,92,.08); }
+  .btag.studio { color:var(--mint-deep); border-color:rgba(18,184,181,.35); background:rgba(18,184,181,.08); }
+  .btag.flag { color:var(--text-dim); border-color:var(--line); background:var(--ice); }
 
   /* 10점 프리미엄 — 테두리를 따라 도는 굵은 오로라 띠 */
   @property --aang { syntax:'<angle>'; initial-value:0deg; inherits:false; }
