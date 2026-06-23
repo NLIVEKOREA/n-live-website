@@ -14251,5 +14251,385 @@
         ]
       }
     }
+  },
+  {
+    "id": "b51",
+    "no": 51,
+    "realName": "콘치웨어",
+    "nickname": "K-브랜드 #B51",
+    "category": "애슬레저",
+    "cat": "fashion",
+    "region": "",
+    "repProduct": "",
+    "priceRange": "₩32,000 ~ ₩111,000",
+    "url": "https://conch.co.kr/",
+    "logo": "/brand-images/b51/logo.png",
+    "images": [
+      "/brand-images/b51/p1.jpg",
+      "/brand-images/b51/p2.jpg",
+      "/brand-images/b51/p3.jpg",
+      "/brand-images/b51/p4.jpg",
+      "/brand-images/b51/p5.jpg"
+    ],
+    "slogan": "필라테스·요가·피트니스 웨어를 제안하는 데일리 애슬레저 브랜드, 콘치웨어",
+    "logoLight": false,
+    "score": 8,
+    "salesMethod": "위탁·방송",
+    "hasStudio": "유",
+    "countries": [
+      "대한민국"
+    ],
+    "note": "",
+    "shopUrl": "https://conch.co.kr/category/best/171/",
+    "snsUrls": [
+      "https://www.instagram.com/conchwear/"
+    ],
+    "repProductUrls": [],
+    "marketingUrls": [],
+    "shopProducts": [
+      "https://conch.co.kr/web/product/medium/202606/3d106d3bf3ffb8ffa05e0f7cf664efbe.jpg",
+      "https://conch.co.kr/web/product/medium/202606/551fe8a997f910809b2a7ed3ad946140.png",
+      "https://conch.co.kr/web/product/medium/202606/8c10d1d706f8f7acc2ea63b8ea90cbb6.jpg",
+      "https://conch.co.kr/web/product/medium/202605/403161c0586beccf58647b648a8e2f45.png",
+      "https://conch.co.kr/web/product/medium/202605/964016ac145278b60630717cfe907261.jpg",
+      "https://conch.co.kr/web/product/medium/202605/2bf5429e842e8c16879255e229f3ec92.jpg",
+      "https://conch.co.kr/web/product/medium/202606/b0dd12fa90e5ef5e4f6456185281eab6.jpg",
+      "https://conch.co.kr/web/product/medium/202605/4d4711adc2e2a9598ad1bf71baf53df8.png",
+      "https://conch.co.kr/web/product/medium/202602/4ec0d5c288836e97c6ef773ed128fc5f.jpg",
+      "https://conch.co.kr/web/product/medium/202602/4a1ce8a9cc0694728560bb887753f98d.jpg",
+      "https://conch.co.kr/web/product/medium/202603/9adf216aecf63b5848f8f36026bf59ec.jpg",
+      "https://conch.co.kr/web/product/medium/202603/bb64c6339b6f4d5359c5a35d6567ae21.jpg",
+      "https://conch.co.kr/web/product/medium/202511/91ee9c562c9af81c24f9b34a6213646b.jpg",
+      "https://conch.co.kr/web/product/medium/202509/fba47f308191f5fc2c39118b17ca3048.jpg",
+      "https://conch.co.kr/web/product/medium/202502/ef75f01b10bb2fa1b1845c4c586eed05.jpg",
+      "https://conch.co.kr/web/product/medium/202603/02d980c0807ac54a00262e6d446deb14.jpg",
+      "https://conch.co.kr/web/product/medium/202506/6f4fa3a5adb02c4a50f4d48de24028ad.jpg",
+      "https://conch.co.kr/web/product/medium/202508/67af2a6a5d6802dcb3a518a1ed9cf25b.jpg",
+      "https://conch.co.kr/web/product/medium/202606/eeb0c05ec773144114a0a4fd24d99ed9.jpg",
+      "https://conch.co.kr/web/product/medium/202409/40e8487bc15ac4657afcf71c91f356c7.webp",
+      "https://conch.co.kr/web/product/medium/202604/36674191439f842ad961f9d06f465a9d.jpg",
+      "https://conch.co.kr/web/product/medium/202509/52aafcd8cfa18a4e732a8482bd3661b9.jpg",
+      "https://conch.co.kr/web/product/medium/202602/fb0c70532843bfabace4dbd0ef6e05e3.jpg",
+      "https://conch.co.kr/web/product/medium/202601/0513b497b4cc9ade7119d02b1b7781b2.jpg"
+    ],
+    "heroImage": "/brand-hero/b51.jpg",
+    "pricedProducts": [
+      {
+        "img": "/brand-images/b51/pp1.jpg",
+        "name": "[5부/7부] 트임 카프리 팬츠",
+        "price": "49,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4591&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp2.jpg",
+        "name": "언발 셔링 반팔티 (8colors)",
+        "price": "46,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4581&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp3.jpg",
+        "name": "[롱버전추가] 쿠셔닝 와이드 트레이닝 팬츠 (4colors)",
+        "price": "59,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4948&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp4.jpg",
+        "name": "백트임 슬림핏 프로 티셔츠 (6colors)",
+        "price": "47,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=5188&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp5.jpg",
+        "name": "레이어드 홀터넥 캡나시 (4colors)",
+        "price": "45,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=5187&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp6.jpg",
+        "name": "[7부] 체크 트임 카프리 팬츠 (2colors)",
+        "price": "57,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=5194&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp7.jpg",
+        "name": "캡내장 배색 크롭 나시 (4colors)",
+        "price": "47,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=5026&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp8.jpg",
+        "name": "셔링 부츠컷 트레이닝 팬츠 (4colors)",
+        "price": "64,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=5190&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp9.jpg",
+        "name": "슬림핏 프로 티셔츠 (9colors)",
+        "price": "41,500원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4133&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp10.jpg",
+        "name": "[1+1] 슬림핏 프로 티셔츠",
+        "price": "83,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=3698&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp11.jpg",
+        "name": "[1+1][롱버전추가!] 리프팅핏 부츠컷 레깅스",
+        "price": "111,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=3762&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp12.jpg",
+        "name": "[롱버전추가!] 리프팅핏 부츠컷 레깅스 (10colors)",
+        "price": "55,500원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=3699&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp13.jpg",
+        "name": "브이넥 홀터 브라탑 (4colors)",
+        "price": "39,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4791&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp14.jpg",
+        "name": "액티브 스판 숏 슬리브 (7colors)",
+        "price": "32,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4592&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp15.jpg",
+        "name": "멜티 소프트 와이드 요가팬츠 (블랙)",
+        "price": "60,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=3193&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp16.jpg",
+        "name": "핀턱 셔링 티셔츠 (2colors)",
+        "price": "53,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4790&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp17.jpg",
+        "name": "버튼 유넥 롱슬리브 (3colors)",
+        "price": "49,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4210&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp18.jpg",
+        "name": "포켓 와이드 팬츠 (4colors)",
+        "price": "67,500원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4212&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp19.jpg",
+        "name": "콘치 시그니처 5부 레깅스(나이트블랙)",
+        "price": "37,500원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=1602&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp20.jpg",
+        "name": "[SET] 콘치 올인원 크롭탑&와일드 부츠컷 레깅스",
+        "price": "101,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=3712&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp21.jpg",
+        "name": "에어라이트 3부 레깅스 (7colors)",
+        "price": "42,700원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=3969&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp22.jpg",
+        "name": "반다 요가 조거팬츠 (4colors)",
+        "price": "64,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4589&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp23.jpg",
+        "name": "릴렉스 블랙 3부 레깅스",
+        "price": "37,500원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=1153&cate_no=171&display_group=1"
+      },
+      {
+        "img": "/brand-images/b51/pp24.jpg",
+        "name": "트임 커버업 스커트 (4colors)",
+        "price": "42,000원",
+        "url": "https://conch.co.kr/product/detail.html?product_no=4897&cate_no=171&display_group=1"
+      }
+    ],
+    "i18n": {
+      "en": {
+        "slogan": "Daily athleisure for pilates, yoga and fitness — Conchwear",
+        "note": "",
+        "products": [
+          "Slit Capri Pants (5/7 length)",
+          "Unbalanced Shirring Short-Sleeve Tee (8 colors)",
+          "Cushioning Wide Training Pants (4 colors)",
+          "Back-Slit Slim-Fit Pro T-Shirt (6 colors)",
+          "Layered Halter-Neck Padded Cami (4 colors)",
+          "Check Slit Capri Pants, 7/8 (2 colors)",
+          "Padded Color-Block Crop Cami (4 colors)",
+          "Shirring Boot-Cut Training Pants (4 colors)",
+          "Slim-Fit Pro T-Shirt (9 colors)",
+          "Slim-Fit Pro T-Shirt [1+1]",
+          "Lifting-Fit Boot-Cut Leggings [1+1, Long]",
+          "Lifting-Fit Boot-Cut Leggings (10 colors)",
+          "V-Neck Halter Bra Top (4 colors)",
+          "Active Span Short Sleeve (7 colors)",
+          "Melty Soft Wide Yoga Pants (Black)",
+          "Pin-Tuck Shirring T-Shirt (2 colors)",
+          "Button U-Neck Long Sleeve (3 colors)",
+          "Pocket Wide Pants (4 colors)",
+          "Conch Signature 5/8 Leggings (Night Black)",
+          "[SET] Conch All-in-One Crop Top & Wild Boot-Cut Leggings",
+          "Airlight 3/8 Leggings (7 colors)",
+          "Banda Yoga Jogger Pants (4 colors)",
+          "Relax Black 3/8 Leggings",
+          "Slit Cover-Up Skirt (4 colors)"
+        ]
+      },
+      "zh-Hans": {
+        "slogan": "为普拉提·瑜伽·健身打造的日常运动休闲品牌 Conchwear",
+        "note": "",
+        "products": [
+          "开衩卡普里裤（5分/7分）",
+          "不对称褶皱短袖T恤（8色）",
+          "缓震宽松训练裤（4色）",
+          "后开衩修身专业T恤（6色）",
+          "叠层挂脖带胸垫背心（4色）",
+          "格纹开衩卡普里裤（7分·2色）",
+          "内置胸垫撞色短款背心（4色）",
+          "褶皱靴型训练裤（4色）",
+          "修身专业T恤（9色）",
+          "修身专业T恤［1+1］",
+          "提拉版型靴型打底裤［1+1·加长］",
+          "提拉版型靴型打底裤（10色）",
+          "V领挂脖文胸上衣（4色）",
+          "弹力运动短袖（7色）",
+          "柔软宽松瑜伽裤（黑色）",
+          "褶裥褶皱T恤（2色）",
+          "纽扣U领长袖（3色）",
+          "口袋阔腿裤（4色）",
+          "Conch标志性5分打底裤（夜黑色）",
+          "［套装］Conch连体短上衣＆宽松靴型打底裤",
+          "轻盈3分打底裤（7色）",
+          "班达瑜伽束脚裤（4色）",
+          "舒适黑色3分打底裤",
+          "开衩罩裙（4色）"
+        ]
+      },
+      "zh-Hant": {
+        "slogan": "為皮拉提斯·瑜伽·健身打造的日常運動休閒品牌 Conchwear",
+        "note": "",
+        "products": [
+          "開衩卡普里褲（5分/7分）",
+          "不對稱褶皺短袖T恤（8色）",
+          "緩震寬鬆訓練褲（4色）",
+          "後開衩修身專業T恤（6色）",
+          "疊層掛脖附胸墊背心（4色）",
+          "格紋開衩卡普里褲（7分·2色）",
+          "內置胸墊撞色短版背心（4色）",
+          "褶皺靴型訓練褲（4色）",
+          "修身專業T恤（9色）",
+          "修身專業T恤［1+1］",
+          "提拉版型靴型內搭褲［1+1·加長］",
+          "提拉版型靴型內搭褲（10色）",
+          "V領掛脖內衣上衣（4色）",
+          "彈力運動短袖（7色）",
+          "柔軟寬鬆瑜伽褲（黑色）",
+          "褶裥褶皺T恤（2色）",
+          "鈕扣U領長袖（3色）",
+          "口袋寬褲（4色）",
+          "Conch 標誌性5分內搭褲（夜黑色）",
+          "［套裝］Conch 連體短版上衣＆寬鬆靴型內搭褲",
+          "輕盈3分內搭褲（7色）",
+          "班達瑜伽束口褲（4色）",
+          "舒適黑色3分內搭褲",
+          "開衩罩裙（4色）"
+        ]
+      },
+      "ja": {
+        "slogan": "ピラティス・ヨガ・フィットネスのためのデイリーアスレジャーブランド、Conchwear",
+        "note": "",
+        "products": [
+          "スリット カプリパンツ（5分/7分丈）",
+          "アンバランス シャーリング 半袖Tシャツ（8色）",
+          "クッショニング ワイド トレーニングパンツ（4色）",
+          "バックスリット スリムフィット プロTシャツ（6色）",
+          "レイヤード ホルターネック パッド付きキャミ（4色）",
+          "チェック スリット カプリパンツ（7分丈・2色）",
+          "パッド内蔵 配色 クロップキャミ（4色）",
+          "シャーリング ブーツカット トレーニングパンツ（4色）",
+          "スリムフィット プロTシャツ（9色）",
+          "スリムフィット プロTシャツ［1+1］",
+          "リフティングフィット ブーツカット レギンス［1+1・ロング］",
+          "リフティングフィット ブーツカット レギンス（10色）",
+          "Vネック ホルター ブラトップ（4色）",
+          "アクティブ スパン ショートスリーブ（7色）",
+          "メルティ ソフト ワイド ヨガパンツ（ブラック）",
+          "ピンタック シャーリング Tシャツ（2色）",
+          "ボタン Uネック ロングスリーブ（3色）",
+          "ポケット ワイドパンツ（4色）",
+          "コンチ シグネチャー 5分丈レギンス（ナイトブラック）",
+          "［SET］コンチ オールインワン クロップトップ＆ワイルド ブーツカット レギンス",
+          "エアライト 3分丈レギンス（7色）",
+          "バンダ ヨガ ジョガーパンツ（4色）",
+          "リラックス ブラック 3分丈レギンス",
+          "スリット カバーアップ スカート（4色）"
+        ]
+      }
+    },
+    "marketingItems": [
+      {
+        "type": "press",
+        "title": "[글로벌 e쇼핑몰] 스타일리시 애슬레저룩 '콘치웨어'",
+        "source": "전자신문(etnews)",
+        "url": "https://www.etnews.com/20200102000031",
+        "thumb": "",
+        "date": ""
+      },
+      {
+        "type": "news",
+        "title": "창업 6개월, 월 2억 매출로 성장한 애슬레저룩 콘치웨어",
+        "source": "brunch.co.kr",
+        "url": "https://brunch.co.kr/@creativemines/84",
+        "thumb": "",
+        "date": ""
+      },
+      {
+        "type": "news",
+        "title": "콘치웨어(지니어스클럽) — 투자·매출·기업가치 정보",
+        "source": "THE VC",
+        "url": "https://thevc.kr/conchwear",
+        "thumb": "",
+        "date": ""
+      },
+      {
+        "type": "youtube",
+        "title": "심으뜸 요가복 레깅스 리뷰 1탄!!! 콘치웨어, 런블랙, 이츠데이, STL (총 11개 국내브랜드)",
+        "source": "YouTube (심으뜸)",
+        "url": "https://www.youtube.com/watch?v=bjDcZHigxXU",
+        "thumb": "",
+        "date": ""
+      },
+      {
+        "type": "review",
+        "title": "콘치웨어 리프팅핏 레깅스 착용 리뷰",
+        "source": "YouTube",
+        "url": "https://www.youtube.com/watch?v=1uH4bFn2Yzw",
+        "thumb": "",
+        "date": ""
+      },
+      {
+        "type": "youtube",
+        "title": "Conchwear F/W Look Book",
+        "source": "YouTube (CONCHWEAR 공식)",
+        "url": "https://www.youtube.com/watch?v=XXmv05hLUvo",
+        "thumb": "",
+        "date": ""
+      }
+    ]
   }
 ]
