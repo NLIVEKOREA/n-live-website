@@ -60,7 +60,7 @@ img{display:block}
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--gray-200)}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;padding:0 36px;max-width:1440px;margin:0 auto}
 .logo{font-family:'Unbounded','Pretendard',sans-serif;font-weight:900;font-size:18px;letter-spacing:.04em;display:flex;align-items:center;gap:12px;text-transform:uppercase}
-.logo-mark{width:40px;height:40px;background:var(--black);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:all .3s ease}
+.logo-mark{width:40px;height:40px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:all .3s ease}
 .logo-mark img{width:100%;height:100%;object-fit:contain}
 .nav-links{display:flex;gap:30px;align-items:center}
 .nav-links a,.nav-dropdown-trigger{font-size:15px;font-weight:600;letter-spacing:.01em;transition:opacity .2s;position:relative;padding:6px 0;color:var(--black)}
