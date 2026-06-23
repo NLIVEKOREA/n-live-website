@@ -988,8 +988,8 @@ body.lang-ko .interest-card h3{font-weight:700}
 .lm-row::after{right:0;background:linear-gradient(270deg,#fff 0%,transparent 100%)}
 .lm-track{display:flex;gap:30px;width:max-content;will-change:transform}
 /* 브랜드: 왼→오 / 왕홍: 오→왼 */
-.lm-ltr .lm-track{animation:lm-ltr 60s linear infinite}
-.lm-rtl .lm-track{animation:lm-rtl 70s linear infinite}
+.lm-ltr .lm-track{animation:lm-ltr 120s linear infinite}
+.lm-rtl .lm-track{animation:lm-rtl 140s linear infinite}
 @keyframes lm-ltr{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 @keyframes lm-rtl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .lm-wrap:hover .lm-track{animation-play-state:paused}

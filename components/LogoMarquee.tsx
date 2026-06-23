@@ -16,11 +16,13 @@ export default function LogoMarquee() {
       fetch("/pool-china.json").then((r) => r.json()).catch(() => []),
       fetch("/pool-sellers.json").then((r) => r.json()).catch(() => []),
     ]).then(([china, sellers]: [any[], any[]]) => {
-      const se: Person[] = (sellers || []).filter((s) => s.image).map((s) => ({
+      // 팔로워 5만(50,000) 이상만 노출
+      const MIN = 50000;
+      const se: Person[] = (sellers || []).filter((s) => s.image && (s.followers || 0) >= MIN).map((s) => ({
         image: s.image, name: s.realName || s.nickname, country: s.country,
         category: s.category, followersText: s.followersText,
       }));
-      const ch: Person[] = (china || []).filter((c) => c.image).map((c) => ({
+      const ch: Person[] = (china || []).filter((c) => c.image && (c.followers || 0) >= MIN).map((c) => ({
         image: c.image, name: c.name, country: "중국",
         category: "왕홍 라이브", followersText: c.followersText,
       }));
