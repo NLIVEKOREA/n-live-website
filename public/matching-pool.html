@@ -1748,10 +1748,12 @@ Object.assign(window.MP_I18N, {
   // 렌더
   (async () => {
     try {
-      const res = await fetch('/pool-brands.json', {cache:'no-store'});
-      const brands = await res.json();
+      window.__brandsReady = fetch('/api/brands/', {cache:'no-store'}).then(function(r){ return r.json(); });
+      const data = await window.__brandsReady;
+      const brands = (data.brands || []);
       brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));   // ELITE 최상단 → 점수 높은 순
       window.__BRANDS_ALL = brands;
+      window.__AUTHED = !!data.authed;
       window.renderBrandGrid();
     } catch(e){
       document.getElementById('brandGrid').innerHTML = '<p style="color:var(--text-mute);padding:20px">브랜드 데이터를 불러오지 못했습니다.</p>';
@@ -2079,11 +2081,8 @@ Object.assign(window.MP_I18N, {
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ const ov=document.getElementById('entryGuide'); if(ov&&ov.classList.contains('show')) window.closeEntryGuide(); }});
 </script>
 <script>
-  // ─── Sample access codes (실제 서비스에선 서버에서 검증) ───
-  const CODES = {
-    // 2026-06-20: 기존 코드(4646·seller·10) 전부 폐기. 5712 단일 마스터 코드만 유효.
-    '5712':   { role: 'all',    expiresHours: null, reveal: true } // 유일한 마스터 코드(전체 열람 + 패션·패션잡화 포함)
-  };
+  // ─── 잠금코드는 서버(/api/unlock)에서만 검증. 클라이언트엔 코드값 없음 ───
+  // 정상 입력 → 서버가 검증 후 HttpOnly 쿠키 발급 → /api/brands가 전체 데이터 반환
 
   // 셀러/브랜드 → 보여줄 탭 매핑 (all = 둘 다)
   const ROLE_TO_VIEW = { seller: 'brands', brand: 'sellers', all: 'brands' };
@@ -2192,8 +2191,7 @@ Object.assign(window.MP_I18N, {
   });
   function updateSubmitState() {
     const code = authInput.value.trim();
-    const master = code && CODES[code] && CODES[code].role === 'all';  // 통합 코드는 역할 선택 불필요
-    if ((selectedRole || master) && code) {
+    if (code) {   // 코드 입력 시 활성화 — 실제 유효성은 서버가 판단
       authSubmit.disabled = false;
       authSubmit.textContent = tr('auth.submit.ready');
     } else if (selectedRole) {
@@ -2208,21 +2206,22 @@ Object.assign(window.MP_I18N, {
   authInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !authSubmit.disabled) authSubmit.click(); });
 
   // ─── Submit auth ───
-  authSubmit.addEventListener('click', () => {
+  authSubmit.addEventListener('click', async () => {
     const code = authInput.value.trim();
-    const meta = CODES[code];
-    if (!meta) { authErr.classList.add('show'); return; }
-    if (meta.role !== 'all' && selectedRole && meta.role !== selectedRole) {
-      authErr.innerHTML = `이 코드는 ${ROLE_LABEL[meta.role]}용 코드입니다. 역할을 다시 선택해주세요.`;
-      authErr.classList.add('show');
-      return;
-    }
-    // OK
-    const expiresAt = meta.expiresHours ? Date.now() + meta.expiresHours * 3600 * 1000 : null;
-    session = { role: meta.role, expiresAt, reveal: !!meta.reveal, code: code };
-    try { localStorage.setItem('nlive_network_session', JSON.stringify(session)); } catch(e) {}
-    applySession();
-    closeModal();
+    if (!code) return;
+    authSubmit.disabled = true;
+    try {
+      const r = await fetch('/api/unlock/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ code: code }) });
+      if (!r.ok) { authErr.classList.add('show'); authSubmit.disabled = false; return; }
+      // 인증 성공 → 서버에서 전체 데이터(숨김+공급률) 재요청
+      const data = await fetch('/api/brands/', {cache:'no-store'}).then(function(x){ return x.json(); });
+      const brands = (data.brands || []);
+      brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
+      window.__BRANDS_ALL = brands; window.__AUTHED = true;
+      session = { role: 'all', expiresAt: null, reveal: true };
+      applySession();
+      closeModal();
+    } catch(e) { authErr.classList.add('show'); authSubmit.disabled = false; }
   });
 
   // ─── Apply session (UI lock state) ───
@@ -2296,30 +2295,24 @@ Object.assign(window.MP_I18N, {
   }
 
   // ─── Lock (sign out) ───
-  lockBtn.addEventListener('click', () => {
+  lockBtn.addEventListener('click', async () => {
+    try { await fetch('/api/lock/', { method:'POST' }); } catch(e) {}
+    try {
+      const data = await fetch('/api/brands/', {cache:'no-store'}).then(function(x){ return x.json(); });
+      const brands = (data.brands || []);
+      brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
+      window.__BRANDS_ALL = brands; window.__AUTHED = false;
+    } catch(e) {}
     session = null;
-    try { localStorage.removeItem('nlive_network_session'); } catch(e) {}
     applyLockedOut();
+    if (window.renderBrandGrid) window.renderBrandGrid();
   });
 
-  // ─── Restore session on load ───
-  // ⚠️⚠️ 임시 전체공개 모드 (영업/홈페이지 이미지 제작용). 끝나면 FORCE_PUBLIC=false 로 되돌릴 것! ⚠️⚠️
-  const FORCE_PUBLIC = false;
-  if (FORCE_PUBLIC) {
-    session = { role: 'all', expiresAt: null };  // 마스터(전체 열람) 상태로 자동 잠금해제
-    applySession();
-  } else {
-    try {
-      const raw = localStorage.getItem('nlive_network_session');
-      if (raw) {
-        const s = JSON.parse(raw);
-        // 폐기된 코드/구버전 세션(코드 미보유)은 무효화 → 기존 로그인 사용자도 다시 잠김. 현재 CODES의 코드만 유효
-        const valid = s && s.code && CODES[s.code] && (!s.expiresAt || s.expiresAt > Date.now());
-        if (valid) { session = s; applySession(); }
-        else localStorage.removeItem('nlive_network_session');
-      }
-    } catch(e) {}
-  }
+  // ─── Restore session on load (서버 쿠키 기준 — 클라이언트엔 코드/세션 저장 안 함) ───
+  (window.__brandsReady || Promise.resolve({ authed: false })).then(function(d){
+    if (d && d.authed) { session = { role: 'all', expiresAt: null, reveal: true }; applySession(); }
+    else { session = null; applyLockedOut(); }
+  });
 </script>
 
 </body>

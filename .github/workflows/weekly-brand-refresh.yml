@@ -45,8 +45,8 @@ jobs:
         run: |
           git config user.name "nlive-bot"
           git config user.email "bot@n-live.co.kr"
-          if [ -n "$(git status --porcelain public/pool-brands.json public/brand-images)" ]; then
-            git add public/pool-brands.json public/brand-images
+          if [ -n "$(git status --porcelain data/pool-brands.full.json public/brand-images)" ]; then
+            git add data/pool-brands.full.json public/brand-images
             git commit -m "자동: 브랜드 대표상품 주간 갱신 (${{ steps.refresh.outputs.summary }})"
             git push
             echo "변경사항 푸시 완료"

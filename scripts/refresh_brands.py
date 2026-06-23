@@ -20,8 +20,8 @@ from playwright.sync_api import sync_playwright
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PUB = os.path.join(ROOT, "public")
-JSON_PATH = os.path.join(PUB, "pool-brands.json")
-IMGDIR = os.path.join(PUB, "brand-images")
+JSON_PATH = os.path.join(ROOT, "data", "pool-brands.full.json")   # 서버 전용(비공개) 데이터
+IMGDIR = os.path.join(PUB, "brand-images")                         # 이미지는 공개 유지
 MIN_PRODUCTS = 5            # 이만큼 못 모으면 기존 유지
 PRODUCT_W = 600             # 카드용 리사이즈 폭
 

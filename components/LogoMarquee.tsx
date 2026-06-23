@@ -12,8 +12,9 @@ export default function LogoMarquee() {
   const [people, setPeople] = useState<Person[]>([]);
 
   useEffect(() => {
-    fetch("/pool-brands.json").then((r) => r.json()).then((d: Brand[]) => {
-      // status가 게시완료/게시요청인 브랜드만 홈 마퀴에 노출
+    // 서버 API가 미인증 시 공개(게시완료/게시요청) 브랜드만 내려줌
+    fetch("/api/brands/").then((r) => r.json()).then((res: { brands?: Brand[] }) => {
+      const d = res.brands || [];
       setBrands(d.filter((b) => b.logo && (!b.status || VISIBLE_STATUS.includes(b.status))));
     }).catch(() => {});
     Promise.all([
