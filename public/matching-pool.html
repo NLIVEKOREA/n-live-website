@@ -1748,7 +1748,7 @@ Object.assign(window.MP_I18N, {
   // 렌더
   (async () => {
     try {
-      window.__brandsReady = fetch('/api/brands/', {cache:'no-store'}).then(function(r){ return r.json(); });
+      window.__brandsReady = fetch('/api/brands/').then(function(r){ return r.json(); });
       const data = await window.__brandsReady;
       const brands = (data.brands || []);
       brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));   // ELITE 최상단 → 점수 높은 순
