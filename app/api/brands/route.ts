@@ -25,11 +25,9 @@ function light(b: any) {
 export async function GET(req: Request) {
   const role = roleFromCookie(req.headers.get("cookie"));
   const authed = !!role;
-  const master = role === "all";
 
-  let brands = full as any[];
-  // 마스터가 아니면 공개(게시완료/게시요청) 브랜드만
-  if (!master) brands = brands.filter((b) => !b.status || VISIBLE.includes(b.status));
+  // 비공개/검수전 등은 5712(마스터)로도 노출 안 함 — 게시완료/게시요청만 홈페이지 노출
+  let brands = (full as any[]).filter((b) => !b.status || VISIBLE.includes(b.status));
   // 목록은 항상 가볍게 (민감필드·무거운 배열 제거)
   brands = brands.map(light);
 

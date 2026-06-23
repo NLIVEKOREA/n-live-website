@@ -24,8 +24,8 @@ export async function GET(req: Request) {
   if (!b) return NextResponse.json({ error: "not found" }, { status: 404 });
 
   const visible = !b.status || VISIBLE.includes(b.status);
-  // 숨김 브랜드는 마스터만 상세 열람 가능
-  if (!visible && !master) {
+  // 비공개/검수전 브랜드는 마스터로도 상세 열람 불가 (홈페이지 비노출)
+  if (!visible) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
