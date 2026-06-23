@@ -317,8 +317,8 @@ export default function NetworkPage() {
             <h3 style={{ whiteSpace: "pre-line" }}>{t.ctaH}</h3>
             <p>{t.ctaP}</p>
             <div className="nw-cta-buttons">
-              <Link href="/contact" className="btn btn-primary" style={{ background: 'var(--amber)', color: 'var(--black)' }}>{t.ctaB1}</Link>
-              <Link href="/contact" className="btn btn-outline" style={{ borderColor: 'rgba(255,255,255,.3)', color: 'var(--white)' }}>{t.ctaB2}</Link>
+              <Link href="/contact" className="btn btn-primary">{t.ctaB1}</Link>
+              <Link href="/contact" className="btn btn-outline">{t.ctaB2}</Link>
             </div>
           </div>
         </div>

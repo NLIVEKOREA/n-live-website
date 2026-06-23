@@ -290,6 +290,13 @@ body.lang-ko .page-hero h1,body.lang-zh .page-hero h1,body.lang-ja .page-hero h1
 .stack-row .num{font-family:'Unbounded',sans-serif;font-size:36px;font-weight:900;color:var(--page-accent,var(--amber));letter-spacing:-.03em}
 .stack-row h4{font-size:18px;font-weight:700;margin-bottom:6px}
 .stack-row p{font-size:14px;color:var(--gray-600);line-height:1.6}
+/* 다크 섹션 내 stack-list — 연한 박스 붕뜸 방지 + 흰 텍스트 가독 */
+.detail-section.dark .stack-list{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);border-radius:16px;overflow:hidden;gap:1px}
+.detail-section.dark .stack-row{background:rgba(255,255,255,.02)!important}
+.detail-section.dark .stack-row:hover{background:rgba(255,255,255,.06)!important}
+.detail-section.dark .stack-row h4{color:#fff}
+.detail-section.dark .stack-row p{color:rgba(255,255,255,.72)}
+.detail-section.dark .stack-row .num{color:var(--blue)}
 
 .detail-cta{background:var(--black);color:var(--white);padding:80px 48px;text-align:center;margin-top:80px}
 .detail-cta h3{font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-bottom:24px;font-family:'Unbounded','Pretendard',sans-serif}
@@ -543,10 +550,10 @@ body{font-weight:450}
 body.lang-ko .final-cta-title{font-family:var(--display-ko)}
 .final-cta-sub{font-size:16px;opacity:.7;margin-bottom:40px;line-height:1.6}
 .final-cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.final-cta .btn-primary{background:var(--amber);color:var(--black);border-color:var(--amber)}
-.final-cta .btn-primary:hover{background:var(--white);color:var(--black)}
-.final-cta .btn-outline{border-color:rgba(255,255,255,.3);color:var(--white)}
-.final-cta .btn-outline:hover{border-color:var(--white);background:rgba(255,255,255,.1)}
+.final-cta .btn-primary{background:#fff;color:var(--blue);border-color:#fff}
+.final-cta .btn-primary:hover{background:var(--blue-tint);color:var(--blue-deep);border-color:var(--blue-tint)}
+.final-cta .btn-outline{background:transparent;border-color:rgba(255,255,255,.5);color:#fff}
+.final-cta .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.12);color:#fff}
 
 /* FOOTER */
 .site-footer{background:var(--black);color:var(--white);padding:80px 0 32px}
