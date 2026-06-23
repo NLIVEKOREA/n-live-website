@@ -1,8 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
 
-type Brand = { id: string; realName?: string; name?: string; logo?: string; logoLight?: boolean };
+type Brand = { id: string; realName?: string; name?: string; logo?: string; logoLight?: boolean; category?: string; cat?: string };
 type Person = { image?: string | null; name?: string; country?: string; category?: string; followersText?: string };
+
+// 매칭풀과 동일한 카테고리 그룹핑 — 패션/패션잡화는 홈 노출에서 제외
+function categoryGroup(cat?: string): string {
+  const c = cat || "";
+  if (/뷰티|화장품|코스메|스킨|메이크업/.test(c)) return "뷰티";
+  if (/식품|푸드|음료|건강식품/.test(c)) return "식품";
+  if (/가방|모자|아이웨어|구두|신발|슈즈|스니커즈|슬리퍼|잡화|주얼리|악세|액세/.test(c)) return "패션잡화";
+  if (/리빙|라이프|홈|인테리어|반려|펫/.test(c)) return "라이프스타일";
+  return "패션";
+}
+const HIDDEN_GROUPS = ["패션", "패션잡화"];
 
 export default function LogoMarquee() {
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -10,7 +21,8 @@ export default function LogoMarquee() {
 
   useEffect(() => {
     fetch("/pool-brands.json").then((r) => r.json()).then((d: Brand[]) => {
-      setBrands(d.filter((b) => b.logo));
+      // 패션·패션잡화 브랜드는 홈에 노출하지 않음 (뷰티·식품·라이프만)
+      setBrands(d.filter((b) => b.logo && !HIDDEN_GROUPS.includes(categoryGroup(b.category || b.cat))));
     }).catch(() => {});
     Promise.all([
       fetch("/pool-china.json").then((r) => r.json()).catch(() => []),
