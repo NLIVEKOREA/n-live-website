@@ -168,9 +168,8 @@
   }
   .tab:not(.active):hover { color: var(--text); }
 
-  /* ── 선품창고(選品倉) — 5712(master)일 때만 탭 노출 ── */
-  .tab-warehouse { display:none; }
-  body.master .tab-warehouse { display:inline-block; }
+  /* ── 선품창고(選品倉) — 코드와 무관하게 항상 노출 ── */
+  .tab-warehouse { display:inline-block; }
   .tab-warehouse.active { background:var(--amber); color:#fff; }
   .wh-intro { max-width:1200px; margin:8px auto 0; padding:0 22px; }
   .wh-intro .wh-eyebrow { color:var(--amber); font-size:12px; font-weight:700; letter-spacing:.12em; }
@@ -2130,7 +2129,8 @@ Object.assign(window.MP_I18N, {
       // 중국관(왕홍)은 브랜드·마스터만 (셀러 코드는 열람 불가)
       if (session && session.role !== 'all') {
         const chinaOk = t.dataset.tab === 'china' && session.role === 'brand';
-        if (t.dataset.tab !== ROLE_TO_VIEW[session.role] && !chinaOk) {
+        const whOk = t.dataset.tab === 'warehouses';   // 선품창고는 코드와 무관하게 항상 열람
+        if (t.dataset.tab !== ROLE_TO_VIEW[session.role] && !chinaOk && !whOk) {
           flashErr(`${ROLE_LABEL[session.role]} 코드로는 열람할 수 없어요.`);
           return;
         }
@@ -2248,7 +2248,7 @@ Object.assign(window.MP_I18N, {
     tabs.forEach(t => {
       const isChina = t.dataset.tab === 'china';
       if (isChina) t.style.display = (session.role === 'seller') ? 'none' : '';   // 셀러는 중국관 숨김
-      const allowed = session.role === 'all' || t.dataset.tab === targetView || (isChina && session.role === 'brand');
+      const allowed = session.role === 'all' || t.dataset.tab === targetView || (isChina && session.role === 'brand') || t.dataset.tab === 'warehouses';
       t.style.opacity = allowed ? '' : '0.35';
       t.title = allowed ? '' : `${ROLE_LABEL[session.role]} 코드로는 열람 불가`;
     });
@@ -2260,9 +2260,7 @@ Object.assign(window.MP_I18N, {
   function applyLockedOut() {
     // 잠금 상태에선 패션·패션잡화 항상 숨김
     if (window.MP_REVEAL) { window.MP_REVEAL = false; if (window.renderBrandGrid) window.renderBrandGrid(); }
-    // 선품창고 탭은 master 전용 → 잠그면 브랜드 탭으로 복귀
-    var _wv = document.getElementById('warehouses');
-    if (_wv && _wv.classList.contains('active')) switchTab('brands');
+    // 선품창고는 코드와 무관하게 항상 노출 — 잠금 시에도 탭 유지
     document.body.classList.remove('authed');
     document.body.classList.remove('master');
     tabs.forEach(t => { t.style.opacity = ''; t.title = ''; t.style.display = ''; });
