@@ -2213,12 +2213,14 @@ Object.assign(window.MP_I18N, {
     try {
       const r = await fetch('/api/unlock/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ code: code }) });
       if (!r.ok) { authErr.classList.add('show'); authSubmit.disabled = false; return; }
-      // 인증 성공 → 서버에서 전체 데이터(숨김+공급률) 재요청
+      const ures = await r.json().catch(function(){ return {}; });
+      const role = ures.role || 'all';
+      // 인증 성공 → 서버에서 데이터 재요청 (마스터면 숨김+공급률 포함)
       const data = await fetch('/api/brands/', {cache:'no-store'}).then(function(x){ return x.json(); });
       const brands = (data.brands || []);
       brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
-      window.__BRANDS_ALL = brands; window.__AUTHED = true;
-      session = { role: 'all', expiresAt: null, reveal: true };
+      window.__BRANDS_ALL = brands; window.__AUTHED = true; window.__ROLE = role;
+      session = { role: role, expiresAt: null, reveal: role === 'all' };
       applySession();
       closeModal();
     } catch(e) { authErr.classList.add('show'); authSubmit.disabled = false; }
@@ -2309,8 +2311,9 @@ Object.assign(window.MP_I18N, {
   });
 
   // ─── Restore session on load (서버 쿠키 기준 — 클라이언트엔 코드/세션 저장 안 함) ───
-  (window.__brandsReady || Promise.resolve({ authed: false })).then(function(d){
-    if (d && d.authed) { session = { role: 'all', expiresAt: null, reveal: true }; applySession(); }
+  (window.__brandsReady || Promise.resolve({ role: null })).then(function(d){
+    var role = d && d.role;
+    if (role) { session = { role: role, expiresAt: null, reveal: role === 'all' }; applySession(); }
     else { session = null; applyLockedOut(); }
   });
 </script>
