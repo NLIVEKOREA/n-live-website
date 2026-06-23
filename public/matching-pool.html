@@ -55,10 +55,11 @@
   .logo .logo-sub { color: var(--text-mute); font-weight: 500; font-size: 13px; margin-left: 8px; }
   .nav-links { display: flex; gap: 30px; font-size: 15px; font-weight: 600; }
   .nav-links a { text-decoration: none; color: var(--text); position: relative; padding: 4px 0; transition: color .2s; }
+  .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -2px; width: 100%; height: 1px; background: var(--amber); transform: scaleX(0); transform-origin: right; transition: transform .35s cubic-bezier(.77,0,.17,1); }
   .nav-links a:hover { color: var(--amber); }
-  /* 활성탭도 다른 버튼과 동일 양식(크기·모양 통일) — bold·블루·밑줄 강조 제거 */
+  .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+  /* 활성탭도 다른 버튼과 동일 양식·동일 호버 애니메이션 */
   .nav-links a.active { color: var(--text); font-weight: 600; }
-  .nav-links a.active::after { display: none; }
   .topnav-right { display: flex; align-items: center; gap: 13px; }
   .topnav-cta { text-decoration: none; font-size: 13px; font-weight: 700; letter-spacing: .02em; color: #1a1505; background: var(--gold); padding: 9px 18px; border-radius: 999px; white-space: nowrap; transition: transform .15s, filter .15s; }
   .topnav-cta:hover { filter: brightness(1.08); transform: translateY(-1px); }
