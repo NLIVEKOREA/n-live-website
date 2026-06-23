@@ -289,8 +289,8 @@
   .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.72);
-    backdrop-filter: blur(6px);
+    background: rgba(0,0,0,0.82);
+    /* backdrop-filter 제거 — 모달 hover 시 그리드 재합성 렉 유발. 불투명 배경으로 대체 */
     display: none;
     align-items: center;
     justify-content: center;
@@ -536,13 +536,13 @@
     text-transform: uppercase;
     text-shadow: 0 2px 8px rgba(0,0,0,0.7);
   }
-  /* Masking when not authed */
+  /* Masking when not authed — backdrop-filter 대신 이미지 자체 blur(캐시됨)로 성능 개선 */
+  body:not(.authed) .thumb-wrap img { filter: blur(8px); transform: scale(1.08); }
   body:not(.authed) .thumb-wrap::before {
     content: "🔒  인증 후 공개";
     position: absolute;
     inset: 0;
-    backdrop-filter: blur(16px);
-    background: rgba(10,10,10,0.55);
+    background: rgba(10,10,10,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
