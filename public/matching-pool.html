@@ -1725,13 +1725,13 @@ Object.assign(window.MP_I18N, {
     document.getElementById('chinaGrid').innerHTML = list.map(chinaCard).join('');
   }
 
-  // ── [임시 비공개] 패션·패션잡화 브랜드는 기본 숨김. 마스터코드 5712(reveal) 잠금해제 시에만 노출. 영구 재노출하려면 아래 배열을 [] 로 비우면 됨 ──
-  window.MP_HIDDEN_GROUPS = ['패션','패션잡화'];
-  window.MP_REVEAL = false;   // 5712 잠금해제 시 true → 숨긴 그룹 노출
+  // ── [상태 기반 노출] status가 '게시완료'/'게시요청'인 브랜드만 공개. 마스터코드 5712(reveal) 잠금해제 시 숨긴 브랜드도 노출. (상태는 등록 시트의 '상태' 컬럼과 연동) ──
+  window.MP_VISIBLE_STATUS = ['게시완료','게시요청'];
+  window.MP_REVEAL = false;   // 5712 잠금해제 시 true → 숨긴 브랜드 노출
   window.renderBrandGrid = function(){
     if (!window.__BRANDS_ALL) return;
     var visible = window.__BRANDS_ALL.filter(function(b){
-      return window.MP_REVEAL || window.MP_HIDDEN_GROUPS.indexOf(categoryGroup(b.category)) === -1;
+      return window.MP_REVEAL || !b.status || window.MP_VISIBLE_STATUS.indexOf(b.status) !== -1;
     });
     window.__BRANDS = {}; visible.forEach(function(b){ window.__BRANDS[b.id] = b; });
     window.__BRANDS_ARR = visible;
