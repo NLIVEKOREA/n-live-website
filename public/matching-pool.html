@@ -48,7 +48,7 @@
   button { font-family: inherit; cursor: pointer; }
 
   /* ── Header ── */
-  .topnav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .topnav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.97); border-bottom: 1px solid var(--line); }
   .topnav-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1440px; margin: 0 auto; padding: 16px 28px; }
   .logo { font-weight: 800; font-size: 19px; letter-spacing: -0.5px; color: var(--text); text-decoration: none; white-space: nowrap; }
   .logo .dot { color: var(--amber); }
@@ -140,7 +140,7 @@
   .hmsg-btn svg { width: 26px; height: 26px; display: block; }
   @keyframes hmsgBlink { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
   .hmsg-cap { font-size: 12px; font-weight: 700; letter-spacing: .14em; color: var(--gold); text-transform: uppercase; }
-  .qr-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.72); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 4000; }
+  .qr-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.82); display: none; align-items: center; justify-content: center; z-index: 4000; }
   .qr-overlay.show { display: flex; }
   .qr-card { background: #fff; border-radius: 20px; padding: 30px 28px 22px; text-align: center; width: 300px; max-width: 90vw; position: relative; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
   .qr-card img { width: 232px; height: 232px; object-fit: contain; border-radius: 10px; background: #f4f4f4; }
@@ -847,14 +847,14 @@
     box-shadow:0 2px 10px rgba(196,160,92,.4);
   }
   /* ── ELITE: 정품 명품 총판 (프리미엄보다 강조, 반짝이는 골드) ── */
-  .brand-card.elite { border-color:transparent; animation:eliteGlow 2.4s ease-in-out infinite; }
+  /* 정적 골드 테두리+글로우 (애니메이션 제거 — box-shadow/배경 애니는 매 프레임 repaint라 끊김) */
+  .brand-card.elite { border-color:transparent; box-shadow:0 0 0 1px rgba(212,175,55,.6), 0 16px 50px rgba(212,175,55,.22); }
   .brand-card.elite::before {
     content:''; position:absolute; inset:0; border-radius:16px; padding:3px; z-index:1;
     background:linear-gradient(115deg,#8a6a1f,#d4af37 18%,#fff7df 30%,#ffe9a8 42%,#d4af37 58%,#8a6a1f 72%,#fff7df 86%,#d4af37);
-    background-size:280% 100%;
+    background-size:100% 100%;
     -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
-    animation:eliteShimmer 2.8s linear infinite;
   }
   @keyframes eliteShimmer { to { background-position:280% 0; } }
   @keyframes eliteGlow {
@@ -974,7 +974,7 @@
   /* ── 상품 이미지 라이트박스 ── */
   .lightbox {
     position:fixed; inset:0; z-index:2000; display:none;
-    background:rgba(0,0,0,0.9); backdrop-filter:blur(4px);
+    background:rgba(0,0,0,0.93);
     align-items:center; justify-content:center; padding:40px;
   }
   .lightbox.show { display:flex; }
@@ -994,7 +994,7 @@
   /* ── 브랜드 상세 오버레이 ── */
   .detail-overlay {
     position:fixed; inset:0; z-index:1500; display:none;
-    background:rgba(0,0,0,0.7); backdrop-filter:blur(4px);
+    background:rgba(0,0,0,0.82);
     overflow-y:auto; padding:40px 20px;
   }
   .detail-overlay.show { display:block; }
@@ -1005,8 +1005,7 @@
   }
   .bd-close {
     position:absolute; top:18px; right:18px; width:38px; height:38px; border-radius:10px; z-index:6;
-    background:rgba(12,9,7,.55); border:1px solid rgba(255,255,255,.18); color:#fff; font-size:18px;
-    backdrop-filter:blur(4px);
+    background:rgba(12,9,7,.78); border:1px solid rgba(255,255,255,.18); color:#fff; font-size:18px;
   }
   .bd-close:hover { color:var(--text); }
   /* 브랜드 상세 — 캠페인 히어로 (모집카드 느낌) */
@@ -1021,7 +1020,7 @@
   .bd-herologo .logo-fallback { font-family:var(--serif); font-size:26px; font-weight:600; color:#fff; }
   .bd-hero-info h2 { font-family:"Pretendard",sans-serif; font-size:30px; font-weight:800; letter-spacing:-.02em; color:#fff; margin:0 0 10px; text-shadow:0 2px 14px rgba(0,0,0,.55); }
   .bd-hero-cat { display:inline-block; font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#fff;
-    background:rgba(11,18,32,.5); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:6px 16px; backdrop-filter:blur(3px); }
+    background:rgba(11,18,32,.62); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:6px 16px; }
   .bd-hero-multi { display:inline-block; margin-left:8px; font-size:12px; font-weight:700; letter-spacing:.06em; color:#fff;
     background:var(--blue); border-radius:999px; padding:6px 14px; vertical-align:middle; }
   .bd-brands-wall { display:flex; flex-wrap:wrap; gap:9px; margin-top:2px; }
@@ -1050,7 +1049,7 @@
   .bd-pr-thumb { position:relative; width:100%; aspect-ratio:16/9; background:#EEF3FB; overflow:hidden; }
   .bd-pr-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
   .bd-pr-noimg { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:34px; opacity:.85; }
-  .bd-pr-badge { position:absolute; left:8px; top:8px; font-size:10px; font-weight:700; color:#fff; padding:3px 8px; border-radius:999px; letter-spacing:.02em; backdrop-filter:blur(2px); }
+  .bd-pr-badge { position:absolute; left:8px; top:8px; font-size:10px; font-weight:700; color:#fff; padding:3px 8px; border-radius:999px; letter-spacing:.02em; }
   .bd-pr-play { position:absolute; right:8px; bottom:8px; width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,.62); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; }
   .pr-news    { background:#2f6fdb; } .bd-pr-noimg.pr-news    { background:linear-gradient(135deg,#1e3a63,#2f6fdb22); }
   .pr-press   { background:#7b56d6; } .bd-pr-noimg.pr-press   { background:linear-gradient(135deg,#3b2c63,#7b56d622); }
