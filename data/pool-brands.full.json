@@ -867,7 +867,7 @@
     ]
    }
   },
-  "status": "비공개"
+  "status": "게시완료"
  },
  {
   "id": "b05",
@@ -14794,6 +14794,350 @@
     "date": ""
    }
   ],
+  "status": "게시완료"
+ },
+ {
+  "id": "b52",
+  "no": 52,
+  "realName": "분트 (VOONT)",
+  "nickname": "K-브랜드 #B52",
+  "category": "여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩62,000 ~ ₩170,000",
+  "url": "https://thevoont.com/",
+  "logo": "/brand-images/b52/logo.png",
+  "images": [
+   "/brand-images/b52/pp1.jpg",
+   "/brand-images/b52/pp2.jpg",
+   "/brand-images/b52/pp3.jpg",
+   "/brand-images/b52/pp4.jpg",
+   "/brand-images/b52/pp5.jpg"
+  ],
+  "slogan": "고요하지만 강렬한 무드를 제안하는 컨템포러리 패션 브랜드, 분트",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://thevoont.com/product/list.html?cate_no=78",
+  "snsUrls": [
+   "https://www.instagram.com/voont_official/"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [
+   "https://thevoont.com/web/product/medium/202604/116030db9254c4aba4dad584e46375f5.jpg",
+   "https://thevoont.com/web/product/medium/202604/81c927d42041d4858b7ab7a0904adaab.jpg",
+   "https://thevoont.com/web/product/medium/202604/978f47f21b7af7bd08aae8016dbef87c.jpg",
+   "https://thevoont.com/web/product/medium/202604/77d79b555044b4558641195400697d3a.jpg",
+   "https://thevoont.com/web/product/medium/202604/e841e1117f93bfed69f5cd114b431295.jpg",
+   "https://thevoont.com/web/product/medium/202604/f33f11b5e41160e0c9e259837279bcf4.jpg",
+   "https://thevoont.com/web/product/medium/202604/67db783d498c8c43aad3a2e4e58955cb.jpg",
+   "https://thevoont.com/web/product/medium/202604/8fd0fbaec29b89d435c8f314546ae7ce.jpg",
+   "https://thevoont.com/web/product/medium/202604/136e0d5760011d4084b47f880d069e94.jpg",
+   "https://thevoont.com/web/product/medium/202604/d228b7efe8a44d6d7133cf342f1d2900.jpg",
+   "https://thevoont.com/web/product/medium/202604/a1014a5a4d95c28917ea9e3dd18dcd82.jpg",
+   "https://thevoont.com/web/product/medium/202604/29c3024674aea3cd36fd51b3fc5db3cd.jpg",
+   "https://thevoont.com/web/product/medium/202602/1442fc1c39502e8583632e560b28f769.jpg"
+  ],
+  "marketingItems": [
+   {
+    "type": "press",
+    "title": "분트(VOONT) 무신사 추천 브랜드관",
+    "source": "무신사",
+    "url": "https://www.musinsa.com/brand/voont",
+    "date": "",
+    "thumb": "/brand-pr/b52/pr1.jpg"
+   },
+   {
+    "type": "press",
+    "title": "분트(VOONT) W컨셉 공식 브랜드관",
+    "source": "W컨셉",
+    "url": "https://display.wconcept.co.kr/rn/brand/112306",
+    "date": "",
+    "thumb": "/brand-pr/b52/pr2.jpg"
+   },
+   {
+    "type": "review",
+    "title": "[분트] VT Basic Tee (BLACK)",
+    "source": "W컨셉",
+    "url": "https://www.wconcept.co.kr/Product/307636163",
+    "date": "",
+    "thumb": "/brand-pr/b52/pr3.jpg"
+   },
+   {
+    "type": "ambassador",
+    "title": "분트 공식 인스타그램 @voont_official",
+    "source": "Instagram",
+    "url": "https://www.instagram.com/voont_official/",
+    "date": "",
+    "thumb": "/brand-pr/b52/pr4.jpg"
+   }
+  ],
+  "heroImage": "/brand-hero/b52.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b52/pp1.jpg",
+    "name": "Horse Graphic Roll-Up T-Shirt (CHARCOAL)",
+    "price": "95,000원",
+    "url": "https://thevoont.com/product/horse-graphic-roll-up-t-shirt-charcoal/429/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp2.jpg",
+    "name": "Slim Fit Sleeveless Midi Dress (IVORY)",
+    "price": "130,000원",
+    "url": "https://thevoont.com/product/slim-fit-sleeveless-midi-dress-ivory/428/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp3.jpg",
+    "name": "Low-Rise String Bootcut Pants (CHARCOAL)",
+    "price": "123,000원",
+    "url": "https://thevoont.com/product/low-rise-string-bootcut-pants-charcoal/426/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp4.jpg",
+    "name": "Buckle Belt Cargo Mini Skirt (CHARCOAL)",
+    "price": "152,000원",
+    "url": "https://thevoont.com/product/buckle-belt-cargo-mini-skirt-charcoal/423/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp5.jpg",
+    "name": "Shirring High Neck Sleeveless (BLACK)",
+    "price": "62,000원",
+    "url": "https://thevoont.com/product/shirring-high-neck-sleeveless-black/421/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp6.jpg",
+    "name": "Diagonal Panel Halter Sleeveless (IVORY)",
+    "price": "98,000원",
+    "url": "https://thevoont.com/product/diagonal-panel-halter-sleeveless-ivory/418/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp7.jpg",
+    "name": "Embroidery Napoleon Slim T-Shirt (IVORY)",
+    "price": "98,000원",
+    "url": "https://thevoont.com/product/embroidery-napoleon-slim-t-shirt-ivory/416/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp8.jpg",
+    "name": "Napoleon Button Detail T-Shirt (CHARCOAL)",
+    "price": "110,000원",
+    "url": "https://thevoont.com/product/napoleon-button-detail-t-shirt-charcoal/414/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp9.jpg",
+    "name": "Twist Drape Slim Mini Dress (BEIGE)",
+    "price": "170,000원",
+    "url": "https://thevoont.com/product/twist-drape-slim-mini-dress-beige/413/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp10.jpg",
+    "name": "Henley Neck Tie Mini Dress (BLACK)",
+    "price": "130,000원",
+    "url": "https://thevoont.com/product/henley-neck-tie-mini-dress-black/411/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp11.jpg",
+    "name": "Asymmetric Drape Slim Top (BLACK)",
+    "price": "95,000원",
+    "url": "https://thevoont.com/product/asymmetric-drape-slim-top-black/407/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp12.jpg",
+    "name": "Cross Chain Wallet Keyring (BLACK)",
+    "price": "115,000원",
+    "url": "https://thevoont.com/product/cross-chain-wallet-keyring-black/430/category/78/display/1/"
+   },
+   {
+    "img": "/brand-images/b52/pp13.jpg",
+    "name": "Stud Cross T-shirt (IVORY)",
+    "price": "79,000원",
+    "url": "https://thevoont.com/product/stud-cross-t-shirt-ivory/389/category/78/display/1/"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Contemporary fashion with a quiet yet intense mood — VOONT",
+    "note": "",
+    "products": [
+     "Horse Graphic Roll-Up T-Shirt (CHARCOAL)",
+     "Slim Fit Sleeveless Midi Dress (IVORY)",
+     "Low-Rise String Bootcut Pants (CHARCOAL)",
+     "Buckle Belt Cargo Mini Skirt (CHARCOAL)",
+     "Shirring High Neck Sleeveless (BLACK)",
+     "Diagonal Panel Halter Sleeveless (IVORY)",
+     "Embroidery Napoleon Slim T-Shirt (IVORY)",
+     "Napoleon Button Detail T-Shirt (CHARCOAL)",
+     "Twist Drape Slim Mini Dress (BEIGE)",
+     "Henley Neck Tie Mini Dress (BLACK)",
+     "Asymmetric Drape Slim Top (BLACK)",
+     "Cross Chain Wallet Keyring (BLACK)",
+     "Stud Cross T-shirt (IVORY)"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "提出静谧而强烈风格的当代时装品牌 VOONT",
+    "note": "",
+    "products": [
+     "马图案卷边T恤 (炭灰)",
+     "修身无袖中长连衣裙 (象牙白)",
+     "低腰系带喇叭裤 (炭灰)",
+     "搭扣腰带工装迷你裙 (炭灰)",
+     "褶皱高领无袖上衣 (黑色)",
+     "斜裁拼接挂脖无袖上衣 (象牙白)",
+     "刺绣拿破仑修身T恤 (象牙白)",
+     "拿破仑纽扣细节T恤 (炭灰)",
+     "扭褶修身迷你连衣裙 (米色)",
+     "亨利领系带迷你连衣裙 (黑色)",
+     "不对称垂褶修身上衣 (黑色)",
+     "十字链条钱包钥匙扣 (黑色)",
+     "铆钉十字T恤 (象牙白)"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "提出靜謐而強烈風格的當代時裝品牌 VOONT",
+    "note": "",
+    "products": [
+     "馬圖案捲邊T恤 (炭灰)",
+     "修身無袖中長連身裙 (象牙白)",
+     "低腰繫帶喇叭褲 (炭灰)",
+     "釦帶工裝迷你裙 (炭灰)",
+     "皺褶高領無袖上衣 (黑色)",
+     "斜裁拼接掛頸無袖上衣 (象牙白)",
+     "刺繡拿破崙修身T恤 (象牙白)",
+     "拿破崙鈕釦細節T恤 (炭灰)",
+     "扭褶修身迷你連身裙 (米色)",
+     "亨利領繫帶迷你連身裙 (黑色)",
+     "不對稱垂褶修身上衣 (黑色)",
+     "十字鏈條錢包鑰匙圈 (黑色)",
+     "鉚釘十字T恤 (象牙白)"
+    ]
+   },
+   "ja": {
+    "slogan": "静かでありながら強烈なムードを提案するコンテンポラリーファッションブランド VOONT",
+    "note": "",
+    "products": [
+     "ホースグラフィックロールアップTシャツ (チャコール)",
+     "スリムフィットノースリーブミディドレス (アイボリー)",
+     "ローライズストリングブーツカットパンツ (チャコール)",
+     "バックルベルトカーゴミニスカート (チャコール)",
+     "シャーリングハイネックノースリーブ (ブラック)",
+     "ダイアゴナルパネルホルターノースリーブ (アイボリー)",
+     "刺繍ナポレオンスリムTシャツ (アイボリー)",
+     "ナポレオンボタンディテールTシャツ (チャコール)",
+     "ツイストドレープスリムミニドレス (ベージュ)",
+     "ヘンリーネックタイミニドレス (ブラック)",
+     "アシンメトリードレープスリムトップ (ブラック)",
+     "クロスチェーンウォレットキーリング (ブラック)",
+     "スタッドクロスTシャツ (アイボリー)"
+    ]
+   }
+  },
+  "status": "게시완료"
+ },
+ {
+  "id": "b53",
+  "no": 53,
+  "realName": "타임랩 (TIME LAB)",
+  "nickname": "K-브랜드 #B53",
+  "category": "스킨케어",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩258,000",
+  "url": "https://timelab.kr/",
+  "logo": "/brand-images/b53/logo.png",
+  "images": [
+   "/brand-images/b53/pp1.jpg"
+  ],
+  "slogan": "저속노화(Slow Aging) 철학으로 NMN 안티에이징을 제안하는 스킨케어 브랜드, 타임랩",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://timelab.kr/product/list.html?cate_no=23",
+  "snsUrls": [
+   "https://www.instagram.com/timelab_kr/"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [
+   "/brand-images/b53/pp1.jpg"
+  ],
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "스킨케어 브랜드 타임랩(TimeLab), 한국 공식 론칭",
+    "source": "시선뉴스",
+    "url": "http://www.sisunnews.co.kr/news/articleView.html?idxno=229441",
+    "date": "",
+    "thumb": "/brand-pr/b53/pr1.jpg"
+   },
+   {
+    "type": "review",
+    "title": "타임랩 NMN 앰플 4주 사용 리뷰 — 진짜 효과 있을까?",
+    "source": "GMGN RECOS",
+    "url": "https://recosme.co.kr/article/%ED%95%9C%EB%8B%AC%EB%B3%80%ED%99%94/1002/297",
+    "date": "",
+    "thumb": "/brand-pr/b53/pr2.jpg"
+   },
+   {
+    "type": "ambassador",
+    "title": "타임랩 공식 인스타그램 @timelab_kr",
+    "source": "Instagram",
+    "url": "https://www.instagram.com/timelab_kr/",
+    "date": "",
+    "thumb": "/brand-pr/b53/pr3.jpg"
+   }
+  ],
+  "heroImage": "/brand-hero/b53.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b53/pp1.jpg",
+    "name": "Time Lab NMN 앰플",
+    "price": "258,000원",
+    "url": "https://timelab.kr/product/detail.html?product_no=17&cate_no=23&display_group=1"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "NMN anti-aging skincare based on a slow-aging philosophy — TIME LAB",
+    "note": "",
+    "products": [
+     "Time Lab NMN Ampoule"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以慢老化理念提出NMN抗衰老的护肤品牌 TIME LAB",
+    "note": "",
+    "products": [
+     "Time Lab NMN 安瓶"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以慢老化理念提出NMN抗衰老的護膚品牌 TIME LAB",
+    "note": "",
+    "products": [
+     "Time Lab NMN 安瓶"
+    ]
+   },
+   "ja": {
+    "slogan": "スローエイジング哲学でNMNアンチエイジングを提案するスキンケアブランド TIME LAB",
+    "note": "",
+    "products": [
+     "Time Lab NMN アンプル"
+    ]
+   }
+  },
   "status": "게시완료"
  }
 ]
