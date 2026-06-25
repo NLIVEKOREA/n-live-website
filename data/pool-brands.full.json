@@ -412,158 +412,60 @@
     "name": "DIOR",
     "featured": true,
     "products": [
-     "https://www.lookoptical.kr/web/product/medium/202603/8a89a38d7ed64a846952531c76979b06.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/52c9e23ddb14dc4416c7ad3190f48892.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/c4af527149315a299696e1297054bdd7.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/a1b583d522cf27a247047652dc60a9ae.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/32914b1c31057753172d5666258ac409.jpg"
-    ]
-   },
-   {
-    "name": "CELINE",
-    "featured": true,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202603/065a8d45a28d6a77b1abac0ac2f4d23a.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/f50840f69b0f62393505bec5b8da81f3.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/36ba9afda8f2978c57a41ada6f4038a8.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/809e2afad46bb118dc5fb9a2e4823a75.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/a89ad5f3748a408c14ee3bb23e4cc59a.jpg"
+     "/brand-images/b05/carried/dior1.jpg",
+     "/brand-images/b05/carried/dior2.jpg",
+     "/brand-images/b05/carried/dior3.jpg",
+     "/brand-images/b05/carried/dior4.jpg",
+     "/brand-images/b05/carried/dior5.jpg",
+     "/brand-images/b05/carried/dior6.jpg",
+     "/brand-images/b05/carried/dior7.jpg",
+     "/brand-images/b05/carried/dior8.jpg",
+     "/brand-images/b05/carried/dior9.jpg",
+     "/brand-images/b05/carried/dior10.jpg"
     ]
    },
    {
     "name": "FENDI",
     "featured": true,
     "products": [
-     "https://www.lookoptical.kr/web/product/medium/202410/17428ef2e6f63d2a62640fe4747d988e.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202410/a3b0b16b973591136a8d64edaa04ead6.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202410/5937c691ce7271440f212921bf2cf177.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202410/a37de41f031c9e2658224c792a00c97d.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202410/27c9774461a281ee8ae51f1f3387b3c7.jpg"
+     "/brand-images/b05/carried/fendi1.jpg",
+     "/brand-images/b05/carried/fendi2.jpg",
+     "/brand-images/b05/carried/fendi3.jpg",
+     "/brand-images/b05/carried/fendi4.jpg",
+     "/brand-images/b05/carried/fendi5.jpg",
+     "/brand-images/b05/carried/fendi6.jpg",
+     "/brand-images/b05/carried/fendi7.jpg",
+     "/brand-images/b05/carried/fendi8.jpg",
+     "/brand-images/b05/carried/fendi9.jpg",
+     "/brand-images/b05/carried/fendi10.jpg"
+    ]
+   },
+   {
+    "name": "PAUL SMITH",
+    "featured": true,
+    "products": [
+     "/brand-images/b05/carried/paulsmith1.jpg",
+     "/brand-images/b05/carried/paulsmith2.jpg",
+     "/brand-images/b05/carried/paulsmith3.jpg",
+     "/brand-images/b05/carried/paulsmith4.jpg",
+     "/brand-images/b05/carried/paulsmith5.jpg",
+     "/brand-images/b05/carried/paulsmith6.jpg",
+     "/brand-images/b05/carried/paulsmith7.jpg",
+     "/brand-images/b05/carried/paulsmith8.jpg",
+     "/brand-images/b05/carried/paulsmith9.jpg",
+     "/brand-images/b05/carried/paulsmith10.jpg"
     ]
    },
    {
     "name": "NIKE",
     "featured": true,
     "products": [
-     "https://www.lookoptical.kr/web/product/medium/202606/406facd078c402940858b4adec64db7f.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202411/cc11a8f8e055806100e6cabd5c45ada1.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202410/85934043ec87d58d5e28354482c463d1.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202410/81c84894e14b9082e362bec061c525cd.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202603/053c4329d1a5d94e0d57caa281dc761c.jpg"
-    ]
-   },
-   {
-    "name": "FERRAGAMO",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202409/2930fb5791a78c2fd877078c60f455a3.jpg"
-    ]
-   },
-   {
-    "name": "MULBERRY",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202502/8720d7d45ebf206d4719f3aebcd9d114.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202509/1e44a731cc7bc948bc4b2a1926830874.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202501/110c0e0c87bae48b93ff8f24e8c5e766.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202501/82624a9857f8e7f2de858da08eadbb1a.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202501/4c683dfdfbd2c27334dde982b82a19c7.jpg"
-    ]
-   },
-   {
-    "name": "LONGCHAMP",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202502/c02eb00167b8d96a172fdb779dbd8907.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/9a540c09bc66ab876e90600540b41be5.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/69fe787dd2d966156f1a6b79cfc0fc47.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/306115bd0f75d0c15182cf6376d10b53.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/7b4de0e6bb46c527e4c400d248bda7c3.jpg"
-    ]
-   },
-   {
-    "name": "PAUL SMITH",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202509/95dc54fd7c2b727a8f9fa2cbc376bebb.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202509/cdf8460549463bb0a509945e4ace7688.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202501/392ba843c32aebe330e06d9d8ac40f13.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202501/fdbe7be26f8300180757e4c2252c51ac.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202501/8930dd76b365aefb3e56760964613eaa.jpg"
-    ]
-   },
-   {
-    "name": "SANDRO",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202603/285215574631b05339a52261ce7f8201.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202410/3772d97f28f1804c320603dc4225b94f.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202509/f980fdaf36e7f883d65935ee30fb7dc5.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/3f48893a5b9ea2d02a41437ed308a7ef.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202509/ced00f01d279bb9c7d5b07581d641399.jpg"
-    ]
-   },
-   {
-    "name": "CALVIN KLEIN",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202405/d150a77b73196c4e7ffd2be9927096b4.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202405/22e9e1122c7d8fccd75b48abfe55b884.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202407/049c03ce245dc8574baf831c794b583a.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202407/d72f9c3b3df4adb4f8790789df4aa8d1.jpg"
-    ]
-   },
-   {
-    "name": "LACOSTE",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202404/96b00fcd77ee143becb28ecae6758bd1.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202504/3cb1352c0117c62ad816a204868633ec.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202504/9f78ad13497a8fcdb5fa2f5594b5d9a1.jpg"
-    ]
-   },
-   {
-    "name": "POLICE",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202509/7218d1eef1bd914b5eb8bfa2c488ed2f.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202509/aeec27e9f125ca0e5a6006e0b786ffe0.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202604/f06cd1cd872bb1061566b57257a58e4a.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202605/e49da60f529e4336695f4650b19a32b4.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202509/2bd9ae23570da7c326f7735c91f8725a.jpg"
-    ]
-   },
-   {
-    "name": "ESCADA",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202501/bce52f9e7323e18c8b79a6be8b8ff016.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/142a10655884644ead545da94bdb7d12.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/91ff3b57045d162ab03024bfd18c3f64.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/3230dd764390a71edf1a22d88a0c48fc.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202502/0cd82f3bf560e5277e72268690d99338.jpg"
-    ]
-   },
-   {
-    "name": "FILA",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202409/9b9ba2a4cfe9ed25dafd8fed526336eb.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202509/06d89021b8ac9f01367fdb0744b18cc9.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202510/ba7d451976d5753386a951fdef611664.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202506/6b6a35824ad7641c919067e0bddec253.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202509/807955563f5c99eb11bc630afc74060c.jpg"
-    ]
-   },
-   {
-    "name": "ED HARDY",
-    "featured": false,
-    "products": [
-     "https://www.lookoptical.kr/web/product/medium/202506/2283f9169122b3705d06c59d6bb75615.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202506/cfe481dd059607c6014e85610dcc19dc.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202504/79a0e2f1c7df7973b7c2aeca62e910d4.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202504/fb293d62b34891ac2fe8ed994232424e.jpg",
-     "https://www.lookoptical.kr/web/product/medium/202504/880eac4869d084500f6bf0fece552380.jpg"
+     "/brand-images/b05/carried/nike1.jpg",
+     "/brand-images/b05/carried/nike2.jpg",
+     "/brand-images/b05/carried/nike3.jpg",
+     "/brand-images/b05/carried/nike4.jpg",
+     "/brand-images/b05/carried/nike5.jpg",
+     "/brand-images/b05/carried/nike6.jpg"
     ]
    }
   ],
@@ -5913,6 +5815,173 @@
     "note": "",
     "products": [
      "Time Lab NMN アンプル"
+    ]
+   }
+  },
+  "status": "게시완료"
+ },
+ {
+  "id": "b54",
+  "no": 54,
+  "realName": "브이벨라 (VBELLA)",
+  "nickname": "K-브랜드 #B54",
+  "category": "스킨케어",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩30,800 ~ ₩276,000",
+  "url": "https://vbella.co.kr",
+  "logo": "",
+  "images": [
+   "/brand-images/b54/pp1.jpg",
+   "/brand-images/b54/pp2.jpg",
+   "/brand-images/b54/pp3.jpg",
+   "/brand-images/b54/pp4.jpg",
+   "/brand-images/b54/pp5.jpg"
+  ],
+  "slogan": "유효 성분 흡수 기술로 건강하고 자연스러운 아름다움을 제안하는 슬로우 에이징 스킨케어 브랜드, 브이벨라",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "유",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://vbella.co.kr/shop",
+  "snsUrls": [
+   "https://www.instagram.com/vbella_official/"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [
+   "https://cdn.imweb.me/thumbnail/20250906/f9f1926c2c9c9.jpg",
+   "https://cdn.imweb.me/thumbnail/20260623/84f1b09493391.jpg",
+   "https://cdn.imweb.me/thumbnail/20260623/d0acbab5a4bdf.jpg",
+   "https://cdn.imweb.me/thumbnail/20260623/0763803271b1f.jpg",
+   "https://cdn.imweb.me/thumbnail/20260623/1ae80a85386fc.png",
+   "https://cdn.imweb.me/thumbnail/20260623/b95bfee3fa6d2.png"
+  ],
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "반티룩스, 차세대 스피큘 기술 '브이벨라' 뷰티라인 선봬",
+    "source": "패션비즈",
+    "url": "https://fashionbiz.co.kr/article/214763",
+    "date": "",
+    "thumb": "/brand-pr/b54/pr1.jpg"
+   },
+   {
+    "type": "news",
+    "title": "반티룩스, 3월 '브이벨라' 론칭",
+    "source": "포브스코리아",
+    "url": "https://www.forbeskorea.co.kr/news/articleView.html?idxno=340926",
+    "date": "",
+    "thumb": "/brand-pr/b54/pr2.jpg"
+   },
+   {
+    "type": "news",
+    "title": "반티룩스, 바르는 니들샷 '브이벨라' 라인업 출시",
+    "source": "네이트뉴스",
+    "url": "https://m.news.nate.com/view/20250328n09685",
+    "date": "",
+    "thumb": "/brand-pr/b54/pr3.jpg"
+   },
+   {
+    "type": "ambassador",
+    "title": "브이벨라 공식 인스타그램 @vbella_official",
+    "source": "Instagram",
+    "url": "https://www.instagram.com/vbella_official/",
+    "date": "",
+    "thumb": ""
+   }
+  ],
+  "heroImage": "/brand-hero/b54.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b54/pp1.jpg",
+    "name": "글로우 텐션 3종 세트(부스터+에센스+크림+괄사)",
+    "price": "276,000원",
+    "url": "https://vbella.co.kr/shop/?idx=14"
+   },
+   {
+    "img": "/brand-images/b54/pp2.jpg",
+    "name": "글로우 텐션 부스터 100ml",
+    "price": "79,000원",
+    "url": "https://vbella.co.kr/shop/?idx=15"
+   },
+   {
+    "img": "/brand-images/b54/pp3.jpg",
+    "name": "글로우 텐션 에센스 50ml",
+    "price": "88,000원",
+    "url": "https://vbella.co.kr/shop/?idx=16"
+   },
+   {
+    "img": "/brand-images/b54/pp4.jpg",
+    "name": "글로우 텐션 크림 30g",
+    "price": "109,000원",
+    "url": "https://vbella.co.kr/shop/?idx=17"
+   },
+   {
+    "img": "/brand-images/b54/pp5.jpg",
+    "name": "글로우 텐션 7 Days Travel Kit",
+    "price": "30,800원",
+    "url": "https://vbella.co.kr/shop/?idx=18"
+   },
+   {
+    "img": "/brand-images/b54/pp6.jpg",
+    "name": "VBELLA Multifunctional EMS Device",
+    "price": "189,000원",
+    "url": "https://vbella.co.kr/shop/?idx=21"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A slow-aging skincare brand enhancing active-ingredient absorption for healthy, natural beauty — VBELLA",
+    "note": "",
+    "products": [
+     "Glow Tension 3-Piece Set (Booster + Essence + Cream + Gua Sha)",
+     "Glow Tension Booster 100ml",
+     "Glow Tension Essence 50ml",
+     "Glow Tension Cream 30g",
+     "Glow Tension 7 Days Travel Kit",
+     "VBELLA Multifunctional EMS Device"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以有效成分吸收技术，提出健康自然之美的慢老化护肤品牌 VBELLA",
+    "note": "",
+    "products": [
+     "Glow Tension 三件套装（精华+导入液+面霜+刮痧板）",
+     "Glow Tension 导入液 100ml",
+     "Glow Tension 精华 50ml",
+     "Glow Tension 面霜 30g",
+     "Glow Tension 7天旅行装",
+     "VBELLA 多功能 EMS 美容仪"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以有效成分吸收技術，提出健康自然之美的慢老化護膚品牌 VBELLA",
+    "note": "",
+    "products": [
+     "Glow Tension 三件套組（精華+導入液+面霜+刮痧板）",
+     "Glow Tension 導入液 100ml",
+     "Glow Tension 精華 50ml",
+     "Glow Tension 面霜 30g",
+     "Glow Tension 7天旅行組",
+     "VBELLA 多功能 EMS 美容儀"
+    ]
+   },
+   "ja": {
+    "slogan": "有効成分の吸収技術で健やかで自然な美しさを提案するスローエイジングスキンケアブランド VBELLA",
+    "note": "",
+    "products": [
+     "グロウテンション 3点セット（ブースター+エッセンス+クリーム+カッサ）",
+     "グロウテンション ブースター 100ml",
+     "グロウテンション エッセンス 50ml",
+     "グロウテンション クリーム 30g",
+     "グロウテンション 7Days トラベルキット",
+     "VBELLA 多機能EMS美容器"
     ]
    }
   },
