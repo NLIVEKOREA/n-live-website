@@ -2262,7 +2262,9 @@ Object.assign(window.MP_I18N, {
     // 다른 탭 비활성 시각 (통합 코드는 둘 다 활성)
     tabs.forEach(t => {
       const isChina = t.dataset.tab === 'china';
-      if (isChina) t.style.display = (session.role === 'seller') ? 'none' : '';   // 셀러는 중국관 숨김
+      if (isChina) t.style.display = (session.role === 'seller') ? 'none' : '';   // 셀러는 중국관(왕홍) 숨김
+      // 셀러 코드는 글로벌 셀러 탭도 완전히 숨김 — 브랜드 리스트만 노출
+      if (t.dataset.tab === 'sellers') t.style.display = (session.role === 'seller') ? 'none' : '';
       const allowed = session.role === 'all' || t.dataset.tab === targetView || (isChina && session.role === 'brand') || t.dataset.tab === 'warehouses';
       t.style.opacity = allowed ? '' : '0.35';
       t.title = allowed ? '' : `${ROLE_LABEL[session.role]} 코드로는 열람 불가`;
