@@ -5986,5 +5986,927 @@
    }
   },
   "status": "게시완료"
+ },
+ {
+  "id": "b55",
+  "no": 55,
+  "realName": "밀로우먼 (MILLO WOMEN)",
+  "nickname": "K-브랜드 #B55",
+  "category": "여성캐쥬얼의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩108,000 ~ ₩268,000",
+  "url": "https://millowomen.com/",
+  "logo": "/brand-images/b55/logo.png",
+  "images": [
+   "/brand-images/b55/pp1.jpg",
+   "/brand-images/b55/pp2.jpg",
+   "/brand-images/b55/pp3.jpg",
+   "/brand-images/b55/pp4.jpg",
+   "/brand-images/b55/pp5.jpg"
+  ],
+  "slogan": "밀로 아카이브의 우먼 라인 — 절제된 무드와 견고한 디테일의 감각적인 데일리 캐주얼, MILLO WOMEN.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://millowomen.com/product/list.html?cate_no=104",
+  "snsUrls": [
+   "https://www.instagram.com/millowomen",
+   "https://www.youtube.com/channel/UCIuiqHQZ1ZMrjaTG43hObAA",
+   "https://pf.kakao.com/_EXrvT"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "type": "review",
+    "title": "밀로 아카이브(MILLO ARCHIVE) | 무신사 추천 브랜드관",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/brand/millo",
+    "thumb": "/brand-pr/b55/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "밀로 우먼(MILLO WOMEN) | 무신사 추천 브랜드관",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/brand/millowomen",
+    "thumb": "/brand-pr/b55/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "Millo Archive | KREAM 브랜드 스토어",
+    "source": "KREAM",
+    "url": "https://kream.co.kr/brand-stores/Millo%20Archive",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "밀로 아카이브 크롭 무브 가디건 [멜란지 브라운] 후기",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/review/70887820",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "밀로 아카이브 뉴 브러쉬드 가디건 [바이올렛] 후기",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/review/78357581",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "Millo Archive 공식 유튜브 채널",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/@milloarchive",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "여름에는 이런 반팔 하나면 됩니다 — 블프 반팔 추천템",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/shorts/msqYdj7Ljeo",
+    "thumb": "/brand-pr/b55/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "Millo Archive Spring 24",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/shorts/5wY-4_NQDEs",
+    "thumb": "/brand-pr/b55/pr8.jpg",
+    "date": ""
+   }
+  ],
+  "heroImage": "/brand-images/b55/pp1.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b55/pp1.jpg",
+    "name": "Seeker Check Shirt Jacket [Navy]",
+    "price": "138,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=4066&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp2.jpg",
+    "name": "May A-2 Leather Blouson [Cocoa]",
+    "price": "238,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=4055&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp3.jpg",
+    "name": "Bulleit Stud Jacket [Gray]",
+    "price": "185,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3990&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp4.jpg",
+    "name": "Overdyed M-65 Field Jacket [Khaki]",
+    "price": "268,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3988&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp5.jpg",
+    "name": "Vintage Cotton Cafe Racer Jacket [Washed Khaki]",
+    "price": "158,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3986&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp6.jpg",
+    "name": "Crop Move Cardigan [Purple]",
+    "price": "108,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3855&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp7.jpg",
+    "name": "Rest Suede Blouson [Mocha Beige]",
+    "price": "198,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3686&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp8.jpg",
+    "name": "Pernet Corduroy Blouson [Deep Brown]",
+    "price": "188,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3736&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp9.jpg",
+    "name": "Button Liner Quilted Jacket [Khaki Brown]",
+    "price": "158,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3690&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp10.jpg",
+    "name": "Spread High neck Jacket [Mocha Brown]",
+    "price": "178,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3684&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp11.jpg",
+    "name": "Lien Hooded Parka [Graysh Green]",
+    "price": "228,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3694&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp12.jpg",
+    "name": "Arco Cotton Zip-Up [Black]",
+    "price": "138,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3748&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp13.jpg",
+    "name": "[MA X DEREK] Len Stripe Jacket [Gray]",
+    "price": "208,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3764&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp14.jpg",
+    "name": "Loang Knit Hoodie Zip-Up [Melange Black]",
+    "price": "128,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3789&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp15.jpg",
+    "name": "Loang Knit Hoodie Zip-Up [Melange White]",
+    "price": "128,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3790&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp16.jpg",
+    "name": "Denim Biker Jacket [Vintage Blue]",
+    "price": "148,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3791&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp17.jpg",
+    "name": "Cranny Leather Stud Jacket [Black]",
+    "price": "228,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3682&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b55/pp18.jpg",
+    "name": "Denite Washed Middle Jacket [Vintage Navy]",
+    "price": "168,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3520&cate_no=104&display_group=1"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "The women's line of the MILLO archive — MILLO WOMEN, refined moods and sturdy details for sensual daily casual.",
+    "note": "",
+    "products": [
+     "Seeker Check Shirt Jacket [Navy]",
+     "May A-2 Leather Blouson [Cocoa]",
+     "Bulleit Stud Jacket [Gray]",
+     "Overdyed M-65 Field Jacket [Khaki]",
+     "Vintage Cotton Cafe Racer Jacket [Washed Khaki]",
+     "Crop Move Cardigan [Purple]",
+     "Rest Suede Blouson [Mocha Beige]",
+     "Pernet Corduroy Blouson [Deep Brown]",
+     "Button Liner Quilted Jacket [Khaki Brown]",
+     "Spread High neck Jacket [Mocha Brown]",
+     "Lien Hooded Parka [Graysh Green]",
+     "Arco Cotton Zip-Up [Black]",
+     "[MA X DEREK] Len Stripe Jacket [Gray]",
+     "Loang Knit Hoodie Zip-Up [Melange Black]",
+     "Loang Knit Hoodie Zip-Up [Melange White]",
+     "Denim Biker Jacket [Vintage Blue]",
+     "Cranny Leather Stud Jacket [Black]",
+     "Denite Washed Middle Jacket [Vintage Navy]"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "MILLO 典藏系列的女装线 — MILLO WOMEN，以克制的格调与扎实的细节诠释质感日常休闲。",
+    "note": "",
+    "products": [
+     "Seeker 格纹衬衫夹克 [藏青色]",
+     "May A-2 皮革夹克 [可可色]",
+     "Bulleit 铆钉夹克 [灰色]",
+     "套染 M-65 工装夹克 [卡其色]",
+     "复古纯棉机车夹克 [水洗卡其]",
+     "短款 Move 开衫 [紫色]",
+     "Rest 麂皮夹克 [摩卡米色]",
+     "Pernet 灯芯绒夹克 [深棕色]",
+     "纽扣衬里绗缝夹克 [卡其棕]",
+     "翻领高领夹克 [摩卡棕]",
+     "Lien 连帽派克大衣 [灰绿色]",
+     "Arco 纯棉拉链衫 [黑色]",
+     "[MA X DEREK] Len 条纹夹克 [灰色]",
+     "Loang 针织连帽拉链衫 [混色黑]",
+     "Loang 针织连帽拉链衫 [混色白]",
+     "丹宁机车夹克 [复古蓝]",
+     "Cranny 皮革铆钉夹克 [黑色]",
+     "Denite 水洗中长夹克 [复古藏青]"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "MILLO 典藏系列的女裝線 — MILLO WOMEN，以剋制的格調與紮實的細節詮釋質感日常休閒。",
+    "note": "",
+    "products": [
+     "Seeker 格紋襯衫夾克 [藏青色]",
+     "May A-2 皮革夾克 [可可色]",
+     "Bulleit 鉚釘夾克 [灰色]",
+     "套染 M-65 工裝夾克 [卡其色]",
+     "復古純棉機車夾克 [水洗卡其]",
+     "短款 Move 開衫 [紫色]",
+     "Rest 麂皮夾克 [摩卡米色]",
+     "Pernet 燈芯絨夾克 [深棕色]",
+     "紐扣襯裡絎縫夾克 [卡其棕]",
+     "翻領高領夾克 [摩卡棕]",
+     "Lien 連帽派克大衣 [灰綠色]",
+     "Arco 純棉拉鍊衫 [黑色]",
+     "[MA X DEREK] Len 條紋夾克 [灰色]",
+     "Loang 針織連帽拉鍊衫 [混色黑]",
+     "Loang 針織連帽拉鍊衫 [混色白]",
+     "丹寧機車夾克 [復古藍]",
+     "Cranny 皮革鉚釘夾克 [黑色]",
+     "Denite 水洗中長夾克 [復古藏青]"
+    ]
+   },
+   "ja": {
+    "slogan": "MILLOアーカイブのウィメンズライン — 抑制されたムードと堅実なディテールの感覚的なデイリーカジュアル、MILLO WOMEN。",
+    "note": "",
+    "products": [
+     "シーカーチェックシャツジャケット [ネイビー]",
+     "メイ A-2 レザーブルゾン [ココア]",
+     "ブリットスタッズジャケット [グレー]",
+     "オーバーダイ M-65 フィールドジャケット [カーキ]",
+     "ヴィンテージコットンカフェレーサージャケット [ウォッシュドカーキ]",
+     "クロップムーブカーディガン [パープル]",
+     "レストスエードブルゾン [モカベージュ]",
+     "ペルネコーデュロイブルゾン [ディープブラウン]",
+     "ボタンライナーキルティングジャケット [カーキブラウン]",
+     "スプレッドハイネックジャケット [モカブラウン]",
+     "リアンフードパーカ [グレイッシュグリーン]",
+     "アルココットンジップアップ [ブラック]",
+     "[MA X DEREK] レンストライプジャケット [グレー]",
+     "ロアンニットフーディジップアップ [メランジブラック]",
+     "ロアンニットフーディジップアップ [メランジホワイト]",
+     "デニムバイカージャケット [ヴィンテージブルー]",
+     "クラニーレザースタッズジャケット [ブラック]",
+     "デナイトウォッシュドミドルジャケット [ヴィンテージネイビー]"
+    ]
+   }
+  },
+  "status": "게시완료"
+ },
+ {
+  "id": "b56",
+  "no": 56,
+  "realName": "에토아 (aetoa)",
+  "nickname": "K-브랜드 #B56",
+  "category": "여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩44,000 ~ ₩118,000",
+  "url": "https://aetoa.com/",
+  "logo": "/brand-images/b56/logo.png",
+  "images": [
+   "/brand-images/b56/pp1.jpg",
+   "/brand-images/b56/pp2.jpg",
+   "/brand-images/b56/pp3.jpg",
+   "/brand-images/b56/pp4.jpg",
+   "/brand-images/b56/pp5.jpg"
+  ],
+  "slogan": "An equal time of arrival — 균형 잡힌 실루엣과 담백한 무드의 컨템포러리 여성복, 에토아(aetoa).",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://aetoa.com/product/list.html?cate_no=29",
+  "snsUrls": [
+   "https://www.instagram.com/aetoa.co"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "type": "news",
+    "title": "하우스바이하우스, 밀로아카이브·우먼 이어 새 여성복 '에토아' 론칭",
+    "source": "패션비즈 (Fashionbiz)",
+    "url": "https://fashionbiz.co.kr/article/222978",
+    "thumb": "/brand-pr/b56/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "하우스바이하우스의 두 번째 여성복 '에토아', 2030 공략",
+    "source": "어패럴뉴스 (Apparelnews)",
+    "url": "http://www.apparelnews.co.kr/news/news_view/?cat=CAT340&idx=223064",
+    "thumb": "/brand-pr/b56/pr2.jpg",
+    "date": ""
+   }
+  ],
+  "heroImage": "/brand-hero/b56.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b56/pp1.jpg",
+    "name": "Pointelle Summer Cardigan [Ivory]",
+    "price": "118,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=87&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp2.jpg",
+    "name": "String Knit Vest [Ivory]",
+    "price": "88,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=89&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp3.jpg",
+    "name": "Oversized Linen Shirt [Cream]",
+    "price": "98,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=92&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp4.jpg",
+    "name": "(7/14 예약배송) Sleeveless Frill Blouse [Ivory]",
+    "price": "85,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=94&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp5.jpg",
+    "name": "Sheer Stripe Polo T-Shirt [Gray]",
+    "price": "68,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=102&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp6.jpg",
+    "name": "Lace Panel Pique Polo [White]",
+    "price": "72,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=103&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp7.jpg",
+    "name": "Halter-Neck Drawstring Top [Cream]",
+    "price": "68,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=119&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp8.jpg",
+    "name": "Backless Strap T-Shirt [Ivory]",
+    "price": "54,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=96&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp9.jpg",
+    "name": "Waffle Ringer T-Shirt [Ivory]",
+    "price": "48,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=105&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp10.jpg",
+    "name": "(7/7 예약배송) Silky Roll-Up T-Shirt [Light Gray]",
+    "price": "48,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=98&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp11.jpg",
+    "name": "Silky Roll-Up T-Shirt [Orange]",
+    "price": "48,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=99&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp12.jpg",
+    "name": "(6/30 예약배송) Boat-Neck Sleeveless Top [White]",
+    "price": "45,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=108&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp13.jpg",
+    "name": "Boat-Neck Sleeveless Top [Orange]",
+    "price": "45,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=109&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp14.jpg",
+    "name": "(6/30 예약배송) Boat-Neck Sleeveless Top [Black]",
+    "price": "45,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=110&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp15.jpg",
+    "name": "Striped Sleeveless Top [Ivory]",
+    "price": "44,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=111&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp16.jpg",
+    "name": "Henley Neck Ribbed Sleeveless Top [White]",
+    "price": "45,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=114&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp17.jpg",
+    "name": "Loose Maxi Denim Skirt [Light Blue]",
+    "price": "118,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=131&cate_no=29&display_group=1"
+   },
+   {
+    "img": "/brand-images/b56/pp18.jpg",
+    "name": "Side-Button Ruffle Skirt [Ivory]",
+    "price": "108,000원",
+    "url": "https://aetoa.com/product/detail.html?product_no=133&cate_no=29&display_group=1"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "An equal time of arrival — aetoa, contemporary womenswear with balanced silhouettes and an understated mood.",
+    "note": "",
+    "products": [
+     "Pointelle Summer Cardigan [Ivory]",
+     "String Knit Vest [Ivory]",
+     "Oversized Linen Shirt [Cream]",
+     "(Pre-order, ships 7/14) Sleeveless Frill Blouse [Ivory]",
+     "Sheer Stripe Polo T-Shirt [Gray]",
+     "Lace Panel Pique Polo [White]",
+     "Halter-Neck Drawstring Top [Cream]",
+     "Backless Strap T-Shirt [Ivory]",
+     "Waffle Ringer T-Shirt [Ivory]",
+     "(Pre-order, ships 7/7) Silky Roll-Up T-Shirt [Light Gray]",
+     "Silky Roll-Up T-Shirt [Orange]",
+     "(Pre-order, ships 6/30) Boat-Neck Sleeveless Top [White]",
+     "Boat-Neck Sleeveless Top [Orange]",
+     "(Pre-order, ships 6/30) Boat-Neck Sleeveless Top [Black]",
+     "Striped Sleeveless Top [Ivory]",
+     "Henley Neck Ribbed Sleeveless Top [White]",
+     "Loose Maxi Denim Skirt [Light Blue]",
+     "Side-Button Ruffle Skirt [Ivory]"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "An equal time of arrival — aetoa，以均衡廓形与素净格调诠释的当代女装。",
+    "note": "",
+    "products": [
+     "镂空夏季开衫 [象牙白]",
+     "系带针织背心 [象牙白]",
+     "宽松亚麻衬衫 [奶油色]",
+     "(7/14 预订发货) 无袖荷叶边衬衫 [象牙白]",
+     "薄透条纹Polo衫 [灰色]",
+     "蕾丝拼接珠地Polo衫 [白色]",
+     "挂脖抽绳上衣 [奶油色]",
+     "露背系带T恤 [象牙白]",
+     "华夫格撞色边T恤 [象牙白]",
+     "(7/7 预订发货) 丝滑卷边T恤 [浅灰色]",
+     "丝滑卷边T恤 [橙色]",
+     "(6/30 预订发货) 一字领无袖上衣 [白色]",
+     "一字领无袖上衣 [橙色]",
+     "(6/30 预订发货) 一字领无袖上衣 [黑色]",
+     "条纹无袖上衣 [象牙白]",
+     "亨利领罗纹无袖上衣 [白色]",
+     "宽松长款牛仔裙 [浅蓝色]",
+     "侧扣荷叶边半身裙 [象牙白]"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "An equal time of arrival — aetoa，以均衡廓形與素淨格調詮釋的當代女裝。",
+    "note": "",
+    "products": [
+     "鏤空夏季開衫 [象牙白]",
+     "繫帶針織背心 [象牙白]",
+     "寬鬆亞麻襯衫 [奶油色]",
+     "(7/14 預訂發貨) 無袖荷葉邊襯衫 [象牙白]",
+     "薄透條紋Polo衫 [灰色]",
+     "蕾絲拼接珠地Polo衫 [白色]",
+     "掛脖抽繩上衣 [奶油色]",
+     "露背繫帶T恤 [象牙白]",
+     "華夫格撞色邊T恤 [象牙白]",
+     "(7/7 預訂發貨) 絲滑卷邊T恤 [淺灰色]",
+     "絲滑卷邊T恤 [橙色]",
+     "(6/30 預訂發貨) 一字領無袖上衣 [白色]",
+     "一字領無袖上衣 [橙色]",
+     "(6/30 預訂發貨) 一字領無袖上衣 [黑色]",
+     "條紋無袖上衣 [象牙白]",
+     "亨利領羅紋無袖上衣 [白色]",
+     "寬鬆長款牛仔裙 [淺藍色]",
+     "側扣荷葉邊半身裙 [象牙白]"
+    ]
+   },
+   "ja": {
+    "slogan": "An equal time of arrival — バランスの取れたシルエットとあっさりとしたムードのコンテンポラリーウィメンズウェア、aetoa。",
+    "note": "",
+    "products": [
+     "ポワンテルサマーカーディガン [アイボリー]",
+     "ストリングニットベスト [アイボリー]",
+     "オーバーサイズリネンシャツ [クリーム]",
+     "(7/14 予約配送) スリーブレスフリルブラウス [アイボリー]",
+     "シアーストライプポロTシャツ [グレー]",
+     "レースパネルピケポロ [ホワイト]",
+     "ホルターネックドローストリングトップ [クリーム]",
+     "バックレスストラップTシャツ [アイボリー]",
+     "ワッフルリンガーTシャツ [アイボリー]",
+     "(7/7 予約配送) シルキーロールアップTシャツ [ライトグレー]",
+     "シルキーロールアップTシャツ [オレンジ]",
+     "(6/30 予約配送) ボートネックスリーブレストップ [ホワイト]",
+     "ボートネックスリーブレストップ [オレンジ]",
+     "(6/30 予約配送) ボートネックスリーブレストップ [ブラック]",
+     "ストライプスリーブレストップ [アイボリー]",
+     "ヘンリーネックリブスリーブレストップ [ホワイト]",
+     "ルーズマキシデニムスカート [ライトブルー]",
+     "サイドボタンフリルスカート [アイボリー]"
+    ]
+   }
+  },
+  "status": "게시완료"
+ },
+ {
+  "id": "b57",
+  "no": 57,
+  "realName": "홀리넘버세븐 (HOLYNUMBER7)",
+  "nickname": "K-브랜드 #B57",
+  "category": "유니섹스캐쥬얼의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩29,000 ~ ₩489,000",
+  "url": "https://holynumber7.com/",
+  "logo": "/brand-images/b57/logo.png",
+  "images": [
+   "/brand-images/b57/pp1.jpg",
+   "/brand-images/b57/pp2.jpg",
+   "/brand-images/b57/pp3.jpg",
+   "/brand-images/b57/pp4.jpg",
+   "/brand-images/b57/pp5.jpg"
+  ],
+  "slogan": "위트와 디테일을 담은 디자이너 유니섹스 캐주얼 브랜드, HOLYNUMBER7.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://holynumber7.com/category/new-drop/247/",
+  "snsUrls": [
+   "https://www.instagram.com/holynumber7/"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "type": "ambassador",
+    "title": "블랙핑크 월드투어 핫한 커스텀 룩 공개 (홀리넘버세븐 제작)",
+    "source": "하퍼스 바자 코리아",
+    "url": "https://www.harpersbazaar.co.kr/article/1885401",
+    "thumb": "/brand-pr/b57/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "ambassador",
+    "title": "월드 투어에서 선보인 스트레이 키즈와 블랙핑크의 커스텀 의상",
+    "source": "마리끌레르 코리아",
+    "url": "https://www.marieclairekorea.com/fashion/2025/08/straykids-blackpink-custom-look/",
+    "thumb": "/brand-pr/b57/pr2.jpg",
+    "date": "2025-08"
+   },
+   {
+    "type": "news",
+    "title": "블랙핑크, 한국 디자이너 세계 무대에…HOLYNUMBER7 투어 의상 제작 참여",
+    "source": "네이트 연예",
+    "url": "https://news.nate.com/view/20251202n20562",
+    "thumb": "/brand-pr/b57/pr3.jpg",
+    "date": "2025-12-02"
+   },
+   {
+    "type": "news",
+    "title": "홀리넘버세븐, 2026 F/W 서울패션위크서 '트랜스포메이션' 지속가능 패션 메시지",
+    "source": "매일일보",
+    "url": "http://www.m-i.kr/news/articleView.html?idxno=1330692",
+    "thumb": "/brand-pr/b57/pr4.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "홀리넘버세븐, 해체와 재조합으로 빚어낸 2026 F/W 컬렉션",
+    "source": "패션서울",
+    "url": "https://fashionseoul.com/269179",
+    "thumb": "/brand-pr/b57/pr5.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "\"성수 뜨겁게 달궜다\" 홀리넘버세븐×코타로타니야마 팝업 성황",
+    "source": "패션비즈 (Fashionbiz)",
+    "url": "https://fashionbiz.co.kr/article/225777",
+    "thumb": "/brand-pr/b57/pr6.jpg",
+    "date": ""
+   },
+   {
+    "type": "news",
+    "title": "홀리넘버세븐, 전시·플로우형 쇼 결합 협업…K-패션 전략 진화",
+    "source": "쿠키뉴스",
+    "url": "https://www.kukinews.com/article/view/kuk202604240184",
+    "thumb": "/brand-pr/b57/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "홀리넘버세븐(HOLYNUMBER7) | 무신사 추천 브랜드관",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/brand/holynumber7",
+    "thumb": "/brand-pr/b57/pr8.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "홀리넘버세븐(HOLYNUMBER7) | 29CM 브랜드관",
+    "source": "29CM",
+    "url": "https://shop.29cm.co.kr/brand/3235",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "[FASHIONSHOW FILM] HOLY NUMBER 7 — COLLECTION 2021SS",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=e_G6i7fr1kY",
+    "thumb": "/brand-pr/b57/pr10.jpg",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "HOLY NUMBER 7 24 F/W Seoul Fashion Week",
+    "source": "YouTube",
+    "url": "https://m.youtube.com/shorts/F4t7TFnsRyM",
+    "thumb": "/brand-pr/b57/pr11.jpg",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "24SS 서울패션위크 / HOLY NUMBER 7",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/watch?v=g6CE_YPrGV0",
+    "thumb": "/brand-pr/b57/pr12.jpg",
+    "date": ""
+   }
+  ],
+  "heroImage": "/brand-images/b57/pp1.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b57/pp1.jpg",
+    "name": "Back Slit Waffle Shirring Top _ Camo",
+    "price": "69,000원",
+    "url": "https://holynumber7.com/product/back-slit-waffle-shirring-top-camo/3580/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp2.jpg",
+    "name": "Asymmetric Shirring String Top비대칭 주름 장식 스트링 탑",
+    "price": "200,000원",
+    "url": "https://holynumber7.com/product/asymmetric-shirring-string-top%EB%B9%84%EB%8C%80%EC%B9%AD-%EC%A3%BC%EB%A6%84-%EC%9E%A5%EC%8B%9D-%EC%8A%A4%ED%8A%B8%EB%A7%81-%ED%83%91/3590/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp3.jpg",
+    "name": "Sleeveless Layered Skirt",
+    "price": "139,000원",
+    "url": "https://holynumber7.com/product/sleeveless-layered-skirt/3575/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp4.jpg",
+    "name": "Shoulder-padded waffle T-shirt _ Black",
+    "price": "119,000원",
+    "url": "https://holynumber7.com/product/shoulder-padded-waffle-t-shirt-black/3579/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp5.jpg",
+    "name": "Raw Edge Detail Ruffle Shirt _ White",
+    "price": "189,000원",
+    "url": "https://holynumber7.com/product/raw-edge-detail-ruffle-shirt-white/3576/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp6.jpg",
+    "name": "Layered Check Pintuck Pants레이어드 체크 핀턱 팬츠",
+    "price": "229,000원",
+    "url": "https://holynumber7.com/product/layered-check-pintuck-pants%EB%A0%88%EC%9D%B4%EC%96%B4%EB%93%9C-%EC%B2%B4%ED%81%AC-%ED%95%80%ED%84%B1-%ED%8C%AC%EC%B8%A0/3602/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp7.jpg",
+    "name": "Asymmetric Layered Wave Cut T-Shirt비대칭 레이어드 웨이브 컷 티셔츠",
+    "price": "161,000원",
+    "url": "https://holynumber7.com/product/asymmetric-layered-wave-cut-t-shirt%EB%B9%84%EB%8C%80%EC%B9%AD-%EB%A0%88%EC%9D%B4%EC%96%B4%EB%93%9C-%EC%9B%A8%EC%9D%B4%EB%B8%8C-%EC%BB%B7-%ED%8B%B0%EC%85%94%EC%B8%A0/3592/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp8.jpg",
+    "name": "Layered Off-Shoulder Slim T-Shirt레이어드 오프숄더 슬림 티셔츠",
+    "price": "161,000원",
+    "url": "https://holynumber7.com/product/layered-off-shoulder-slim-t-shirt%EB%A0%88%EC%9D%B4%EC%96%B4%EB%93%9C-%EC%98%A4%ED%94%84%EC%88%84%EB%8D%94-%EC%8A%AC%EB%A6%BC-%ED%8B%B0%EC%85%94%EC%B8%A0/3591/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp9.jpg",
+    "name": "Necklace Graphic Oversized T-Shirt목걸이 그래픽 오버사이즈 티셔츠",
+    "price": "129,000원",
+    "url": "https://holynumber7.com/product/necklace-graphic-oversized-t-shirt%EB%AA%A9%EA%B1%B8%EC%9D%B4-%EA%B7%B8%EB%9E%98%ED%94%BD-%EC%98%A4%EB%B2%84%EC%82%AC%EC%9D%B4%EC%A6%88-%ED%8B%B0%EC%85%94%EC%B8%A0/3593/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp10.jpg",
+    "name": "Double Waistband Brushed Shorts이중 허리밴드 브러쉬 반바지",
+    "price": "158,000원",
+    "url": "https://holynumber7.com/product/double-waistband-brushed-shorts%EC%9D%B4%EC%A4%91-%ED%97%88%EB%A6%AC%EB%B0%B4%EB%93%9C-%EB%B8%8C%EB%9F%AC%EC%89%AC-%EB%B0%98%EB%B0%94%EC%A7%80/3594/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp11.jpg",
+    "name": "Sagging Layered Mini Skirt새깅 레이어드 미니스커트",
+    "price": "144,000원",
+    "url": "https://holynumber7.com/product/sagging-layered-mini-skirt%EC%83%88%EA%B9%85-%EB%A0%88%EC%9D%B4%EC%96%B4%EB%93%9C-%EB%AF%B8%EB%8B%88%EC%8A%A4%EC%BB%A4%ED%8A%B8/3589/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp12.jpg",
+    "name": "I LOVE HOLY mini pocket bag아이러브 홀리 미니 포켓백",
+    "price": "49,000원",
+    "url": "https://holynumber7.com/product/i-love-holy-mini-pocket-bag%EC%95%84%EC%9D%B4%EB%9F%AC%EB%B8%8C-%ED%99%80%EB%A6%AC-%EB%AF%B8%EB%8B%88-%ED%8F%AC%EC%BC%93%EB%B0%B1/3595/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp13.jpg",
+    "name": "Open Deckie Waffle Zip-Up",
+    "price": "279,000원",
+    "url": "https://holynumber7.com/product/open-deckie-waffle-zip-up/3552/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp14.jpg",
+    "name": "Waffle diagonal decoration pants",
+    "price": "249,000원",
+    "url": "https://holynumber7.com/product/waffle-diagonal-decoration-pants/3553/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp15.jpg",
+    "name": "Shirring Safari Outerwear",
+    "price": "489,000원",
+    "url": "https://holynumber7.com/product/shirring-safari-outerwear/3555/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp16.jpg",
+    "name": "Piping incision String Pants",
+    "price": "379,000원",
+    "url": "https://holynumber7.com/product/piping-incision-string-pants/3554/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp17.jpg",
+    "name": "Holy Lambskin Pocket point Vest",
+    "price": "190,000원",
+    "url": "https://holynumber7.com/product/holy-lambskin-pocket-point-vest/3556/category/247/display/1/"
+   },
+   {
+    "img": "/brand-images/b57/pp18.jpg",
+    "name": "Holy U NECK T-shirt WHITE",
+    "price": "29,000원",
+    "url": "https://holynumber7.com/product/holy-u-neck-t-shirt-white/3557/category/247/display/1/"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A designer unisex casual brand full of wit and detail, HOLYNUMBER7.",
+    "note": "",
+    "products": [
+     "Back Slit Waffle Shirring Top _ Camo",
+     "Asymmetric Shirring String Top",
+     "Sleeveless Layered Skirt",
+     "Shoulder-padded waffle T-shirt _ Black",
+     "Raw Edge Detail Ruffle Shirt _ White",
+     "Layered Check Pintuck Pants",
+     "Asymmetric Layered Wave Cut T-Shirt",
+     "Layered Off-Shoulder Slim T-Shirt",
+     "Necklace Graphic Oversized T-Shirt",
+     "Double Waistband Brushed Shorts",
+     "Sagging Layered Mini Skirt",
+     "I LOVE HOLY mini pocket bag",
+     "Open Deckie Waffle Zip-Up",
+     "Waffle diagonal decoration pants",
+     "Shirring Safari Outerwear",
+     "Piping incision String Pants",
+     "Holy Lambskin Pocket point Vest",
+     "Holy U NECK T-shirt WHITE"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "一个充满机智与细节的设计师中性休闲品牌，HOLYNUMBER7。",
+    "note": "",
+    "products": [
+     "后开衩华夫格褶皱上衣 _ 迷彩",
+     "不对称褶皱系带上衣",
+     "无袖叠层半身裙",
+     "垫肩华夫格T恤 _ 黑色",
+     "毛边细节荷叶边衬衫 _ 白色",
+     "叠层格纹褶裥长裤",
+     "不对称叠层波浪剪裁T恤",
+     "叠层露肩修身T恤",
+     "项链图案宽松T恤",
+     "双层腰带磨毛短裤",
+     "低腰叠层迷你裙",
+     "I LOVE HOLY 迷你口袋包",
+     "开襟 Deckie 华夫格拉链衫",
+     "华夫格斜向装饰长裤",
+     "褶皱萨法里外套",
+     "嵌线开衩系带长裤",
+     "Holy 羊皮口袋装饰背心",
+     "Holy U 领T恤 白色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "一個充滿機智與細節的設計師中性休閒品牌，HOLYNUMBER7。",
+    "note": "",
+    "products": [
+     "後開衩華夫格褶皺上衣 _ 迷彩",
+     "不對稱褶皺繫帶上衣",
+     "無袖疊層半身裙",
+     "墊肩華夫格T恤 _ 黑色",
+     "毛邊細節荷葉邊襯衫 _ 白色",
+     "疊層格紋褶襉長褲",
+     "不對稱疊層波浪剪裁T恤",
+     "疊層露肩修身T恤",
+     "項鍊圖案寬鬆T恤",
+     "雙層腰帶磨毛短褲",
+     "低腰疊層迷你裙",
+     "I LOVE HOLY 迷你口袋包",
+     "開襟 Deckie 華夫格拉鍊衫",
+     "華夫格斜向裝飾長褲",
+     "褶皺薩法裡外套",
+     "嵌線開衩繫帶長褲",
+     "Holy 羊皮口袋裝飾背心",
+     "Holy U 領T恤 白色"
+    ]
+   },
+   "ja": {
+    "slogan": "ウィットとディテールを込めたデザイナーユニセックスカジュアルブランド、HOLYNUMBER7。",
+    "note": "",
+    "products": [
+     "バックスリットワッフルシャーリングトップ _ カモ",
+     "アシンメトリーシャーリングストリングトップ",
+     "スリーブレスレイヤードスカート",
+     "ショルダーパッドワッフルTシャツ _ ブラック",
+     "ローエッジディテールフリルシャツ _ ホワイト",
+     "レイヤードチェックピンタックパンツ",
+     "アシンメトリーレイヤードウェーブカットTシャツ",
+     "レイヤードオフショルダースリムTシャツ",
+     "ネックレスグラフィックオーバーサイズTシャツ",
+     "ダブルウエストバンドブラッシュドショーツ",
+     "サギングレイヤードミニスカート",
+     "アイラブホーリーミニポケットバッグ",
+     "オープンデッキーワッフルジップアップ",
+     "ワッフルダイアゴナルデコレーションパンツ",
+     "シャーリングサファリアウター",
+     "パイピングインシジョンストリングパンツ",
+     "ホーリーラムスキンポケットポイントベスト",
+     "ホーリー U ネックTシャツ ホワイト"
+    ]
+   }
+  },
+  "status": "게시완료"
  }
 ]
