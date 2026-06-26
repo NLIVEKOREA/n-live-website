@@ -5996,7 +5996,7 @@
   "cat": "fashion",
   "region": "",
   "repProduct": "",
-  "priceRange": "₩108,000 ~ ₩268,000",
+  "priceRange": "₩88,000 ~ ₩168,000",
   "url": "https://millowomen.com/",
   "logo": "/brand-images/b55/logo.png",
   "images": [
@@ -6006,7 +6006,7 @@
    "/brand-images/b55/pp4.jpg",
    "/brand-images/b55/pp5.jpg"
   ],
-  "slogan": "밀로 아카이브의 우먼 라인 — 절제된 무드와 견고한 디테일의 감각적인 데일리 캐주얼, MILLO WOMEN.",
+  "slogan": "밀로 아카이브의 우먼 라인 — 절제된 무드와 감각적인 데일리 우먼웨어, MILLO WOMEN.",
   "logoLight": false,
   "score": 5,
   "salesMethod": "",
@@ -6094,208 +6094,208 @@
   "pricedProducts": [
    {
     "img": "/brand-images/b55/pp1.jpg",
-    "name": "Seeker Check Shirt Jacket [Navy]",
+    "name": "Lace Trimming Draped Dress [Ivory]",
     "price": "138,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=4066&cate_no=104&display_group=1"
+    "url": "https://millowomen.com/product/detail.html?product_no=4498&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp2.jpg",
-    "name": "May A-2 Leather Blouson [Cocoa]",
-    "price": "238,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=4055&cate_no=104&display_group=1"
+    "name": "Smoked Asymmetric Midi Dress [Brown]",
+    "price": "108,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=4496&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp3.jpg",
-    "name": "Bulleit Stud Jacket [Gray]",
-    "price": "185,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3990&cate_no=104&display_group=1"
+    "name": "Double Sleeveless Dress [Ecru]",
+    "price": "138,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3089&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp4.jpg",
-    "name": "Overdyed M-65 Field Jacket [Khaki]",
-    "price": "268,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3988&cate_no=104&display_group=1"
+    "name": "Buckle Strap Mini Dress [Black]",
+    "price": "128,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3416&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp5.jpg",
-    "name": "Vintage Cotton Cafe Racer Jacket [Washed Khaki]",
-    "price": "158,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3986&cate_no=104&display_group=1"
+    "name": "Knitted Flare Dress [Black]",
+    "price": "118,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3418&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp6.jpg",
-    "name": "Crop Move Cardigan [Purple]",
-    "price": "108,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3855&cate_no=104&display_group=1"
+    "name": "Ruffle Short Sleeve Dress [Beige]",
+    "price": "98,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3421&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp7.jpg",
-    "name": "Rest Suede Blouson [Mocha Beige]",
-    "price": "198,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3686&cate_no=104&display_group=1"
+    "name": "Mesh Back String Jersey Dress [Black]",
+    "price": "138,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3488&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp8.jpg",
-    "name": "Pernet Corduroy Blouson [Deep Brown]",
-    "price": "188,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3736&cate_no=104&display_group=1"
+    "name": "Back Open Mini Dress [Black]",
+    "price": "138,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3563&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp9.jpg",
-    "name": "Button Liner Quilted Jacket [Khaki Brown]",
-    "price": "158,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3690&cate_no=104&display_group=1"
+    "name": "Puff Sleeve Jersey Dress [Deep Charcoal]",
+    "price": "108,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3664&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp10.jpg",
-    "name": "Spread High neck Jacket [Mocha Brown]",
-    "price": "178,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3684&cate_no=104&display_group=1"
+    "name": "Crease Lace Midi Dress [Khaki]",
+    "price": "108,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=4121&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp11.jpg",
-    "name": "Lien Hooded Parka [Graysh Green]",
-    "price": "228,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3694&cate_no=104&display_group=1"
+    "name": "Shirring Zip-Up Mini Dress [Pale Yellow]",
+    "price": "128,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3087&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp12.jpg",
-    "name": "Arco Cotton Zip-Up [Black]",
-    "price": "138,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3748&cate_no=104&display_group=1"
+    "name": "Jersey Shirring Maxi Dress [Brown]",
+    "price": "148,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=3025&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp13.jpg",
-    "name": "[MA X DEREK] Len Stripe Jacket [Gray]",
-    "price": "208,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3764&cate_no=104&display_group=1"
+    "name": "Patchwork Maxi Dress [Gray]",
+    "price": "168,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=2769&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp14.jpg",
-    "name": "Loang Knit Hoodie Zip-Up [Melange Black]",
-    "price": "128,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3789&cate_no=104&display_group=1"
+    "name": "Tied Cut Out Maxi Dress [Olive]",
+    "price": "98,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=2768&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp15.jpg",
-    "name": "Loang Knit Hoodie Zip-Up [Melange White]",
-    "price": "128,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3790&cate_no=104&display_group=1"
+    "name": "Tied Cut Out Maxi Dress [Black]",
+    "price": "98,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=2767&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp16.jpg",
-    "name": "Denim Biker Jacket [Vintage Blue]",
-    "price": "148,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3791&cate_no=104&display_group=1"
+    "name": "Sheer Frill Dress [White]",
+    "price": "88,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=2348&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp17.jpg",
-    "name": "Cranny Leather Stud Jacket [Black]",
-    "price": "228,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3682&cate_no=104&display_group=1"
+    "name": "Unbalance Lace Midi Dress [White]",
+    "price": "128,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=2099&cate_no=128&display_group=1"
    },
    {
     "img": "/brand-images/b55/pp18.jpg",
-    "name": "Denite Washed Middle Jacket [Vintage Navy]",
-    "price": "168,000원",
-    "url": "https://millowomen.com/product/detail.html?product_no=3520&cate_no=104&display_group=1"
+    "name": "Hem Line Midi Dress [Khaki Brown]",
+    "price": "118,000원",
+    "url": "https://millowomen.com/product/detail.html?product_no=2100&cate_no=128&display_group=1"
    }
   ],
   "i18n": {
    "en": {
-    "slogan": "The women's line of the MILLO archive — MILLO WOMEN, refined moods and sturdy details for sensual daily casual.",
+    "slogan": "The women's line of the MILLO archive — restrained mood and sensual daily womenswear, MILLO WOMEN.",
     "note": "",
     "products": [
-     "Seeker Check Shirt Jacket [Navy]",
-     "May A-2 Leather Blouson [Cocoa]",
-     "Bulleit Stud Jacket [Gray]",
-     "Overdyed M-65 Field Jacket [Khaki]",
-     "Vintage Cotton Cafe Racer Jacket [Washed Khaki]",
-     "Crop Move Cardigan [Purple]",
-     "Rest Suede Blouson [Mocha Beige]",
-     "Pernet Corduroy Blouson [Deep Brown]",
-     "Button Liner Quilted Jacket [Khaki Brown]",
-     "Spread High neck Jacket [Mocha Brown]",
-     "Lien Hooded Parka [Graysh Green]",
-     "Arco Cotton Zip-Up [Black]",
-     "[MA X DEREK] Len Stripe Jacket [Gray]",
-     "Loang Knit Hoodie Zip-Up [Melange Black]",
-     "Loang Knit Hoodie Zip-Up [Melange White]",
-     "Denim Biker Jacket [Vintage Blue]",
-     "Cranny Leather Stud Jacket [Black]",
-     "Denite Washed Middle Jacket [Vintage Navy]"
+     "Lace Trimming Draped Dress [Ivory]",
+     "Smoked Asymmetric Midi Dress [Brown]",
+     "Double Sleeveless Dress [Ecru]",
+     "Buckle Strap Mini Dress [Black]",
+     "Knitted Flare Dress [Black]",
+     "Ruffle Short Sleeve Dress [Beige]",
+     "Mesh Back String Jersey Dress [Black]",
+     "Back Open Mini Dress [Black]",
+     "Puff Sleeve Jersey Dress [Deep Charcoal]",
+     "Crease Lace Midi Dress [Khaki]",
+     "Shirring Zip-Up Mini Dress [Pale Yellow]",
+     "Jersey Shirring Maxi Dress [Brown]",
+     "Patchwork Maxi Dress [Gray]",
+     "Tied Cut Out Maxi Dress [Olive]",
+     "Tied Cut Out Maxi Dress [Black]",
+     "Sheer Frill Dress [White]",
+     "Unbalance Lace Midi Dress [White]",
+     "Hem Line Midi Dress [Khaki Brown]"
     ]
    },
    "zh-Hans": {
-    "slogan": "MILLO 典藏系列的女装线 — MILLO WOMEN，以克制的格调与扎实的细节诠释质感日常休闲。",
+    "slogan": "MILLO 典藏的女装系列 — 克制的氛围与感性的日常女装，MILLO WOMEN。",
     "note": "",
     "products": [
-     "Seeker 格纹衬衫夹克 [藏青色]",
-     "May A-2 皮革夹克 [可可色]",
-     "Bulleit 铆钉夹克 [灰色]",
-     "套染 M-65 工装夹克 [卡其色]",
-     "复古纯棉机车夹克 [水洗卡其]",
-     "短款 Move 开衫 [紫色]",
-     "Rest 麂皮夹克 [摩卡米色]",
-     "Pernet 灯芯绒夹克 [深棕色]",
-     "纽扣衬里绗缝夹克 [卡其棕]",
-     "翻领高领夹克 [摩卡棕]",
-     "Lien 连帽派克大衣 [灰绿色]",
-     "Arco 纯棉拉链衫 [黑色]",
-     "[MA X DEREK] Len 条纹夹克 [灰色]",
-     "Loang 针织连帽拉链衫 [混色黑]",
-     "Loang 针织连帽拉链衫 [混色白]",
-     "丹宁机车夹克 [复古蓝]",
-     "Cranny 皮革铆钉夹克 [黑色]",
-     "Denite 水洗中长夹克 [复古藏青]"
+     "蕾丝镶边垂坠连衣裙 [象牙白]",
+     "烟熏不对称中长连衣裙 [棕色]",
+     "双层无袖连衣裙 [本白]",
+     "搭扣肩带迷你连衣裙 [黑色]",
+     "针织喇叭连衣裙 [黑色]",
+     "荷叶边短袖连衣裙 [米色]",
+     "网纱露背系带针织连衣裙 [黑色]",
+     "露背迷你连衣裙 [黑色]",
+     "泡泡袖针织连衣裙 [深炭灰]",
+     "褶皱蕾丝中长连衣裙 [卡其色]",
+     "细褶拉链迷你连衣裙 [浅黄色]",
+     "针织细褶长款连衣裙 [棕色]",
+     "拼接长款连衣裙 [灰色]",
+     "系带镂空长款连衣裙 [橄榄绿]",
+     "系带镂空长款连衣裙 [黑色]",
+     "薄纱荷叶边连衣裙 [白色]",
+     "不对称蕾丝中长连衣裙 [白色]",
+     "裙摆线条中长连衣裙 [卡其棕]"
     ]
    },
    "zh-Hant": {
-    "slogan": "MILLO 典藏系列的女裝線 — MILLO WOMEN，以剋制的格調與紮實的細節詮釋質感日常休閒。",
+    "slogan": "MILLO 典藏的女裝系列 — 剋制的氛圍與感性的日常女裝，MILLO WOMEN。",
     "note": "",
     "products": [
-     "Seeker 格紋襯衫夾克 [藏青色]",
-     "May A-2 皮革夾克 [可可色]",
-     "Bulleit 鉚釘夾克 [灰色]",
-     "套染 M-65 工裝夾克 [卡其色]",
-     "復古純棉機車夾克 [水洗卡其]",
-     "短款 Move 開衫 [紫色]",
-     "Rest 麂皮夾克 [摩卡米色]",
-     "Pernet 燈芯絨夾克 [深棕色]",
-     "紐扣襯裡絎縫夾克 [卡其棕]",
-     "翻領高領夾克 [摩卡棕]",
-     "Lien 連帽派克大衣 [灰綠色]",
-     "Arco 純棉拉鍊衫 [黑色]",
-     "[MA X DEREK] Len 條紋夾克 [灰色]",
-     "Loang 針織連帽拉鍊衫 [混色黑]",
-     "Loang 針織連帽拉鍊衫 [混色白]",
-     "丹寧機車夾克 [復古藍]",
-     "Cranny 皮革鉚釘夾克 [黑色]",
-     "Denite 水洗中長夾克 [復古藏青]"
+     "蕾絲鑲邊垂墜連衣裙 [象牙白]",
+     "煙燻不對稱中長連衣裙 [棕色]",
+     "雙層無袖連衣裙 [本白]",
+     "搭扣肩帶迷你連衣裙 [黑色]",
+     "針織喇叭連衣裙 [黑色]",
+     "荷葉邊短袖連衣裙 [米色]",
+     "網紗露背繫帶針織連衣裙 [黑色]",
+     "露背迷你連衣裙 [黑色]",
+     "泡泡袖針織連衣裙 [深炭灰]",
+     "褶皺蕾絲中長連衣裙 [卡其色]",
+     "細褶拉鍊迷你連衣裙 [淺黃色]",
+     "針織細褶長款連衣裙 [棕色]",
+     "拼接長款連衣裙 [灰色]",
+     "繫帶鏤空長款連衣裙 [橄欖綠]",
+     "繫帶鏤空長款連衣裙 [黑色]",
+     "薄紗荷葉邊連衣裙 [白色]",
+     "不對稱蕾絲中長連衣裙 [白色]",
+     "裙襬線條中長連衣裙 [卡其棕]"
     ]
    },
    "ja": {
-    "slogan": "MILLOアーカイブのウィメンズライン — 抑制されたムードと堅実なディテールの感覚的なデイリーカジュアル、MILLO WOMEN。",
+    "slogan": "MILLOアーカイブのウィメンズライン — 抑制されたムードと感性的なデイリーウィメンズウェア、MILLO WOMEN。",
     "note": "",
     "products": [
-     "シーカーチェックシャツジャケット [ネイビー]",
-     "メイ A-2 レザーブルゾン [ココア]",
-     "ブリットスタッズジャケット [グレー]",
-     "オーバーダイ M-65 フィールドジャケット [カーキ]",
-     "ヴィンテージコットンカフェレーサージャケット [ウォッシュドカーキ]",
-     "クロップムーブカーディガン [パープル]",
-     "レストスエードブルゾン [モカベージュ]",
-     "ペルネコーデュロイブルゾン [ディープブラウン]",
-     "ボタンライナーキルティングジャケット [カーキブラウン]",
-     "スプレッドハイネックジャケット [モカブラウン]",
-     "リアンフードパーカ [グレイッシュグリーン]",
-     "アルココットンジップアップ [ブラック]",
-     "[MA X DEREK] レンストライプジャケット [グレー]",
-     "ロアンニットフーディジップアップ [メランジブラック]",
-     "ロアンニットフーディジップアップ [メランジホワイト]",
-     "デニムバイカージャケット [ヴィンテージブルー]",
-     "クラニーレザースタッズジャケット [ブラック]",
-     "デナイトウォッシュドミドルジャケット [ヴィンテージネイビー]"
+     "レーストリミング ドレープ ドレス [アイボリー]",
+     "スモーク アシンメトリー ミディ ドレス [ブラウン]",
+     "ダブル スリーブレス ドレス [エクリュ]",
+     "バックル ストラップ ミニ ドレス [ブラック]",
+     "ニット フレア ドレス [ブラック]",
+     "ラッフル ショートスリーブ ドレス [ベージュ]",
+     "メッシュ バック ストリング ジャージー ドレス [ブラック]",
+     "バック オープン ミニ ドレス [ブラック]",
+     "パフスリーブ ジャージー ドレス [ディープチャコール]",
+     "クリース レース ミディ ドレス [カーキ]",
+     "シャーリング ジップアップ ミニ ドレス [ペールイエロー]",
+     "ジャージー シャーリング マキシ ドレス [ブラウン]",
+     "パッチワーク マキシ ドレス [グレー]",
+     "タイ カットアウト マキシ ドレス [オリーブ]",
+     "タイ カットアウト マキシ ドレス [ブラック]",
+     "シアー フリル ドレス [ホワイト]",
+     "アンバランス レース ミディ ドレス [ホワイト]",
+     "ヘムライン ミディ ドレス [カーキブラウン]"
     ]
    }
   },
@@ -6904,6 +6904,320 @@
      "パイピングインシジョンストリングパンツ",
      "ホーリーラムスキンポケットポイントベスト",
      "ホーリー U ネックTシャツ ホワイト"
+    ]
+   }
+  },
+  "status": "게시완료"
+ },
+ {
+  "id": "b58",
+  "no": 58,
+  "realName": "밀로아카이브 (MILLO ARCHIVE)",
+  "nickname": "K-브랜드 #B58",
+  "category": "남성캐쥬얼의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩108,000 ~ ₩268,000",
+  "url": "https://milloarchive.com/",
+  "logo": "/brand-images/b58/logo.png",
+  "images": [
+   "/brand-images/b58/pp1.jpg",
+   "/brand-images/b58/pp2.jpg",
+   "/brand-images/b58/pp3.jpg",
+   "/brand-images/b58/pp4.jpg",
+   "/brand-images/b58/pp5.jpg"
+  ],
+  "slogan": "견고한 워크웨어·밀리터리 무드의 컨템포러리 아카이브 브랜드, 밀로 아카이브(MILLO ARCHIVE).",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://milloarchive.com/product/list.html?cate_no=104",
+  "snsUrls": [
+   "https://www.instagram.com/milloarchive/",
+   "https://www.youtube.com/channel/UCIuiqHQZ1ZMrjaTG43hObAA",
+   "https://pf.kakao.com/_EXrvT"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "type": "review",
+    "title": "밀로 아카이브(MILLO ARCHIVE) | 무신사 추천 브랜드관",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/brand/millo",
+    "thumb": "/brand-pr/b58/pr1.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "밀로 우먼(MILLO WOMEN) | 무신사 추천 브랜드관",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/brand/millowomen",
+    "thumb": "/brand-pr/b58/pr2.jpg",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "Millo Archive | KREAM 브랜드 스토어",
+    "source": "KREAM",
+    "url": "https://kream.co.kr/brand-stores/Millo%20Archive",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "밀로 아카이브 크롭 무브 가디건 [멜란지 브라운] 후기",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/review/70887820",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "review",
+    "title": "밀로 아카이브 뉴 브러쉬드 가디건 [바이올렛] 후기",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/review/78357581",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "Millo Archive 공식 유튜브 채널",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/@milloarchive",
+    "thumb": "",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "여름에는 이런 반팔 하나면 됩니다 — 블프 반팔 추천템",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/shorts/msqYdj7Ljeo",
+    "thumb": "/brand-pr/b58/pr7.jpg",
+    "date": ""
+   },
+   {
+    "type": "youtube",
+    "title": "Millo Archive Spring 24",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/shorts/5wY-4_NQDEs",
+    "thumb": "/brand-pr/b58/pr8.jpg",
+    "date": ""
+   }
+  ],
+  "heroImage": "/brand-images/b58/pp1.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b58/pp1.jpg",
+    "name": "Seeker Check Shirt Jacket [Navy]",
+    "price": "138,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=4066&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp2.jpg",
+    "name": "May A-2 Leather Blouson [Cocoa]",
+    "price": "238,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=4055&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp3.jpg",
+    "name": "Bulleit Stud Jacket [Gray]",
+    "price": "185,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3990&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp4.jpg",
+    "name": "Overdyed M-65 Field Jacket [Khaki]",
+    "price": "268,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3988&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp5.jpg",
+    "name": "Vintage Cotton Cafe Racer Jacket [Washed Khaki]",
+    "price": "158,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3986&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp6.jpg",
+    "name": "Crop Move Cardigan [Purple]",
+    "price": "108,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3855&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp7.jpg",
+    "name": "Rest Suede Blouson [Mocha Beige]",
+    "price": "198,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3686&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp8.jpg",
+    "name": "Pernet Corduroy Blouson [Deep Brown]",
+    "price": "188,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3736&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp9.jpg",
+    "name": "Button Liner Quilted Jacket [Khaki Brown]",
+    "price": "158,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3690&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp10.jpg",
+    "name": "Spread High neck Jacket [Mocha Brown]",
+    "price": "178,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3684&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp11.jpg",
+    "name": "Lien Hooded Parka [Graysh Green]",
+    "price": "228,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3694&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp12.jpg",
+    "name": "Arco Cotton Zip-Up [Black]",
+    "price": "138,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3748&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp13.jpg",
+    "name": "[MA X DEREK] Len Stripe Jacket [Gray]",
+    "price": "208,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3764&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp14.jpg",
+    "name": "Loang Knit Hoodie Zip-Up [Melange Black]",
+    "price": "128,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3789&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp15.jpg",
+    "name": "Loang Knit Hoodie Zip-Up [Melange White]",
+    "price": "128,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3790&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp16.jpg",
+    "name": "Denim Biker Jacket [Vintage Blue]",
+    "price": "148,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3791&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp17.jpg",
+    "name": "Cranny Leather Stud Jacket [Black]",
+    "price": "228,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3682&cate_no=104&display_group=1"
+   },
+   {
+    "img": "/brand-images/b58/pp18.jpg",
+    "name": "Denite Washed Middle Jacket [Vintage Navy]",
+    "price": "168,000원",
+    "url": "https://milloarchive.com/product/detail.html?product_no=3520&cate_no=104&display_group=1"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "The women's line of the MILLO archive — MILLO WOMEN, refined moods and sturdy details for sensual daily casual.",
+    "note": "",
+    "products": [
+     "Seeker Check Shirt Jacket [Navy]",
+     "May A-2 Leather Blouson [Cocoa]",
+     "Bulleit Stud Jacket [Gray]",
+     "Overdyed M-65 Field Jacket [Khaki]",
+     "Vintage Cotton Cafe Racer Jacket [Washed Khaki]",
+     "Crop Move Cardigan [Purple]",
+     "Rest Suede Blouson [Mocha Beige]",
+     "Pernet Corduroy Blouson [Deep Brown]",
+     "Button Liner Quilted Jacket [Khaki Brown]",
+     "Spread High neck Jacket [Mocha Brown]",
+     "Lien Hooded Parka [Graysh Green]",
+     "Arco Cotton Zip-Up [Black]",
+     "[MA X DEREK] Len Stripe Jacket [Gray]",
+     "Loang Knit Hoodie Zip-Up [Melange Black]",
+     "Loang Knit Hoodie Zip-Up [Melange White]",
+     "Denim Biker Jacket [Vintage Blue]",
+     "Cranny Leather Stud Jacket [Black]",
+     "Denite Washed Middle Jacket [Vintage Navy]"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "MILLO 典藏系列的女装线 — MILLO WOMEN，以克制的格调与扎实的细节诠释质感日常休闲。",
+    "note": "",
+    "products": [
+     "Seeker 格纹衬衫夹克 [藏青色]",
+     "May A-2 皮革夹克 [可可色]",
+     "Bulleit 铆钉夹克 [灰色]",
+     "套染 M-65 工装夹克 [卡其色]",
+     "复古纯棉机车夹克 [水洗卡其]",
+     "短款 Move 开衫 [紫色]",
+     "Rest 麂皮夹克 [摩卡米色]",
+     "Pernet 灯芯绒夹克 [深棕色]",
+     "纽扣衬里绗缝夹克 [卡其棕]",
+     "翻领高领夹克 [摩卡棕]",
+     "Lien 连帽派克大衣 [灰绿色]",
+     "Arco 纯棉拉链衫 [黑色]",
+     "[MA X DEREK] Len 条纹夹克 [灰色]",
+     "Loang 针织连帽拉链衫 [混色黑]",
+     "Loang 针织连帽拉链衫 [混色白]",
+     "丹宁机车夹克 [复古蓝]",
+     "Cranny 皮革铆钉夹克 [黑色]",
+     "Denite 水洗中长夹克 [复古藏青]"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "MILLO 典藏系列的女裝線 — MILLO WOMEN，以剋制的格調與紮實的細節詮釋質感日常休閒。",
+    "note": "",
+    "products": [
+     "Seeker 格紋襯衫夾克 [藏青色]",
+     "May A-2 皮革夾克 [可可色]",
+     "Bulleit 鉚釘夾克 [灰色]",
+     "套染 M-65 工裝夾克 [卡其色]",
+     "復古純棉機車夾克 [水洗卡其]",
+     "短款 Move 開衫 [紫色]",
+     "Rest 麂皮夾克 [摩卡米色]",
+     "Pernet 燈芯絨夾克 [深棕色]",
+     "紐扣襯裡絎縫夾克 [卡其棕]",
+     "翻領高領夾克 [摩卡棕]",
+     "Lien 連帽派克大衣 [灰綠色]",
+     "Arco 純棉拉鍊衫 [黑色]",
+     "[MA X DEREK] Len 條紋夾克 [灰色]",
+     "Loang 針織連帽拉鍊衫 [混色黑]",
+     "Loang 針織連帽拉鍊衫 [混色白]",
+     "丹寧機車夾克 [復古藍]",
+     "Cranny 皮革鉚釘夾克 [黑色]",
+     "Denite 水洗中長夾克 [復古藏青]"
+    ]
+   },
+   "ja": {
+    "slogan": "MILLOアーカイブのウィメンズライン — 抑制されたムードと堅実なディテールの感覚的なデイリーカジュアル、MILLO WOMEN。",
+    "note": "",
+    "products": [
+     "シーカーチェックシャツジャケット [ネイビー]",
+     "メイ A-2 レザーブルゾン [ココア]",
+     "ブリットスタッズジャケット [グレー]",
+     "オーバーダイ M-65 フィールドジャケット [カーキ]",
+     "ヴィンテージコットンカフェレーサージャケット [ウォッシュドカーキ]",
+     "クロップムーブカーディガン [パープル]",
+     "レストスエードブルゾン [モカベージュ]",
+     "ペルネコーデュロイブルゾン [ディープブラウン]",
+     "ボタンライナーキルティングジャケット [カーキブラウン]",
+     "スプレッドハイネックジャケット [モカブラウン]",
+     "リアンフードパーカ [グレイッシュグリーン]",
+     "アルココットンジップアップ [ブラック]",
+     "[MA X DEREK] レンストライプジャケット [グレー]",
+     "ロアンニットフーディジップアップ [メランジブラック]",
+     "ロアンニットフーディジップアップ [メランジホワイト]",
+     "デニムバイカージャケット [ヴィンテージブルー]",
+     "クラニーレザースタッズジャケット [ブラック]",
+     "デナイトウォッシュドミドルジャケット [ヴィンテージネイビー]"
     ]
    }
   },
