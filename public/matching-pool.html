@@ -1487,6 +1487,22 @@ Object.assign(window.MP_I18N, {
   };
   function mpL(){ return window.mpLang || 'ko'; }
   function bL(b, f){ var l=mpL(); if(l==='ko') return b[f]||''; return (b.i18n && b.i18n[l] && b.i18n[l][f]) || b[f] || ''; }
+  // ── 안전장치: 잠금 상태에서 소개에 브랜드 이름이 노출되지 않도록 제거 (원칙: 인증 전 이름 비노출) ──
+  function safeSlogan(b){
+    var t = bL(b,'slogan') || '';
+    if (document.body.classList.contains('authed')) return t;  // 인증 후엔 원문
+    var rn = (b.realName||'').trim(); if(!rn) return t;
+    var names = [rn];
+    var ko = rn.split(' (')[0].trim(); if(ko) names.push(ko);
+    var m = rn.match(/\(([^)]+)\)/); if(m && m[1].trim()) names.push(m[1].trim());
+    names.sort(function(a,b){return b.length-a.length;});
+    names.forEach(function(n){ if(n.length>=2) t = t.split(n).join(''); });
+    // 잔여 구두점·공백 정리
+    t = t.replace(/\(\s*\)/g,'').replace(/\s{2,}/g,' ')
+         .replace(/\s+([,.])/g,'$1').replace(/,\s*\./g,'.')
+         .replace(/^\s*[—\-|·,]\s*/,'').replace(/\s*[—\-|·,]\s*$/,'').trim();
+    return t;
+  }
   function catL(c){ var l=mpL(); if(!c||l==='ko') return c||''; return (CAT_I18N[c] && CAT_I18N[c][l]) || c; }
   function valL(v){ var l=mpL(); if(!v||l==='ko') return v||''; return (VAL_I18N[v] && VAL_I18N[v][l]) || v; }
   function ctrL(c){ var l=mpL(); if(l==='ko') return c; return (CTR_I18N[c] && CTR_I18N[c][l]) || c; }
@@ -1535,7 +1551,7 @@ Object.assign(window.MP_I18N, {
     }
     const sloganHtml = (b.carriedBrands && b.carriedBrands.length)
       ? `명품 아이웨어 <b>정품 총판</b> · 디올·셀린느·펜디·나이키 외 ${b.carriedBrands.length}개 브랜드`
-      : esc(bL(b,'slogan'));
+      : esc(safeSlogan(b));
     return `<div class="card brand-card${b.elite?' elite':premium?' premium':''}" data-cat="${esc(b.cat||'fashion')}" data-group="${esc(categoryGroup(b.category))}">
       ${b.elite?'<span class="elite-badge">◆ 정품 총판 · ELITE</span>':premium?'<span class="premium-badge">★ PREMIUM</span>':''}
       <div class="brand-logo${b.logoLight ? ' dark' : ''}">${logo}</div>
