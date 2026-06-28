@@ -1079,6 +1079,16 @@
   .bd-gallery img { width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:8px; border:1px solid var(--line); cursor:pointer; transition:transform .15s; }
   .bd-gallery img:hover { transform:scale(1.04); border-color:var(--amber); }
   .bd-prodgrid { display:grid; grid-template-columns:repeat(auto-fill, minmax(132px,1fr)); gap:16px 9px; }
+  /* 국가별 수출 준비 현황 */
+  .er-grid { display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:2px; }
+  .er-row { display:grid; grid-template-columns:1.05fr 1fr auto; align-items:center; gap:8px; padding:9px 13px; background:var(--bg-card); font-size:13px; }
+  .er-ctry { font-weight:600; color:var(--text); }
+  .er-req { color:var(--text-dim); font-size:11.5px; }
+  .er-badge { justify-self:end; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap; }
+  .er-rdy { background:rgba(18,184,181,.14); color:#0c8a87; }
+  .er-ing { background:rgba(245,180,0,.18); color:#946e00; }
+  .er-no  { background:rgba(214,69,80,.12); color:#c0303b; }
+  .er-unk { background:#EEF3FB; color:#8a93a3; }
   .bd-prod { margin:0; display:flex; flex-direction:column; gap:6px; }
   .bd-prod img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:8px; border:1px solid var(--line); cursor:pointer; transition:transform .15s; background:#fff; }
   .bd-prod img:hover { transform:scale(1.04); border-color:var(--amber); }
@@ -1136,7 +1146,21 @@ Object.assign(window.MP_I18N, {
  "pr.review":{"ko":"인플루언서 후기","en":"Influencer Review","ja":"インフルエンサー","zh-Hans":"达人测评","zh-Hant":"達人評測"},
  "pr.press":{"ko":"보도자료","en":"Press Release","ja":"プレスリリース","zh-Hans":"新闻稿","zh-Hant":"新聞稿"},
  "pr.ambassador":{"ko":"앰버서더","en":"Ambassador","ja":"アンバサダー","zh-Hans":"品牌大使","zh-Hant":"品牌大使"},
- "pr.youtube":{"ko":"유튜브","en":"YouTube","ja":"YouTube","zh-Hans":"YouTube","zh-Hant":"YouTube"}
+ "pr.youtube":{"ko":"유튜브","en":"YouTube","ja":"YouTube","zh-Hans":"YouTube","zh-Hant":"YouTube"},
+ "er.title":{"ko":"국가별 수출 준비 현황","en":"Export Readiness by Market","ja":"国別 輸出準備状況","zh-Hans":"各国出口准备情况","zh-Hant":"各國出口準備情況"},
+ "er.tw":{"ko":"대만","en":"Taiwan","ja":"台湾","zh-Hans":"台湾","zh-Hant":"臺灣"},
+ "er.cn":{"ko":"중국","en":"China","ja":"中国","zh-Hans":"中国","zh-Hant":"中國"},
+ "er.hk":{"ko":"홍콩","en":"Hong Kong","ja":"香港","zh-Hans":"香港","zh-Hant":"香港"},
+ "er.sg":{"ko":"싱가포르","en":"Singapore","ja":"シンガポール","zh-Hans":"新加坡","zh-Hant":"新加坡"},
+ "er.th":{"ko":"태국","en":"Thailand","ja":"タイ","zh-Hans":"泰国","zh-Hant":"泰國"},
+ "er.my":{"ko":"말레이시아","en":"Malaysia","ja":"マレーシア","zh-Hans":"马来西亚","zh-Hant":"馬來西亞"},
+ "er.vn":{"ko":"베트남","en":"Vietnam","ja":"ベトナム","zh-Hans":"越南","zh-Hant":"越南"},
+ "er.ready":{"ko":"완비","en":"Ready","ja":"完備","zh-Hans":"已具备","zh-Hant":"已具備"},
+ "er.ing":{"ko":"진행중","en":"In progress","ja":"進行中","zh-Hans":"进行中","zh-Hant":"進行中"},
+ "er.no":{"ko":"미비","en":"Not yet","ja":"未対応","zh-Hans":"未具备","zh-Hant":"未具備"},
+ "er.unk":{"ko":"미확인","en":"TBC","ja":"未確認","zh-Hans":"待确认","zh-Hant":"待確認"},
+ "er.hkfree":{"ko":"등록 불필요 · 즉시 가능","en":"No registration · ready","ja":"登録不要・即可","zh-Hans":"无需登记·即可","zh-Hant":"無需登記·即可"},
+ "er.hint":{"ko":"국가별 화장품 수입 요건 · 브랜드 신고 기준 (완비=즉시 진출 가능)","en":"Cosmetics import requirements by market · self-reported (Ready = immediate entry)","ja":"国別 化粧品輸入要件・ブランド申告基準（完備＝即進出可）","zh-Hans":"各国化妆品进口要求·品牌申报 (已具备=可立即进入)","zh-Hant":"各國化妝品進口要求·品牌申報 (已具備=可立即進入)"}
 });
 Object.assign(window.MP_I18N, {
  "wh.tab":{"ko":"🏬 선품창고","en":"🏬 Sourcing Hub","ja":"🏬 選品倉庫","zh-Hans":"🏬 选品仓","zh-Hant":"🏬 選品倉"},
@@ -1929,6 +1953,23 @@ Object.assign(window.MP_I18N, {
           </a>`;
         }).join('')}</div>`
       : `${na} <span class="bd-dim">${esc2(tr('bd.mkt.dim'))}</span>`;
+    // ── 국가별 수출 준비 현황 (뷰티 전용) ──
+    const isBeautyB = (b.cat==='beauty') || /뷰티|스킨케어|화장/.test(b.category||'');
+    const ER_LIST = [
+      {c:'TW',flag:'🇹🇼',req:'PIF · TFDA'},{c:'CN',flag:'🇨🇳',req:'NMPA'},{c:'HK',flag:'🇭🇰',req:'—'},
+      {c:'SG',flag:'🇸🇬',req:'HSA'},{c:'TH',flag:'🇹🇭',req:'FDA'},{c:'MY',flag:'🇲🇾',req:'NPRA'},{c:'VN',flag:'🇻🇳',req:'공표'}
+    ];
+    const ER_ST = {ready:['rdy','er.ready'],inprogress:['ing','er.ing'],none:['no','er.no']};
+    let exportHtml = '';
+    if(isBeautyB){
+      const er = b.exportReady||{};
+      const rows = ER_LIST.map(x=>{
+        if(x.c==='HK') return `<div class="er-row"><span class="er-ctry">${x.flag} ${tr('er.hk')}</span><span class="er-req">${esc2(tr('er.hkfree'))}</span><span class="er-badge er-rdy">${tr('er.ready')}</span></div>`;
+        const st = ER_ST[er[x.c]] || ['unk','er.unk'];
+        return `<div class="er-row"><span class="er-ctry">${x.flag} ${tr('er.'+x.c.toLowerCase())}</span><span class="er-req">${esc2(x.req)}</span><span class="er-badge er-${st[0]}">${tr(st[1])}</span></div>`;
+      }).join('');
+      exportHtml = `<section class="bd-sec"><h3>🌏 ${tr('er.title')}</h3><div class="er-grid">${rows}</div><p class="bd-hint">${esc2(tr('er.hint'))}</p></section>`;
+    }
     const heroImg = b.heroImage
       || (b.marketingItems && b.marketingItems[0] && b.marketingItems[0].img)
       || (b.images && b.images[0]) || (b.shopProducts && b.shopProducts[0]) || '';
@@ -1948,6 +1989,7 @@ Object.assign(window.MP_I18N, {
           <div class="lo-auth"><span class="lo-auth-ic">✓</span><span>전 제품 <b>100% 정품</b> · 공식 유통 (병행수입·짝퉁 아님). 협업 시 아래 브랜드 아이웨어를 직접 공급받을 수 있습니다.</span></div>
           <div class="lo-brands">${b.carriedBrands.map(c=>`<div class="lo-brand${c.featured?' lo-feat':''}"><div class="lo-brand-head"><span class="lo-brand-name">${esc2(c.name)}</span>${c.featured?'<span class="lo-star">★ 대표 브랜드</span>':''}</div><div class="lo-prods">${(c.products||[]).slice(0,5).map(u=>`<img src="${esc2(u)}" loading="lazy" alt="${esc2(c.name)}">`).join('')}</div></div>`).join('')}</div></section>`:''}
         <section class="bd-sec"><h3>${tr('bd.intro.brand')}</h3><p>${esc2(bL(b,'slogan'))||na}</p></section>
+        ${exportHtml}
         <section class="bd-sec"><h3>${tr('bd.products')}</h3>${gallery}<p class="bd-hint">${esc2(tr('bd.hint'))}</p></section>
         <section class="bd-sec"><h3>${tr('bd.sns')}</h3>${snsHtml}</section>
         <section class="bd-sec"><h3>${tr('bd.marketing')}</h3>${mktHtml}</section>
