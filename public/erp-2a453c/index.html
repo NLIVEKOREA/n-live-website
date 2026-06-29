@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>N-LIVE ERP (견본 v4)</title>
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --navy:#1e2a4a; --navy2:#16203a; --navyhi:rgba(255,255,255,.09);
@@ -290,8 +291,27 @@
 <div id="toast"></div>
 <div id="modal" class="modal-bg hide" onclick="if(event.target===this)closeModal()"><div class="modal-box" id="modalBox"></div></div>
 
-<!-- 공개 데모: 실데이터(erp_data.js) 미포함 → 내장 샘플데이터로 작동 (고객 개인정보 보호) -->
 <script>
+/* ===== Supabase 연동 ===== */
+const SB = window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao');
+const SB_DOMAIN='@n-live.co.kr';
+const _toDate=d=>{if(!d)return null;const m=String(d).match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);return m?`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`:null;};
+const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:r.cust,phone:r.phone,addr:r.addr,code:r.code,disp:r.item_name,tag:r.tag,color:r.color,size:r.size,qty:r.qty,price:r.price,pay:r.pay,payway:r.payway,ship:r.ship,req:r.req,prog:r.prog,back:r.back,track:r.track,reason:r.reason});
+const ORD2DB=o=>({order_date:_toDate(o.date),staff:o.staff,cust:o.cust,phone:o.phone,addr:o.addr,code:o.code,item_name:o.disp,tag:o.tag,color:o.color,size:o.size,qty:o.qty,price:o.price,pay:o.pay,payway:o.payway||null,ship:o.ship,req:o.req||null,prog:o.prog||null,back:!!o.back,track:o.track||null,reason:o.reason||null});
+async function dbFetchAll(table,col,asc){let all=[],f=0;const sz=1000;while(true){const {data,error}=await SB.from(table).select('*').order(col,{ascending:asc!==false}).range(f,f+sz-1);if(error){console.error(table,error);break;}all=all.concat(data||[]);if(!data||data.length<sz)break;f+=sz;}return all;}
+async function dbLoadAll(){
+  try{
+    const st=await dbFetchAll('stock','id',true);
+    const cu=await dbFetchAll('customers','name',true);
+    const or=await dbFetchAll('orders','id',false);
+    STOCK.length=0;st.forEach(r=>STOCK.push(r));
+    CUSTOMERS.length=0;cu.forEach(r=>CUSTOMERS.push(r));
+    ORD.length=0;or.forEach(r=>ORD.push(DB2ORD(r)));
+  }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
+}
+async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){await SB.from('orders').update(row).eq('id',o.id);}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error)console.error('saveOrd',error);if(data)o.id=data.id;}}catch(e){console.error(e);}}
+async function delOrd(o){try{if(o.id)await SB.from('orders').delete().eq('id',o.id);}catch(e){console.error(e);}}
+async function saveStock(s){try{if(s&&s.id!=null)await SB.from('stock').update({qty:s.qty}).eq('id',s.id);}catch(e){console.error(e);}}
 /* ===== 데이터 ===== */
 let STOCK=(window.ERP_DATA&&ERP_DATA.STOCK&&ERP_DATA.STOCK.length)?ERP_DATA.STOCK:[
   {code:'10012',tag:'063',name:'다운반바지',color:'검정',size:'F',qty:3,price:42000},
@@ -596,9 +616,9 @@ function paidCards(){
   if(gs.length>show.length)out+=`<div class="muted" style="padding:8px;font-size:12px">… 외 ${gs.length-show.length}건</div>`;
   return out;
 }
-function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';g.items.forEach(o=>{o.pay='paid';o.payway=pw;});toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');render();}
-function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;g.items.forEach(o=>{o.pay='unpaid';});toast('↩ 입금확인 취소 → 미결제로 복구: '+g.cust);render();}
-function cancelGroupBtn(idx){const g=orderGroups('unpaid')[idx];if(!g)return;g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);if(s)s.qty+=o.qty;const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);});toast('🗑️ 주문 취소 → 재고 복원: '+g.cust);render();}
+async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';g.items.forEach(o=>{o.pay='paid';o.payway=pw;});toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');render();for(const o of g.items)await saveOrd(o);}
+async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;g.items.forEach(o=>{o.pay='unpaid';});toast('↩ 입금확인 취소 → 미결제로 복구: '+g.cust);render();for(const o of g.items)await saveOrd(o);}
+async function cancelGroupBtn(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const removed=[];g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);if(s)s.qty+=o.qty;const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);removed.push({o,s});});toast('🗑️ 주문 취소 → 재고 복원: '+g.cust);render();for(const {o,s} of removed){await delOrd(o);if(s)await saveStock(s);}}
 
 /* ===== 주문서(고객 안내문) ===== */
 const ACCOUNTS={'박시연':'기업은행 49907863201015',_default:'기업은행 49907863201015'};
@@ -697,15 +717,18 @@ function lineQty(i,v){OE.lines[i].qty=Math.max(1,parseInt(v)||1);render();}
 function lineBack(i,c){OE.lines[i].back=c;render();}
 function removeLine(i){OE.lines.splice(i,1);render();}
 function resetOrder(){OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();}
-function commitOrder(){
+async function commitOrder(){
   if(!OE.cust){toast('고객을 선택하세요');return;}
   if(!OE.lines.length){toast('품목을 추가하세요');return;}
   const staff=isSeller()?ME.owner:(OE.staff||$('#oeStaff')?.value||'박시연');
-  let back=0;
+  let back=0;const created=[];
+  const today=new Date().toISOString().slice(0,10).replace(/-/g,'/');
   OE.lines.forEach(l=>{const s=skuOf(l.code,l.color,l.size);if(s)s.qty-=l.qty;if(l.back)back++;
-    ORD.unshift({id:ordSeq++,date:'2026/06/29',staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:l.code,disp:`${l.name} ${l.color} ${l.size}`,tag:tagOf(l.code),color:l.color,size:l.size,qty:l.qty,price:l.price,back:!!l.back,pay:'unpaid',ship:'miss'});});
+    const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:l.code,disp:`${l.name} ${l.color} ${l.size}`,tag:tagOf(l.code),color:l.color,size:l.size,qty:l.qty,price:l.price,back:!!l.back,pay:'unpaid',ship:'miss'};
+    ORD.unshift(o);created.push({o,s});});
   toast('✅ 주문서 저장 ('+OE.lines.length+'건)'+(back?' · 미송 '+back+'건 포함':''));
   OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();
+  for(const {o,s} of created){await saveOrd(o);if(s)await saveStock(s);}
 }
 
 /* ===== 판매관리 ===== */
@@ -1248,10 +1271,24 @@ function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value.trim(
   toast('✅ 사원 등록: '+name+' (아이디 '+id+')');rebuildSwitcher();render();}
 
 /* ===== 로그인 ===== */
-function doLogin(){const id=$('#loginId').value.trim(),pw=$('#loginPw').value.trim(),u=USERS.find(x=>x.id===id&&x.pw===pw);
-  if(!u){toast('❌ 아이디 또는 비밀번호가 틀립니다');return;}
-  ME=u;$('#login').style.display='none';if(!menuAllowed(VIEW))VIEW='dash';rebuildSwitcher();buildNav();render();toast('환영합니다, '+ME.name+'님');}
-function logout(){$('#login').style.display='flex';$('#loginId').value='';$('#loginPw').value='';}
+async function doLogin(){
+  const id=$('#loginId').value.trim(), pw=$('#loginPw').value.trim();
+  if(!id||!pw){toast('아이디·비밀번호를 입력하세요');return;}
+  const email = id.includes('@')? id : id+SB_DOMAIN;
+  toast('🔐 로그인 중...');
+  const {error} = await SB.auth.signInWithPassword({email, password:pw});
+  if(error){toast('❌ 아이디 또는 비밀번호가 틀립니다');return;}
+  const {data:emp} = await SB.from('employees').select('*').eq('login_id', id).maybeSingle();
+  ME = emp ? {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined}
+           : {name:id,id:id,team:'',role:'',scope:'all'};
+  toast('📥 데이터 불러오는 중...');
+  await dbLoadAll();
+  $('#login').style.display='none';
+  if(!menuAllowed(VIEW))VIEW='dash';
+  rebuildSwitcher();buildNav();render();
+  toast('환영합니다, '+ME.name+'님');
+}
+async function logout(){await SB.auth.signOut();$('#login').style.display='flex';$('#loginId').value='';$('#loginPw').value='';}
 function rebuildSwitcher(){const sel=$('#userSel');if(!sel)return;
   sel.innerHTML=USERS.map((u,i)=>`<option value="${i}">${u.name} · ${u.team}(${u.role})</option>`).join('');sel.value=USERS.indexOf(ME);}
 function switchUser(i){ME=USERS[+i];if(!menuAllowed(VIEW))VIEW='dash';buildNav();render();toast('계정 전환: '+ME.name);}
@@ -1336,6 +1373,21 @@ function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.styl
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuAllowed(b.dataset.v))return;VIEW=b.dataset.v;buildNav();render();});
 document.addEventListener('keydown',e=>{if(e.key==='F8'&&VIEW==='order'){e.preventDefault();commitOrder();}});
 rebuildSwitcher();buildNav();render();
+/* 세션 자동복원: 새로고침해도 로그인 유지 */
+(async()=>{
+  try{
+    const {data}=await SB.auth.getSession();
+    if(data&&data.session){
+      const id=(data.session.user.email||'').split('@')[0];
+      const {data:emp}=await SB.from('employees').select('*').eq('login_id',id).maybeSingle();
+      ME=emp?{name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined}:{name:id,id,team:'',role:'',scope:'all'};
+      await dbLoadAll();
+      $('#login').style.display='none';
+      if(!menuAllowed(VIEW))VIEW='dash';
+      rebuildSwitcher();buildNav();render();
+    }
+  }catch(e){console.error('session',e);}
+})();
 </script>
 </body>
 </html>
