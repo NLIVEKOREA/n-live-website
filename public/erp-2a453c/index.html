@@ -183,6 +183,8 @@
   .kw-row .d{font-size:12px;color:var(--gray);margin-top:3px}
   .kw-sw{width:56px;height:28px;border-radius:20px;border:0;cursor:pointer;font-size:11px;font-weight:800;color:#fff;background:#cbd5e1;flex:0 0 auto}
   .kw-sw.on{background:var(--green)}
+  .prod-link{cursor:pointer}
+  .prod-link:hover{text-decoration:underline;color:var(--blue)}
   /* 주문현황 카드 */
   .date-div{font-size:13px;font-weight:800;color:#334155;margin:18px 0 11px;padding:8px 12px;background:#eef2f7;border-radius:8px;display:flex;align-items:center;gap:8px}
   .ord-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
@@ -312,6 +314,17 @@ async function dbLoadAll(){
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){await SB.from('orders').update(row).eq('id',o.id);}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error)console.error('saveOrd',error);if(data)o.id=data.id;}}catch(e){console.error(e);}}
 async function delOrd(o){try{if(o.id)await SB.from('orders').delete().eq('id',o.id);}catch(e){console.error(e);}}
 async function saveStock(s){try{if(s&&s.id!=null)await SB.from('stock').update({qty:s.qty}).eq('id',s.id);}catch(e){console.error(e);}}
+async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,in_price:s.in_price||0,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error)console.error('updStock',error);}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error)console.error('insStock',error);if(data)s.id=data.id;}}catch(e){console.error(e);}}
+/* ===== 카테고리 ===== */
+const CAT_TREE={
+  '패션':['상의','니트','셔츠·블라우스','원피스','팬츠','스커트','아우터','자켓','코트','셋업','데님','이너','기타'],
+  '패션잡화':['가방','신발','주얼리','벨트','모자','스카프·머플러','양말·스타킹','기타'],
+  '뷰티':['스킨케어','색조','클렌징','마스크팩','바디','헤어','향수','기타'],
+  '식품':['가공식품','건강식품','음료','간식','기타'],
+  '라이프':['리빙','주방','가전','문구','기타']
+};
+const SEASONS=['봄','여름','가을','겨울','사계절'];
+const CAT_HASSEASON=c=>c==='패션'||c==='패션잡화';
 /* ===== 데이터 ===== */
 let STOCK=(window.ERP_DATA&&ERP_DATA.STOCK&&ERP_DATA.STOCK.length)?ERP_DATA.STOCK:[
   {code:'10012',tag:'063',name:'다운반바지',color:'검정',size:'F',qty:3,price:42000},
@@ -1093,7 +1106,7 @@ function viewStock(){
       <th class="num-cell">단가</th><th class="num-cell">현재고</th><th>상태</th></tr></thead><tbody>
     ${STOCK.filter(s=>!q||inc(s.tag+s.name+s.code+s.color,q)).slice(0,200).map(s=>`<tr>
       <td>${can?`<input class="barcode" style="width:62px;text-align:center;font-weight:700" value="${s.tag}" onchange="setTag('${s.code}',this.value)">`:`<span class="tagbox">${s.tag}</span>`}</td>
-      <td class="muted barcode">${s.code}</td><td>${s.name}</td><td>${s.color}</td><td>${s.size}</td>
+      <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.code}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
       <td class="num-cell muted">${won(s.price)}</td>
       <td class="num-cell ${s.qty<=3?'stock-low':'stock-ok'}">${s.qty}</td>
       <td>${s.qty===0?'<span class="pill p-low">품절</span>':s.qty<=3?'<span class="pill p-miss">부족</span>':'<span class="pill p-done">정상</span>'}</td>
@@ -1119,7 +1132,7 @@ function viewProducts(){
   <div style="text-align:right;margin-bottom:14px"><button class="btn" onclick="openProdModal('')">＋ 품목 등록</button></div>
   <div class="card"><div class="card-h"><h2>품목 목록 (${codes.length}품목 / ${STOCK.length}SKU)</h2></div>
     <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>색상</th><th>사이즈</th><th class="num-cell">단가</th><th class="num-cell">재고</th></tr></thead><tbody>
-    ${STOCK.slice(0,200).map(s=>`<tr><td><span class="tagbox">${s.tag}</span></td><td class="barcode muted">${s.code}</td><td>${s.name}</td><td>${s.color}</td><td>${s.size}</td><td class="num-cell muted">${won(s.price)}</td><td class="num-cell ${s.qty<=3?'stock-low':''}">${s.qty}</td></tr>`).join('')}
+    ${STOCK.slice(0,200).map(s=>`<tr><td><span class="tagbox">${s.tag}</span></td><td class="barcode muted prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.code}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td><td class="num-cell muted">${won(s.price)}</td><td class="num-cell ${s.qty<=3?'stock-low':''}">${s.qty}</td></tr>`).join('')}
     </tbody></table></div>`;
 }
 
@@ -1139,23 +1152,40 @@ function saveCust(){const name=$('#mc_name').value.trim();if(!name){toast('고�
   closeModal();toast('✅ 고객 등록: '+name);
   if(VIEW==='order'){OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;}
   render();}
-function openProdModal(prefill){prefill=prefill||'';const isNum=/^\d+$/.test(prefill);
-  $('#modalBox').innerHTML=`
-    <h3>품목 신규 등록</h3><div class="ms">검색에 없어 새로 등록합니다. 저장하면 작업 중인 주문에 바로 추가돼요(화면 유지).</div>
-    <div class="modal-row"><div><label>번호표</label><input id="mp_tag" placeholder="063"></div>
-      <div><label>품목코드</label><input id="mp_code" value="${isNum?prefill:''}" placeholder="10099"></div></div>
-    <label>품목명</label><input id="mp_name" value="${isNum?'':prefill}">
-    <div class="modal-row"><div><label>색상</label><input id="mp_color" placeholder="블랙"></div>
-      <div><label>사이즈</label><input id="mp_size" placeholder="F"></div></div>
-    <div class="modal-row"><div><label>수량</label><input id="mp_qty" type="number" value="0"></div>
-      <div><label>단가</label><input id="mp_price" type="number" placeholder="0"></div></div>
-    <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">등록</button></div>`;
+function prodFormHTML(s){s=s||{};const cat=s.category||'';const showSeason=CAT_HASSEASON(cat);
+  return `
+    <div class="modal-row"><div><label>검색창내용(번호표)</label><input id="mp_tag" value="${esc(s.tag||'')}" placeholder="063"></div>
+      <div><label>품목코드</label><input id="mp_code" value="${esc(s.code||'')}" placeholder="10099"></div></div>
+    <label>구매처(사입처)</label><input id="mp_vendor" list="mp_vendorList" value="${esc(s.vendor||'')}" placeholder="🔍 입력 또는 선택 (예: eun)">
+    <datalist id="mp_vendorList">${VENDORS.map(v=>`<option value="${esc(v.name)}">`).join('')}</datalist>
+    <label>품목명</label><input id="mp_name" value="${esc(s.name||'')}">
+    <div class="modal-row"><div><label>색상</label><input id="mp_color" value="${esc(s.color||'')}" placeholder="블랙"></div>
+      <div><label>사이즈</label><input id="mp_size" value="${esc(s.size||'')}" placeholder="F"></div></div>
+    <div class="modal-row"><div><label>입고단가(원가)</label><input id="mp_inprice" type="number" value="${s.in_price||''}" placeholder="0"></div>
+      <div><label>출고단가(판매가)</label><input id="mp_price" type="number" value="${s.price||''}" placeholder="0"></div></div>
+    <div class="modal-row"><div><label>카테고리</label><select id="mp_cat" onchange="catChange()">${[''].concat(Object.keys(CAT_TREE)).map(c=>`<option ${c===cat?'selected':''}>${c}</option>`).join('')}</select></div>
+      <div><label>종류</label><select id="mp_subcat">${[''].concat(CAT_TREE[cat]||[]).map(x=>`<option ${x===(s.subcategory||'')?'selected':''}>${x}</option>`).join('')}</select></div></div>
+    <div id="mp_seasonRow" class="modal-row" style="${showSeason?'':'display:none'}"><div><label>계절</label><select id="mp_season">${[''].concat(SEASONS).map(x=>`<option ${x===(s.season||'')?'selected':''}>${x}</option>`).join('')}</select></div><div></div></div>
+    <label>재고수량</label><input id="mp_qty" type="number" value="${s.qty!=null?s.qty:0}">`;
+}
+function catChange(){const cat=$('#mp_cat').value;$('#mp_subcat').innerHTML=[''].concat(CAT_TREE[cat]||[]).map(x=>`<option>${x}</option>`).join('');$('#mp_seasonRow').style.display=CAT_HASSEASON(cat)?'':'none';}
+function openProdModal(prefill){prefill=prefill||'';PRODEDIT=null;const isNum=/^\d+$/.test(prefill);
+  $('#modalBox').innerHTML=`<h3>품목 신규 등록</h3><div class="ms">검색에 없어 새로 등록합니다. 저장하면 작업 중인 주문에 바로 추가돼요(화면 유지).</div>${prodFormHTML(isNum?{code:prefill}:{name:prefill})}
+    <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mp_code');if(el)el.focus();},40);}
-function saveProd(){const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
+function openProdEdit(id){const s=STOCK.find(x=>x.id===id);if(!s){toast('품목 정보를 찾을 수 없어요');return;}PRODEDIT=id;
+  $('#modalBox').innerHTML=`<h3>품목 수정</h3><div class="ms">등록 시 입력한 내용을 수정합니다. 저장하면 이 품목이 보이는 모든 화면에 반영돼요.</div>${prodFormHTML(s)}
+    <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
+  $('#modal').classList.remove('hide');}
+async function saveProd(){const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
   if(!code||!name){toast('품목코드·품목명은 필수');return;}
-  STOCK.push({code,tag:$('#mp_tag').value.trim()||'-',name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',qty:parseInt($('#mp_qty').value)||0,price:parseInt($('#mp_price').value)||0});
-  closeModal();toast('✅ 품목 등록: '+name);
-  if(VIEW==='order')addLineByCode(code);else render();}
+  const d={code,tag:$('#mp_tag').value.trim()||'-',vendor:$('#mp_vendor').value.trim()||null,name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',in_price:parseInt($('#mp_inprice').value)||0,price:parseInt($('#mp_price').value)||0,category:$('#mp_cat').value||null,subcategory:$('#mp_subcat').value||null,season:(CAT_HASSEASON($('#mp_cat').value)?$('#mp_season').value:'')||null,qty:parseInt($('#mp_qty').value)||0};
+  const editing=PRODEDIT!=null;let s;
+  if(editing){s=STOCK.find(x=>x.id===PRODEDIT);if(s)Object.assign(s,d);}
+  else{s=Object.assign({},d);STOCK.unshift(s);}
+  await saveStockRow(s);
+  const wasEditing=editing;PRODEDIT=null;closeModal();toast(wasEditing?('✅ 수정: '+name):('✅ 품목 등록: '+name));
+  if(!wasEditing&&VIEW==='order')addLineByCode(code);else render();}
 
 /* ===== 사입처 ===== */
 function viewVendor(){
@@ -1362,7 +1392,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null;
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
