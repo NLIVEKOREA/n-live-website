@@ -276,7 +276,7 @@
   </aside>
   <div class="content">
     <header class="topbar">
-      <div class="search"><input placeholder="메뉴·품목·고객 검색 (Ctrl+K)"></div>
+      <div style="flex:1"></div>
       <div class="tb-icons">
         <span class="tb-ic"><i class="ti ti-bell"></i><span class="bdg">5</span></span>
         <span class="tb-ic"><i class="ti ti-mail"></i><span class="bdg">2</span></span>
@@ -1063,9 +1063,11 @@ function viewShipped(){
 
 /* ===== 재고관리 ===== */
 function viewStock(){
-  const q=($('#stockSearch')?.value||'').trim(),can=!isSeller();
-  const rows=STOCK.filter(s=>!q||inc(s.tag+s.name+s.code+s.color,q)).slice(0,200);
+  const q=($('#stockSearch')?.value||'').trim(),can=!isSeller(),fld=STOCKFIELD;
+  const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
+  const rows=STOCK.filter(smatch).slice(0,200);
   const selN=STAGED.filter(x=>x.chk).length;
+  const searchBox=`<select onchange="STOCKFIELD=this.value;render()" style="padding:9px 12px;border-radius:9px;font-size:13px;font-weight:700">${['전체','번호표','품목코드','품목명'].map(f=>`<option ${STOCKFIELD===f?'selected':''}>${f}</option>`).join('')}</select><input id="stockSearch" placeholder="🔍 ${STOCKFIELD==='전체'?'번호표·품목코드·품목명':STOCKFIELD} 입력" oninput="render()" value="${q}" style="width:320px;font-size:14px">`;
   return `
   <div class="head"><h1>재고관리 <span class="badge">핵심</span></h1>
     <p>대량 입고는 아래 <b>품목 등록</b>에서 작업 · 빠른 수정은 재고현황의 품목 클릭(팝업) · 바코드 스캔 입출고</p></div>
@@ -1109,8 +1111,8 @@ function viewStock(){
       <button class="btn ghost sm" onclick="scanMove(1)">＋입고</button>
       <button class="btn ghost sm" onclick="scanMove(-1)">－출고</button>
       <span class="grow"></span>
-      <input id="stockSearch" placeholder="🔍 번호표·품목 검색" oninput="render()" value="${q}" style="width:200px">
-    </div>`:`<div class="toolbar"><span class="grow"></span><input id="stockSearch" placeholder="🔍 검색" oninput="render()" value="${q}" style="width:200px"></div>`}
+      ${searchBox}
+    </div>`:`<div class="toolbar"><span class="grow"></span>${searchBox}</div>`}
     <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>컬러</th><th>사이즈</th>
       <th class="num-cell">단가</th><th class="num-cell">현재고</th><th>상태</th></tr></thead><tbody>
     ${rows.map(s=>`<tr>
@@ -1416,7 +1418,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''};
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체';
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
