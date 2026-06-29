@@ -1065,26 +1065,52 @@ function viewShipped(){
 function viewStock(){
   const q=($('#stockSearch')?.value||'').trim(),can=!isSeller();
   const rows=STOCK.filter(s=>!q||inc(s.tag+s.name+s.code+s.color,q)).slice(0,200);
+  const selN=STAGED.filter(x=>x.chk).length;
   return `
   <div class="head"><h1>재고관리 <span class="badge">핵심</span></h1>
-    <p>품목코드(스타일) + <b>방송 번호표</b> + 색상·사이즈 · 품목 등록/현황 · 바코드 스캔</p></div>
+    <p>대량 입고는 아래 <b>품목 등록</b>에서 작업 · 빠른 수정은 재고현황의 품목 클릭(팝업) · 바코드 스캔 입출고</p></div>
   ${isSeller()?`<div class="lock">🔒 셀러팀 ${ME.name} — 재고는 <b>조회만</b> 가능</div>`:''}
   ${can?`<div class="card" style="margin-bottom:16px">
-    <div class="card-h"><h2>＋ 품목 등록 · 입출고</h2></div>
-    <div class="toolbar">
-      <button class="btn" onclick="openProdModal('')">＋ 품목 등록</button>
-      <span class="muted" style="font-size:12px;align-self:center">번호표·구매처·카테고리·입출고단가·재고수량 한 번에</span>
-      <span class="grow"></span>
-      <input id="scan" class="barcode" placeholder="📷 코드+색상+사이즈 (예: 10012검정F)" style="width:230px">
-      <input id="scanQty" type="number" value="1" min="1" style="width:64px">
-      <button class="btn ghost" onclick="scanMove(1)">＋ 입고</button>
-      <button class="btn ghost" onclick="scanMove(-1)">－ 출고</button>
+    <div class="card-h"><h2>＋ 품목 등록 <span class="muted" style="font-size:12px;font-weight:400">대량 입고 작업 — 입력 후 [목록에 추가], 체크해서 한 번에 저장</span></h2></div>
+    <div class="form-grid">
+      <input id="sf_tag" placeholder="번호표" value="${esc(SFORM.tag)}" oninput="SFORM.tag=this.value" style="width:78px">
+      <input id="sf_code" placeholder="품목코드*" value="${esc(SFORM.code)}" oninput="SFORM.code=this.value" style="width:100px">
+      <input id="sf_name" placeholder="품목명*" value="${esc(SFORM.name)}" oninput="SFORM.name=this.value" style="width:150px">
+      <input id="sf_color" placeholder="색상" value="${esc(SFORM.color)}" oninput="SFORM.color=this.value" style="width:68px">
+      <input id="sf_size" placeholder="사이즈" value="${esc(SFORM.size)}" oninput="SFORM.size=this.value" style="width:58px">
+      <input id="sf_vendor" list="sf_vendorList" placeholder="구매처(예 eun)" value="${esc(SFORM.vendor)}" oninput="SFORM.vendor=this.value" style="width:118px">
+      <datalist id="sf_vendorList">${VENDORS.map(v=>`<option value="${esc(v.name)}">`).join('')}</datalist>
+      <input id="sf_inprice" type="number" placeholder="입고단가" value="${SFORM.inprice}" oninput="SFORM.inprice=this.value" style="width:84px">
+      <input id="sf_price" type="number" placeholder="출고단가" value="${SFORM.price}" oninput="SFORM.price=this.value" style="width:84px">
+      <select id="sf_cat" onchange="SFORM.cat=this.value;SFORM.subcat='';SFORM.season='';render()" style="width:96px"><option value="">카테고리</option>${Object.keys(CAT_TREE).map(c=>`<option ${c===SFORM.cat?'selected':''}>${c}</option>`).join('')}</select>
+      <select id="sf_subcat" onchange="SFORM.subcat=this.value" style="width:96px"><option value="">종류</option>${(CAT_TREE[SFORM.cat]||[]).map(x=>`<option ${x===SFORM.subcat?'selected':''}>${x}</option>`).join('')}</select>
+      ${CAT_HASSEASON(SFORM.cat)?`<select id="sf_season" onchange="SFORM.season=this.value" style="width:78px"><option value="">계절</option>${SEASONS.map(x=>`<option ${x===SFORM.season?'selected':''}>${x}</option>`).join('')}</select>`:''}
+      <input id="sf_qty" type="number" placeholder="수량" value="${SFORM.qty}" oninput="SFORM.qty=this.value" style="width:68px">
+      <button class="btn" onclick="stagedAdd()">＋ 목록에 추가</button>
     </div>
+    ${STAGED.length?`
+    <div class="card-h" style="margin-top:18px"><h2>오늘 등록 작업 (${STAGED.length}건) <span class="muted" style="font-size:12px;font-weight:400">체크한 항목만 재고현황에 저장됩니다</span></h2></div>
+    <table><thead><tr><th style="width:34px"><input type="checkbox" ${STAGED.length&&STAGED.every(x=>x.chk)?'checked':''} onclick="stagedAllToggle(this.checked)"></th><th>번호표</th><th>품목코드</th><th>품목명</th><th>색상</th><th>사이즈</th><th>구매처</th><th>카테고리</th><th class="num-cell">입고가</th><th class="num-cell">출고가</th><th class="num-cell">수량</th><th style="width:34px"></th></tr></thead><tbody>
+      ${STAGED.map((x,i)=>`<tr>
+        <td><input type="checkbox" ${x.chk?'checked':''} onclick="stagedToggle(${i})"></td>
+        <td><span class="tagbox">${esc(x.tag)}</span></td><td class="barcode muted">${esc(x.code)}</td><td>${esc(x.name)}</td><td>${esc(x.color)}</td><td>${esc(x.size)}</td><td class="muted">${esc(x.vendor||'-')}</td><td class="muted">${esc(x.category||'-')}${x.subcategory?'·'+esc(x.subcategory):''}${x.season?'·'+esc(x.season):''}</td><td class="num-cell muted">${won(x.in_price)}</td><td class="num-cell">${won(x.price)}</td><td class="num-cell">${x.qty}</td>
+        <td><button class="ico-btn" title="삭제" onclick="stagedDel(${i})"><i class="ti ti-x"></i></button></td>
+      </tr>`).join('')}
+    </tbody></table>
+    <div class="card-act"><button class="btn gray" onclick="STAGED=[];render()">목록 비우기</button><button class="btn" onclick="stagedSave()">✓ 선택 ${selN}건 재고현황에 저장</button></div>
+    `:`<div class="note" style="margin-top:12px">아직 추가된 품목이 없어요. 위에서 입력하고 <b>[＋ 목록에 추가]</b>를 누르면 여기에 쌓입니다.</div>`}
   </div>`:''}
   <div class="card">
     <div class="card-h"><h2>재고 현황 <span class="muted" style="font-size:12px;font-weight:400">${STOCK.length} SKU</span></h2></div>
-    <div class="note">💡 <b>품목코드·품목명을 클릭</b>하면 등록정보(구매처·카테고리·단가 등)를 수정할 수 있어요. 번호표는 표에서 바로 수정.</div>
-    <div class="toolbar"><span class="grow"></span><input id="stockSearch" placeholder="🔍 번호표·품목 검색" oninput="render()" value="${q}" style="width:220px"></div>
+    <div class="note">💡 <b>품목코드·품목명을 클릭</b>하면 빠르게 수정(팝업)할 수 있어요. 번호표는 표에서 바로 수정.</div>
+    ${can?`<div class="toolbar">
+      <input id="scan" class="barcode" placeholder="📷 바코드 (예: 10012검정F)" style="width:200px">
+      <input id="scanQty" type="number" value="1" min="1" style="width:60px">
+      <button class="btn ghost sm" onclick="scanMove(1)">＋입고</button>
+      <button class="btn ghost sm" onclick="scanMove(-1)">－출고</button>
+      <span class="grow"></span>
+      <input id="stockSearch" placeholder="🔍 번호표·품목 검색" oninput="render()" value="${q}" style="width:200px">
+    </div>`:`<div class="toolbar"><span class="grow"></span><input id="stockSearch" placeholder="🔍 검색" oninput="render()" value="${q}" style="width:200px"></div>`}
     <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>컬러</th><th>사이즈</th>
       <th class="num-cell">단가</th><th class="num-cell">현재고</th><th>상태</th></tr></thead><tbody>
     ${rows.map(s=>`<tr>
@@ -1262,6 +1288,21 @@ function cancelOrder(id){const i=ORD.findIndex(x=>x.id===id),o=ORD[i],s=skuOf(o.
   toast('🗑️ 주문 취소 → 재고 '+o.qty+'개 복원 ('+prodName(o.code)+' '+o.color+')');render();}
 function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o.cust+' → '+({req:'출고요청',done:'출고완료'})[st]);render();}
 function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
+function stagedAdd(){
+  if(!SFORM.code.trim()||!SFORM.name.trim()){toast('품목코드·품목명은 필수');return;}
+  STAGED.unshift({chk:true,tag:SFORM.tag.trim()||'-',code:SFORM.code.trim(),vendor:SFORM.vendor.trim()||null,name:SFORM.name.trim(),color:SFORM.color.trim()||'-',size:SFORM.size.trim()||'F',in_price:parseInt(SFORM.inprice)||0,price:parseInt(SFORM.price)||0,category:SFORM.cat||null,subcategory:SFORM.subcat||null,season:(CAT_HASSEASON(SFORM.cat)?SFORM.season:'')||null,qty:parseInt(SFORM.qty)||0});
+  SFORM.code='';SFORM.name='';SFORM.color='';SFORM.size='';SFORM.inprice='';SFORM.price='';SFORM.qty='';
+  toast('목록에 추가 ('+STAGED.length+'건 대기)');render();setTimeout(()=>$('#sf_code')?.focus(),40);
+}
+function stagedToggle(i){if(STAGED[i])STAGED[i].chk=!STAGED[i].chk;render();}
+function stagedAllToggle(c){STAGED.forEach(x=>x.chk=c);render();}
+function stagedDel(i){STAGED.splice(i,1);render();}
+async function stagedSave(){
+  const sel=STAGED.filter(x=>x.chk);if(!sel.length){toast('저장할 항목을 체크하세요');return;}
+  for(const x of sel){const s={tag:x.tag,code:x.code,vendor:x.vendor,name:x.name,color:x.color,size:x.size,in_price:x.in_price,price:x.price,category:x.category,subcategory:x.subcategory,season:x.season,qty:x.qty};STOCK.unshift(s);await saveStockRow(s);}
+  STAGED=STAGED.filter(x=>!x.chk);
+  toast('✅ '+sel.length+'건 재고현황에 등록 완료');render();
+}
 async function setTag(code,val){const t=val.trim();STOCK.filter(s=>s.code===code).forEach(s=>s.tag=t);toast('🏷️ 번호표 변경: '+prodName(code)+' → '+t);render();try{await SB.from('stock').update({tag:t}).eq('code',code);}catch(e){console.error(e);}}
 async function scanMove(dir){const raw=$('#scan').value.trim().replace(/\s/g,''),q=parseInt($('#scanQty').value)||1;
   const s=STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'')===raw)||STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'').includes(raw));
@@ -1375,7 +1416,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null;
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''};
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
