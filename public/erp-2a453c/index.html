@@ -307,14 +307,17 @@ const _toDate=d=>{if(!d)return null;const m=String(d).match(/(\d{4})[-/](\d{1,2}
 const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:r.cust,phone:r.phone,addr:r.addr,code:r.code,disp:r.item_name,tag:r.tag,color:r.color,size:r.size,qty:r.qty,price:r.price,pay:r.pay,payway:r.payway,ship:r.ship,req:r.req,prog:r.prog,back:r.back,track:r.track,reason:r.reason});
 const ORD2DB=o=>({order_date:_toDate(o.date),staff:o.staff,cust:o.cust,phone:o.phone,addr:o.addr,code:o.code,item_name:o.disp,tag:o.tag,color:o.color,size:o.size,qty:o.qty,price:o.price,pay:o.pay,payway:o.payway||null,ship:o.ship,req:o.req||null,prog:o.prog||null,back:!!o.back,track:o.track||null,reason:o.reason||null});
 async function dbFetchAll(table,col,asc){let all=[],f=0;const sz=1000;while(true){const {data,error}=await SB.from(table).select('*').order(col,{ascending:asc!==false}).range(f,f+sz-1);if(error){console.error(table,error);break;}all=all.concat(data||[]);if(!data||data.length<sz)break;f+=sz;}return all;}
+let SHIPPING=[];
 async function dbLoadAll(){
   try{
     const st=await dbFetchAll('stock','id',true);
     const cu=await dbFetchAll('customers','name',true);
     const or=await dbFetchAll('orders','id',false);
+    const sh=await SB.from('shipping').select('*').order('month');
     STOCK.length=0;st.forEach(r=>STOCK.push(r));
     CUSTOMERS.length=0;cu.forEach(r=>CUSTOMERS.push(r));
     ORD.length=0;or.forEach(r=>ORD.push(DB2ORD(r)));
+    SHIPPING=sh.data||[];
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
 }
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){await SB.from('orders').update(row).eq('id',o.id);}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error)console.error('saveOrd',error);if(data)o.id=data.id;}}catch(e){console.error(e);}}
@@ -1177,7 +1180,12 @@ function viewProducts(){
   </div>
   ${subArr.length?`<div class="card" style="margin-top:14px"><div class="card-h"><h2>종류별 분포 <span class="muted" style="font-size:12px;font-weight:400">상위 12</span></h2></div>
     ${subArr.map(([s,n])=>bar(s,n/maxSub,`${n.toLocaleString()} SKU`)).join('')}
-  </div>`:''}`;
+  </div>`:''}
+  ${SHIPPING&&SHIPPING.length?`<div class="card" style="margin-top:14px"><div class="card-h"><h2>월별 배송비 합계 <span class="muted" style="font-size:12px;font-weight:400">상품 매출과 별도 집계 · 총 ${won(SHIPPING.reduce((a,s)=>a+(s.amount||0),0))}</span></h2></div>
+    <table><thead><tr><th>월</th><th class="num-cell">배송비 합계</th><th class="num-cell">건수</th></tr></thead><tbody>
+    ${SHIPPING.map(s=>`<tr><td>${s.month}</td><td class="num-cell">${won(s.amount)}</td><td class="num-cell muted">${s.cnt}건</td></tr>`).join('')}
+    <tr style="font-weight:800;border-top:2px solid #e2e8f0"><td>합계</td><td class="num-cell">${won(SHIPPING.reduce((a,s)=>a+(s.amount||0),0))}</td><td class="num-cell muted">${SHIPPING.reduce((a,s)=>a+(s.cnt||0),0)}건</td></tr>
+    </tbody></table></div>`:''}`;
 }
 
 /* ===== 신규등록 팝업(모달) ===== */
