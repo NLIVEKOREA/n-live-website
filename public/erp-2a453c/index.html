@@ -498,7 +498,6 @@ function viewDash(){
     <div class="kpi"><div><div class="lab">${m}주문 대기(미결제)</div><div class="num">${unpaid.length}</div><div class="sub warn">입금확인 필요</div></div><div class="ic ic-a"><i class="ti ti-clipboard-list"></i></div></div>
     <div class="kpi"><div><div class="lab">${m}결제완료 매출</div><div class="num">${(sales/10000).toFixed(0)}만</div><div class="sub up">판매 ${paid.length}건</div></div><div class="ic ic-g"><i class="ti ti-cash"></i></div></div>
     <div class="kpi"><div><div class="lab">${m}출고 대기</div><div class="num">${toShip.length}</div><div class="sub warn">미송·출고요청</div></div><div class="ic ic-b"><i class="ti ti-truck"></i></div></div>
-    <div class="kpi"><div><div class="lab">재고 부족(≤3)</div><div class="num">${low.length}</div><div class="sub down">발주 검토</div></div><div class="ic ic-r"><i class="ti ti-box"></i></div></div>
   </div>
   <div class="row r-2-1">
     <div class="card">
@@ -510,7 +509,6 @@ function viewDash(){
       <div class="card-h"><h2>주요 알림</h2><span class="more">더보기</span></div>
       <div class="alist">
         <div class="ai"><span class="tag t-a">주문</span><span class="tx">미결제 ${unpaid.length}건 입금확인 대기</span><span class="dt">방금</span></div>
-        <div class="ai"><span class="tag t-r">재고</span><span class="tx">슬랙스 차콜 L 품절</span><span class="dt">06-29</span></div>
         <div class="ai"><span class="tag t-b">입고</span><span class="tx">대련 발주분 입고예정</span><span class="dt">06-28</span></div>
         <div class="ai"><span class="tag t-p">교환</span><span class="tx">은주(유은주) 교환요청 접수</span><span class="dt">06-27</span></div>
         <div class="ai"><span class="tag t-g">환불</span><span class="tx">옐로(김선혜) 환불완료</span><span class="dt">06-26</span></div>
@@ -533,9 +531,9 @@ function viewDash(){
       ${unpaid.slice(0,5).map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${o.cust}</td><td class="num-cell">${won(amtOf(o))}</td><td>${payPill(o.pay)}</td></tr>`).join('')||'<tr><td class="muted">없음</td></tr>'}
       </tbody></table>
     </div>
-    <div class="card"><div class="card-h"><h2>재고 부족</h2><span class="more" onclick="go('stock')">더보기</span></div>
+    <div class="card"><div class="card-h"><h2>미송 대기</h2><span class="more" onclick="go('ship')">더보기</span></div>
       <table><tbody>
-      ${low.slice(0,8).map(s=>`<tr><td><span class="tagbox">${s.tag}</span></td><td>${s.name}</td><td class="muted">${s.color}/${s.size}</td><td class="num-cell stock-low">${s.qty}</td></tr>`).join('')}
+      ${ORD.filter(o=>o.back).slice(0,8).map(o=>`<tr><td>${o.cust}</td><td class="muted">${o.disp||prodName(o.code)}</td></tr>`).join('')||'<tr><td class="muted">미송 없음</td></tr>'}
       </tbody></table>
     </div>
   </div>`;
@@ -1123,13 +1121,12 @@ function viewStock(){
       ${searchBox}
     </div>`:`<div class="toolbar"><span class="grow"></span>${searchBox}</div>`}
     <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>컬러</th><th>사이즈</th>
-      <th class="num-cell">단가</th><th class="num-cell">현재고</th><th>상태</th></tr></thead><tbody>
+      <th class="num-cell">단가</th><th class="num-cell">현재고</th></tr></thead><tbody>
     ${rows.map(s=>`<tr>
       <td>${can?`<input class="barcode" style="width:62px;text-align:center;font-weight:700" value="${s.tag}" onchange="setTag('${s.code}',this.value)">`:`<span class="tagbox">${s.tag}</span>`}</td>
       <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.code}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
       <td class="num-cell muted">${won(s.price)}</td>
-      <td class="num-cell ${s.qty<=3?'stock-low':'stock-ok'}">${s.qty}</td>
-      <td>${s.qty===0?'<span class="pill p-low">품절</span>':s.qty<=3?'<span class="pill p-miss">부족</span>':'<span class="pill p-done">정상</span>'}</td>
+      <td class="num-cell" style="font-weight:700">${s.qty}</td>
       </tr>`).join('')}
     </tbody></table>
   </div>`;
@@ -1146,6 +1143,58 @@ function viewCustomers(){
     </tbody></table></div>`;
 }
 function viewProducts(){
+  const tab=PRODTAB;
+  return `
+  <div class="head"><h1>상품현황 <span class="badge">통계</span></h1><p>상품 구성 + 판매 분석 · 품목 등록/수정은 재고관리에서</p></div>
+  <div class="tabs">
+    <button class="${tab==='compose'?'on':''}" onclick="PRODTAB='compose';render()">상품 구성</button>
+    <button class="${tab==='sales'?'on':''}" onclick="PRODTAB='sales';render()">판매 분석</button>
+  </div>
+  ${tab==='sales'?prodSales():prodCompose()}`;
+}
+function prodSales(){
+  const O=ORD.filter(o=>o.pay==='paid'&&!/낱장|배송비|택배|합배|무나|무료나눔|^일반$/.test((o.disp||'')+'|'+(o.code||'')));
+  const bar=(lab,frac,val)=>`<div class="pbar-row"><span class="pbar-lab">${esc(lab)}</span><div class="pbar-track"><div class="pbar-fill" style="width:${Math.max(2,Math.round(frac*100))}%"></div></div><span class="pbar-val">${val}</span></div>`;
+  const bp={};O.forEach(o=>{const k=o.code+'|'+(o.disp||'');const x=bp[k]||(bp[k]={name:o.disp||o.code,qty:0,amt:0});x.qty+=(o.qty||0);x.amt+=(o.qty||0)*(o.price||0);});
+  const best=Object.values(bp).sort((a,b)=>b.qty-a.qty).slice(0,15);
+  const bm={};O.forEach(o=>{const m=(o.date||'').slice(0,7);if(!/^\d{4}-\d{2}$/.test(m))return;const x=bm[m]||(bm[m]={amt:0,cnt:0});x.amt+=(o.qty||0)*(o.price||0);x.cnt++;});
+  const monArr=Object.entries(bm).sort();const maxMon=Math.max(1,...monArr.map(x=>x[1].amt));
+  const bc={};O.forEach(o=>{const x=bc[o.cust]||(bc[o.cust]={amt:0,cnt:0});x.amt+=(o.qty||0)*(o.price||0);x.cnt++;});
+  const custArr=Object.entries(bc).sort((a,b)=>b[1].amt-a[1].amt).slice(0,15);
+  const bands=[[0,10000,'1만원 미만'],[10000,30000,'1~3만원'],[30000,50000,'3~5만원'],[50000,100000,'5~10만원'],[100000,9e12,'10만원 이상']];
+  const bandArr=bands.map(([lo,hi,lab])=>({lab,n:O.filter(o=>o.price>=lo&&o.price<hi).reduce((a,o)=>a+(o.qty||0),0)}));const maxBand=Math.max(1,...bandArr.map(x=>x.n));
+  const bcol={};O.forEach(o=>{if(o.color)bcol[o.color]=(bcol[o.color]||0)+(o.qty||0);});const colArr=Object.entries(bcol).sort((a,b)=>b[1]-a[1]).slice(0,10);const maxCol=Math.max(1,...colArr.map(x=>x[1]));
+  const bsz={};O.forEach(o=>{if(o.size)bsz[o.size]=(bsz[o.size]||0)+(o.qty||0);});const szArr=Object.entries(bsz).sort((a,b)=>b[1]-a[1]).slice(0,10);const maxSz=Math.max(1,...szArr.map(x=>x[1]));
+  const totAmt=O.reduce((a,o)=>a+(o.qty||0)*(o.price||0),0);
+  return `
+  <div class="kpis">
+    <div class="kpi"><div><div class="lab">총 판매</div><div class="num">${O.length.toLocaleString()}</div><div class="sub">건 (박시연)</div></div><div class="ic ic-b"><i class="ti ti-shopping-bag"></i></div></div>
+    <div class="kpi"><div><div class="lab">총 매출</div><div class="num" style="font-size:19px">${won(totAmt)}</div><div class="sub">상품 매출</div></div><div class="ic ic-g"><i class="ti ti-coin"></i></div></div>
+    <div class="kpi"><div><div class="lab">구매 고객</div><div class="num">${Object.keys(bc).length.toLocaleString()}</div><div class="sub">명</div></div><div class="ic ic-p"><i class="ti ti-users"></i></div></div>
+    <div class="kpi"><div><div class="lab">판매 품목</div><div class="num">${Object.keys(bp).length.toLocaleString()}</div><div class="sub">종</div></div><div class="ic ic-a"><i class="ti ti-tag"></i></div></div>
+  </div>
+  <div class="card"><div class="card-h"><h2>베스트셀러 TOP 15</h2><span class="muted" style="font-size:12px">판매수량 기준</span></div>
+    <table><thead><tr><th style="width:42px">순위</th><th>품목</th><th class="num-cell">판매수량</th><th class="num-cell">매출</th></tr></thead><tbody>
+    ${best.map((b,i)=>`<tr><td style="font-weight:800;color:var(--blue)">${i+1}</td><td>${esc(b.name)}</td><td class="num-cell" style="font-weight:700">${b.qty.toLocaleString()}개</td><td class="num-cell muted">${won(b.amt)}</td></tr>`).join('')}
+    </tbody></table></div>
+  <div class="card" style="margin-top:14px"><div class="card-h"><h2>월별 매출 추이</h2></div>
+    ${monArr.map(([m,v])=>bar(m,v.amt/maxMon,`${won(v.amt)} · ${v.cnt.toLocaleString()}건`)).join('')}
+  </div>
+  <div class="card" style="margin-top:14px"><div class="card-h"><h2>단골 고객 TOP 15</h2><span class="muted" style="font-size:12px">구매금액 기준</span></div>
+    <table><thead><tr><th style="width:42px">순위</th><th>고객</th><th class="num-cell">구매액</th><th class="num-cell">구매건수</th></tr></thead><tbody>
+    ${custArr.map(([c,v],i)=>`<tr><td style="font-weight:800;color:var(--blue)">${i+1}</td><td>${esc(c)}</td><td class="num-cell" style="font-weight:700">${won(v.amt)}</td><td class="num-cell muted">${v.cnt.toLocaleString()}건</td></tr>`).join('')}
+    </tbody></table></div>
+  <div class="card" style="margin-top:14px"><div class="card-h"><h2>가격대별 판매</h2><span class="muted" style="font-size:12px">판매수량</span></div>
+    ${bandArr.map(b=>bar(b.lab,b.n/maxBand,`${b.n.toLocaleString()}개`)).join('')}
+  </div>
+  <div class="card" style="margin-top:14px"><div class="card-h"><h2>컬러별 판매 TOP 10</h2></div>
+    ${colArr.map(([c,n])=>bar(c,n/maxCol,`${n.toLocaleString()}개`)).join('')}
+  </div>
+  <div class="card" style="margin-top:14px"><div class="card-h"><h2>사이즈별 판매 TOP 10</h2></div>
+    ${szArr.map(([s,n])=>bar(s,n/maxSz,`${n.toLocaleString()}개`)).join('')}
+  </div>`;
+}
+function prodCompose(){
   const isSvc=s=>/배송비|낱장|합배|무료나눔|무나|서비스|택배|^일반$/.test((s.name||''))||/배송비|낱장|합배|무나|택배/.test((s.tag||''));
   const P=STOCK.filter(s=>!isSvc(s));
   const rq=s=>(s.qty>0&&s.qty<50000)?s.qty:0;  // 99999/999999 더미 재고 제외
@@ -1165,12 +1214,10 @@ function viewProducts(){
   const maxSub=Math.max(1,...subArr.map(x=>x[1]));
   const bar=(lab,frac,val)=>`<div class="pbar-row"><span class="pbar-lab">${esc(lab)}</span><div class="pbar-track"><div class="pbar-fill" style="width:${Math.max(2,Math.round(frac*100))}%"></div></div><span class="pbar-val">${val}</span></div>`;
   return `
-  <div class="head"><h1>상품현황 <span class="badge">통계</span></h1><p>보유 상품을 카테고리·가격대·종류로 한눈에. 품목 등록/수정은 <b>재고관리</b>에서.</p></div>
   <div class="kpis">
     <div class="kpi"><div><div class="lab">총 품목(스타일)</div><div class="num">${codes.size.toLocaleString()}</div><div class="sub">${STOCK.length.toLocaleString()} SKU (색상·사이즈)</div></div><div class="ic ic-b"><i class="ti ti-tag"></i></div></div>
     <div class="kpi"><div><div class="lab">총 재고수량</div><div class="num">${totalQty.toLocaleString()}</div><div class="sub">판매가능 합계</div></div><div class="ic ic-g"><i class="ti ti-stack-2"></i></div></div>
     <div class="kpi"><div><div class="lab">재고 금액</div><div class="num" style="font-size:19px">${won(totalAmt)}</div><div class="sub">출고가 기준</div></div><div class="ic ic-p"><i class="ti ti-coin"></i></div></div>
-    <div class="kpi"><div><div class="lab">품절 / 부족</div><div class="num">${sold} / ${low}</div><div class="sub warn">발주 검토</div></div><div class="ic ic-a"><i class="ti ti-alert-triangle"></i></div></div>
   </div>
   <div class="card"><div class="card-h"><h2>카테고리별 보유 현황</h2><span class="muted" style="font-size:12px">SKU 수 기준 · 카테고리는 재고관리에서 품목 수정 시 지정</span></div>
     ${catArr.map(([c,v])=>bar(c,v.sku/maxCatSku,`${v.sku.toLocaleString()} SKU · 재고 ${v.qty.toLocaleString()}개 · ${won(v.amt)}`)).join('')}
@@ -1459,7 +1506,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose';
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
