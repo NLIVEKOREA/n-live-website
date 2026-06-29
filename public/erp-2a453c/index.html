@@ -1064,47 +1064,30 @@ function viewShipped(){
 /* ===== 재고관리 ===== */
 function viewStock(){
   const q=($('#stockSearch')?.value||'').trim(),can=!isSeller();
+  const rows=STOCK.filter(s=>!q||inc(s.tag+s.name+s.code+s.color,q)).slice(0,200);
   return `
   <div class="head"><h1>재고관리 <span class="badge">핵심</span></h1>
-    <p>품목코드(스타일) + <b>방송 번호표</b> + 색상·사이즈 · 재고 등록/현황/조정 · 바코드 스캔</p></div>
+    <p>품목코드(스타일) + <b>방송 번호표</b> + 색상·사이즈 · 품목 등록/현황 · 바코드 스캔</p></div>
   ${isSeller()?`<div class="lock">🔒 셀러팀 ${ME.name} — 재고는 <b>조회만</b> 가능</div>`:''}
-  <div class="tabs">
-    <button class="${STAB==='list'?'on':''}" onclick="STAB='list';render()">재고 현황</button>
-    ${can?`<button class="${STAB==='adj'?'on':''}" onclick="STAB='adj';render()">재고 등록 · 조정</button>`:''}
-  </div>
-  ${STAB==='adj'&&can?`<div class="card" style="margin-bottom:16px">
-    <div class="card-h"><h2>🔧 재고 조정 (실사 차이·파손)</h2></div>
-    <div class="form-grid">
-      <select id="a_code" style="width:330px">${STOCK.map((s,i)=>`<option value="${i}">[${s.tag}] ${s.code} ${s.name} ${s.color} ${s.size} (현재고 ${s.qty})</option>`).join('')}</select>
-      <input id="a_qty" type="number" value="0" style="width:90px" placeholder="±수량">
-      <input id="a_reason" placeholder="사유" style="width:140px">
-      <button class="btn" onclick="stockAdjust()">조정 적용</button>
-    </div>
-    <div class="card-h" style="margin-top:18px"><h2>＋ 신규 품목 등록 <span class="muted" style="font-size:11px;font-weight:400">(번호표도 여기서 부여)</span></h2></div>
-    <div class="form-grid">
-      <input id="n_tag" placeholder="번호표(예 063)" style="width:100px">
-      <input id="n_code" placeholder="품목코드" style="width:110px">
-      <input id="n_name" placeholder="품목명" style="width:140px">
-      <input id="n_color" placeholder="컬러" style="width:75px">
-      <input id="n_size" placeholder="사이즈" style="width:65px">
-      <input id="n_qty" type="number" placeholder="수량" style="width:75px">
-      <input id="n_price" type="number" placeholder="단가" style="width:90px">
-      <button class="btn" onclick="addStock()">품목 등록</button>
+  ${can?`<div class="card" style="margin-bottom:16px">
+    <div class="card-h"><h2>＋ 품목 등록 · 입출고</h2></div>
+    <div class="toolbar">
+      <button class="btn" onclick="openProdModal('')">＋ 품목 등록</button>
+      <span class="muted" style="font-size:12px;align-self:center">번호표·구매처·카테고리·입출고단가·재고수량 한 번에</span>
+      <span class="grow"></span>
+      <input id="scan" class="barcode" placeholder="📷 코드+색상+사이즈 (예: 10012검정F)" style="width:230px">
+      <input id="scanQty" type="number" value="1" min="1" style="width:64px">
+      <button class="btn ghost" onclick="scanMove(1)">＋ 입고</button>
+      <button class="btn ghost" onclick="scanMove(-1)">－ 출고</button>
     </div>
   </div>`:''}
-  ${STAB==='list'?`<div class="card">
-    ${can?`<div class="note">💡 <b>번호표는 표 안에서 바로 수정</b>(방송마다 바뀌어도 즉시 변경). 바코드 스캔으로 입출고도 가능.</div>
-    <div class="toolbar">
-      <input id="scan" class="barcode" placeholder="📷 코드+색상+사이즈 (예: 10012검정F)" style="width:260px">
-      <input id="scanQty" type="number" value="1" min="1" style="width:70px">
-      <button class="btn" onclick="scanMove(1)">＋ 입고</button>
-      <button class="btn ghost" onclick="scanMove(-1)">－ 출고</button>
-      <span class="grow"></span>
-      <input id="stockSearch" placeholder="🔍 번호표·품목 검색" oninput="render()" value="${q}" style="width:200px">
-    </div>`:`<div class="toolbar"><span class="grow"></span><input id="stockSearch" placeholder="🔍 검색" oninput="render()" value="${q}" style="width:200px"></div>`}
+  <div class="card">
+    <div class="card-h"><h2>재고 현황 <span class="muted" style="font-size:12px;font-weight:400">${STOCK.length} SKU</span></h2></div>
+    <div class="note">💡 <b>품목코드·품목명을 클릭</b>하면 등록정보(구매처·카테고리·단가 등)를 수정할 수 있어요. 번호표는 표에서 바로 수정.</div>
+    <div class="toolbar"><span class="grow"></span><input id="stockSearch" placeholder="🔍 번호표·품목 검색" oninput="render()" value="${q}" style="width:220px"></div>
     <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>컬러</th><th>사이즈</th>
       <th class="num-cell">단가</th><th class="num-cell">현재고</th><th>상태</th></tr></thead><tbody>
-    ${STOCK.filter(s=>!q||inc(s.tag+s.name+s.code+s.color,q)).slice(0,200).map(s=>`<tr>
+    ${rows.map(s=>`<tr>
       <td>${can?`<input class="barcode" style="width:62px;text-align:center;font-weight:700" value="${s.tag}" onchange="setTag('${s.code}',this.value)">`:`<span class="tagbox">${s.tag}</span>`}</td>
       <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.code}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
       <td class="num-cell muted">${won(s.price)}</td>
@@ -1112,7 +1095,7 @@ function viewStock(){
       <td>${s.qty===0?'<span class="pill p-low">품절</span>':s.qty<=3?'<span class="pill p-miss">부족</span>':'<span class="pill p-done">정상</span>'}</td>
       </tr>`).join('')}
     </tbody></table>
-  </div>`:''}`;
+  </div>`;
 }
 
 /* ===== 고객관리 / 품목관리 ===== */
@@ -1279,11 +1262,11 @@ function cancelOrder(id){const i=ORD.findIndex(x=>x.id===id),o=ORD[i],s=skuOf(o.
   toast('🗑️ 주문 취소 → 재고 '+o.qty+'개 복원 ('+prodName(o.code)+' '+o.color+')');render();}
 function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o.cust+' → '+({req:'출고요청',done:'출고완료'})[st]);render();}
 function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
-function setTag(code,val){STOCK.filter(s=>s.code===code).forEach(s=>s.tag=val.trim());toast('🏷️ 번호표 변경: '+prodName(code)+' → '+val.trim());render();}
-function scanMove(dir){const raw=$('#scan').value.trim().replace(/\s/g,''),q=parseInt($('#scanQty').value)||1;
+async function setTag(code,val){const t=val.trim();STOCK.filter(s=>s.code===code).forEach(s=>s.tag=t);toast('🏷️ 번호표 변경: '+prodName(code)+' → '+t);render();try{await SB.from('stock').update({tag:t}).eq('code',code);}catch(e){console.error(e);}}
+async function scanMove(dir){const raw=$('#scan').value.trim().replace(/\s/g,''),q=parseInt($('#scanQty').value)||1;
   const s=STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'')===raw)||STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'').includes(raw));
   if(!s){toast('❌ 일치 품목 없음: '+raw);return;}if(dir<0&&s.qty<q){toast('⚠️ 재고 부족! 현재고 '+s.qty);return;}
-  s.qty+=dir*q;toast((dir>0?'＋입고 ':'－출고 ')+s.name+' '+s.color+' '+Math.abs(dir*q)+'개 → 현재고 '+s.qty);$('#scan').value='';render();}
+  s.qty+=dir*q;toast((dir>0?'＋입고 ':'－출고 ')+s.name+' '+s.color+' '+Math.abs(dir*q)+'개 → 현재고 '+s.qty);$('#scan').value='';render();await saveStock(s);}
 function stockAdjust(){const idx=parseInt($('#a_code').value),d=parseInt($('#a_qty').value)||0,s=STOCK[idx];
   if(!s||!d){toast('품목·수량을 확인하세요');return;}s.qty+=d;toast('🔧 재고조정: '+s.name+' '+s.color+' '+(d>0?'+':'')+d+' → 현재고 '+s.qty);render();}
 function addStock(){const code=$('#n_code').value.trim(),name=$('#n_name').value.trim();
