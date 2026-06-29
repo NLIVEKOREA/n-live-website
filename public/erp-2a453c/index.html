@@ -867,7 +867,7 @@ function renderSalePop(){const g=curGroups()[SALEPOP.gi];if(!g)return;$('#modalB
   $('#modal').classList.remove('hide');}
 const SHIPCHK=new Set();
 function progOf(o){return o.prog||(o.back?'미송':'미포장');}
-function setProg(id,v){const o=ORD.find(x=>x.id===id);if(o){o.prog=v;if(v==='미송')o.back=true;else if(o.back)o.back=false;}render();}
+async function setProg(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;o.prog=v;if(v==='미송'){o.back=true;o.req='미송';}else{if(o.back)o.back=false;if(o.req==='미송')o.req='출고요청';}render();await saveOrd(o);}
 function shipChk(id,c){if(c)SHIPCHK.add(id);else SHIPCHK.delete(id);}
 function openCustomers(){
   const list=mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done'&&(o.req==='미송'||o.req==='출고요청'||o.req==='합배요청')),m={};
@@ -898,7 +898,7 @@ function manageCards(list,cat){
       <span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('${cat}',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>
     <div class="sg-rows">
-    ${c.lines.map(o=>{const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=!o.back&&(q==null||q>0),sel=SHIPCHK.has(o.id);return `
+    ${c.lines.map(o=>{const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=cat==='back'?(progOf(o)==='포장'):(!o.back&&(q==null||q>0)),sel=SHIPCHK.has(o.id);return `
       <div class="sg-row ${o.back?'dim':''}">
         ${canShip?`<button class="sg-pick ${sel?'on':''}" onclick="shipToggle(${o.id})">${sel?'☑ 선택됨':'☐ 출고선택'}</button>`:'<span class="sg-pick no">미송 보류</span>'}
         <span class="tagbox">${tagShow(o)}</span>
@@ -912,14 +912,14 @@ function manageCards(list,cat){
   </div>`).join('')+'</div></div>';
 }
 function shipToggle(id){if(SHIPCHK.has(id))SHIPCHK.delete(id);else SHIPCHK.add(id);render();}
-function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];if(!c)return;
+async function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];if(!c)return;
   const trk=($('#trk_wait_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
-  c.lines.forEach(o=>{o.ship='done';o.track=trk;});toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);render();}
-function shipChecked(cat,i){const c=openCustomers().filter(x=>x.cat===cat)[i];if(!c)return;
+  c.lines.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';});toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);render();for(const o of c.lines)await saveOrd(o);}
+async function shipChecked(cat,i){const c=openCustomers().filter(x=>x.cat===cat)[i];if(!c)return;
   const sel=c.lines.filter(l=>SHIPCHK.has(l.id));if(!sel.length){toast('출고할 상품을 체크하세요');return;}
   const trk=($('#trk_'+cat+'_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
-  sel.forEach(o=>{o.ship='done';o.track=trk;SHIPCHK.delete(o.id);});
-  toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);render();}
+  sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';SHIPCHK.delete(o.id);});
+  toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);render();for(const o of sel)await saveOrd(o);}
 function openCustPopup(cat,i){CUSTPOP={cat,i};render();}
 function closeCustPopup(){CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();}
 function renderCustPop(){$('#modalBox').className='modal-box modal-cust';
@@ -935,7 +935,7 @@ function custPopBody(){
       ${c.dates.size>=2?'<span class="pill p-req">합배 '+c.dates.size+'주문</span>':''}</div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>
     <div class="sg-rows">
-    ${c.lines.map(o=>{const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=!o.back&&(q==null||q>0),sel=SHIPCHK.has(o.id);return `
+    ${c.lines.map(o=>{const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=cat==='back'?(progOf(o)==='포장'):(!o.back&&(q==null||q>0)),sel=SHIPCHK.has(o.id);return `
       <div class="sg-row ${o.back?'dim':''}">
         ${isWait?'':(canShip?`<button class="sg-pick ${sel?'on':''}" onclick="shipToggle(${o.id})">${sel?'☑ 선택됨':'☐ 출고선택'}</button>`:'<span class="sg-pick no">미송 보류</span>')}
         <span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}</span><span class="sg-qty">${o.qty}개</span>
@@ -945,14 +945,14 @@ function custPopBody(){
     </div>
     <div class="sg-foot"><input id="ptrk" placeholder="송장번호 입력"><button class="btn" onclick="shipPopAction()">✅ 출고완료</button></div>`;
 }
-function shipPopAction(){
+async function shipPopAction(){
   const cat=CUSTPOP.cat,c=openCustomers().filter(x=>x.cat===cat)[CUSTPOP.i];if(!c)return;
   const trk=($('#ptrk')?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const sel=cat==='wait'?c.lines:c.lines.filter(l=>SHIPCHK.has(l.id));
   if(!sel.length){toast('출고할 상품을 체크하세요');return;}
-  sel.forEach(o=>{o.ship='done';o.track=trk;SHIPCHK.delete(o.id);});
+  sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';SHIPCHK.delete(o.id);});
   toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);
-  CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();
+  CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();for(const o of sel)await saveOrd(o);
 }
 function shipTabDone(){
   const done=mine(ORD).filter(o=>o.ship==='done'&&o.track);
