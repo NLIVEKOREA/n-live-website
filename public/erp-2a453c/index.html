@@ -185,6 +185,12 @@
   .kw-sw.on{background:var(--green)}
   .prod-link{cursor:pointer}
   .prod-link:hover{text-decoration:underline;color:var(--blue)}
+  .pbar-row{display:flex;align-items:center;gap:12px;padding:8px 2px;border-bottom:1px solid #f5f7fa}
+  .pbar-row:last-child{border:0}
+  .pbar-lab{width:130px;font-size:13px;font-weight:700;flex:0 0 auto}
+  .pbar-track{flex:1;background:#eef2f7;border-radius:6px;height:22px;overflow:hidden;min-width:60px}
+  .pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--blue-d));border-radius:6px}
+  .pbar-val{width:230px;text-align:right;font-size:12px;color:var(--gray);flex:0 0 auto}
   /* 주문현황 카드 */
   .date-div{font-size:13px;font-weight:800;color:#334155;margin:18px 0 11px;padding:8px 12px;background:#eef2f7;border-radius:8px;display:flex;align-items:center;gap:8px}
   .ord-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
@@ -260,7 +266,7 @@
       <button data-v="revenue"><span class="ic"><i class="ti ti-chart-bar"></i></span>매출현황</button>
       <div class="sec">기초정보</div>
       <button data-v="cust"><span class="ic"><i class="ti ti-user"></i></span>고객관리</button>
-      <button data-v="prod"><span class="ic"><i class="ti ti-tag"></i></span>품목관리</button>
+      <button data-v="prod"><span class="ic"><i class="ti ti-chart-bar"></i></span>상품현황</button>
       <button data-v="vendor"><span class="ic"><i class="ti ti-building-warehouse"></i></span>사입처관리</button>
       <div class="sec">관리</div>
       <button data-v="emp"><span class="ic"><i class="ti ti-users"></i></span>직원·급여</button>
@@ -1137,14 +1143,41 @@ function viewCustomers(){
     </tbody></table></div>`;
 }
 function viewProducts(){
-  const codes=[...new Set(STOCK.map(s=>s.code))];
+  const isSvc=s=>/배송비|낱장|합배|무료나눔|무나|서비스|택배|^일반$/.test((s.name||''))||/배송비|낱장|합배|무나|택배/.test((s.tag||''));
+  const P=STOCK.filter(s=>!isSvc(s));
+  const rq=s=>(s.qty>0&&s.qty<50000)?s.qty:0;  // 99999/999999 더미 재고 제외
+  const dummy=P.filter(s=>s.qty>=50000).length;
+  const codes=new Set(P.map(s=>s.code));
+  const totalQty=P.reduce((a,s)=>a+rq(s),0);
+  const totalAmt=P.reduce((a,s)=>a+rq(s)*s.price,0);
+  const sold=P.filter(s=>s.qty<=0).length, low=P.filter(s=>s.qty>0&&s.qty<=3).length;
+  const byCat={}; P.forEach(s=>{const c=s.category||'미분류';const o=byCat[c]||(byCat[c]={sku:0,qty:0,amt:0});o.sku++;o.qty+=rq(s);o.amt+=rq(s)*s.price;});
+  const catArr=Object.entries(byCat).sort((a,b)=>b[1].sku-a[1].sku);
+  const maxCatSku=Math.max(1,...catArr.map(x=>x[1].sku));
+  const bands=[[0,10000,'1만원 미만'],[10000,30000,'1~3만원'],[30000,50000,'3~5만원'],[50000,100000,'5~10만원'],[100000,9e12,'10만원 이상']];
+  const bandArr=bands.map(([lo,hi,lab])=>({lab,n:P.filter(s=>s.price>=lo&&s.price<hi).length}));
+  const maxBand=Math.max(1,...bandArr.map(x=>x.n));
+  const bySub={}; P.forEach(s=>{if(s.subcategory){bySub[s.subcategory]=(bySub[s.subcategory]||0)+1;}});
+  const subArr=Object.entries(bySub).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  const maxSub=Math.max(1,...subArr.map(x=>x[1]));
+  const bar=(lab,frac,val)=>`<div class="pbar-row"><span class="pbar-lab">${esc(lab)}</span><div class="pbar-track"><div class="pbar-fill" style="width:${Math.max(2,Math.round(frac*100))}%"></div></div><span class="pbar-val">${val}</span></div>`;
   return `
-  <div class="head"><h1>품목관리</h1><p>품목(스타일)·번호표·색상/사이즈·단가 등록·조회 · 재고 <b>수량</b>은 재고관리에서</p></div>
-  <div style="text-align:right;margin-bottom:14px"><button class="btn" onclick="openProdModal('')">＋ 품목 등록</button></div>
-  <div class="card"><div class="card-h"><h2>품목 목록 (${codes.length}품목 / ${STOCK.length}SKU)</h2></div>
-    <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>색상</th><th>사이즈</th><th class="num-cell">단가</th><th class="num-cell">재고</th></tr></thead><tbody>
-    ${STOCK.slice(0,200).map(s=>`<tr><td><span class="tagbox">${s.tag}</span></td><td class="barcode muted prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.code}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td><td class="num-cell muted">${won(s.price)}</td><td class="num-cell ${s.qty<=3?'stock-low':''}">${s.qty}</td></tr>`).join('')}
-    </tbody></table></div>`;
+  <div class="head"><h1>상품현황 <span class="badge">통계</span></h1><p>보유 상품을 카테고리·가격대·종류로 한눈에. 품목 등록/수정은 <b>재고관리</b>에서.</p></div>
+  <div class="kpis">
+    <div class="kpi"><div><div class="lab">총 품목(스타일)</div><div class="num">${codes.size.toLocaleString()}</div><div class="sub">${STOCK.length.toLocaleString()} SKU (색상·사이즈)</div></div><div class="ic ic-b"><i class="ti ti-tag"></i></div></div>
+    <div class="kpi"><div><div class="lab">총 재고수량</div><div class="num">${totalQty.toLocaleString()}</div><div class="sub">판매가능 합계</div></div><div class="ic ic-g"><i class="ti ti-stack-2"></i></div></div>
+    <div class="kpi"><div><div class="lab">재고 금액</div><div class="num" style="font-size:19px">${won(totalAmt)}</div><div class="sub">출고가 기준</div></div><div class="ic ic-p"><i class="ti ti-coin"></i></div></div>
+    <div class="kpi"><div><div class="lab">품절 / 부족</div><div class="num">${sold} / ${low}</div><div class="sub warn">발주 검토</div></div><div class="ic ic-a"><i class="ti ti-alert-triangle"></i></div></div>
+  </div>
+  <div class="card"><div class="card-h"><h2>카테고리별 보유 현황</h2><span class="muted" style="font-size:12px">SKU 수 기준 · 카테고리는 재고관리에서 품목 수정 시 지정</span></div>
+    ${catArr.map(([c,v])=>bar(c,v.sku/maxCatSku,`${v.sku.toLocaleString()} SKU · 재고 ${v.qty.toLocaleString()}개 · ${won(v.amt)}`)).join('')}
+  </div>
+  <div class="card" style="margin-top:14px"><div class="card-h"><h2>가격대별 분포</h2><span class="muted" style="font-size:12px">출고가(판매가) 기준 SKU 수</span></div>
+    ${bandArr.map(b=>bar(b.lab,b.n/maxBand,`${b.n.toLocaleString()} SKU`)).join('')}
+  </div>
+  ${subArr.length?`<div class="card" style="margin-top:14px"><div class="card-h"><h2>종류별 분포 <span class="muted" style="font-size:12px;font-weight:400">상위 12</span></h2></div>
+    ${subArr.map(([s,n])=>bar(s,n/maxSub,`${n.toLocaleString()} SKU`)).join('')}
+  </div>`:''}`;
 }
 
 /* ===== 신규등록 팝업(모달) ===== */
