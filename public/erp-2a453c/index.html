@@ -351,13 +351,13 @@ let SHIPPING=[];
 let PREFS={},_savePrefsT=null;
 async function loadPrefs(){
   try{
-    if(window.ME&&ME.auth_id){const {data}=await SB.from('user_prefs').select('prefs').eq('auth_id',ME.auth_id).maybeSingle();PREFS=(data&&data.prefs)||{};}
+    if(typeof ME!=='undefined'&&ME&&ME.auth_id){const {data}=await SB.from('user_prefs').select('prefs').eq('auth_id',ME.auth_id).maybeSingle();PREFS=(data&&data.prefs)||{};}
     else{PREFS=JSON.parse(localStorage.getItem('erp_prefs_local')||'{}');}
   }catch(e){try{PREFS=JSON.parse(localStorage.getItem('erp_prefs_local')||'{}');}catch(e2){PREFS={};}}
 }
 function savePrefs(){
   try{localStorage.setItem('erp_prefs_local',JSON.stringify(PREFS));}catch(e){}
-  if(!window.ME||!ME.auth_id)return;
+  if(typeof ME==='undefined'||!ME||!ME.auth_id)return;
   clearTimeout(_savePrefsT);
   _savePrefsT=setTimeout(function(){SB.from('user_prefs').upsert({auth_id:ME.auth_id,prefs:PREFS,updated_at:new Date().toISOString()}).then(function(r){if(r.error)console.warn('prefs save:',r.error.message);});},600);
 }
