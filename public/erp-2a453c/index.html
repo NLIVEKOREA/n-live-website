@@ -691,10 +691,11 @@ function orderStatusCards(pay){
   return html;
 }
 function paidCards(){
-  let gs=orderGroups('paid');
+  const all=orderGroups('paid');
+  let gs=all;
   if(CDATE)gs=gs.filter(g=>(g.date||'').replace(/\//g,'-')===CDATE);
   if(CQ)gs=gs.filter(g=>inc(g.cust,CQ));
-  const all=orderGroups('paid'),show=gs.slice(0,60);
+  const show=gs.slice(0,60);
   if(!show.length)return '<div class="muted" style="padding:12px">해당 날짜·닉네임 결제완료 없음</div>';
   let html=show.map(g=>{const idx=all.indexOf(g),tot=g.items.reduce((a,o)=>a+amtOf(o),0);return `
     <div class="ord-card${COLLAPSED.has('pd:'+g.date+g.cust)?' collapsed':''}">
