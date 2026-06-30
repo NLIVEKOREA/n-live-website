@@ -55,7 +55,7 @@
   .head p{color:var(--gray);font-size:12.5px;margin-top:5px}
   .badge{display:inline-block;background:var(--amber-s);color:var(--amber);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;vertical-align:middle;margin-left:6px}
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
-  .kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;box-shadow:0 1px 2px rgba(15,23,42,.03);min-height:124px}
   .kpi .lab{font-size:12.5px;color:var(--gray);margin-bottom:10px}
   .kpi .num{font-size:25px;font-weight:800;letter-spacing:-1px}
   .kpi .sub{font-size:12px;margin-top:8px;font-weight:600}
@@ -90,7 +90,7 @@
   tr:last-child td{border-bottom:0}
   tbody tr:hover td{background:#fafcff}
   .num-cell{text-align:right;font-variant-numeric:tabular-nums}
-  .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;background:#eef2f7;color:#475569}
   .p-miss{background:var(--amber-s);color:var(--amber)} .p-req{background:var(--blue-s);color:var(--blue)}
   .p-done{background:var(--green-s);color:var(--green)} .p-low{background:var(--red-s);color:var(--red)}
   .p-gray{background:#eef1f6;color:#475569} .p-purple{background:#f1ebfe;color:#6d28d9}
@@ -194,6 +194,8 @@
   .pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--blue-d));border-radius:6px}
   .pbar-val{width:230px;text-align:right;font-size:12px;color:var(--gray);flex:0 0 auto}
   .wgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+  .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:14px;align-items:stretch;margin-bottom:14px}
+  @media(max-width:1100px){.kgrid{grid-template-columns:repeat(2,1fr)}}
   .wgrid .kpi,.wgrid .card{margin:0}
   @media(max-width:1100px){.wgrid{grid-template-columns:repeat(2,1fr)}}
   /* ===== 마이크로 인터랙션 (과하지 않게) ===== */
@@ -490,7 +492,7 @@ const PERM={dash:['all','logi','self'],order:['all','self'],sales:['all','self']
   revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
 const menuAllowed=v=>(PERM[v]||['all']).includes(ME.scope);
 function lockBanner(){
-  if(isSeller())return `<div class="lock">🔒 <b>${ME.team} ${ME.name}</b> — 본인(${ME.owner}) 담당 자료만 표시됩니다.</div>`;
+  if(isSeller())return `<div class="lock">🔒 <b>${ME.name}</b> 셀러 · 본인 담당 고객·매출만 표시됩니다.</div>`;
   if(isLogi())  return `<div class="lock">🔒 <b>물류팀 ${ME.name}</b> — 출고·재고 중심. 매출/원가는 제한.</div>`;
   return '';
 }
@@ -704,16 +706,20 @@ function renderWidgetEdit(){const a=getUserWidgets();$('#modalBox').className='m
     </div>
     <div class="modal-foot"><button class="btn gray" onclick="wgReset()">기본값 복원</button><button class="btn" onclick="closeModal()">완료</button></div>`;
 }
+const KPI_SET=['sales_today','sales_week','sales_month','sales_total','sales_avg','settle','repurchase','unpaid','toship','done_today','rx','ship_fee'];
 function viewDash(){
   const ids=getUserWidgets();
+  const kpis=ids.filter(id=>KPI_SET.includes(id)),cards=ids.filter(id=>!KPI_SET.includes(id));
   return `
   <div class="greet">
-    <div><h1><b>${ME.name}</b> ${ME.role}님, 오늘도 힘찬 하루 되세요!</h1>
+    <div><h1><b>${ME.name}</b> ${ME.role}님, 오늘도 좋은 방송 되세요! 👋</h1>
       <p>${ME.team} · ${ME.role} 맞춤 대시보드</p></div>
     <button class="btn sm ghost" onclick="openWidgetEdit()"><i class="ti ti-layout-grid-add"></i> 위젯 편집</button>
   </div>
   ${lockBanner()}
-  <div class="wgrid">${ids.map(id=>wRender(id)).join('')||'<div class="muted">표시할 위젯이 없습니다. [위젯 편집]에서 추가하세요.</div>'}</div>`;
+  ${kpis.length?`<div class="kgrid">${kpis.map(id=>wRender(id)).join('')}</div>`:''}
+  ${cards.length?`<div class="wgrid">${cards.map(id=>wRender(id)).join('')}</div>`:''}
+  ${!ids.length?'<div class="muted">표시할 위젯이 없습니다. [위젯 편집]에서 추가하세요.</div>':''}`;
 }
 
 /* ===== 주문서입력 (그리드) ===== */
@@ -1958,7 +1964,7 @@ async function doLogin(){
   if(error){toast('❌ 아이디 또는 비밀번호가 틀립니다');return;}
   const {data:emp} = await SB.from('employees').select('*').eq('login_id', id).maybeSingle();
   if(!emp||emp.active===false){toast('❌ 등록되지 않았거나 비활성화된 계정입니다 (관리자 문의)');await SB.auth.signOut();return;}
-  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined};
+  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name};
   toast('📥 데이터 불러오는 중...');
   await dbLoadAll();
   $('#login').style.display='none';
@@ -2061,7 +2067,7 @@ rebuildSwitcher();buildNav();render();
       const id=(data.session.user.email||'').split('@')[0];
       const {data:emp}=await SB.from('employees').select('*').eq('login_id',id).maybeSingle();
       if(!emp||emp.active===false)return;
-      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined};
+      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name};
       await dbLoadAll();
       $('#login').style.display='none';
       {const _h=location.hash.slice(1);if(_h&&VIEWS[_h]&&menuAllowed(_h))VIEW=_h;}
