@@ -277,7 +277,7 @@
       <button data-v="order"><span class="ic"><i class="ti ti-clipboard-list"></i></span>주문관리</button>
       <button data-v="sales"><span class="ic"><i class="ti ti-receipt"></i></span>판매관리</button>
       <button data-v="ship"><span class="ic"><i class="ti ti-truck"></i></span>출고장</button>
-      <button data-v="shipped"><span class="ic"><i class="ti ti-clipboard-check"></i></span>출고현황</button>
+      <button data-v="shipped"><span class="ic"><i class="ti ti-clipboard-check"></i></span>판매현황</button>
       <button data-v="stock"><span class="ic"><i class="ti ti-box"></i></span>재고관리</button>
       <button data-v="revenue"><span class="ic"><i class="ti ti-chart-bar"></i></span>매출현황</button>
       <div class="sec">기초정보</div>
@@ -341,6 +341,7 @@ async function delOrd(o){try{if(o.id)await SB.from('orders').delete().eq('id',o.
 async function saveStock(s){try{if(s&&s.id!=null)await SB.from('stock').update({qty:s.qty}).eq('id',s.id);}catch(e){console.error(e);}}
 async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,in_price:s.in_price||0,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error)console.error('updStock',error);}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error)console.error('insStock',error);if(data)s.id=data.id;}}catch(e){console.error(e);}}
 /* ===== 기간 헬퍼 (당일 기본) ===== */
+function todayStr(){return new Date().toISOString().slice(0,10);}
 function periodRange(key){const d=new Date();const today=d.toISOString().slice(0,10);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:mon.toISOString().slice(0,10),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
 function periodTabs(cur,fn){return ['today','week','month','all'].map(k=>`<button class="${cur===k?'on':''}" onclick="${fn}('${k}')">${({today:'오늘',week:'이번 주',month:'이번 달',all:'누적'})[k]}</button>`).join('');}
 /* ===== 카테고리 ===== */
@@ -823,15 +824,14 @@ async function commitOrder(){
 function viewSales(){
   return `
   <div class="head"><h1>판매관리 <span class="badge">결제완료</span></h1>
-    <p>결제완료 판매 · 기간(당월 기본)/고객·상품 검색 · 출고처리 · 교환·반품</p></div>
+    <p>결제완료 판매 · 출고요청(기간·고객·상품 검색) · 출고현황(당일 작업) · 전체 누적은 판매현황 메뉴</p></div>
   ${lockBanner()}
-  ${saleToolbar()}
+  ${SALETAB==='order'?saleToolbar():''}
   <div class="tabs">
     <button class="${SALETAB==='order'?'on':''}" onclick="SALETAB='order';render()">출고요청 ${orderRows().length}</button>
-    <button class="${SALETAB==='ship'?'on':''}" onclick="SALETAB='ship';render()">출고현황 ${shipRows().length}</button>
-    <button class="${SALETAB==='rx'?'on':''}" onclick="SALETAB='rx';render()">교환·반품 ${rxAll().length}</button>
+    <button class="${SALETAB==='ship'?'on':''}" onclick="SALETAB='ship';render()">출고현황(당일) ${shipRows().length}</button>
   </div>
-  ${SALETAB==='order'?`<div class="tabs" style="margin-bottom:10px"><button class="${ORDTAB==='all'?'on':''}" onclick="ORDTAB='all';render()">전체 출고요청 ${orderRowsAll().length}</button><button class="${ORDTAB==='today'?'on':''}" onclick="ORDTAB='today';render()">당일 출고요청 ${orderRowsToday().length}</button></div>${saleListCards('order')}`:SALETAB==='ship'?saleListCards('ship'):rxBlock()}`;
+  ${SALETAB==='order'?`<div class="tabs" style="margin-bottom:10px"><button class="${ORDTAB==='all'?'on':''}" onclick="ORDTAB='all';render()">전체 출고요청 ${orderRowsAll().length}</button><button class="${ORDTAB==='today'?'on':''}" onclick="ORDTAB='today';render()">당일 출고요청 ${orderRowsToday().length}</button></div>${saleListCards('order')}`:`<div class="card" style="margin-bottom:12px"><div class="toolbar"><span class="muted" style="align-self:center">📅 출고 작업일</span><input type="date" value="${SHIPDATE||todayStr()}" onchange="SHIPDATE=this.value;render()"><button class="btn sm gray" onclick="SHIPDATE='';render()">오늘</button><span class="grow"></span><span class="muted" style="font-size:12px">당일 출고요청·완료 건 · 전체 누적은 <b>판매현황</b> 메뉴</span></div></div>${saleListCards('ship')}`}`;
 }
 function dataLastYM(){const ds=mine(ORD).filter(o=>o.pay==='paid').map(o=>(o.date||'').replace(/\//g,'-')).filter(Boolean).sort();return ds.length?ds[ds.length-1].slice(0,7):'2026-06';}
 function setPeriod(k){
@@ -859,7 +859,7 @@ function baseRows(){
 function orderRowsAll(){return baseRows().filter(o=>o.ship!=='done'&&!RXSET.includes(o.req)&&(!o.req||o.req==='없음'));}
 function orderRowsToday(){const t=new Date().toISOString().slice(0,10);return orderRowsAll().filter(o=>(o.date||'').replace(/\//g,'-')===t);}
 function orderRows(){return ORDTAB==='today'?orderRowsToday():orderRowsAll();}
-function shipRows(){return baseRows().filter(o=>!RXSET.includes(o.req)&&((o.req==='출고요청'||o.req==='합배요청')||o.ship==='done'));}
+function shipRows(){const d=SHIPDATE||todayStr();return mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-').slice(0,10)===d&&!RXSET.includes(o.req)&&((o.req==='출고요청'||o.req==='합배요청')||o.ship==='done'));}
 function rxAll(){return baseRows().filter(o=>o.req==='교환요청'||o.req==='환불요청');}
 function grpDC(rows){const m={};rows.forEach(o=>{const k=(o.date||'')+'||'+(o.cust||'');(m[k]=m[k]||{date:o.date,cust:o.cust,phone:o.phone,items:[]}).items.push(o);});return Object.values(m).sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
 function curGroups(){return SALETAB==='order'?grpDC(orderRows()):grpDC(shipRows());}
@@ -1141,7 +1141,7 @@ function viewShipped(){
   if(groups.length>shown.length)cards+=`<div class="muted" style="padding:12px">… 외 ${groups.length-shown.length}그룹 더</div>`;
   if(!shown.length)cards='<div class="card"><div class="muted" style="padding:16px">해당 기간 출고 내역 없음 (출고장에서 송장 입력·출고완료하면 여기에 쌓여요)</div></div>';
   return `
-  <div class="head"><h1>출고현황</h1><p>실제 출고완료된 내역 · 날짜별·고객별 · 검색</p></div>
+  <div class="head"><h1>판매현황 <span class="badge">누적</span></h1><p>출고완료된 전체 판매내역 · 당월 기본 · 기간·고객·상품 검색</p></div>
   ${lockBanner()}
   <div class="card">
     <div class="toolbar">
@@ -1606,7 +1606,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
