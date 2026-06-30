@@ -346,6 +346,21 @@ const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:r.cust,phone:r.ph
 const ORD2DB=o=>{const r={order_date:_toDate(o.date),staff:o.staff,cust:o.cust,phone:o.phone,addr:o.addr,code:o.code,item_name:o.disp,tag:o.tag,color:o.color,size:o.size,qty:o.qty,price:o.price,pay:o.pay,payway:o.payway||null,ship:o.ship,req:o.req||null,prog:o.prog||null,back:!!o.back,track:o.track||null,reason:o.reason||null,shipped_date:o.shipped_date||null};r.rxtype=o.rxtype||null;r.rxstat=o.rxstat||null;r.rxreason=o.rxreason||null;r.fault=o.fault||null;r.rxdate=o.rxdate||null;r.rxdone=o.rxdone||null;r.rxnew=o.rxnew||null;return r;};
 async function dbFetchAll(table,col,asc){let all=[],f=0;const sz=1000;while(true){const {data,error}=await SB.from(table).select('*').order(col,{ascending:asc!==false}).range(f,f+sz-1);if(error){console.error(table,error);break;}all=all.concat(data||[]);if(!data||data.length<sz)break;f+=sz;}return all;}
 let SHIPPING=[];
+/* 사용자 개인설정 — 위젯배치/목록·SNS·목표·무료배송기준을 계정별로 DB(user_prefs)에 영구저장.
+   어느 기기에서 로그인해도 본인 설정 유지. ME.auth_id 없으면 localStorage 폴백. */
+let PREFS={},_savePrefsT=null;
+async function loadPrefs(){
+  try{
+    if(window.ME&&ME.auth_id){const {data}=await SB.from('user_prefs').select('prefs').eq('auth_id',ME.auth_id).maybeSingle();PREFS=(data&&data.prefs)||{};}
+    else{PREFS=JSON.parse(localStorage.getItem('erp_prefs_local')||'{}');}
+  }catch(e){try{PREFS=JSON.parse(localStorage.getItem('erp_prefs_local')||'{}');}catch(e2){PREFS={};}}
+}
+function savePrefs(){
+  try{localStorage.setItem('erp_prefs_local',JSON.stringify(PREFS));}catch(e){}
+  if(!window.ME||!ME.auth_id)return;
+  clearTimeout(_savePrefsT);
+  _savePrefsT=setTimeout(function(){SB.from('user_prefs').upsert({auth_id:ME.auth_id,prefs:PREFS,updated_at:new Date().toISOString()}).then(function(r){if(r.error)console.warn('prefs save:',r.error.message);});},600);
+}
 async function dbLoadAll(){
   try{
     const st=await dbFetchAll('stock','id',true);
@@ -582,13 +597,13 @@ function _salesPrev(key){const cur=periodRange(key);let from,to;const dd=s=>new 
 function _delta(key){const prev=_salesPrev(key),cur=_salesP(key);if(prev==null||prev===0||cur===0)return null;const pct=Math.round((cur-prev)/prev*1000)/10;return {pct,dir:Math.sign(cur-prev),label:key==='today'?'전일':key==='week'?'전주':'전월'};}
 /* SNS 계정 (URL 등록 + 팔로워 수동입력 → 추이 기록 · 셀러별 저장) */
 const SNS_META={tiktok:{name:'TikTok',ic:'T',bg:'#000000'},instagram:{name:'Instagram',ic:'📷',bg:'#E1306C'},youtube:{name:'YouTube',ic:'▶',bg:'#FF0000'},band:{name:'Naver Band',ic:'B',bg:'#00C73C'}};
-function snsGet(){try{return JSON.parse(localStorage.getItem('erp_sns_'+(ME.id||''))||'{}');}catch(e){return {};}}
-function snsSave(d){try{localStorage.setItem('erp_sns_'+(ME.id||''),JSON.stringify(d));}catch(e){}}
+function snsGet(){return PREFS.sns||{};}
+function snsSave(d){PREFS.sns=d;savePrefs();}
 function snsReg(plat){const m=SNS_META[plat],d=snsGet(),cur=d[plat]||{};const url=prompt(m.name+' 주소(URL)를 붙여넣으세요:',cur.url||'https://');if(url==null)return;const fol=prompt('현재 팔로워 수를 입력하세요 (숫자만):',cur.fol!=null?String(cur.fol):'');if(fol==null)return;const f=parseInt(String(fol).replace(/\D/g,''),10)||0;const hist=(cur.hist||[]).slice(-13);const today=new Date().toISOString().slice(0,10);if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=f;else hist.push([today,f]);d[plat]={url:url.trim(),fol:f,hist};snsSave(d);toast('✅ '+m.name+' 연동됨');render();}
 function snsOpen(plat){const d=snsGet();if(d[plat]&&d[plat].url)window.open(d[plat].url,'_blank');else snsReg(plat);}
 function snsSpark(hist){if(!hist||hist.length<2)return '<svg width="58" height="26"></svg>';const vals=hist.map(h=>h[1]),max=Math.max(...vals),min=Math.min(...vals),range=max-min||1,n=vals.length,W=58,H=26;const pts=vals.map((v,i)=>`${(i/(n-1))*W},${H-((v-min)/range)*(H-5)-3}`).join(' ');return `<svg width="58" height="26" viewBox="0 0 58 26"><polyline points="${pts}" fill="none" stroke="${vals[n-1]>=vals[0]?'#2563eb':'#94a3b8'}" stroke-width="2"/></svg>`;}
-function goalGet(){try{return JSON.parse(localStorage.getItem('erp_goal_'+(ME.id||''))||'{}');}catch(e){return {};}}
-function goalSet(k,v){const g=goalGet();g[k]=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);try{localStorage.setItem('erp_goal_'+(ME.id||''),JSON.stringify(g));}catch(e){}render();}
+function goalGet(){return PREFS.goal||{};}
+function goalSet(k,v){const g=PREFS.goal||{};g[k]=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.goal=g;savePrefs();render();}
 function numCard(lab,num,sub,col,ic,onclick,delta){
   const dlt=delta?`<div style="margin-top:9px;white-space:nowrap"><span style="background:${delta.dir>0?'#e7f6ec':delta.dir<0?'#fee2e2':'#eef2f7'};color:${delta.dir>0?'#16a34a':delta.dir<0?'#ef4444':'#94a3b8'};font-size:11px;font-weight:700;padding:3px 8px;border-radius:7px">${delta.dir>0?'▲':delta.dir<0?'▼':'–'} ${Math.abs(delta.pct)}%</span> <span style="font-size:10.5px;color:#94a3b8">${delta.label||''}</span></div>`:'';
   return `<div class="kpi"${onclick?` style="cursor:pointer" onclick="${onclick}"`:''}><div style="min-width:0"><div class="lab" style="white-space:nowrap">${lab}</div><div class="num" style="white-space:nowrap">${num}</div>${sub?`<div class="sub" style="color:#94a3b8;font-weight:500;margin-top:7px;white-space:nowrap">${sub}</div>`:''}${dlt}</div><div class="ic ic-${col}"><i class="ti ${ic}"></i></div></div>`;}
@@ -704,8 +719,8 @@ const POS_DEFAULT={
   '운영':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','ship_fee','by_staff','vip','topprod','taste','bcast','quick'],
   '관리자':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','ship_fee','by_staff','vip','topprod','taste','bcast','quick']
 };
-function getUserWidgets(){try{if(localStorage.getItem('erp_wg_ver')!=='3'){localStorage.setItem('erp_wg_ver','3');const def=(POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();saveUserWidgets(def);return def;}const s=localStorage.getItem('erp_wg_'+(ME.id||''));if(s)return JSON.parse(s);}catch(e){}return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();}
-function saveUserWidgets(arr){try{localStorage.setItem('erp_wg_'+(ME.id||''),JSON.stringify(arr));}catch(e){}}
+function getUserWidgets(){const w=PREFS.widgets;if(Array.isArray(w)&&w.length)return w.slice();return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();}
+function saveUserWidgets(arr){PREFS.widgets=arr;savePrefs();}
 function wgToggle(id){let a=getUserWidgets();if(a.includes(id))a=a.filter(x=>x!==id);else a.push(id);saveUserWidgets(a);render();renderWidgetEdit();}
 function wgMove(id,dir){let a=getUserWidgets();const i=a.indexOf(id);if(i<0)return;const j=i+dir;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;saveUserWidgets(a);render();renderWidgetEdit();}
 function wgReset(){saveUserWidgets((POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice());render();renderWidgetEdit();}
@@ -728,9 +743,9 @@ const WIDGET_SIZE={
  misong:{w:4,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},quick:{w:4,h:3}
 };
 function dashLayoutKey(){return 'erp_dash_v1_'+(ME.id||'');}
-function loadLayout(){try{return JSON.parse(localStorage.getItem(dashLayoutKey())||'{}');}catch(e){return {};}}
-function saveLayout(arr){const m=loadLayout();(arr||[]).forEach(n=>{if(n.id)m[n.id]={x:n.x,y:n.y,w:n.w,h:n.h};});try{localStorage.setItem(dashLayoutKey(),JSON.stringify(m));}catch(e){}}
-function resetLayout(){try{localStorage.removeItem(dashLayoutKey());}catch(e){}render();}
+function loadLayout(){return PREFS.layout||{};}
+function saveLayout(arr){const m=PREFS.layout||{};(arr||[]).forEach(n=>{if(n.id)m[n.id]={x:n.x,y:n.y,w:n.w,h:n.h};});PREFS.layout=m;savePrefs();}
+function resetLayout(){PREFS.layout={};savePrefs();render();}
 let _grid=null;
 function initDashGrid(){const el=document.querySelector('.grid-stack');if(!el||typeof GridStack==='undefined')return;
  if(_grid){try{_grid.destroy(false);}catch(e){}_grid=null;}
@@ -1026,8 +1041,8 @@ const ISLAND_ADDR=[['제주','제주 (도서산간)',3000],['서귀포','제주 
 function islandByAddr(addr){const a=String(addr||'');if(!a)return null;for(const r of ISLAND_ADDR){if(a.indexOf(r[0])>=0)return {region:r[1],extra:r[2]};}return null;}
 function islandOf(){return islandInfo(OE.zip)||islandByAddr(OE.addr||'');}
 /* 무료배송 기준 (회사 공통값, 기본 10만원) */
-function freeThresh(){const v=parseInt(localStorage.getItem('freeshipThreshold'),10);return isNaN(v)?100000:v;}
-function setFreeThresh(v){const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);localStorage.setItem('freeshipThreshold',n);toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료');render();}
+function freeThresh(){return (PREFS.freeship!=null)?PREFS.freeship:100000;}
+function setFreeThresh(v){const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.freeship=n;savePrefs();toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료');render();}
 /* 배송비 자동계산 — 상품합계·주소·무료기준에 따라 배송비 라인 자동 세팅 (수동지정 시 건너뜀) */
 function shipBase(){return OE.lines.filter(l=>l.kind!=='ship').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);}
 function recalcShip(){
@@ -1995,7 +2010,8 @@ async function doLogin(){
   if(error){toast('❌ 아이디 또는 비밀번호가 틀립니다');return;}
   const {data:emp} = await SB.from('employees').select('*').eq('login_id', id).maybeSingle();
   if(!emp||emp.active===false){toast('❌ 등록되지 않았거나 비활성화된 계정입니다 (관리자 문의)');await SB.auth.signOut();return;}
-  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name};
+  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id};
+  await loadPrefs();
   toast('📥 데이터 불러오는 중...');
   await dbLoadAll();
   $('#login').style.display='none';
@@ -2098,7 +2114,8 @@ rebuildSwitcher();buildNav();render();
       const id=(data.session.user.email||'').split('@')[0];
       const {data:emp}=await SB.from('employees').select('*').eq('login_id',id).maybeSingle();
       if(!emp||emp.active===false)return;
-      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name};
+      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id};
+      await loadPrefs();
       await dbLoadAll();
       $('#login').style.display='none';
       {const _h=location.hash.slice(1);if(_h&&VIEWS[_h]&&menuAllowed(_h))VIEW=_h;}
