@@ -293,7 +293,8 @@
     <div class="foot">
       <div class="lab">🔄 계정 빠른전환 (시연용)</div>
       <select id="userSel" onchange="switchUser(this.value)"></select>
-      <button class="btn ghost sm" style="width:100%;margin-top:7px" onclick="logout()">로그아웃</button>
+      <button class="btn ghost sm" style="width:100%;margin-top:7px" onclick="changeMyPassword()">🔑 내 비밀번호 변경</button>
+      <button class="btn ghost sm" style="width:100%;margin-top:5px" onclick="logout()">로그아웃</button>
       <div class="ver">Ver. 견본 2026.06</div>
     </div>
   </aside>
@@ -1561,7 +1562,7 @@ function viewUsers(){
     <div class="form-grid">
       <input id="f_name" placeholder="이름" style="width:100px">
       <input id="f_id" placeholder="아이디(영문/숫자)" style="width:140px">
-      <input id="f_pw" placeholder="비밀번호(6자 이상)" style="width:150px">
+      <input id="f_pw" placeholder="비밀번호(4자 이상)" style="width:150px">
       <select id="f_team" onchange="render()"><option>운영팀</option><option>물류팀</option><option>셀러팀</option></select>
       <select id="f_scope"><option value="all">전체권한</option><option value="logi">물류범위</option><option value="self">본인자료만</option></select>
       <input id="f_owner" placeholder="담당셀러(보조만)" style="width:130px">
@@ -1571,7 +1572,7 @@ function viewUsers(){
   </div>
   <div class="card"><div class="card-h"><h2>사원 목록 (${EMPLOYEES.length}명)</h2></div>
     <table><thead><tr><th>이름</th><th>아이디</th><th>팀</th><th>역할</th><th>권한범위</th><th>담당셀러</th><th style="width:92px"></th></tr></thead><tbody>
-    ${EMPLOYEES.length?EMPLOYEES.map((u,i)=>`<tr><td><b>${esc(u.name)}</b></td><td class="barcode">${esc(u.login_id)}</td>
+    ${EMPLOYEES.length?EMPLOYEES.map((u,i)=>`<tr><td><b class="prod-link" title="클릭하여 전체 수정" onclick="editUser(${i})">${esc(u.name)}</b></td><td class="barcode">${esc(u.login_id)}</td>
       <td>${esc(u.team||'-')}</td><td>${esc(u.role||'-')}</td><td>${scopeL[u.scope]||u.scope||'-'}</td>
       <td class="muted">${esc(u.owner||'-')}</td>
       <td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editUser(${i})">수정</button><button class="ico-btn" title="삭제(비활성)" onclick="delUser(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join(''):`<tr><td colspan="7" class="muted" style="padding:16px">등록된 사원이 없습니다. 위에서 추가하세요.</td></tr>`}
@@ -1643,9 +1644,9 @@ async function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value
     EMPLOYEES.push(data);
   }catch(e){toast('⚠️ 직원정보 저장 오류: '+e.message);return;}
   ['f_name','f_id','f_pw','f_owner'].forEach(x=>{const el=$('#'+x);if(el)el.value='';});
-  toast('✅ 사원 등록 완료: '+name+' — 이제 아이디 "'+id+'"로 로그인 가능');render();}
+  toast('✅ 사원 등록 완료: '+name+' — 아이디 "'+id+'"로 바로 로그인 가능');render();}
 function editUser(i){const u=EMPLOYEES[i];if(!u)return;
-  $('#modalBox').innerHTML=`<h3>사원 정보 수정</h3><div class="ms">이름·팀·권한을 수정합니다. 아이디(로그인 이메일)는 변경할 수 없어요. 비밀번호 재설정은 본인 로그인 후 또는 Supabase에서.</div>
+  $('#modalBox').innerHTML=`<h3>사원 정보 수정</h3><div class="ms">이름·팀·권한을 수정합니다. 아이디는 변경할 수 없어요. 비밀번호는 직원이 로그인 후 우측 상단에서 본인이 변경합니다.</div>
     <div class="modal-row"><div><label>이름</label><input id="eu_name" value="${esc(u.name)}"></div><div><label>아이디(변경불가)</label><input value="${esc(u.login_id)}" disabled style="background:#f1f5f9;color:#94a3b8"></div></div>
     <div class="modal-row"><div><label>팀</label><select id="eu_team">${['운영팀','물류팀','셀러팀'].map(t=>`<option ${u.team===t?'selected':''}>${t}</option>`).join('')}</select></div>
       <div><label>권한범위</label><select id="eu_scope">${[['all','전체권한'],['logi','물류범위'],['self','본인자료만']].map(([v,l])=>`<option value="${v}" ${u.scope===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
@@ -1657,8 +1658,19 @@ async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_n
   const team=$('#eu_team').value,scope=$('#eu_scope').value,owner=$('#eu_owner').value.trim();
   const roleMap={운영팀:'운영',물류팀:'물류',셀러팀:(scope==='self'&&owner)?'보조':'셀러'};
   const patch={name,team,role:roleMap[team],scope,owner:owner||null};
-  Object.assign(u,patch);closeModal();toast('✅ 수정: '+name);render();
+  const wasMe=ME&&ME.id===u.login_id;
+  Object.assign(u,patch);closeModal();toast('✅ 수정: '+name);
+  if(wasMe){ME.name=u.name;ME.team=u.team;ME.role=u.role;ME.scope=u.scope;ME.owner=u.owner;}
+  render();
   try{const {error}=await SB.from('employees').update(patch).eq('id',u.id);if(error)toast('⚠️ 저장 오류: '+error.message);}catch(e){toast('⚠️ 저장 오류');}}
+async function changeMyPassword(){
+  const np=prompt('새 비밀번호를 입력하세요 (6자 이상)');if(np==null)return;
+  if(np.trim().length<6){toast('비밀번호는 6자 이상이어야 합니다');return;}
+  toast('🔐 변경 중...');
+  try{const {error}=await SB.auth.updateUser({password:np.trim()});
+    if(error){toast('❌ 변경 실패: '+error.message);return;}
+    toast('✅ 비밀번호가 변경되었습니다');
+  }catch(e){toast('❌ 변경 오류');}}
 async function delUser(i){const u=EMPLOYEES[i];if(!u)return;if(ME&&ME.id===u.login_id){toast('❌ 로그인 중인 본인 계정은 삭제할 수 없어요');return;}
   if(!confirm(`'${u.name}'(${u.login_id}) 사원을 삭제할까요?\n로그인이 차단되고, 과거 데이터는 그대로 유지됩니다.`))return;
   EMPLOYEES.splice(i,1);closeModal();toast('🗑️ 삭제(로그인 차단): '+u.name);render();
@@ -1682,7 +1694,7 @@ async function doLogin(){
   rebuildSwitcher();buildNav();render();
   toast('환영합니다, '+ME.name+'님');
 }
-async function logout(){await SB.auth.signOut();$('#login').style.display='flex';$('#loginId').value='';$('#loginPw').value='';}
+async function logout(){localStorage.removeItem('erp_uid');try{await SB.auth.signOut();}catch(e){}$('#login').style.display='flex';$('#loginId').value='';$('#loginPw').value='';}
 function rebuildSwitcher(){const sel=$('#userSel');if(!sel)return;
   sel.innerHTML=USERS.map((u,i)=>`<option value="${i}">${u.name} · ${u.team}(${u.role})</option>`).join('');sel.value=USERS.indexOf(ME);}
 function switchUser(i){ME=USERS[+i];if(!menuAllowed(VIEW))VIEW='dash';buildNav();render();toast('계정 전환: '+ME.name);}
@@ -1774,7 +1786,8 @@ rebuildSwitcher();buildNav();render();
     if(data&&data.session){
       const id=(data.session.user.email||'').split('@')[0];
       const {data:emp}=await SB.from('employees').select('*').eq('login_id',id).maybeSingle();
-      ME=emp?{name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined}:{name:id,id,team:'',role:'',scope:'all'};
+      if(!emp||emp.active===false)return;
+      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined};
       await dbLoadAll();
       $('#login').style.display='none';
       if(!menuAllowed(VIEW))VIEW='dash';
