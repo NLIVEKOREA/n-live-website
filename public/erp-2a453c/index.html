@@ -542,6 +542,21 @@ function _cntP(key){return mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,key)).
 function _shipFeeMonth(){const r=periodRange('month');return mine(ORD).filter(o=>o.code==='배송비'&&_inRange(o,'month')).reduce((a,o)=>a+amtOf(o),0)+SHIPPING.filter(s=>s.month===r.from.slice(0,7)).reduce((a,s)=>a+(s.amount||0),0);}
 function _byStaffRows(){const m={};mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,'month')).forEach(o=>m[o.staff]=(m[o.staff]||0)+amtOf(o));return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>[k,won(v)]);}
 function _byProdRows(){const m={};mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,'month')&&!/낱장|배송비/.test((o.disp||'')+o.code)).forEach(o=>{const k=o.disp||o.code;m[k]=(m[k]||0)+(o.qty||0);});return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>[k,v+'개']);}
+/* ===== 대시보드 분석 통계 (전부 실데이터: 주문/고객/재고에서 계산) ===== */
+function prodCat(code,disp){const s=STOCK.find(x=>x.code===code);if(s&&s.subcategory)return s.subcategory;if(s&&s.category)return s.category;const t=(disp||'')+((s&&s.name)||'');const KW=[['원피스','원피스'],['니트','니트'],['가디건','니트'],['팬츠','팬츠'],['바지','팬츠'],['슬랙스','팬츠'],['데님','팬츠'],['청바지','팬츠'],['레깅스','팬츠'],['자켓','아우터'],['코트','아우터'],['점퍼','아우터'],['패딩','아우터'],['아우터','아우터'],['블라우스','블라우스'],['셔츠','블라우스'],['티셔츠','티셔츠'],['반팔','티셔츠'],['나시','티셔츠'],['스커트','스커트'],['치마','스커트'],['셋업','셋업'],['후드','맨투맨'],['맨투맨','맨투맨']];for(const kw of KW)if(t.indexOf(kw[0])>=0)return kw[1];return '기타';}
+function _isGoods(o){return o.code!=='배송비'&&o.code!=='낱장'&&!/배송비|낱장/.test(o.disp||'');}
+function _orderCount(key){const s=new Set();mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,key)).forEach(o=>s.add((o.date||'')+'|'+(o.cust||'')));return s.size;}
+function _avgOrder(key){const c=_orderCount(key);return c?Math.round(_salesP(key)/c):0;}
+function _custAgg(){const m={};mine(ORD).filter(o=>o.pay==='paid').forEach(o=>{const c=(o.cust||'').trim();if(!c)return;if(!m[c])m[c]={cust:c,groups:new Set(),amt:0,last:'',cats:{}};m[c].groups.add((o.date||'')+'|'+c);m[c].amt+=amtOf(o);const d=(o.date||'').replace(/\//g,'-');if(d>m[c].last)m[c].last=d;if(_isGoods(o)){const cat=prodCat(o.code,o.disp);m[c].cats[cat]=(m[c].cats[cat]||0)+(o.qty||0);}});return Object.values(m).map(x=>{const ent=Object.entries(x.cats).sort((a,b)=>b[1]-a[1]);const tc=ent.filter(e=>e[0]!=='기타')[0]||ent[0];return {cust:x.cust,cnt:x.groups.size,amt:x.amt,last:x.last,topcat:tc?tc[0]:'-'};});}
+function _repurchase(){const a=_custAgg(),tot=a.length,rep=a.filter(x=>x.cnt>=2).length;return {rate:tot?Math.round(rep/tot*1000)/10:0,rep,tot};}
+function _vipRows(n){return _custAgg().sort((a,b)=>b.amt-a.amt).slice(0,n||5);}
+function _dist(field){const m={};mine(ORD).filter(o=>o.pay==='paid'&&_isGoods(o)).forEach(o=>{let k=field==='cat'?prodCat(o.code,o.disp):((o[field]||'').trim()||'기타');if(!k)k='기타';m[k]=(m[k]||0)+(o.qty||0);});const tot=Object.values(m).reduce((a,b)=>a+b,0)||1;return Object.entries(m).sort((a,b)=>b[1]-a[1]).map(e=>({k:e[0],v:e[1],pct:Math.round(e[1]/tot*1000)/10}));}
+function _topProd(key,n){const m={};mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,key)&&_isGoods(o)).forEach(o=>{const k=o.disp||prodName(o.code)||o.code;if(!m[k])m[k]={qty:0,amt:0};m[k].qty+=o.qty||0;m[k].amt+=amtOf(o);});const tot=Object.values(m).reduce((a,b)=>a+b.amt,0)||1;return Object.entries(m).sort((a,b)=>b[1].qty-a[1].qty).slice(0,n||5).map(e=>({name:e[0],qty:e[1].qty,amt:e[1].amt,share:Math.round(e[1].amt/tot*1000)/10}));}
+function _lowProd(n){const sold={};mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,'month')).forEach(o=>{sold[o.code]=(sold[o.code]||0)+(o.qty||0);});const bc={};STOCK.forEach(s=>{if(s.code==='배송비')return;if(!bc[s.code])bc[s.code]={name:s.name,qty:0};bc[s.code].qty+=s.qty||0;});return Object.entries(bc).map(e=>({code:e[0],name:e[1].name,stock:e[1].qty,sold:sold[e[0]]||0})).filter(x=>x.stock>=10&&x.sold<=2).sort((a,b)=>b.stock-a.stock).slice(0,n||6);}
+function _salesTrend(n){const byd={};mine(ORD).filter(o=>o.pay==='paid').forEach(o=>{const d=(o.date||'').replace(/\//g,'-');if(!d)return;if(!byd[d])byd[d]={s:0,set:new Set()};byd[d].s+=amtOf(o);if(o.cust)byd[d].set.add(o.cust);});return Object.entries(byd).sort((a,b)=>a[0].localeCompare(b[0])).slice(-(n||7)).map(e=>({date:e[0].slice(5),sales:e[1].s,avg:e[1].set.size?Math.round(e[1].s/e[1].set.size):0}));}
+function _settle(){return {amt:Math.round(_salesP('month')*0.1),day:'매월 07일'};}
+function goalGet(){try{return JSON.parse(localStorage.getItem('erp_goal_'+(ME.id||''))||'{}');}catch(e){return {};}}
+function goalSet(k,v){const g=goalGet();g[k]=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);try{localStorage.setItem('erp_goal_'+(ME.id||''),JSON.stringify(g));}catch(e){}render();}
 function numCard(lab,num,sub,col,ic,onclick){return `<div class="kpi"${onclick?` style="cursor:pointer" onclick="${onclick}"`:''}><div><div class="lab">${lab}</div><div class="num">${num}</div><div class="sub">${sub||''}</div></div><div class="ic ic-${col}"><i class="ti ${ic}"></i></div></div>`;}
 function listCard(title,rows,more){return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>${title}</h2>${more?`<span class="more" onclick="${more}">더보기</span>`:''}</div><table><tbody>${rows.length?rows.map(r=>`<tr><td>${esc(String(r[0]))}</td><td class="muted" style="text-align:right">${esc(String(r[1]))}</td></tr>`).join(''):'<tr><td class="muted">데이터 없음</td></tr>'}</tbody></table></div>`;}
 function quickCard(){return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>업무 바로가기</h2></div><div class="quick">
@@ -552,7 +567,60 @@ function quickCard(){return `<div class="card" style="grid-column:span 2"><div c
   <div class="qi" onclick="go('revenue')"><div class="qic"><i class="ti ti-chart-bar"></i></div><span>매출현황</span></div>
   <div class="qi" onclick="go('prod')"><div class="qic"><i class="ti ti-chart-pie"></i></div><span>상품현황</span></div>
 </div></div>`;}
-const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',ship_fee:'배송비 집계(당월)',misong:'미송 대기',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',quick:'업무 바로가기'};
+/* ===== 신규 분석 위젯 렌더 ===== */
+function wAvg(){return numCard('평균 객단가',won(_avgOrder('week')),'주간 기준 · 1인당','b','ti-receipt');}
+function wSettle(){const s=_settle();return numCard('정산 예정',won(s.amt),s.day+' 지급 · 매출 10%','a','ti-wallet');}
+function wRepurchase(){const r=_repurchase();return numCard('재구매율',r.rate+'%','재구매 '+r.rep+'명 / 단골 '+r.tot+'명','p','ti-repeat');}
+function wVip(){const rows=_vipRows(8);return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>단골 / VIP 고객</h2><span class="more" onclick="go('cust')">더보기</span></div>
+<table><thead><tr><th>순위</th><th>고객</th><th>구매</th><th style="text-align:right">누적금액</th><th>최근</th><th>선호</th></tr></thead><tbody>
+${rows.length?rows.map((r,i)=>`<tr><td>${['🥇','🥈','🥉'][i]||(i+1)}</td><td><b>${esc(r.cust)}</b></td><td>${r.cnt}회</td><td style="text-align:right">${won(r.amt)}</td><td class="muted">${r.last||'-'}</td><td><span class="pill">${esc(r.topcat)}</span></td></tr>`).join(''):'<tr><td colspan="6" class="muted">결제완료 고객 데이터 없음</td></tr>'}
+</tbody></table></div>`;}
+function _taste_bar(arr){return arr.map(x=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0"><span style="width:46px;flex:0 0 auto">${esc(x.k)}</span><div style="flex:1;background:#eef2f7;border-radius:5px;height:8px"><div style="width:${x.pct}%;background:var(--blue);height:8px;border-radius:5px"></div></div><b style="width:40px;text-align:right;flex:0 0 auto">${x.pct}%</b></div>`).join('');}
+function wTaste(){const cat=_dist('cat').slice(0,6),sz=_dist('size').slice(0,5),col=_dist('color').slice(0,6);
+const pal=['#2563eb','#60a5fa','#f59e0b','#10b981','#ef4444','#a78bfa'];let acc=0;
+const stops=cat.map((c,i)=>{const a=acc,b=acc+c.pct;acc=b;return `${pal[i%pal.length]} ${a}% ${b}%`;}).join(',');
+const donut=`<div style="width:118px;height:118px;border-radius:50%;background:conic-gradient(${stops||'#e5e7eb 0 100%'});position:relative;flex:0 0 auto"><div style="position:absolute;inset:17px;background:#fff;border-radius:50%"></div></div>`;
+const legend=cat.map((c,i)=>`<div style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:9px;height:9px;border-radius:2px;background:${pal[i%pal.length]};flex:0 0 auto"></span>${esc(c.k)} <b style="margin-left:auto">${c.pct}%</b></div>`).join('');
+return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>고객 구매 성향</h2><span class="muted" style="font-size:11px">결제완료 기준 · 다음 방송 기획용</span></div>
+<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
+<div><div style="font-size:12px;font-weight:700;margin-bottom:6px">카테고리</div><div style="display:flex;gap:12px;align-items:center">${donut}<div style="display:flex;flex-direction:column;gap:4px;min-width:118px">${legend||'<span class="muted">없음</span>'}</div></div></div>
+<div style="flex:1;min-width:170px"><div style="font-size:12px;font-weight:700;margin-bottom:6px">사이즈</div>${_taste_bar(sz)||'<span class="muted">없음</span>'}</div>
+<div style="flex:1;min-width:170px"><div style="font-size:12px;font-weight:700;margin-bottom:6px">컬러</div>${_taste_bar(col)||'<span class="muted">없음</span>'}</div>
+</div></div>`;}
+function wTopProd(){const rows=_topProd('week',6);return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>인기 상품 <span class="muted" style="font-size:11px">주간</span></h2><span class="more" onclick="go('prod')">더보기</span></div>
+<table><thead><tr><th>순위</th><th>상품명</th><th style="text-align:right">판매</th><th style="text-align:right">매출기여</th></tr></thead><tbody>
+${rows.length?rows.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.name)}</td><td style="text-align:right">${r.qty}개</td><td style="text-align:right"><b style="color:var(--blue)">${r.share}%</b></td></tr>`).join(''):'<tr><td colspan="4" class="muted">이번주 판매 데이터 없음</td></tr>'}
+</tbody></table></div>`;}
+function wLowProd(){const rows=_lowProd(6);return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>관리 필요 상품 <span class="muted" style="font-size:11px">재고↑ 판매↓</span></h2></div>
+<table><thead><tr><th>상품명</th><th style="text-align:right">재고</th><th style="text-align:right">당월판매</th></tr></thead><tbody>
+${rows.length?rows.map(r=>`<tr><td>${esc(r.name||r.code)}</td><td style="text-align:right">${r.stock}</td><td style="text-align:right"><b style="color:#ef4444">${r.sold}개</b></td></tr>`).join(''):'<tr><td colspan="3" class="muted">관리 필요 상품 없음 👍</td></tr>'}
+</tbody></table></div>`;}
+function wBcast(){const tr=_salesTrend(7),n=tr.length,W=300,H=78;const max=Math.max(1,...tr.map(t=>t.sales)),amax=Math.max(1,...tr.map(t=>t.avg));
+const pts=tr.map((t,i)=>`${n>1?(i/(n-1))*W:0},${H-(t.sales/max)*H}`).join(' ');
+const pts2=tr.map((t,i)=>`${n>1?(i/(n-1))*W:0},${H-(t.avg/amax)*H}`).join(' ');
+return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>방송 성과 <span class="muted" style="font-size:11px">일자별 추이</span></h2></div>
+<div style="display:flex;gap:18px;margin-bottom:8px"><div><div class="muted" style="font-size:11px">평균 객단가(주간)</div><div style="font-size:20px;font-weight:800">${won(_avgOrder('week'))}</div></div><div><div class="muted" style="font-size:11px">주간 매출</div><div style="font-size:20px;font-weight:800">${won(_salesP('week'))}</div></div></div>
+${n?`<svg viewBox="0 0 ${W} ${H+18}" style="width:100%;height:92px"><polyline points="${pts}" fill="none" stroke="var(--blue)" stroke-width="2"/><polyline points="${pts2}" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="3 3"/>${tr.map((t,i)=>`<text x="${n>1?(i/(n-1))*W:0}" y="${H+14}" font-size="9" fill="#94a3b8" text-anchor="${i===0?'start':i===n-1?'end':'middle'}">${t.date}</text>`).join('')}</svg><div class="muted" style="font-size:11px"><span style="color:var(--blue)">━</span> 매출 &nbsp;<span style="color:#10b981">┄</span> 객단가</div>`:'<div class="muted" style="padding:14px">방송(판매) 데이터 없음</div>'}
+</div>`;}
+function wGoal(){const g=goalGet(),items=[['today','오늘',_salesP('today')],['week','이번주',_salesP('week')],['month','이번달',_salesP('month')]];
+return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>목표 달성률</h2><span class="muted" style="font-size:11px">목표액 입력 시 자동 계산</span></div>
+${items.map(it=>{const goal=g[it[0]]||0,cur=it[2],pct=goal?Math.min(100,Math.round(cur/goal*100)):0;return `<div style="margin:9px 0"><div style="display:flex;align-items:center;font-size:12px;margin-bottom:4px"><span style="font-weight:600">${it[1]}</span><span class="grow"></span><b style="margin-right:6px">${goal?pct+'%':'미설정'}</b><input type="number" value="${goal||''}" placeholder="목표액" onchange="goalSet('${it[0]}',this.value)" style="width:96px;text-align:right;padding:4px 7px;border:1px solid var(--line);border-radius:6px;font-size:11px"></div><div style="background:#eef2f7;border-radius:6px;height:9px"><div style="width:${pct}%;background:var(--blue);height:9px;border-radius:6px;transition:width .3s"></div></div></div>`;}).join('')}
+</div>`;}
+function wAlerts(){const late=mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done').length,rx=mine(ORD).filter(o=>o.req==='교환요청'||o.req==='환불요청'||o.rxstat==='wait'||o.rxstat==='req').length,back=mine(ORD).filter(o=>o.back).length,low=STOCK.filter(s=>s.qty<=2&&s.qty>0).length,out=STOCK.filter(s=>s.qty<=0).length;
+const row=(ic,lab,n,bg,g)=>`<div ${g?`onclick="${g}"`:''} style="display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:8px;cursor:pointer"><div style="width:30px;height:30px;border-radius:8px;background:${bg};color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto"><i class="ti ${ic}"></i></div><span style="flex:1;font-size:13px">${lab}</span><b style="font-size:16px;color:${n>0?'#ef4444':'#94a3b8'}">${n}</b></div>`;
+return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>알림 / 체크 필요</h2></div><div style="display:flex;flex-direction:column;gap:4px">
+${row('ti-truck','출고 지연·대기',late,'#f59e0b',"go('ship')")}
+${row('ti-refresh','교환/반품 요청',rx,'#ef4444',"go('sales')")}
+${row('ti-package','미송 대기',back,'#2563eb',"go('ship')")}
+${row('ti-alert-triangle','재고 부족(2개 이하)',low,'#f59e0b',"go('stock')")}
+${row('ti-x','품절',out,'#ef4444',"go('stock')")}
+</div></div>`;}
+function wPlaceholder(title,desc,ic){return `<div class="card" style="grid-column:span 2;opacity:.8"><div class="card-h"><h2>${title} <span class="pill" style="background:#eef2f7;color:#94a3b8">준비중</span></h2></div><div style="padding:20px;text-align:center;color:#94a3b8"><i class="ti ${ic}" style="font-size:30px"></i><div style="margin-top:8px;font-size:13px">${desc}</div></div></div>`;}
+function wSns(){return wPlaceholder('등록 SNS','SNS 계정 연동 준비중 — 팔로워·증감·7일 추이 자동기록 예정','ti-brand-instagram');}
+function wInflow(){return wPlaceholder('유입 채널','어느 SNS가 매출로 이어지는지 분석 (데이터 연동 준비중)','ti-route');}
+function wMsgReact(){return wPlaceholder('고객 메시지 반응','발송·열람·클릭·전환율 (메시지 시스템 연동 준비중)','ti-message-2');}
+function wSchedule(){return wPlaceholder('방송 스케줄','주간 방송일정·방송실·다른 셀러 조회 (다음 업데이트에서 구현)','ti-calendar-event');}
+const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',sales_avg:'평균 객단가',settle:'정산 예정',repurchase:'재구매율',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',ship_fee:'배송비 집계(당월)',misong:'미송 대기',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',vip:'단골/VIP 고객',taste:'고객 구매성향',topprod:'인기 상품',lowprod:'관리 필요 상품',bcast:'방송 성과',goal:'목표 달성률',alerts:'알림/체크 필요',schedule:'방송 스케줄',sns:'등록 SNS',inflow:'유입 채널',msg_react:'메시지 반응',quick:'업무 바로가기'};
 function wRender(id){const today=new Date().toISOString().slice(0,10);
   switch(id){
     case 'sales_today':return numCard('당일 매출',won(_salesP('today')),_cntP('today')+'건','g','ti-cash');
@@ -568,18 +636,32 @@ function wRender(id){const today=new Date().toISOString().slice(0,10);
     case 'by_staff':return listCard('셀러별 매출(당월)',_byStaffRows(),"go('revenue')");
     case 'by_prod':return listCard('베스트셀러(당월)',_byProdRows(),"go('prod')");
     case 'my_sales':return listCard('내 판매상품(당월)',_byProdRows(),"go('prod')");
+    case 'sales_avg':return wAvg();
+    case 'settle':return wSettle();
+    case 'repurchase':return wRepurchase();
+    case 'vip':return wVip();
+    case 'taste':return wTaste();
+    case 'topprod':return wTopProd();
+    case 'lowprod':return wLowProd();
+    case 'bcast':return wBcast();
+    case 'goal':return wGoal();
+    case 'alerts':return wAlerts();
+    case 'schedule':return wSchedule();
+    case 'sns':return wSns();
+    case 'inflow':return wInflow();
+    case 'msg_react':return wMsgReact();
     case 'quick':return quickCard();
     default:return '';
   }
 }
 const POS_DEFAULT={
-  '셀러':['sales_today','sales_week','sales_month','unpaid','rx','my_sales','quick'],
+  '셀러':['sns','sales_today','sales_week','sales_month','settle','repurchase','vip','taste','topprod','bcast','schedule','quick'],
   '보조':['unpaid','toship','rx','misong','quick'],
-  '물류':['toship','done_today','misong','quick'],
-  '운영':['sales_today','sales_month','sales_total','toship','rx','ship_fee','by_staff','by_prod','quick'],
-  '관리자':['sales_today','sales_month','sales_total','toship','rx','ship_fee','by_staff','by_prod','quick']
+  '물류':['toship','done_today','misong','alerts','quick'],
+  '운영':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','ship_fee','by_staff','vip','topprod','taste','bcast','quick'],
+  '관리자':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','ship_fee','by_staff','vip','topprod','taste','bcast','quick']
 };
-function getUserWidgets(){try{const s=localStorage.getItem('erp_wg_'+(ME.id||''));if(s)return JSON.parse(s);}catch(e){}return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();}
+function getUserWidgets(){try{if(localStorage.getItem('erp_wg_ver')!=='2'){localStorage.setItem('erp_wg_ver','2');const def=(POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();saveUserWidgets(def);return def;}const s=localStorage.getItem('erp_wg_'+(ME.id||''));if(s)return JSON.parse(s);}catch(e){}return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();}
 function saveUserWidgets(arr){try{localStorage.setItem('erp_wg_'+(ME.id||''),JSON.stringify(arr));}catch(e){}}
 function wgToggle(id){let a=getUserWidgets();if(a.includes(id))a=a.filter(x=>x!==id);else a.push(id);saveUserWidgets(a);render();renderWidgetEdit();}
 function wgMove(id,dir){let a=getUserWidgets();const i=a.indexOf(id);if(i<0)return;const j=i+dir;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;saveUserWidgets(a);render();renderWidgetEdit();}
