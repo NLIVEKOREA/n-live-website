@@ -724,7 +724,7 @@ const POS_DEFAULT={
 };
 function getUserWidgets(){const w=PREFS.widgets;if(Array.isArray(w)&&w.length)return w.slice();return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();}
 function saveUserWidgets(arr){PREFS.widgets=arr;savePrefs();}
-function wgToggle(id){let a=getUserWidgets();if(a.includes(id))a=a.filter(x=>x!==id);else a.push(id);saveUserWidgets(a);render();renderWidgetEdit();}
+function wgToggle(id){let a=getUserWidgets();const rm=a.includes(id);if(rm)a=a.filter(x=>x!==id);else a.push(id);saveUserWidgets(a);render();renderWidgetEdit();if(rm&&VIEW==='dash')setTimeout(function(){try{if(_grid){_grid.compact();saveLayout(_grid.save(false));}}catch(e){}},130);}
 function wgMove(id,dir){let a=getUserWidgets();const i=a.indexOf(id);if(i<0)return;const j=i+dir;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;saveUserWidgets(a);render();renderWidgetEdit();}
 function wgReset(){saveUserWidgets((POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice());render();renderWidgetEdit();}
 function openWidgetEdit(){renderWidgetEdit();$('#modal').classList.remove('hide');}
