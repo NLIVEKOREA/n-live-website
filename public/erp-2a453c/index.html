@@ -343,9 +343,13 @@ async function dbLoadAll(){
     EMPLOYEES.length=0;(em.data||[]).forEach(r=>EMPLOYEES.push(r));
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
 }
-async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){await SB.from('orders').update(row).eq('id',o.id);}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error)console.error('saveOrd',error);if(data)o.id=data.id;}}catch(e){console.error(e);}}
+/* 실시간 동기화 — 다른 사용자의 변경을 자동 반영. 입력 중엔 화면 재렌더 보류(입력값 보호) */
+let _rt=null,_rtTimer=null;
+function isTyping(){const a=document.activeElement;if(a&&['INPUT','TEXTAREA','SELECT'].includes(a.tagName))return true;const m=$('#modal');if(m&&!m.classList.contains('hide'))return true;return false;}
+function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(async()=>{await dbLoadAll();if(!isTyping())render();},700);}).subscribe();}catch(e){console.error('realtime',e);}}
+async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){const {error}=await SB.from('orders').update(row).eq('id',o.id);if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 새로고침 후 다시 시도하세요');return false;}}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 다시 시도하세요');return false;}if(data)o.id=data.id;}return true;}catch(e){console.error(e);toast('⚠️ 저장 오류 — 인터넷 연결을 확인하세요');return false;}}
 async function delOrd(o){try{if(o.id)await SB.from('orders').delete().eq('id',o.id);}catch(e){console.error(e);}}
-async function saveStock(s){try{if(s&&s.id!=null)await SB.from('stock').update({qty:s.qty}).eq('id',s.id);}catch(e){console.error(e);}}
+async function saveStock(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');}}
 async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,in_price:s.in_price||0,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error)console.error('updStock',error);}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error)console.error('insStock',error);if(data)s.id=data.id;}}catch(e){console.error(e);}}
 async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error)console.error('updCust',error);}else{const {data,error}=await SB.from('customers').insert(row).select('id').single();if(error)console.error('insCust',error);if(data)c.id=data.id;}}catch(e){console.error(e);}}
 async function delCustDB(c){try{if(c.id)await SB.from('customers').delete().eq('id',c.id);}catch(e){console.error(e);}}
@@ -1727,7 +1731,7 @@ async function doLogin(){
   await dbLoadAll();
   $('#login').style.display='none';
   if(!menuAllowed(VIEW))VIEW='dash';
-  rebuildSwitcher();buildNav();render();
+  rebuildSwitcher();buildNav();render();startRealtime();
   toast('환영합니다, '+ME.name+'님');
 }
 async function logout(){localStorage.removeItem('erp_uid');try{await SB.auth.signOut();}catch(e){}$('#login').style.display='flex';$('#loginId').value='';$('#loginPw').value='';}
@@ -1827,7 +1831,7 @@ rebuildSwitcher();buildNav();render();
       await dbLoadAll();
       $('#login').style.display='none';
       if(!menuAllowed(VIEW))VIEW='dash';
-      rebuildSwitcher();buildNav();render();
+      rebuildSwitcher();buildNav();render();startRealtime();
     }
   }catch(e){console.error('session',e);}
 })();
