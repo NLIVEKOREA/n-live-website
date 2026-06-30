@@ -194,6 +194,19 @@
   .wgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
   .wgrid .kpi,.wgrid .card{margin:0}
   @media(max-width:1100px){.wgrid{grid-template-columns:repeat(2,1fr)}}
+  /* ===== 마이크로 인터랙션 (과하지 않게) ===== */
+  .kpi,.qi,.ord-card,.sg-card,.prod-link{transition:transform .14s ease,box-shadow .18s ease,border-color .15s ease,background .14s ease,color .14s ease}
+  .kpi[onclick]:hover,.qi:hover,.ord-card:hover,.sg-card:hover{transform:translateY(-2px);box-shadow:0 7px 20px rgba(15,23,42,.09)}
+  .btn,.ico-btn,.sg-pick,.tabs button,.seg button,.drop-i{transition:transform .1s ease,background .15s ease,box-shadow .15s ease,opacity .15s ease,color .15s ease}
+  .btn:active,.ico-btn:active,.qi:active,.sg-pick:active,.tabs button:active,.seg button:active,.drop-i:active{transform:scale(.96)}
+  .btn:hover{filter:brightness(1.04)}
+  .modal-bg{animation:mFade .16s ease}
+  .modal-box{animation:mPop .2s cubic-bezier(.34,1.26,.64,1)}
+  @keyframes mFade{from{opacity:0}to{opacity:1}}
+  @keyframes mPop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+  .view-anim{animation:vIn .22s ease}
+  @keyframes vIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   /* 주문현황 카드 */
   .date-div{font-size:13px;font-weight:800;color:#334155;margin:18px 0 11px;padding:8px 12px;background:#eef2f7;border-radius:8px;display:flex;align-items:center;gap:8px}
   .ord-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
@@ -1597,7 +1610,7 @@ let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SAL
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
-function render(){$('#main').innerHTML=VIEWS[VIEW]();updateTopbar();
+function render(){const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();updateTopbar();if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
   if(CUSTPOP){const c=openCustomers().filter(x=>x.cat===CUSTPOP.cat)[CUSTPOP.i];if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
 function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
