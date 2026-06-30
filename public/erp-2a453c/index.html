@@ -607,7 +607,7 @@ function viewOrder(){
   <div class="ow-left">
   <div class="card">
     <div class="oehdr"><div class="oehdr-grid">
-      <label>일자</label><div class="fld"><input value="2026 / 06 / 29" readonly></div>
+      <label>일자</label><div class="fld"><input type="date" value="${OE.date||todayStr()}" onchange="OE.date=this.value" title="00시 이후 방송분은 날짜를 조정하세요"></div>
       <label>고객</label><div class="fld">
         ${OE.cust?`<input value="${OE.cust}" readonly onclick="clearCust()" title="클릭 시 변경" style="cursor:pointer;font-weight:700;color:var(--blue)">`
                  :`<input id="custIn" placeholder="고객명 일부+Enter (예: 박시)" autocomplete="off" oninput="custSearch(this.value)" onkeydown="custKey(event)"><div id="custDrop" class="drop2"></div>`}
@@ -655,7 +655,7 @@ function viewOrder(){
     </div>
   </div>`;
 }
-function payBadge(pw){if(!pw||pw==='-')return '';const cash=pw==='현금';return `<span class="pill ${cash?'p-done':'p-req'}" style="font-size:11px;flex:0 0 auto;white-space:nowrap">💳 ${pw}</span>`;}
+function payBadge(pw){if(!pw||pw==='-')return '';const cash=pw==='현금';return `<span class="pill ${cash?'p-done':'p-req'}" style="font-size:11px;flex:0 0 auto;white-space:nowrap">${cash?'💵':'💳'} ${pw}</span>`;}
 function orderGroups(pay){
   const list=mine(ORD).filter(o=>o.pay===pay),map={};
   list.forEach(o=>{const k=(o.date||'')+'||'+(o.cust||'');(map[k]=map[k]||{date:o.date,cust:o.cust,phone:o.phone,addr:o.addr,staff:o.staff,items:[]}).items.push(o);});
@@ -829,7 +829,7 @@ async function commitOrder(){
   _committing=true;
   const staff=isSeller()?(ME.owner||ME.name):(OE.staff||$('#oeStaff')?.value||'박시연');
   let back=0;const created=[];
-  const today=new Date().toISOString().slice(0,10).replace(/-/g,'/');
+  const today=(OE.date||todayStr()).replace(/-/g,'/');
   OE.lines.forEach(l=>{
     if(l.kind==='ship'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'배송비',disp:l.name,tag:'배송비',color:'',size:'',qty:1,price:l.price,back:false,pay:'unpaid',ship:'miss'};ORD.unshift(o);created.push({o,s:null});return;}
     if(l.kind==='natjang'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'낱장',disp:((l.name||'낱장')+' '+(l.color||'')+' '+(l.size||'')).replace(/ +/g,' ').trim(),tag:l.tag||'낱장',color:l.color||'',size:l.size||'',qty:l.qty,price:l.price,back:false,pay:'unpaid',ship:'miss'};ORD.unshift(o);created.push({o,s:null});return;}
@@ -839,7 +839,7 @@ async function commitOrder(){
   const _cnt=created.length;
   for(const {o,s,dq} of created){await saveOrd(o);if(s)await adjustStockDB(s,-dq);}
   toast('✅ 주문서 저장 ('+_cnt+'건)'+(back?' · 미송 '+back+'건 포함':''));
-  OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();
+  OE={cust:null,phone:'',addr:'',staff:null,lines:[],date:OE.date};render();
   _committing=false;
 }
 
@@ -1817,7 +1817,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
