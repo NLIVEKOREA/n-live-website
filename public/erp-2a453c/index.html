@@ -757,13 +757,14 @@ let OSHEET={idx:-1,remote:false,pay:'현금'};
 function openOrderSheet(idx){const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';OSHEET={idx,remote:false,pay:pw};renderOrderSheet();$('#modal').classList.remove('hide');}
 function orderSheetText(){
   const g=orderGroups('unpaid')[OSHEET.idx];if(!g)return '';
-  const lines=g.items.map(o=>`[${tagShow(o)}] ${prodName(o.code)} ${o.color||''} ${o.size||''} - ${amtOf(o).toLocaleString()}원`.replace(/ +/g,' ').replace(' -',' -'));
-  const goods=g.items.reduce((a,o)=>a+amtOf(o),0);
-  const ship=3500+(OSHEET.remote?3000:0);
+  const items=g.items.filter(o=>o.code!=='배송비');
+  const lines=items.map(o=>`[${tagShow(o)}] ${prodName(o.code)} ${o.color||''} ${o.size||''} - ${amtOf(o).toLocaleString()}원`.replace(/ +/g,' '));
+  const goods=items.reduce((a,o)=>a+amtOf(o),0);
+  const ship=g.items.filter(o=>o.code==='배송비').reduce((a,o)=>a+amtOf(o),0);
   const acct=ACCOUNTS[g.staff]||ACCOUNTS._default;
   let t='구매해주셔서 감사합니다❤️\n\n🛍️ 주문내역\n'+lines.join('\n')+'\n\n';
   t+=`📦 상품 금액: ${goods.toLocaleString()}원\n`;
-  t+=`🚚 배송비: ${ship.toLocaleString()}원${OSHEET.remote?' (도서산간)':''}\n`;
+  t+=`🚚 배송비: ${ship.toLocaleString()}원\n`;
   if(OSHEET.pay==='현금'){
     t+=`💰 입금액: ${(goods+ship).toLocaleString()}원\n`;
     t+=`💳 입금계좌: ${acct}\n\n입금 시 닉네임으로 입금 부탁드립니다.\n입금자명이 닉네임과 다르면 입금자명을 꼭 알려주세요.\n\n`;
@@ -777,7 +778,6 @@ function renderOrderSheet(){
   $('#modalBox').innerHTML=`
     <h3>주문서 (고객 안내문)</h3><div class="ms">고객에게 보낼 안내 문구입니다. 옵션 바꾸면 자동 갱신 · 수정 후 복사해 전달하세요.</div>
     <div style="display:flex;gap:14px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
-      <label style="font-size:12px;font-weight:600"><input type="checkbox" ${OSHEET.remote?'checked':''} onchange="OSHEET.remote=this.checked;renderOrderSheet()"> 도서산간(+3,000)</label>
       <span style="font-size:12px;font-weight:600">결제수단</span>
       <select onchange="OSHEET.pay=this.value;renderOrderSheet()" style="padding:6px;width:80px">
         <option ${OSHEET.pay==='현금'?'selected':''}>현금</option>
