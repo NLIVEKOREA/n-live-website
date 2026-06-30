@@ -720,8 +720,20 @@ function paidCards(){
   if(gs.length>show.length)out+=`<div class="muted" style="padding:8px;font-size:12px">… 외 ${gs.length-show.length}건</div>`;
   return out;
 }
-async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';g.items.forEach(o=>{o.pay='paid';o.payway=pw;});CDATE=(g.date||'').replace(/\//g,'-').slice(0,10)||CDATE;CQ='';toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');render();for(const o of g.items)await saveOrd(o);}
-async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(!confirm('입금확인을 취소하시겠습니까?\n\n'+g.cust+' '+g.items.length+'건이 미결제 상태로 돌아갑니다.'))return;g.items.forEach(o=>{o.pay='unpaid';});toast('↩ 입금확인 취소 → 미결제로 복구: '+g.cust);render();for(const o of g.items)await saveOrd(o);}
+async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';
+  const prev=g.items.map(o=>({pay:o.pay,payway:o.payway}));
+  g.items.forEach(o=>{o.pay='paid';o.payway=pw;});
+  let ok=true;for(const o of g.items){if(await saveOrd(o)===false)ok=false;}
+  if(ok){CDATE=(g.date||'').replace(/\//g,'-').slice(0,10)||CDATE;CQ='';toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');}
+  else{g.items.forEach((o,i)=>{o.pay=prev[i].pay;o.payway=prev[i].payway;});toast('⚠️ 저장 실패 — 변경이 취소됐어요. 다시 시도하세요');}
+  render();}
+async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(!confirm('입금확인을 취소하시겠습니까?\n\n'+g.cust+' '+g.items.length+'건이 미결제 상태로 돌아갑니다.'))return;
+  const prev=g.items.map(o=>o.pay);
+  g.items.forEach(o=>{o.pay='unpaid';});
+  let ok=true;for(const o of g.items){if(await saveOrd(o)===false)ok=false;}
+  if(ok)toast('↩ 입금확인 취소 → 미결제로 복구: '+g.cust);
+  else{g.items.forEach((o,i)=>{o.pay=prev[i];});toast('⚠️ 저장 실패 — 다시 시도하세요');}
+  render();}
 async function editOrderGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;
   if(!confirm("'"+g.cust+"' 주문을 주문서입력으로 불러옵니다.\n품목을 추가/삭제한 뒤 [저장]하면 새로 반영됩니다."))return;
   OE={cust:g.cust,phone:g.phone||'',addr:g.addr||'',staff:g.staff||null,
@@ -998,7 +1010,8 @@ function renderSalePop(){const g=curGroups()[SALEPOP.gi];if(!g)return;$('#modalB
   $('#modal').classList.remove('hide');}
 const SHIPCHK=new Set();
 function progOf(o){return o.prog||(o.back?'미송':'미포장');}
-async function setProg(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;o.prog=v;if(v==='미송'){o.back=true;o.req='미송';}else{if(o.back)o.back=false;if(o.req==='미송')o.req='출고요청';}render();await saveOrd(o);}
+async function setProg(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev={prog:o.prog,back:o.back,req:o.req};o.prog=v;if(v==='미송'){o.back=true;o.req='미송';}else{if(o.back)o.back=false;if(o.req==='미송')o.req='출고요청';}
+  if(await saveOrd(o)===false){Object.assign(o,prev);toast('⚠️ 저장 실패 — 다시 시도하세요');}render();}
 function shipChk(id,c){if(c)SHIPCHK.add(id);else SHIPCHK.delete(id);}
 function openCustomers(){
   const list=mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done'&&(o.req==='미송'||o.req==='출고요청'||o.req==='합배요청')),m={};
@@ -1045,12 +1058,23 @@ function manageCards(list,cat){
 function shipToggle(id){if(SHIPCHK.has(id))SHIPCHK.delete(id);else SHIPCHK.add(id);render();}
 async function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];if(!c)return;
   const trk=($('#trk_wait_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
-  const _td=new Date().toISOString().slice(0,10);c.lines.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);render();for(const o of c.lines)await saveOrd(o);}
+  const _td=new Date().toISOString().slice(0,10);
+  const prev=c.lines.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
+  c.lines.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
+  let ok=true;for(const o of c.lines){if(await saveOrd(o)===false)ok=false;}
+  if(ok)toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);
+  else{c.lines.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
+  render();}
 async function shipChecked(cat,i){const c=openCustomers().filter(x=>x.cat===cat)[i];if(!c)return;
   const sel=c.lines.filter(l=>SHIPCHK.has(l.id));if(!sel.length){toast('출고할 상품을 체크하세요');return;}
   const trk=($('#trk_'+cat+'_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
-  const _td=new Date().toISOString().slice(0,10);sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;SHIPCHK.delete(o.id);});
-  toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);render();for(const o of sel)await saveOrd(o);}
+  const _td=new Date().toISOString().slice(0,10);
+  const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
+  sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
+  let ok=true;for(const o of sel){if(await saveOrd(o)===false)ok=false;}
+  if(ok){sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);}
+  else{sel.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
+  render();}
 function openCustPopup(cat,i){CUSTPOP={cat,i};render();}
 function closeCustPopup(){CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();}
 function renderCustPop(){$('#modalBox').className='modal-box modal-cust';
@@ -1081,9 +1105,13 @@ async function shipPopAction(){
   const trk=($('#ptrk')?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const sel=cat==='wait'?c.lines:c.lines.filter(l=>SHIPCHK.has(l.id));
   if(!sel.length){toast('출고할 상품을 체크하세요');return;}
-  const _td=new Date().toISOString().slice(0,10);sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;SHIPCHK.delete(o.id);});
-  toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);
-  CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();for(const o of sel)await saveOrd(o);
+  const _td=new Date().toISOString().slice(0,10);
+  const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
+  sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
+  let ok=true;for(const o of sel){if(await saveOrd(o)===false)ok=false;}
+  if(ok){sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}
+  else{sel.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
+  render();
 }
 function setDonePeriod(k){DONEPERIOD=k;render();}
 function shipTabDone(){
