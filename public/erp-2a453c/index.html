@@ -1565,10 +1565,11 @@ function viewUsers(){
     <div class="note">전체=운영팀 / 물류범위=출고·재고·사입처 / 본인자료만=셀러·보조.</div>
   </div>
   <div class="card"><div class="card-h"><h2>사원 목록 (${USERS.length}명)</h2></div>
-    <table><thead><tr><th>이름</th><th>아이디</th><th>비밀번호</th><th>팀</th><th>역할</th><th>권한범위</th><th>담당셀러</th></tr></thead><tbody>
-    ${USERS.map(u=>`<tr><td><b>${u.name}</b></td><td class="barcode">${u.id}</td><td class="muted">••••</td>
+    <table><thead><tr><th>이름</th><th>아이디</th><th>비밀번호</th><th>팀</th><th>역할</th><th>권한범위</th><th>담당셀러</th><th style="width:92px"></th></tr></thead><tbody>
+    ${USERS.map((u,i)=>`<tr><td><b>${esc(u.name)}</b></td><td class="barcode">${esc(u.id)}</td><td class="muted">••••</td>
       <td>${u.team}</td><td>${u.role}</td><td>${({all:'전체',logi:'물류범위',self:'본인자료만'})[u.scope]}</td>
-      <td class="muted">${u.owner||'-'}</td></tr>`).join('')}
+      <td class="muted">${u.owner||'-'}</td>
+      <td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editUser(${i})">수정</button><button class="ico-btn" title="삭제" onclick="delUser(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join('')}
     </tbody></table>
   </div>`;
 }
@@ -1622,7 +1623,24 @@ function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value.trim(
   const team=$('#f_team').value,scope=$('#f_scope').value,owner=$('#f_owner').value.trim();
   const roleMap={운영팀:'운영',물류팀:'물류',셀러팀:(scope==='self'&&owner)?'보조':'셀러'};
   USERS.push({name,id,pw,team,role:roleMap[team],scope,owner:owner||undefined});
+  ['f_name','f_id','f_pw','f_owner'].forEach(x=>{const el=$('#'+x);if(el)el.value='';});
   toast('✅ 사원 등록: '+name+' (아이디 '+id+')');rebuildSwitcher();render();}
+function editUser(i){const u=USERS[i];if(!u)return;
+  $('#modalBox').innerHTML=`<h3>사원 정보 수정</h3><div class="ms">이름·아이디·권한 등을 수정합니다. (로그인 계정 비밀번호 변경은 Supabase에서 별도)</div>
+    <div class="modal-row"><div><label>이름</label><input id="eu_name" value="${esc(u.name)}"></div><div><label>아이디</label><input id="eu_id" value="${esc(u.id)}"></div></div>
+    <label>비밀번호</label><input id="eu_pw" value="${esc(u.pw||'')}">
+    <div class="modal-row"><div><label>팀</label><select id="eu_team">${['운영팀','물류팀','셀러팀'].map(t=>`<option ${u.team===t?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div><label>권한범위</label><select id="eu_scope">${[['all','전체권한'],['logi','물류범위'],['self','본인자료만']].map(([v,l])=>`<option value="${v}" ${u.scope===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
+    <label>담당셀러(보조만)</label><input id="eu_owner" value="${esc(u.owner||'')}">
+    <div class="modal-foot"><button class="btn red ghost" onclick="delUser(${i})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveUser(${i})">저장</button></div>`;
+  $('#modal').classList.remove('hide');}
+function saveUser(i){const u=USERS[i];if(!u)return;const name=$('#eu_name').value.trim(),id=$('#eu_id').value.trim();
+  if(!name||!id){toast('이름·아이디는 필수');return;}if(USERS.some((x,j)=>j!==i&&x.id===id)){toast('❌ 이미 있는 아이디');return;}
+  const team=$('#eu_team').value,scope=$('#eu_scope').value,owner=$('#eu_owner').value.trim();
+  const roleMap={운영팀:'운영',물류팀:'물류',셀러팀:(scope==='self'&&owner)?'보조':'셀러'};
+  Object.assign(u,{name,id,pw:$('#eu_pw').value.trim(),team,role:roleMap[team],scope,owner:owner||undefined});
+  closeModal();toast('✅ 수정: '+name);rebuildSwitcher();render();}
+function delUser(i){const u=USERS[i];if(!u)return;if(ME&&ME.id===u.id){toast('❌ 현재 로그인 중인 본인 계정은 삭제할 수 없어요');return;}if(!confirm(`'${u.name}'(${u.id}) 사원을 목록에서 삭제할까요?`))return;USERS.splice(i,1);closeModal();toast('🗑️ 삭제: '+u.name);rebuildSwitcher();render();}
 
 /* ===== 로그인 ===== */
 async function doLogin(){
