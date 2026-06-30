@@ -1149,6 +1149,11 @@ function rxFlow(t){return t==='exchange'?['req','recall','gotback','reship','don
 function faultOf(reason){const r=RX_REASONS.find(x=>x.l===reason);return r?r.f:'무과실';}
 function faulteeOf(o){return o.fault==='셀러'?(o.staff||'담당셀러'):o.fault==='물류'?'물류팀':'무과실';}
 function rxStockFor(o){return STOCK.find(s=>s.code===o.code&&(s.color||'')===(o.color||'')&&(s.size||'')===(o.size||''));}
+/* 단계별 재고효과: sign=+1 진입 적용, sign=-1 역산(되돌리기) */
+async function rxStepStockEffect(o,step,sign){const q=o.qty||1;
+  if(step==='gotback'){const s=rxStockFor(o);if(s){s.qty=(s.qty||0)+sign*q;await saveStock(s);return `${o.code} 재고 ${sign>0?'+':'−'}${q}`;}return '';}
+  if(step==='reship'){const nw=o.rxnew||{};const s=STOCK.find(x=>x.code===nw.code&&(x.color||'')===(nw.color||'')&&(x.size||'')===(nw.size||''));if(s){s.qty=(s.qty||0)-sign*q;await saveStock(s);return `${nw.code||'새상품'} 재고 ${sign>0?'−':'+'}${q}`;}return '';}
+  return '';}
 let RXDRAFT=null,RXVIEWTAB='active';
 function rxOpen(id,type){const o=ORD.find(x=>x.id===id);if(!o)return;RXDRAFT={id,type,reason:RX_REASONS[0].l,fault:RX_REASONS[0].f};renderRxModal(o);}
 function rxPickReason(v){RXDRAFT.reason=v;RXDRAFT.fault=faultOf(v);renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}
@@ -1166,20 +1171,48 @@ async function rxCommit(){const d=RXDRAFT;if(!d)return;const o=ORD.find(x=>x.id=
   o.rxtype=d.type;o.rxstat='req';o.rxreason=d.reason;o.fault=d.fault;o.rxdate=todayStr();
   if(d.type==='exchange')o.rxnew={tag:($('#rx_tag').value||'').trim(),code:($('#rx_code').value||'').trim(),name:($('#rx_name').value||'').trim(),color:($('#rx_color').value||'').trim(),size:($('#rx_size').value||'').trim()};
   closeModal();RXDRAFT=null;toast(`${RX_TYPES[o.rxtype].l} 접수됨 → [교환·반품] 메뉴에서 처리`);render();await saveOrd(o);}
+const RX_NEXTL={recall:'🚚 회수신청 완료',gotback:'📦 회수입고',reship:'📤 재발송',refunded:'💸 환불완료',done:'✅ 완료처리'};
 async function rxNext(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];if(!next)return;
-  if(next==='recall')toast('🚚 택배사 회수신청 완료');
-  else if(next==='gotback'){const s=rxStockFor(o);if(s){s.qty=(s.qty||0)+(o.qty||1);await saveStock(s);toast(`📦 회수입고 · ${o.code} 재고 +${o.qty||1}`);}else toast('회수입고 (해당 SKU 미발견 — 재고 수동확인)');}
-  else if(next==='reship'){const nw=o.rxnew||{};const s=STOCK.find(x=>x.code===nw.code&&(x.color||'')===(nw.color||'')&&(x.size||'')===(nw.size||''));if(s){s.qty=(s.qty||0)-(o.qty||1);await saveStock(s);toast(`📤 재발송 · ${nw.code||'새상품'} 재고 −${o.qty||1}`);}else toast('재발송 (새상품 재고 미발견 — 수동확인)');}
-  else if(next==='refunded')toast('💸 환불완료 처리');
+  const eff=await rxStepStockEffect(o,next,1);
   o.rxstat=next;if(next==='done')o.rxdone=todayStr();
-  render();await saveOrd(o);}
-async function rxAbort(id){const o=ORD.find(x=>x.id===id);if(!o)return;if(['gotback','reship','refunded'].includes(o.rxstat)&&!confirm('이미 회수입고/처리가 진행된 건입니다. 접수취소해도 재고는 자동복원되지 않습니다(수동 조정 필요). 계속할까요?'))return;
-  ['rxtype','rxstat','rxreason','fault','rxnew','rxdate','rxdone'].forEach(k=>delete o[k]);toast('접수 취소됨');render();await saveOrd(o);}
+  toast((RX_NEXTL[next]||'진행')+(eff?' · '+eff:''));render();await saveOrd(o);}
+async function rxPrev(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);
+  if(i<=0){toast('첫 단계예요 — 취소하려면 [삭제]를 누르세요');return;}
+  const cur=o.rxstat,prev=flow[i-1];
+  const eff=await rxStepStockEffect(o,cur,-1);   // 현재 단계 효과 역산
+  if(cur==='done')delete o.rxdone;
+  o.rxstat=prev;
+  toast('◀ '+RX_STEPL[prev]+' 단계로 되돌림'+(eff?' · '+eff+' 원복':''));render();await saveOrd(o);}
+async function rxDelete(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);
+  const hadStock=flow.slice(1,i+1).some(s=>s==='gotback'||s==='reship');
+  if(!confirm(`이 ${RX_TYPES[o.rxtype].l} 건을 삭제하고 원래 출고완료 상태로 되돌릴까요?${hadStock?'\n진행 중 변경된 재고도 자동 원복됩니다.':''}`))return;
+  for(let k=i;k>=1;k--){await rxStepStockEffect(o,flow[k],-1);}   // 진입했던 단계 전부 역산
+  ['rxtype','rxstat','rxreason','fault','rxnew','rxdate','rxdone'].forEach(k=>delete o[k]);
+  toast('🗑️ 취소 · 원래 상태로 복구');render();await saveOrd(o);}
+function rxEditOpen(id){const o=ORD.find(x=>x.id===id);if(!o)return;
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">✏️ ${RX_TYPES[o.rxtype].l} 정보 수정</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+    <div class="note" style="margin-bottom:12px"><b>${esc(o.cust)}</b> · ${itemLabel(o)}</div>
+    <label>사유</label><select id="rxe_reason" onchange="rxeReasonChg()" style="width:100%;padding:10px;border-radius:9px;font-weight:700;font-family:inherit">${RX_REASONS.map(r=>`<option ${o.rxreason===r.l?'selected':''}>${r.l}</option>`).join('')}</select>
+    <label>귀책</label><select id="rxe_fault" style="width:100%;padding:10px;border-radius:9px;font-weight:700;font-family:inherit">${['셀러','물류','무과실'].map(f=>`<option ${o.fault===f?'selected':''}>${f}</option>`).join('')}</select>
+    ${o.rxtype==='exchange'?`<div style="border-top:1px solid var(--line);margin-top:12px;padding-top:10px"><div style="font-weight:700;margin-bottom:6px">🔄 교환 새상품 ${['gotback','reship','done'].includes(o.rxstat)?'<span class="muted" style="font-size:11px;font-weight:400">※ 이미 재발송했다면 재고는 수동 확인</span>':''}</div><div class="toolbar" style="flex-wrap:wrap;gap:6px"><input id="rxe_tag" placeholder="번호표" value="${esc((o.rxnew||{}).tag||'')}" style="width:78px"><input id="rxe_code" placeholder="품목코드" value="${esc((o.rxnew||{}).code||'')}" style="width:118px"><input id="rxe_name" placeholder="품목명" value="${esc((o.rxnew||{}).name||'')}" style="width:128px"><input id="rxe_color" placeholder="색상" value="${esc((o.rxnew||{}).color||'')}" style="width:74px"><input id="rxe_size" placeholder="사이즈" value="${esc((o.rxnew||{}).size||'')}" style="width:64px"></div></div>`:''}
+    <div class="modal-foot" style="margin-top:16px"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="rxEditSave(${id})">저장</button></div>`;
+  $('#modal').classList.remove('hide');}
+function rxeReasonChg(){const r=RX_REASONS.find(x=>x.l===$('#rxe_reason').value);if(r)$('#rxe_fault').value=r.f;}
+async function rxEditSave(id){const o=ORD.find(x=>x.id===id);if(!o)return;
+  o.rxreason=$('#rxe_reason').value;o.fault=$('#rxe_fault').value;
+  if(o.rxtype==='exchange')o.rxnew={tag:($('#rxe_tag').value||'').trim(),code:($('#rxe_code').value||'').trim(),name:($('#rxe_name').value||'').trim(),color:($('#rxe_color').value||'').trim(),size:($('#rxe_size').value||'').trim()};
+  closeModal();toast('✅ 정보 수정 완료');render();await saveOrd(o);}
 function rxStepBar(o){const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);return flow.map((s,si)=>{const c=si<i?'background:#dcfce7;color:#166534':si===i?'background:#dbeafe;color:#2563eb':'background:#f1f5f9;color:#94a3b8';return `<span style="display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;${c}">${si<i?'✓ ':''}${RX_STEPL[s]}</span>`;}).join('<span style="color:#cbd5e1;margin:0 2px">›</span>');}
 function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];const nextL={recall:'택배 회수신청',gotback:`회수입고 (재고 +${o.qty||1})`,reship:`새상품 재발송 (재고 −${o.qty||1})`,refunded:'환불완료',done:'완료처리'};
   return `<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">${t.ic} ${t.l} · ${o.cust} <span class="muted" style="font-size:12px;font-weight:400">${o.date||''} · 담당 ${o.staff||'-'}</span></h2><span class="pill ${o.fault==='무과실'?'':'p-low'}">${o.fault==='무과실'?'고객귀책':'귀책: '+faulteeOf(o)}</span></div>
   <table><tbody><tr><td class="muted" style="width:64px">상품</td><td>${itemLabel(o)} <span class="muted">×${o.qty} · ${won(amtOf(o))}</span></td></tr><tr><td class="muted">사유</td><td>${o.rxreason||'-'}</td></tr>${o.rxtype==='exchange'&&o.rxnew?`<tr><td class="muted">교환→</td><td>${o.rxnew.tag?'['+o.rxnew.tag+'] ':''}${o.rxnew.name||o.rxnew.code||'-'} ${o.rxnew.color||''} ${o.rxnew.size||''}</td></tr>`:''}<tr><td class="muted">진행</td><td style="line-height:2.2">${rxStepBar(o)}</td></tr></tbody></table>
-  <div style="margin-top:10px;display:flex;gap:8px">${next?`<button class="btn" onclick="rxNext(${o.id})">▶ ${nextL[next]}</button>`:''}${o.rxstat!=='done'?`<button class="btn red ghost sm" onclick="rxAbort(${o.id})">접수취소</button>`:`<span class="muted" style="align-self:center">✅ 완료 ${o.rxdone||''}</span>`}</div></div>`;}
+  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    ${next?`<button class="btn" onclick="rxNext(${o.id})">▶ ${nextL[next]}</button>`:''}
+    ${i>0?`<button class="btn gray sm" onclick="rxPrev(${o.id})">◀ 이전단계</button>`:''}
+    <button class="btn ghost sm" onclick="rxEditOpen(${o.id})">✏️ 수정</button>
+    <button class="btn red ghost sm" onclick="rxDelete(${o.id})">🗑️ 삭제</button>
+    ${o.rxstat==='done'?`<span class="muted" style="margin-left:auto">✅ 완료 ${o.rxdone||''}</span>`:''}
+  </div></div>`;}
 function rxFaultBoard(all){const m={};all.filter(o=>o.fault&&o.fault!=='무과실').forEach(o=>{const k=faulteeOf(o);m[k]=m[k]||{n:0,reasons:{}};m[k].n++;m[k].reasons[o.rxreason||'기타']=(m[k].reasons[o.rxreason||'기타']||0)+1;});const keys=Object.keys(m).sort((a,b)=>m[b].n-m[a].n);
   if(!keys.length)return `<div class="card"><div class="muted" style="padding:16px">기록된 과실(귀책)이 없습니다 · 회사귀책 사유로 접수된 건만 집계됩니다</div></div>`;
   return `<div class="card"><div class="card-h"><h2 style="margin:0">⚠️ 귀책 현황 <span class="muted" style="font-size:12px;font-weight:400">회사귀책 건만 · 셀러/물류별 누적</span></h2></div><table><thead><tr><th>대상</th><th class="num-cell">과실</th><th>주요 사유</th></tr></thead><tbody>${keys.map(k=>`<tr><td><b>${k}</b></td><td class="num-cell"><span class="pill p-low">${m[k].n}건</span></td><td class="muted">${Object.entries(m[k].reasons).map(([r,c])=>r+' '+c).join(' · ')}</td></tr>`).join('')}</tbody></table></div>`;}
