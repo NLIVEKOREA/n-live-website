@@ -393,7 +393,7 @@ async function openStockLog(id,name){$('#modalBox').innerHTML=`<div style="displ
     el.innerHTML=rows.length?`<table><thead><tr><th>일시</th><th>구분</th><th class="num-cell">증감</th><th>담당</th><th>메모</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="muted" style="font-size:12px">${String(r.at||'').slice(0,16).replace('T',' ')}</td><td><span class="pill ${r.delta>0?'p-done':'p-low'}">${esc(r.reason||'')}</span></td><td class="num-cell" style="font-weight:700;color:${r.delta>0?'#16a34a':'#dc2626'}">${r.delta>0?'+':''}${r.delta}</td><td class="muted">${esc(r.staff||'-')}</td><td class="muted" style="font-size:12px">${esc(r.ref||'')}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:10px">아직 변동 기록이 없습니다. 지금부터 판매·교환·환불·조정이 자동 기록됩니다.</div>';
   }catch(e){$('#slBody').innerHTML='<div class="muted" style="padding:10px">불러오기 실패 (잠시 후 다시)</div>';}}
 async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error){console.error('updStock',error);toast('⚠️ 품목 저장 실패 — 다시 시도하세요');}}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error){console.error('insStock',error);toast('⚠️ 품목 등록 실패 — 다시 시도하세요');}if(data)s.id=data.id;}if(s.id&&s.in_price!=null){try{const {error}=await SB.from('stock_cost').upsert({stock_id:s.id,in_price:s.in_price||0});if(error)console.error('cost',error);}catch(e){console.error('cost',e);}}}catch(e){console.error(e);toast('⚠️ 품목 저장 오류');}}
-async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null,zip:c.zip||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error){console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}else{row.owner=(window.ME&&(ME.owner||ME.name))||null;const {data,error}=await SB.from('customers').insert(row).select('id').single();if(error){console.error('insCust',error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(data){c.id=data.id;c.owner=row.owner;}}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
+async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null,zip:c.zip||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error){console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}else{row.owner=((typeof ME!=='undefined'&&ME&&(ME.owner||ME.name)))||null;row.created_at=new Date().toISOString();let res=await SB.from('customers').insert(row).select('id,created_at').single();if(res.error&&/created_at/i.test(res.error.message||'')){delete row.created_at;res=await SB.from('customers').insert(row).select('id').single();}if(res.error){console.error('insCust',res.error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(res.data){c.id=res.data.id;c.owner=row.owner;c.created_at=res.data.created_at;}}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
 async function delCustDB(c){try{if(c.id){const {error}=await SB.from('customers').delete().eq('id',c.id);if(error){console.error('delCust',error);toast('⚠️ 고객 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 async function delStockDB(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').delete().eq('id',s.id);if(error){console.error('delStock',error);toast('⚠️ 품목 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 /* ===== 기간 헬퍼 (당일 기본) ===== */
@@ -591,6 +591,26 @@ function _topProd(key,n){const m={};mine(ORD).filter(o=>o.pay==='paid'&&_inRange
 function _lowProd(n){const sold={};mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,'month')).forEach(o=>{sold[o.code]=(sold[o.code]||0)+(o.qty||0);});const bc={};STOCK.forEach(s=>{if(s.code==='배송비')return;if(!bc[s.code])bc[s.code]={name:s.name,qty:0};bc[s.code].qty+=s.qty||0;});return Object.entries(bc).map(e=>({code:e[0],name:e[1].name,stock:e[1].qty,sold:sold[e[0]]||0})).filter(x=>x.stock>=10&&x.sold<=2).sort((a,b)=>b.stock-a.stock).slice(0,n||6);}
 function _salesTrend(n){const byd={};mine(ORD).filter(o=>o.pay==='paid').forEach(o=>{const d=(o.date||'').replace(/\//g,'-');if(!d)return;if(!byd[d])byd[d]={s:0,set:new Set()};byd[d].s+=amtOf(o);if(o.cust)byd[d].set.add(o.cust);});return Object.entries(byd).sort((a,b)=>a[0].localeCompare(b[0])).slice(-(n||7)).map(e=>({date:e[0].slice(5),sales:e[1].s,avg:e[1].set.size?Math.round(e[1].s/e[1].set.size):0}));}
 function _settle(){return {amt:Math.round(_salesP('month')*0.1),day:'매월 07일'};}
+/* 신규고객 통계·위젯 (customers.created_at 기준) */
+function _newCustList(){const ym=periodRange('month').from.slice(0,7);return CUSTOMERS.filter(c=>c.created_at&&String(c.created_at).slice(0,7)===ym);}
+function _newTrend(n){const byd={};CUSTOMERS.forEach(c=>{if(!c.created_at)return;const d=String(c.created_at).slice(0,10);byd[d]=(byd[d]||0)+1;});return Object.entries(byd).sort((a,b)=>a[0].localeCompare(b[0])).slice(-(n||14));}
+function wNewCust(){const nc=_newCustList();const rows=nc.map(c=>{const ords=mine(ORD).filter(o=>o.cust===c.name&&o.pay==='paid'&&_isGoods(o));const amt=ords.reduce((a,o)=>a+amtOf(o),0);return {name:c.name,items:ords.length,amt:amt,date:String(c.created_at||'').slice(5,10)};}).sort((a,b)=>b.amt-a.amt);const tr=_newTrend(14),max=Math.max(1,...tr.map(t=>t[1]));const bars=tr.map(t=>`<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:100%"><div style="font-size:9px;color:#475569;font-weight:700">${t[1]}</div><div style="width:60%;max-width:18px;background:#2563eb;border-radius:4px 4px 0 0;height:${Math.max(4,Math.round(t[1]/max*100))}%"></div><div style="font-size:8px;color:#94a3b8">${t[0].slice(5)}</div></div>`).join('');return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>신규 고객 <span class="muted" style="font-size:11px">이번달 ${nc.length}명</span></h2><span class="more" onclick="go('cust')">더보기</span></div>${tr.length?`<div style="display:flex;align-items:flex-end;gap:4px;height:66px;margin-bottom:10px">${bars}</div>`:'<div class="muted" style="font-size:11px;margin-bottom:8px">신규 가입 기록이 아직 없어요 (지금부터 자동 집계)</div>'}<table><thead><tr><th>신규고객</th><th>가입</th><th style="text-align:right">주문</th><th style="text-align:right">매출</th></tr></thead><tbody>${rows.length?rows.slice(0,8).map(r=>`<tr><td><b>${esc(r.name)}</b></td><td class="muted">${r.date}</td><td style="text-align:right">${r.items}건</td><td style="text-align:right">${won(r.amt)}</td></tr>`).join(''):'<tr><td colspan="4" class="muted">이번달 신규 고객 없음</td></tr>'}</tbody></table></div>`;}
+/* 미송 → 동대문 발주서: 당일 미송품목을 거래처(사입처)별로 모아 카톡 복사용 텍스트 생성 */
+function misongPOText(){
+  const items=mine(ORD).filter(o=>o.back&&o.code!=='배송비'&&o.code!=='낱장');
+  if(!items.length)return '당일 미송 품목이 없습니다.';
+  const byV={};let total=0,cnt=0;
+  items.forEach(o=>{const s=STOCK.find(x=>x.code===o.code);const v=(s&&s.vendor)||'사입처 미지정';if(!byV[v])byV[v]=[];byV[v].push(o);});
+  let txt='[동대문 발주 · '+todayStr()+']\n';
+  Object.keys(byV).sort().forEach(v=>{txt+='\n■ '+v+'\n';let sub=0;byV[v].forEach(o=>{const amt=amtOf(o);sub+=amt;total+=amt;cnt+=o.qty||0;txt+='· '+(o.cust||'')+' / '+(o.disp||prodName(o.code))+' / '+(o.color||'-')+' / '+(o.size||'-')+' / '+(o.qty||0)+'개 / '+won(amt)+'\n';});txt+='  ─ 소계 '+won(sub)+'\n';});
+  txt+='\n════════\n총 '+cnt+'개 · 합계 '+won(total);
+  return txt;
+}
+function openMisongPO(){const txt=misongPOText();
+  $('#modalBox').innerHTML=`<h3>미송 → 동대문 발주서</h3><div class="ms">당일 미송 품목을 거래처(사입처)별로 모았어요. [전체 복사] 후 카톡 거래처방에 붙여넣으세요. <span class="muted">거래처는 상품의 사입처 기준입니다.</span></div>
+    <textarea id="poTxt" style="width:100%;height:300px;font-family:'Courier New',monospace;font-size:12px;line-height:1.5;white-space:pre;padding:11px;border:1px solid var(--line);border-radius:9px;background:#fbfcff" readonly>${esc(txt)}</textarea>
+    <div class="modal-foot"><button class="btn gray" onclick="closeModal()">닫기</button><button class="btn" onclick="(function(){const t=document.getElementById('poTxt');t.select();navigator.clipboard.writeText(t.value).then(function(){toast('📋 복사 완료 — 카톡에 붙여넣으세요')}).catch(function(){document.execCommand('copy');toast('📋 복사됨')});})()">📋 전체 복사</button></div>`;
+  $('#modal').classList.remove('hide');}
 function _salesPrev(key){const cur=periodRange(key);let from,to;const dd=s=>new Date(s+'T00:00:00');
   if(key==='today'){const x=dd(cur.from);x.setDate(x.getDate()-1);from=to=x.toISOString().slice(0,10);}
   else if(key==='week'){const f=dd(cur.from);f.setDate(f.getDate()-7);const t=dd(cur.from);t.setDate(t.getDate()-1);from=f.toISOString().slice(0,10);to=t.toISOString().slice(0,10);}
@@ -681,7 +701,7 @@ return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>등
 function wInflow(){return wPlaceholder('유입 채널','어느 SNS가 매출로 이어지는지 분석 (데이터 연동 준비중)','ti-route');}
 function wMsgReact(){return wPlaceholder('고객 메시지 반응','발송·열람·클릭·전환율 (메시지 시스템 연동 준비중)','ti-message-2');}
 function wSchedule(){return wPlaceholder('방송 스케줄','주간 방송일정·방송실·다른 셀러 조회 (다음 업데이트에서 구현)','ti-calendar-event');}
-const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',sales_avg:'평균 객단가',settle:'정산 예정',repurchase:'재구매율',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',ship_fee:'배송비 집계(당월)',misong:'미송 대기',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',vip:'단골/VIP 고객',taste:'고객 구매성향',topprod:'인기 상품',lowprod:'관리 필요 상품',bcast:'방송 성과',goal:'목표 달성률',alerts:'알림/체크 필요',schedule:'방송 스케줄',sns:'등록 SNS',inflow:'유입 채널',msg_react:'메시지 반응',quick:'업무 바로가기'};
+const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',sales_avg:'평균 객단가',settle:'정산 예정',repurchase:'재구매율',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',ship_fee:'배송비 집계(당월)',misong:'미송 대기',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',vip:'단골/VIP 고객',taste:'고객 구매성향',topprod:'인기 상품',lowprod:'관리 필요 상품',bcast:'방송 성과',goal:'목표 달성률',alerts:'알림/체크 필요',schedule:'방송 스케줄',sns:'등록 SNS',inflow:'유입 채널',msg_react:'메시지 반응',new_cust:'신규 고객',quick:'업무 바로가기'};
 function wRender(id){const today=new Date().toISOString().slice(0,10);
   switch(id){
     case 'sales_today':return numCard('당일 매출',won(_salesP('today')),'주문 '+_cntP('today')+'건','g','ti-cash',null,_delta('today'));
@@ -693,7 +713,7 @@ function wRender(id){const today=new Date().toISOString().slice(0,10);
     case 'done_today':return numCard('당일 출고완료',mine(ORD).filter(o=>o.ship==='done'&&o.shipped_date===today).length,'오늘','g','ti-circle-check',"go('ship')");
     case 'rx':return numCard('교환/반품',mine(ORD).filter(o=>o.req==='교환요청'||o.req==='환불요청').length,'요청','r','ti-refresh',"go('sales')");
     case 'ship_fee':return numCard('배송비(당월)',won(_shipFeeMonth()),'집계','p','ti-package');
-    case 'misong':return listCard('미송 대기',mine(ORD).filter(o=>o.back).slice(0,8).map(o=>[o.cust,o.disp||prodName(o.code)]),"go('ship')");
+    case 'misong':{const ms=mine(ORD).filter(o=>o.back&&o.code!=='배송비');return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>미송 대기 <span class="muted" style="font-size:11px">${ms.length}건</span></h2><button class="btn sm" onclick="openMisongPO()">📋 동대문 발주서</button></div><table><tbody>${ms.length?ms.slice(0,10).map(o=>`<tr><td><b>${esc(o.cust||'')}</b></td><td>${esc(o.disp||prodName(o.code))}</td><td class="muted" style="text-align:right;white-space:nowrap">${o.color||''} ${o.size||''} · ${o.qty||0}개</td></tr>`).join(''):'<tr><td class="muted">미송 없음 👍</td></tr>'}</tbody></table></div>`;}
     case 'by_staff':return listCard('셀러별 매출(당월)',_byStaffRows(),"go('revenue')");
     case 'by_prod':return listCard('베스트셀러(당월)',_byProdRows(),"go('prod')");
     case 'my_sales':return listCard('내 판매상품(당월)',_byProdRows(),"go('prod')");
@@ -711,6 +731,7 @@ function wRender(id){const today=new Date().toISOString().slice(0,10);
     case 'sns':return wSns();
     case 'inflow':return wInflow();
     case 'msg_react':return wMsgReact();
+    case 'new_cust':return wNewCust();
     case 'quick':return quickCard();
     default:return '';
   }
@@ -743,7 +764,7 @@ function renderWidgetEdit(){const a=getUserWidgets();$('#modalBox').className='m
 const WIDGET_SIZE={
  sales_today:{w:2,h:3},sales_week:{w:2,h:3},sales_month:{w:2,h:3},sales_total:{w:2,h:3},sales_avg:{w:2,h:3},settle:{w:2,h:3},repurchase:{w:2,h:3},unpaid:{w:2,h:3},toship:{w:2,h:3},done_today:{w:2,h:3},rx:{w:2,h:3},ship_fee:{w:2,h:3},
  sns:{w:4,h:5},vip:{w:5,h:6},taste:{w:7,h:5},topprod:{w:5,h:5},bcast:{w:7,h:5},schedule:{w:5,h:4},
- misong:{w:4,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},quick:{w:4,h:3}
+ misong:{w:4,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},new_cust:{w:6,h:5},quick:{w:4,h:3}
 };
 /* 포지션별 기본 레이아웃 — 신규 사용자/미설정 시 오·열 맞춘 기본 배치 (12열) */
 const POS_LAYOUT={
@@ -796,14 +817,13 @@ function viewOrder(){
   <div class="card">
     <div class="oehdr"><div class="oehdr-grid">
       <label>일자</label><div class="fld"><input type="date" value="${OE.date||todayStr()}" onchange="OE.date=this.value" title="00시 이후 방송분은 날짜를 조정하세요"></div>
-      <label>고객</label><div class="fld">
+      <label>고객</label><div class="fld" style="position:relative">
         ${OE.cust?`<input value="${OE.cust}" readonly onclick="clearCust()" title="클릭 시 변경" style="cursor:pointer;font-weight:700;color:var(--blue)">`
-                 :`<input id="custIn" placeholder="고객명 일부+Enter (예: 박시)" autocomplete="off" oninput="custSearch(this.value)" onkeydown="custKey(event)"><div id="custDrop" class="drop2"></div>`}
+                 :`<div style="display:flex;gap:6px"><input id="custIn" placeholder="고객명 일부+Enter (예: 박시)" autocomplete="off" oninput="custSearch(this.value)" onkeydown="custKey(event)" style="flex:1"><button class="btn sm ghost" style="flex:0 0 auto;white-space:nowrap" onclick="openCustModal('')">＋ 신규</button></div><div id="custDrop" class="drop2"></div>`}
       </div>
       <label>담당자</label><div class="fld">${isSeller()?`<input value="${ME.owner}" readonly>`:`<select id="oeStaff" onchange="OE.staff=this.value">${sellers}</select>`}</div>
       <label>연락처</label><div class="fld"><input value="${OE.phone||''}" placeholder="고객 선택 시 자동" readonly></div>
-      <label>우편번호</label><div class="fld"><input id="oeZip" value="${esc(OE.zip||'')}" placeholder="5자리 → 도서산간 자동확인" maxlength="5" onblur="checkIsland(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();checkIsland(this.value);}" style="${OE.island?'border:2px solid var(--amber);background:#fff8ec':''}"></div>
-      <label>주소</label><div class="fld" style="grid-column:span 3"><input value="${esc((OE.addr||'')+(OE.island?'   🏝️ '+OE.island.region+' (도서산간)':''))}" placeholder="고객 선택 시 자동 호출" readonly></div>
+      <label>주소</label><div class="fld" style="grid-column:span 3"><input value="${esc((OE.zip?'['+OE.zip+'] ':'')+(OE.addr||'')+(OE.island?'   🏝️ '+OE.island.region+' (도서산간)':''))}" placeholder="고객 선택 시 자동 (우편번호·주소 함께)" readonly style="${OE.island?'border:1.5px solid var(--amber);background:#fff8ec':''}"></div>
     </div></div>
     <table class="ogrid"><thead><tr>
       <th style="width:32px">No</th><th style="width:78px">번호표</th><th style="width:86px">품목코드</th><th>품목명</th>
@@ -1783,7 +1803,7 @@ async function saveCust(){const name=$('#mc_name').value.trim();if(!name){toast(
   if(CUSTOMERS.some(c=>c.name===name&&(c.phone||'')===phone)){toast('이미 등록된 고객입니다 (이름+연락처 동일)');return;}
   const c={name,phone,addr,zip};CUSTOMERS.push(c);
   closeModal();toast('✅ 고객 등록: '+name);
-  if(VIEW==='order'){OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;}
+  if(VIEW==='order'){OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;OE.zip=c.zip||'';OE.island=islandInfo(OE.zip)||islandByAddr(OE.addr);}
   render();await saveCustDB(c);if(VIEW==='order'&&c.id)OE.custId=c.id;}
 async function delCust(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;if(!confirm(`'${c.name}' 고객을 삭제할까요?\n과거 주문 내역은 닉네임 기준이라 그대로 유지됩니다.`))return;const i=CUSTOMERS.indexOf(c);if(i>=0)CUSTOMERS.splice(i,1);CUSTEDIT=null;closeModal();toast('🗑️ 삭제: '+c.name);render();await delCustDB(c);}
 function prodFormHTML(s){s=s||{};const cat=s.category||'';const showSeason=CAT_HASSEASON(cat);
@@ -1861,7 +1881,7 @@ function viewRevenue(){
     <div class="kpi"><div><div class="lab">${m}총 매출</div><div class="num">${won(total)}</div><div class="sub up">판매 ${paid.length}건</div></div><div class="ic ic-b"><i class="ti ti-cash"></i></div></div>
     <div class="kpi"><div><div class="lab">평균 단가</div><div class="num">${won(paid.length?Math.round(total/paid.length):0)}</div></div><div class="ic ic-p"><i class="ti ti-chart-bar"></i></div></div>
     <div class="kpi"><div><div class="lab">반품/환불</div><div class="num down">${won(retSum)}</div></div><div class="ic ic-r"><i class="ti ti-refresh"></i></div></div>
-    <div class="kpi"><div><div class="lab">${isSeller()?'예상 수당(1.5%)':'순매출'}</div><div class="num ${isSeller()?'up':''}">${isSeller()?'+'+won(Math.round(total*COMM_RATE)):won(total-retSum)}</div></div><div class="ic ic-g"><i class="ti ti-circle-check"></i></div></div>
+    ${isSeller()?(function(){const me=EMPLOYEES.find(x=>x.name===ME.name)||{role:ME.role,name:ME.name};const p=empPay(me);return `<div class="kpi"><div><div class="lab">예상 수당 (기본급+매출 ${p.rate}%)</div><div class="num up">${won(p.total)}</div><div class="sub" style="color:#94a3b8;font-weight:500;margin-top:6px">기본 ${won(p.base)} + 수당 ${won(p.comm)}</div></div><div class="ic ic-g"><i class="ti ti-wallet"></i></div></div>`;})():`<div class="kpi"><div><div class="lab">순매출</div><div class="num">${won(total-retSum)}</div></div><div class="ic ic-g"><i class="ti ti-circle-check"></i></div></div>`}
   </div>
   <div class="card"><div class="card-h"><h2>${isSeller()?'내 판매 내역':'셀러별 매출'}</h2></div>
     <table><thead><tr><th>${isSeller()?'고객':'셀러'}</th><th class="num-cell">매출</th><th style="width:45%">${isSeller()?'품목':'비중'}</th></tr></thead><tbody>
@@ -1874,16 +1894,23 @@ function viewRevenue(){
 }
 
 /* ===== 직원·급여 / 사원관리 ===== */
-function viewEmp(){
+/* 급여 — 사원별 기본급/수당률(매출%) 수정 가능. 미설정 시 직급별 기본값. 판매실적은 당월 자동연동 */
+const PAY_BASE={'셀러':2000000,'보조':2300000,'운영':2300000,'물류':2300000,'관리자':3000000};
+const PAY_RATE={'셀러':10,'보조':3,'운영':0,'물류':0,'관리자':0};
+function _staffSales(name){return ORD.filter(o=>o.staff===name&&o.pay==='paid'&&_inRange(o,'month')&&o.code!=='배송비'&&o.code!=='낱장').reduce((a,o)=>a+amtOf(o),0);}
+function empPay(e){const base=(e.base_salary!=null&&e.base_salary!=='')?+e.base_salary:(PAY_BASE[e.role]||0);const rate=(e.comm_rate!=null&&e.comm_rate!=='')?+e.comm_rate:(PAY_RATE[e.role]||0);const sales=(e.role==='셀러'||e.role==='보조')?_staffSales(e.name):0;const comm=Math.round(sales*rate/100);return {base:base,rate:rate,sales:sales,comm:comm,total:base+comm};}
+function saveEmpPay(idx,field,val){const e=EMPLOYEES[idx];if(!e)return;e[field]=(val===''?null:Math.max(0,parseFloat(val)||0));render();if(e.id!=null)SB.from('employees').update({[field]:e[field]}).eq('id',e.id).then(function(r){if(r.error){toast('⚠️ 급여 저장 실패 — 다시 시도');console.warn('empPay',r.error.message);}else toast('💾 저장됨');});}
+function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&(canSeeAll()||e.name===ME.name));
   return `
-  <div class="head"><h1>직원 · 급여</h1><p>판매 실적 자동 연동 → 기본급 + 판매수당(예: 매출의 ${COMM_RATE*100}%)</p></div>
-  ${canSeeAll()?`<div class="note">💡 수당 규칙은 자유 변경 가능.</div>`:`<div class="lock">🔒 ${ME.name} — <b>본인 급여만</b> 표시됩니다.</div>`}
+  <div class="head"><h1>직원 · 급여</h1><p>당월 판매실적 자동연동 · <b>기본급·수당률은 사원마다 수정</b> (셀러 수습 100만+10% / 정규 200만 / 보조 230만+3% — 입력칸에서 바로 조정)</p></div>
+  ${canSeeAll()?`<div class="note">💡 기본급/수당률 칸을 고치면 그 사원에게 바로 저장됩니다. 셀러 수습은 기본급 100만·수당률 10으로, 정규는 200만으로 입력하세요.</div>`:`<div class="lock">🔒 ${ME.name} — <b>본인 급여만</b> 표시됩니다.</div>`}
   <div class="card"><div class="card-h"><h2>이번달 급여 (자동 산정)</h2></div>
-    <table><thead><tr><th>직원</th><th>직급</th><th class="num-cell">기본급</th><th class="num-cell">판매실적</th>
-      <th class="num-cell">판매수당</th><th class="num-cell">지급액</th></tr></thead><tbody>
-    ${STAFF.filter(e=>canSeeAll()||e.name===ME.name).map(e=>{const c=Math.round(e.sales*COMM_RATE);return `<tr>
-      <td><b>${e.name}</b></td><td class="muted">${e.role}</td><td class="num-cell">${won(e.base)}</td>
-      <td class="num-cell">${won(e.sales)}</td><td class="num-cell up">+${won(c)}</td><td class="num-cell"><b>${won(e.base+c)}</b></td></tr>`}).join('')}
+    <table><thead><tr><th>직원</th><th>직급</th><th class="num-cell">기본급</th><th class="num-cell">수당률%</th><th class="num-cell">당월매출</th><th class="num-cell">판매수당</th><th class="num-cell">지급액</th></tr></thead><tbody>
+    ${list.length?list.map(e=>{const p=empPay(e),idx=EMPLOYEES.indexOf(e);return `<tr>
+      <td><b>${esc(e.name)}</b></td><td class="muted">${esc(e.role||'')}</td>
+      <td class="num-cell">${canSeeAll()?`<input type="number" value="${p.base}" onchange="saveEmpPay(${idx},'base_salary',this.value)" style="width:104px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:won(p.base)}</td>
+      <td class="num-cell">${(canSeeAll()&&(e.role==='셀러'||e.role==='보조'))?`<input type="number" value="${p.rate}" onchange="saveEmpPay(${idx},'comm_rate',this.value)" style="width:58px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:p.rate+'%'}</td>
+      <td class="num-cell">${won(p.sales)}</td><td class="num-cell up">+${won(p.comm)}</td><td class="num-cell"><b>${won(p.total)}</b></td></tr>`;}).join(''):'<tr><td colspan="7" class="muted">직원 데이터 없음 (사원관리에서 등록)</td></tr>'}
     </tbody></table>
   </div>`;
 }
