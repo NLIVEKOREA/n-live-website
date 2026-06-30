@@ -6,6 +6,20 @@
 <title>N-LIVE ERP (견본 v4)</title>
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://cdn.jsdelivr.net/npm/gridstack@10.3.1/dist/gridstack.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gridstack@10.3.1/dist/gridstack-all.js"></script>
+<style>
+  .grid-stack{background:transparent;margin:0 -6px}
+  .grid-stack-item-content{inset:0;overflow:hidden;border-radius:16px;display:flex}
+  .grid-stack-item-content>.card,.grid-stack-item-content>.kpi{height:100%!important;width:100%;margin:0!important;min-height:0!important;box-sizing:border-box;overflow:auto}
+  .grid-stack-item-content>.card{display:flex;flex-direction:column}
+  .grid-stack-item-content>.card>.card-h{position:sticky;top:0;background:#fff;z-index:2;padding-top:1px}
+  .grid-stack>.grid-stack-item>.ui-resizable-se{filter:none;width:18px;height:18px}
+  .grid-stack-item-content::-webkit-scrollbar{width:6px;height:6px}
+  .grid-stack-item-content::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:6px}
+  .gs-anim{transition:opacity .2s}
+  .dash-tip{font-size:11.5px;color:#94a3b8;margin:0 0 8px 2px}
+</style>
 <style>
   :root{
     --navy:#1e2a4a; --navy2:#16203a; --navyhi:rgba(255,255,255,.09);
@@ -706,20 +720,35 @@ function renderWidgetEdit(){const a=getUserWidgets();$('#modalBox').className='m
     </div>
     <div class="modal-foot"><button class="btn gray" onclick="wgReset()">기본값 복원</button><button class="btn" onclick="closeModal()">완료</button></div>`;
 }
-const KPI_SET=['sales_today','sales_week','sales_month','sales_total','sales_avg','settle','repurchase','unpaid','toship','done_today','rx','ship_fee'];
+const WIDGET_SIZE={
+ sales_today:{w:2,h:2},sales_week:{w:2,h:2},sales_month:{w:2,h:2},sales_total:{w:2,h:2},sales_avg:{w:2,h:2},settle:{w:2,h:2},repurchase:{w:2,h:2},unpaid:{w:2,h:2},toship:{w:2,h:2},done_today:{w:2,h:2},rx:{w:2,h:2},ship_fee:{w:2,h:2},
+ sns:{w:4,h:4},vip:{w:5,h:4},taste:{w:7,h:4},topprod:{w:5,h:4},bcast:{w:7,h:4},schedule:{w:5,h:4},
+ misong:{w:4,h:3},lowprod:{w:4,h:3},goal:{w:4,h:3},alerts:{w:4,h:3},inflow:{w:4,h:3},msg_react:{w:4,h:3},by_staff:{w:4,h:3},by_prod:{w:4,h:3},my_sales:{w:4,h:3},quick:{w:4,h:2}
+};
+function dashLayoutKey(){return 'erp_dash_v1_'+(ME.id||'');}
+function loadLayout(){try{return JSON.parse(localStorage.getItem(dashLayoutKey())||'{}');}catch(e){return {};}}
+function saveLayout(arr){const m=loadLayout();(arr||[]).forEach(n=>{if(n.id)m[n.id]={x:n.x,y:n.y,w:n.w,h:n.h};});try{localStorage.setItem(dashLayoutKey(),JSON.stringify(m));}catch(e){}}
+function resetLayout(){try{localStorage.removeItem(dashLayoutKey());}catch(e){}render();}
+let _grid=null;
+function initDashGrid(){const el=document.querySelector('.grid-stack');if(!el||typeof GridStack==='undefined')return;
+ if(_grid){try{_grid.destroy(false);}catch(e){}_grid=null;}
+ _grid=GridStack.init({column:12,cellHeight:58,margin:7,float:false,animate:true,resizable:{handles:'e,se,s,sw,w'},draggable:{cancel:'input,select,textarea,button,a,.ti,.more,.ico-btn'}},el);
+ const persist=function(){try{saveLayout(_grid.save(false));}catch(e){}};
+ _grid.on('change',persist);_grid.on('resizestop',persist);_grid.on('dragstop',persist);
+}
 function viewDash(){
-  const ids=getUserWidgets();
-  const kpis=ids.filter(id=>KPI_SET.includes(id)),cards=ids.filter(id=>!KPI_SET.includes(id));
+  const ids=getUserWidgets(),saved=loadLayout();
+  const items=ids.map(id=>{const sz=WIDGET_SIZE[id]||{w:4,h:3},s=saved[id]||{};
+    return `<div class="grid-stack-item" gs-id="${id}" gs-w="${s.w||sz.w}" gs-h="${s.h||sz.h}"${s.x!=null?` gs-x="${s.x}"`:''}${s.y!=null?` gs-y="${s.y}"`:''}><div class="grid-stack-item-content">${wRender(id)}</div></div>`;}).join('');
   return `
   <div class="greet">
     <div><h1><b>${ME.name}</b> ${ME.role}님, 오늘도 좋은 방송 되세요! 👋</h1>
       <p>${ME.team} · ${ME.role} 맞춤 대시보드</p></div>
-    <button class="btn sm ghost" onclick="openWidgetEdit()"><i class="ti ti-layout-grid-add"></i> 위젯 편집</button>
+    <div style="display:flex;gap:8px"><button class="btn sm gray" onclick="resetLayout()"><i class="ti ti-arrows-minimize"></i> 배치 초기화</button><button class="btn sm ghost" onclick="openWidgetEdit()"><i class="ti ti-layout-grid-add"></i> 위젯 편집</button></div>
   </div>
   ${lockBanner()}
-  ${kpis.length?`<div class="kgrid">${kpis.map(id=>wRender(id)).join('')}</div>`:''}
-  ${cards.length?`<div class="wgrid">${cards.map(id=>wRender(id)).join('')}</div>`:''}
-  ${!ids.length?'<div class="muted">표시할 위젯이 없습니다. [위젯 편집]에서 추가하세요.</div>':''}`;
+  <div class="dash-tip">💡 위젯을 드래그해 옮기고, 모서리를 끌어 크기를 바꿀 수 있어요. 배치는 자동 저장됩니다.</div>
+  ${ids.length?`<div class="grid-stack">${items}</div>`:'<div class="muted">표시할 위젯이 없습니다. [위젯 편집]에서 추가하세요.</div>'}`;
 }
 
 /* ===== 주문서입력 (그리드) ===== */
@@ -2051,7 +2080,7 @@ let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SAL
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
-function render(){_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();updateTopbar();if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
+function render(){_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();if(VIEW==='dash')setTimeout(initDashGrid,0);updateTopbar();if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
   if(CUSTPOP){const c=openCustomers().filter(x=>x.cat===CUSTPOP.cat)[CUSTPOP.i];if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
 function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
