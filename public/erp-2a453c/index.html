@@ -265,8 +265,7 @@
     <label>아이디</label><input id="loginId" placeholder="아이디 입력">
     <label>비밀번호</label><input id="loginPw" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn" onclick="doLogin()">로그인</button>
-    <div class="cred">🔑 <b>견본 테스트 계정</b> (비번 전부 <b>1234</b>)<br>
-      운영(관리자) <b>admin</b> · 물류 <b>logi</b> · 셀러 <b>siyeon</b> · 보조 <b>yeji</b></div>
+    <div class="cred">관리자에게 받은 아이디·비밀번호로 로그인하세요.</div>
   </div>
 </div>
 
@@ -348,12 +347,12 @@ let _rt=null,_rtTimer=null;
 function isTyping(){const a=document.activeElement;if(a&&['INPUT','TEXTAREA','SELECT'].includes(a.tagName))return true;const m=$('#modal');if(m&&!m.classList.contains('hide'))return true;return false;}
 function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(async()=>{await dbLoadAll();if(!isTyping())render();},700);}).subscribe();}catch(e){console.error('realtime',e);}}
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){const {error}=await SB.from('orders').update(row).eq('id',o.id);if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 새로고침 후 다시 시도하세요');return false;}}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 다시 시도하세요');return false;}if(data)o.id=data.id;}return true;}catch(e){console.error(e);toast('⚠️ 저장 오류 — 인터넷 연결을 확인하세요');return false;}}
-async function delOrd(o){try{if(o.id)await SB.from('orders').delete().eq('id',o.id);}catch(e){console.error(e);}}
+async function delOrd(o){try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');}}
 async function saveStock(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');}}
-async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,in_price:s.in_price||0,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error)console.error('updStock',error);}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error)console.error('insStock',error);if(data)s.id=data.id;}}catch(e){console.error(e);}}
-async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error)console.error('updCust',error);}else{const {data,error}=await SB.from('customers').insert(row).select('id').single();if(error)console.error('insCust',error);if(data)c.id=data.id;}}catch(e){console.error(e);}}
-async function delCustDB(c){try{if(c.id)await SB.from('customers').delete().eq('id',c.id);}catch(e){console.error(e);}}
-async function delStockDB(s){try{if(s&&s.id!=null)await SB.from('stock').delete().eq('id',s.id);}catch(e){console.error(e);}}
+async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,in_price:s.in_price||0,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error){console.error('updStock',error);toast('⚠️ 품목 저장 실패 — 다시 시도하세요');}}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error){console.error('insStock',error);toast('⚠️ 품목 등록 실패 — 다시 시도하세요');}if(data)s.id=data.id;}}catch(e){console.error(e);toast('⚠️ 품목 저장 오류');}}
+async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error){console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}else{const {data,error}=await SB.from('customers').insert(row).select('id').single();if(error){console.error('insCust',error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(data)c.id=data.id;}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
+async function delCustDB(c){try{if(c.id){const {error}=await SB.from('customers').delete().eq('id',c.id);if(error){console.error('delCust',error);toast('⚠️ 고객 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
+async function delStockDB(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').delete().eq('id',s.id);if(error){console.error('delStock',error);toast('⚠️ 품목 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 /* ===== 기간 헬퍼 (당일 기본) ===== */
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function periodRange(key){const d=new Date();const today=d.toISOString().slice(0,10);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:mon.toISOString().slice(0,10),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
@@ -819,9 +818,12 @@ function lineField(i,f,v){if(!OE.lines[i])return;OE.lines[i][f]=(f==='qty'||f===
 function addNatjang(){OE.lines.push({kind:'natjang',tag:'',name:'',code:'낱장',color:'',size:'',qty:1,price:0});toast('📝 낱장 행 추가 — 번호표·색상·수량·단가 직접 입력');render();}
 function addShip(price,label){OE.lines.push({kind:'ship',name:label,code:'배송비',color:'',size:'',qty:1,price});toast('🚚 '+label+' 추가됨');render();}
 function resetOrder(){OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();}
+let _committing=false;
 async function commitOrder(){
+  if(_committing)return;
   if(!OE.cust){toast('고객을 선택하세요');return;}
   if(!OE.lines.length){toast('품목을 추가하세요');return;}
+  _committing=true;
   const staff=isSeller()?ME.owner:(OE.staff||$('#oeStaff')?.value||'박시연');
   let back=0;const created=[];
   const today=new Date().toISOString().slice(0,10).replace(/-/g,'/');
@@ -834,6 +836,7 @@ async function commitOrder(){
   toast('✅ 주문서 저장 ('+OE.lines.length+'건)'+(back?' · 미송 '+back+'건 포함':''));
   OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();
   for(const {o,s} of created){await saveOrd(o);if(s)await saveStock(s);}
+  _committing=false;
 }
 
 /* ===== 판매관리 ===== */
@@ -1641,7 +1644,7 @@ async function stagedSave(){
   STAGED=STAGED.filter(x=>!x.chk);
   toast('✅ '+sel.length+'건 재고현황에 등록 완료');render();
 }
-async function setTag(code,val){const t=val.trim();STOCK.filter(s=>s.code===code).forEach(s=>s.tag=t);toast('🏷️ 번호표 변경: '+prodName(code)+' → '+t);render();try{await SB.from('stock').update({tag:t}).eq('code',code);}catch(e){console.error(e);}}
+async function setTag(code,val){const t=val.trim();STOCK.filter(s=>s.code===code).forEach(s=>s.tag=t);toast('🏷️ 번호표 변경: '+prodName(code)+' → '+t);render();try{const {error}=await SB.from('stock').update({tag:t}).eq('code',code);if(error){console.error('setTag',error);toast('⚠️ 번호표 저장 실패 — 다시 시도하세요');}}catch(e){console.error(e);toast('⚠️ 번호표 저장 오류');}}
 async function scanMove(dir){const raw=$('#scan').value.trim().replace(/\s/g,''),q=parseInt($('#scanQty').value)||1;
   const s=STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'')===raw)||STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'').includes(raw));
   if(!s){toast('❌ 일치 품목 없음: '+raw);return;}if(dir<0&&s.qty<q){toast('⚠️ 재고 부족! 현재고 '+s.qty);return;}
