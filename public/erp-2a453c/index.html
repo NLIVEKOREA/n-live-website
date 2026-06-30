@@ -15,6 +15,8 @@
   .grid-stack-item-content>.card{display:flex;flex-direction:column}
   .grid-stack-item-content>.card>.card-h{position:sticky;top:0;background:#fff;z-index:2;padding-top:1px}
   .grid-stack>.grid-stack-item>.ui-resizable-se{filter:none;width:18px;height:18px}
+  .grid-stack-item .ui-resizable-handle{opacity:0;transition:opacity .15s}
+  .grid-stack-item:hover .ui-resizable-handle{opacity:.55}
   .grid-stack-item-content::-webkit-scrollbar{width:6px;height:6px}
   .grid-stack-item-content::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:6px}
   .gs-anim{transition:opacity .2s}
@@ -721,9 +723,9 @@ function renderWidgetEdit(){const a=getUserWidgets();$('#modalBox').className='m
     <div class="modal-foot"><button class="btn gray" onclick="wgReset()">기본값 복원</button><button class="btn" onclick="closeModal()">완료</button></div>`;
 }
 const WIDGET_SIZE={
- sales_today:{w:2,h:2},sales_week:{w:2,h:2},sales_month:{w:2,h:2},sales_total:{w:2,h:2},sales_avg:{w:2,h:2},settle:{w:2,h:2},repurchase:{w:2,h:2},unpaid:{w:2,h:2},toship:{w:2,h:2},done_today:{w:2,h:2},rx:{w:2,h:2},ship_fee:{w:2,h:2},
- sns:{w:4,h:4},vip:{w:5,h:4},taste:{w:7,h:4},topprod:{w:5,h:4},bcast:{w:7,h:4},schedule:{w:5,h:4},
- misong:{w:4,h:3},lowprod:{w:4,h:3},goal:{w:4,h:3},alerts:{w:4,h:3},inflow:{w:4,h:3},msg_react:{w:4,h:3},by_staff:{w:4,h:3},by_prod:{w:4,h:3},my_sales:{w:4,h:3},quick:{w:4,h:2}
+ sales_today:{w:2,h:3},sales_week:{w:2,h:3},sales_month:{w:2,h:3},sales_total:{w:2,h:3},sales_avg:{w:2,h:3},settle:{w:2,h:3},repurchase:{w:2,h:3},unpaid:{w:2,h:3},toship:{w:2,h:3},done_today:{w:2,h:3},rx:{w:2,h:3},ship_fee:{w:2,h:3},
+ sns:{w:4,h:5},vip:{w:5,h:6},taste:{w:7,h:5},topprod:{w:5,h:5},bcast:{w:7,h:5},schedule:{w:5,h:4},
+ misong:{w:4,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},quick:{w:4,h:3}
 };
 function dashLayoutKey(){return 'erp_dash_v1_'+(ME.id||'');}
 function loadLayout(){try{return JSON.parse(localStorage.getItem(dashLayoutKey())||'{}');}catch(e){return {};}}
