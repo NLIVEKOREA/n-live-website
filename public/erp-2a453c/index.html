@@ -484,9 +484,9 @@ function sellerTabs(){
   if(!ss.length)return '';
   return `<div class="tabs" style="margin-bottom:12px"><span class="muted" style="align-self:center;margin-right:6px;font-size:12px;font-weight:700">셀러별 보기</span><button class="${!SELLERVIEW?'on':''}" onclick="SELLERVIEW='';render()">전체</button>${ss.map(s=>`<button class="${SELLERVIEW===s?'on':''}" onclick='SELLERVIEW=${JSON.stringify(s)};render()'>${esc(s)}</button>`).join('')}</div>`;
 }
-const PERM={dash:['all','logi','self'],order:['all','self'],sales:['all','logi','self'],
+const PERM={dash:['all','logi','self'],order:['all','self'],sales:['all','self'],
   ship:['all','logi'],shipped:['all','logi','self'],rx:['all','logi','self'],
-  stock:['all','logi','self'],cust:['all','logi','self'],prod:['all','logi'],vendor:['all','logi'],
+  stock:['all','logi','self'],cust:['all','self'],prod:['all'],vendor:['all','logi','self'],
   revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
 const menuAllowed=v=>(PERM[v]||['all']).includes(ME.scope);
 function lockBanner(){
