@@ -656,6 +656,9 @@ function viewOrder(){
   </div>`;
 }
 function payBadge(pw){if(!pw||pw==='-')return '';const cash=pw==='현금';return `<span class="pill ${cash?'p-done':'p-req'}" style="font-size:11px;flex:0 0 auto;white-space:nowrap">${cash?'💵':'💳'} ${pw}</span>`;}
+let _onCache=null;
+function orderNoOf(date,cust){if(!_onCache)_onCache={};const d=(date||'');if(!_onCache[d]){const seen={};let n=0;ORD.filter(x=>(x.date||'')===d).sort((a,b)=>(a.id||0)-(b.id||0)).forEach(x=>{if(x.cust&&!(x.cust in seen))seen[x.cust]=++n;});_onCache[d]=seen;}return d.replace(/[\/-]/g,'.')+'-'+String((_onCache[d]||{})[cust]||0).padStart(2,'0');}
+function onoBadge(date,cust){return `<span style="display:inline-block;background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;flex:0 0 auto;white-space:nowrap;letter-spacing:.3px">${orderNoOf(date,cust)}</span>`;}
 function orderGroups(pay){
   const list=mine(ORD).filter(o=>o.pay===pay),map={};
   list.forEach(o=>{const k=(o.date||'')+'||'+(o.cust||'');(map[k]=map[k]||{date:o.date,cust:o.cust,phone:o.phone,addr:o.addr,staff:o.staff,items:[]}).items.push(o);});
@@ -670,7 +673,7 @@ function orderStatusCards(pay){
     <div class="ord-cards">
     ${arr.map(g=>{const idx=all.indexOf(g),tot=g.items.reduce((a,o)=>a+amtOf(o),0);return `
       <div class="ord-card${COLLAPSED.has('os:'+pay+g.date+g.cust)?' collapsed':''}">
-        <div class="oc-head">${collBtn('os:'+pay+g.date+g.cust)}<b>${g.cust}</b>${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
+        <div class="oc-head">${collBtn('os:'+pay+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
         ${g.phone?`<div class="oc-sub">📞 ${g.phone}</div>`:''}
         <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}</span><span class="muted">${o.qty}개</span><span class="oc-amt">${won(amtOf(o))}</span></div>`).join('')}</div>
         ${pay==='unpaid'
@@ -689,7 +692,7 @@ function paidCards(){
   if(!show.length)return '<div class="muted" style="padding:12px">해당 날짜·닉네임 결제완료 없음</div>';
   let html=show.map(g=>{const idx=all.indexOf(g),tot=g.items.reduce((a,o)=>a+amtOf(o),0);return `
     <div class="ord-card${COLLAPSED.has('pd:'+g.date+g.cust)?' collapsed':''}">
-      <div class="oc-head">${collBtn('pd:'+g.date+g.cust)}<b>${g.cust}</b><span class="pill p-done">결제완료</span><span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
+      <div class="oc-head">${collBtn('pd:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b><span class="pill p-done">결제완료</span><span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
       <div class="oc-sub">${g.date||''}${g.phone?' · '+g.phone:''} · 💳 ${g.items[0].payway||'-'}</div>
       <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}</span><span class="muted">${o.qty}개</span></div>`).join('')}</div>
       <div class="oc-btns"><button class="btn sm gray" style="flex:1" onclick="unpayGroup(${idx})">↩ 입금확인 취소</button></div>
@@ -894,7 +897,7 @@ function setShipReq(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;if(v==='�
 function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(o)o.reason=v;render();}
 function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   return `<div class="card${COLLAPSED.has('so:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}<h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust} <span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:80px">상태</th><th style="width:130px">요청</th></tr></thead><tbody>
     ${g.items.map(o=>{const dr=reqDraftOf(o);return `<tr ${o.back?'style="background:#fffaf3"':''}>
@@ -909,7 +912,7 @@ function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
 }
 function shipCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   return `<div class="card${COLLAPSED.has('sp:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('sp:'+g.date+g.cust)}<h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust} <span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('sp:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:92px">출고상태</th><th style="width:120px">송장번호</th><th style="width:108px">반품/교환</th><th style="width:130px">사유</th></tr></thead><tbody>
     ${g.items.map(o=>{const sel=RXSET.includes(o.req)?o.req:'유지';return `<tr>
@@ -1149,7 +1152,7 @@ function openShipGuide(date,cust){
 function copySG(){const ta=$('#sgText');if(!ta)return;ta.select();try{document.execCommand('copy');}catch(e){}if(navigator.clipboard)navigator.clipboard.writeText(ta.value);toast('📋 안내문구 복사됨 — 카톡/문자에 붙여넣기');}
 function shippedCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='sd:'+g.date+g.cust;
   return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}<h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust} <span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>송장번호</th><th>CS처리</th></tr></thead><tbody>
     ${g.items.map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td><td class="barcode muted">${o.track||'-'}</td><td>${o.rxtype?`<span class="pill ${o.rxstat==='done'?'':'p-req'}">${RX_TYPES[o.rxtype].l}${o.rxstat==='done'?' 완료':' 진행'}</span>`:`<div style="display:flex;gap:3px"><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'refund')">반품</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'cancel')">취소</button></div>`}</td></tr>`).join('')}
     </tbody></table></div>`;
@@ -1821,7 +1824,7 @@ let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SAL
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
-function render(){const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();updateTopbar();if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
+function render(){_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();updateTopbar();if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
   if(CUSTPOP){const c=openCustomers().filter(x=>x.cat===CUSTPOP.cat)[CUSTPOP.i];if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
 function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
