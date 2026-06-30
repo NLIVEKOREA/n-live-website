@@ -293,7 +293,7 @@
     </nav>
     <div class="foot">
       <div class="lab">🔄 계정 빠른전환 (시연용)</div>
-      <select id="userSel" onchange="switchUser(this.value)"></select>
+      <select id="userSel" onchange="switchUser(this.value)" style="display:none"></select>
       <button class="btn ghost sm" style="width:100%;margin-top:7px" onclick="changeMyPassword()">🔑 내 비밀번호 변경</button>
       <button class="btn ghost sm" style="width:100%;margin-top:5px" onclick="logout()">로그아웃</button>
       <div class="ver">Ver. 견본 2026.06</div>
@@ -345,7 +345,7 @@ async function dbLoadAll(){
 /* 실시간 동기화 — 다른 사용자의 변경을 자동 반영. 입력 중엔 화면 재렌더 보류(입력값 보호) */
 let _rt=null,_rtTimer=null;
 function isTyping(){const a=document.activeElement;if(a&&['INPUT','TEXTAREA','SELECT'].includes(a.tagName))return true;const m=$('#modal');if(m&&!m.classList.contains('hide'))return true;return false;}
-function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(async()=>{await dbLoadAll();if(!isTyping())render();},700);}).subscribe();}catch(e){console.error('realtime',e);}}
+function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(async()=>{if(_committing)return;await dbLoadAll();if(!isTyping())render();},700);}).subscribe();}catch(e){console.error('realtime',e);}}
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){const {error}=await SB.from('orders').update(row).eq('id',o.id);if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 새로고침 후 다시 시도하세요');return false;}}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 다시 시도하세요');return false;}if(data)o.id=data.id;}return true;}catch(e){console.error(e);toast('⚠️ 저장 오류 — 인터넷 연결을 확인하세요');return false;}}
 async function delOrd(o){try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');}}
 async function saveStock(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');}}
@@ -835,9 +835,10 @@ async function commitOrder(){
     const s=skuOf(l.code,l.color,l.size);if(l.back)back++;
     const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:l.code,disp:`${l.name} ${l.color} ${l.size}`,tag:tagOf(l.code),color:l.color,size:l.size,qty:l.qty,price:l.price,back:!!l.back,pay:'unpaid',ship:'miss'};
     ORD.unshift(o);created.push({o,s,dq:l.qty});});
-  toast('✅ 주문서 저장 ('+OE.lines.length+'건)'+(back?' · 미송 '+back+'건 포함':''));
-  OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();
+  const _cnt=created.length;
   for(const {o,s,dq} of created){await saveOrd(o);if(s)await adjustStockDB(s,-dq);}
+  toast('✅ 주문서 저장 ('+_cnt+'건)'+(back?' · 미송 '+back+'건 포함':''));
+  OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();
   _committing=false;
 }
 
@@ -1736,6 +1737,7 @@ async function doLogin(){
   toast('📥 데이터 불러오는 중...');
   await dbLoadAll();
   $('#login').style.display='none';
+  {const _h=location.hash.slice(1);if(_h&&VIEWS[_h]&&menuAllowed(_h))VIEW=_h;}
   if(!menuAllowed(VIEW))VIEW='dash';
   rebuildSwitcher();buildNav();render();startRealtime();
   toast('환영합니다, '+ME.name+'님');
@@ -1816,13 +1818,14 @@ function kakaoBot(){return `
 /* ===== 라우팅 ===== */
 let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE='2026-06-29',CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
-function go(v){if(menuAllowed(v)){VIEW=v;buildNav();render();}}
+function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
 function render(){const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();updateTopbar();if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
   if(CUSTPOP){const c=openCustomers().filter(x=>x.cat===CUSTPOP.cat)[CUSTPOP.i];if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
 function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
-$('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuAllowed(b.dataset.v))return;VIEW=b.dataset.v;buildNav();render();});
+$('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuAllowed(b.dataset.v))return;VIEW=b.dataset.v;try{history.replaceState(null,'','#'+VIEW)}catch(e){}buildNav();render();});
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&VIEWS[h]&&menuAllowed(h)&&h!==VIEW){VIEW=h;buildNav();render();}});
 document.addEventListener('keydown',e=>{if(e.key==='F8'&&VIEW==='order'){e.preventDefault();commitOrder();}});
 rebuildSwitcher();buildNav();render();
 /* 세션 자동복원: 새로고침해도 로그인 유지 */
@@ -1836,6 +1839,7 @@ rebuildSwitcher();buildNav();render();
       ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined};
       await dbLoadAll();
       $('#login').style.display='none';
+      {const _h=location.hash.slice(1);if(_h&&VIEWS[_h]&&menuAllowed(_h))VIEW=_h;}
       if(!menuAllowed(VIEW))VIEW='dash';
       rebuildSwitcher();buildNav();render();startRealtime();
     }
