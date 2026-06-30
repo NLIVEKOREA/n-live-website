@@ -17,6 +17,9 @@
   .grid-stack>.grid-stack-item>.ui-resizable-se{filter:none;width:18px;height:18px}
   .grid-stack-item .ui-resizable-handle{opacity:0;transition:opacity .15s}
   .grid-stack-item:hover .ui-resizable-handle{opacity:.55}
+  .grid-stack-item-content>.wx{position:absolute;top:7px;right:9px;z-index:6;width:22px;height:22px;border:none;background:rgba(148,163,184,.18);color:#64748b;border-radius:6px;cursor:pointer;font-size:15px;line-height:1;padding:0;opacity:0;transition:opacity .15s}
+  .grid-stack-item:hover>.grid-stack-item-content>.wx{opacity:1}
+  .grid-stack-item-content>.wx:hover{background:#fee2e2;color:#ef4444}
   .grid-stack-item-content::-webkit-scrollbar{width:6px;height:6px}
   .grid-stack-item-content::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:6px}
   .gs-anim{transition:opacity .2s}
@@ -742,6 +745,14 @@ const WIDGET_SIZE={
  sns:{w:4,h:5},vip:{w:5,h:6},taste:{w:7,h:5},topprod:{w:5,h:5},bcast:{w:7,h:5},schedule:{w:5,h:4},
  misong:{w:4,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},quick:{w:4,h:3}
 };
+/* 포지션별 기본 레이아웃 — 신규 사용자/미설정 시 오·열 맞춘 기본 배치 (12열) */
+const POS_LAYOUT={
+ '셀러':{sales_today:{x:0,y:0,w:2,h:3},sales_week:{x:2,y:0,w:2,h:3},sales_month:{x:4,y:0,w:2,h:3},repurchase:{x:6,y:0,w:3,h:3},settle:{x:9,y:0,w:3,h:3},sns:{x:0,y:3,w:6,h:4},vip:{x:6,y:3,w:6,h:4},taste:{x:0,y:7,w:6,h:5},topprod:{x:6,y:7,w:6,h:5},bcast:{x:0,y:12,w:6,h:5},schedule:{x:6,y:12,w:6,h:4},quick:{x:6,y:16,w:6,h:3}},
+ '운영':{sales_today:{x:0,y:0,w:3,h:3},sales_month:{x:3,y:0,w:3,h:3},sales_total:{x:6,y:0,w:3,h:3},sales_avg:{x:9,y:0,w:3,h:3},repurchase:{x:0,y:3,w:3,h:3},toship:{x:3,y:3,w:3,h:3},rx:{x:6,y:3,w:3,h:3},ship_fee:{x:9,y:3,w:3,h:3},by_staff:{x:0,y:6,w:6,h:4},vip:{x:6,y:6,w:6,h:4},topprod:{x:0,y:10,w:6,h:5},taste:{x:6,y:10,w:6,h:5},bcast:{x:0,y:15,w:6,h:5},quick:{x:6,y:15,w:6,h:3}},
+ '물류':{toship:{x:0,y:0,w:3,h:3},done_today:{x:3,y:0,w:3,h:3},misong:{x:6,y:0,w:6,h:4},alerts:{x:0,y:4,w:6,h:4},quick:{x:6,y:4,w:6,h:3}},
+ '보조':{unpaid:{x:0,y:0,w:3,h:3},toship:{x:3,y:0,w:3,h:3},rx:{x:6,y:0,w:3,h:3},misong:{x:0,y:3,w:6,h:4},quick:{x:6,y:3,w:6,h:3}}
+};
+POS_LAYOUT['관리자']=POS_LAYOUT['운영'];
 function dashLayoutKey(){return 'erp_dash_v1_'+(ME.id||'');}
 function loadLayout(){return PREFS.layout||{};}
 function saveLayout(arr){const m=PREFS.layout||{};(arr||[]).forEach(n=>{if(n.id)m[n.id]={x:n.x,y:n.y,w:n.w,h:n.h};});PREFS.layout=m;savePrefs();}
@@ -754,9 +765,10 @@ function initDashGrid(){const el=document.querySelector('.grid-stack');if(!el||t
  _grid.on('change',persist);_grid.on('resizestop',persist);_grid.on('dragstop',persist);
 }
 function viewDash(){
-  const ids=getUserWidgets(),saved=loadLayout();
+  const ids=getUserWidgets();
+  let saved=loadLayout();if(!saved||!Object.keys(saved).length)saved=POS_LAYOUT[ME.role]||{};
   const items=ids.map(id=>{const sz=WIDGET_SIZE[id]||{w:4,h:3},s=saved[id]||{};
-    return `<div class="grid-stack-item" gs-id="${id}" gs-w="${s.w||sz.w}" gs-h="${s.h||sz.h}"${s.x!=null?` gs-x="${s.x}"`:''}${s.y!=null?` gs-y="${s.y}"`:''}><div class="grid-stack-item-content">${wRender(id)}</div></div>`;}).join('');
+    return `<div class="grid-stack-item" gs-id="${id}" gs-w="${s.w||sz.w}" gs-h="${s.h||sz.h}"${s.x!=null?` gs-x="${s.x}"`:''}${s.y!=null?` gs-y="${s.y}"`:''}><div class="grid-stack-item-content"><button class="wx" title="위젯 제거" onclick="event.stopPropagation();wgToggle('${id}')">×</button>${wRender(id)}</div></div>`;}).join('');
   return `
   <div class="greet">
     <div><h1><b>${ME.name}</b> ${ME.role}님, 오늘도 좋은 방송 되세요! 👋</h1>
