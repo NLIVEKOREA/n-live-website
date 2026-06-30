@@ -320,6 +320,7 @@
 /* ===== Supabase 연동 ===== */
 const SB = window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao');
 const SB_DOMAIN='@n-live.co.kr';
+function _authClient(){return window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao',{auth:{persistSession:false,autoRefreshToken:false,storageKey:'erp_tmp_signup'}});}
 const _toDate=d=>{if(!d)return null;const m=String(d).match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);return m?`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`:null;};
 const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:r.cust,phone:r.phone,addr:r.addr,code:r.code,disp:r.item_name,tag:r.tag,color:r.color,size:r.size,qty:r.qty,price:r.price,pay:r.pay,payway:r.payway,ship:r.ship,req:r.req,prog:r.prog,back:r.back,track:r.track,reason:r.reason,shipped_date:r.shipped_date,rxtype:r.rxtype,rxstat:r.rxstat,rxreason:r.rxreason,fault:r.fault,rxdate:r.rxdate,rxdone:r.rxdone,rxnew:r.rxnew});
 const ORD2DB=o=>{const r={order_date:_toDate(o.date),staff:o.staff,cust:o.cust,phone:o.phone,addr:o.addr,code:o.code,item_name:o.disp,tag:o.tag,color:o.color,size:o.size,qty:o.qty,price:o.price,pay:o.pay,payway:o.payway||null,ship:o.ship,req:o.req||null,prog:o.prog||null,back:!!o.back,track:o.track||null,reason:o.reason||null,shipped_date:o.shipped_date||null};if(o.rxtype){r.rxtype=o.rxtype;r.rxstat=o.rxstat||null;r.rxreason=o.rxreason||null;r.fault=o.fault||null;r.rxdate=o.rxdate||null;r.rxdone=o.rxdone||null;r.rxnew=o.rxnew||null;}return r;};
@@ -331,10 +332,12 @@ async function dbLoadAll(){
     const cu=await dbFetchAll('customers','name',true);
     const or=await dbFetchAll('orders','id',false);
     const sh=await SB.from('shipping').select('*').order('month');
+    const em=await SB.from('employees').select('*').order('id');
     STOCK.length=0;st.forEach(r=>STOCK.push(r));
     CUSTOMERS.length=0;cu.forEach(r=>CUSTOMERS.push(r));
     ORD.length=0;or.forEach(r=>ORD.push(DB2ORD(r)));
     SHIPPING=sh.data||[];
+    EMPLOYEES.length=0;(em.data||[]).forEach(r=>EMPLOYEES.push(r));
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
 }
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){await SB.from('orders').update(row).eq('id',o.id);}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error)console.error('saveOrd',error);if(data)o.id=data.id;}}catch(e){console.error(e);}}
@@ -453,6 +456,7 @@ let USERS=[
   {name:'김예지',id:'yeji',pw:'1234',team:'셀러팀',role:'보조',scope:'self',owner:'박시연'},
 ];
 let ME=USERS[0];
+let EMPLOYEES=[];
 const canSeeAll=()=>ME.scope==='all',isSeller=()=>ME.scope==='self',isLogi=()=>ME.scope==='logi';
 const mine=arr=>isSeller()?arr.filter(x=>x.staff===ME.owner):arr;
 const PERM={dash:['all','logi','self'],order:['all','self'],sales:['all','logi','self'],
@@ -1547,29 +1551,29 @@ function viewEmp(){
   </div>`;
 }
 function viewUsers(){
+  const scopeL={all:'전체권한',logi:'물류범위',self:'본인자료만'};
   return `
   <div class="head"><h1>사원관리 <span class="badge">관리자 전용</span></h1>
-    <p>계정 생성 · 아이디/비밀번호 부여 · 팀/권한 지정</p></div>
-  <div style="text-align:right;margin-bottom:14px"><button class="btn" onclick="toggleEmpForm()">＋ 사원 등록</button></div>
-  <div id="empForm" class="card hide" style="margin-bottom:16px">
-    <div class="card-h"><h2>새 사원 등록</h2></div>
+    <p>실제 로그인 계정 생성 · 아이디/비밀번호 부여 · 팀/권한 지정 — 등록 즉시 그 아이디로 로그인 가능</p></div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h"><h2>＋ 새 사원 등록 <span class="muted" style="font-size:12px;font-weight:400">로그인 계정이 함께 생성됩니다</span></h2></div>
     <div class="form-grid">
       <input id="f_name" placeholder="이름" style="width:100px">
-      <input id="f_id" placeholder="아이디" style="width:110px">
-      <input id="f_pw" placeholder="비밀번호" style="width:110px">
-      <select id="f_team"><option>운영팀</option><option>물류팀</option><option>셀러팀</option></select>
+      <input id="f_id" placeholder="아이디(영문/숫자)" style="width:140px">
+      <input id="f_pw" placeholder="비밀번호(6자 이상)" style="width:150px">
+      <select id="f_team" onchange="render()"><option>운영팀</option><option>물류팀</option><option>셀러팀</option></select>
       <select id="f_scope"><option value="all">전체권한</option><option value="logi">물류범위</option><option value="self">본인자료만</option></select>
       <input id="f_owner" placeholder="담당셀러(보조만)" style="width:130px">
-      <button class="btn" onclick="addEmp()">등록</button>
+      <button class="btn" onclick="addEmp()">＋ 등록</button>
     </div>
-    <div class="note">전체=운영팀 / 물류범위=출고·재고·사입처 / 본인자료만=셀러·보조.</div>
+    <div class="note">전체=운영팀 / 물류범위=출고·재고·사입처 / 본인자료만=셀러·보조. · 로그인 아이디는 <b>아이디@n-live.co.kr</b> 이메일로 자동 변환됩니다.</div>
   </div>
-  <div class="card"><div class="card-h"><h2>사원 목록 (${USERS.length}명)</h2></div>
-    <table><thead><tr><th>이름</th><th>아이디</th><th>비밀번호</th><th>팀</th><th>역할</th><th>권한범위</th><th>담당셀러</th><th style="width:92px"></th></tr></thead><tbody>
-    ${USERS.map((u,i)=>`<tr><td><b>${esc(u.name)}</b></td><td class="barcode">${esc(u.id)}</td><td class="muted">••••</td>
-      <td>${u.team}</td><td>${u.role}</td><td>${({all:'전체',logi:'물류범위',self:'본인자료만'})[u.scope]}</td>
-      <td class="muted">${u.owner||'-'}</td>
-      <td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editUser(${i})">수정</button><button class="ico-btn" title="삭제" onclick="delUser(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join('')}
+  <div class="card"><div class="card-h"><h2>사원 목록 (${EMPLOYEES.length}명)</h2></div>
+    <table><thead><tr><th>이름</th><th>아이디</th><th>팀</th><th>역할</th><th>권한범위</th><th>담당셀러</th><th style="width:92px"></th></tr></thead><tbody>
+    ${EMPLOYEES.length?EMPLOYEES.map((u,i)=>`<tr><td><b>${esc(u.name)}</b></td><td class="barcode">${esc(u.login_id)}</td>
+      <td>${esc(u.team||'-')}</td><td>${esc(u.role||'-')}</td><td>${scopeL[u.scope]||u.scope||'-'}</td>
+      <td class="muted">${esc(u.owner||'-')}</td>
+      <td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editUser(${i})">수정</button><button class="ico-btn" title="삭제(비활성)" onclick="delUser(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join(''):`<tr><td colspan="7" class="muted" style="padding:16px">등록된 사원이 없습니다. 위에서 추가하세요.</td></tr>`}
     </tbody></table>
   </div>`;
 }
@@ -1618,29 +1622,46 @@ function editVendor(i){const v=VENDORS[i];if(!v)return;
 function saveVendorEdit(i){const v=VENDORS[i];if(!v)return;const name=$('#ve_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}v.name=name;v.type=$('#ve_type').value;v.memo=$('#ve_memo').value.trim()||'-';closeModal();toast('✅ 수정: '+name);render();}
 function delVendor(i){const v=VENDORS[i];if(!v)return;if(!confirm(`'${v.name}' 사입처를 삭제할까요?`))return;VENDORS.splice(i,1);closeModal();toast('🗑️ 삭제: '+v.name);render();}
 function toggleEmpForm(){$('#empForm').classList.toggle('hide');}
-function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value.trim(),pw=$('#f_pw').value.trim();
-  if(!name||!id||!pw){toast('이름·아이디·비밀번호를 입력하세요');return;}if(USERS.some(u=>u.id===id)){toast('❌ 이미 있는 아이디');return;}
+async function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value.trim(),pw=$('#f_pw').value.trim();
+  if(!name||!id||!pw){toast('이름·아이디·비밀번호를 입력하세요');return;}
+  if(!/^[A-Za-z0-9._-]+$/.test(id)){toast('아이디는 영문/숫자로만 입력하세요');return;}
+  if(pw.length<6){toast('비밀번호는 6자 이상이어야 합니다');return;}
+  if(EMPLOYEES.some(u=>u.login_id===id)){toast('❌ 이미 있는 아이디입니다');return;}
   const team=$('#f_team').value,scope=$('#f_scope').value,owner=$('#f_owner').value.trim();
   const roleMap={운영팀:'운영',물류팀:'물류',셀러팀:(scope==='self'&&owner)?'보조':'셀러'};
-  USERS.push({name,id,pw,team,role:roleMap[team],scope,owner:owner||undefined});
+  toast('🔐 로그인 계정 생성 중...');
+  let authId=null;
+  try{const ac=_authClient();const {data,error}=await ac.auth.signUp({email:id+SB_DOMAIN,password:pw});
+    if(error){toast('❌ 계정 생성 실패: '+error.message);return;}
+    authId=data&&data.user?data.user.id:null;
+    try{await ac.auth.signOut();}catch(e){}
+  }catch(e){toast('❌ 계정 생성 오류: '+e.message);return;}
+  const row={login_id:id,name,team,role:roleMap[team],scope,owner:owner||null,auth_id:authId,active:true};
+  try{const {data,error}=await SB.from('employees').insert(row).select('*').single();
+    if(error){toast('⚠️ 계정은 생성됐으나 직원정보 저장 실패: '+error.message);return;}
+    EMPLOYEES.push(data);
+  }catch(e){toast('⚠️ 직원정보 저장 오류: '+e.message);return;}
   ['f_name','f_id','f_pw','f_owner'].forEach(x=>{const el=$('#'+x);if(el)el.value='';});
-  toast('✅ 사원 등록: '+name+' (아이디 '+id+')');rebuildSwitcher();render();}
-function editUser(i){const u=USERS[i];if(!u)return;
-  $('#modalBox').innerHTML=`<h3>사원 정보 수정</h3><div class="ms">이름·아이디·권한 등을 수정합니다. (로그인 계정 비밀번호 변경은 Supabase에서 별도)</div>
-    <div class="modal-row"><div><label>이름</label><input id="eu_name" value="${esc(u.name)}"></div><div><label>아이디</label><input id="eu_id" value="${esc(u.id)}"></div></div>
-    <label>비밀번호</label><input id="eu_pw" value="${esc(u.pw||'')}">
+  toast('✅ 사원 등록 완료: '+name+' — 이제 아이디 "'+id+'"로 로그인 가능');render();}
+function editUser(i){const u=EMPLOYEES[i];if(!u)return;
+  $('#modalBox').innerHTML=`<h3>사원 정보 수정</h3><div class="ms">이름·팀·권한을 수정합니다. 아이디(로그인 이메일)는 변경할 수 없어요. 비밀번호 재설정은 본인 로그인 후 또는 Supabase에서.</div>
+    <div class="modal-row"><div><label>이름</label><input id="eu_name" value="${esc(u.name)}"></div><div><label>아이디(변경불가)</label><input value="${esc(u.login_id)}" disabled style="background:#f1f5f9;color:#94a3b8"></div></div>
     <div class="modal-row"><div><label>팀</label><select id="eu_team">${['운영팀','물류팀','셀러팀'].map(t=>`<option ${u.team===t?'selected':''}>${t}</option>`).join('')}</select></div>
       <div><label>권한범위</label><select id="eu_scope">${[['all','전체권한'],['logi','물류범위'],['self','본인자료만']].map(([v,l])=>`<option value="${v}" ${u.scope===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
     <label>담당셀러(보조만)</label><input id="eu_owner" value="${esc(u.owner||'')}">
     <div class="modal-foot"><button class="btn red ghost" onclick="delUser(${i})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveUser(${i})">저장</button></div>`;
   $('#modal').classList.remove('hide');}
-function saveUser(i){const u=USERS[i];if(!u)return;const name=$('#eu_name').value.trim(),id=$('#eu_id').value.trim();
-  if(!name||!id){toast('이름·아이디는 필수');return;}if(USERS.some((x,j)=>j!==i&&x.id===id)){toast('❌ 이미 있는 아이디');return;}
+async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_name').value.trim();
+  if(!name){toast('이름은 필수입니다');return;}
   const team=$('#eu_team').value,scope=$('#eu_scope').value,owner=$('#eu_owner').value.trim();
   const roleMap={운영팀:'운영',물류팀:'물류',셀러팀:(scope==='self'&&owner)?'보조':'셀러'};
-  Object.assign(u,{name,id,pw:$('#eu_pw').value.trim(),team,role:roleMap[team],scope,owner:owner||undefined});
-  closeModal();toast('✅ 수정: '+name);rebuildSwitcher();render();}
-function delUser(i){const u=USERS[i];if(!u)return;if(ME&&ME.id===u.id){toast('❌ 현재 로그인 중인 본인 계정은 삭제할 수 없어요');return;}if(!confirm(`'${u.name}'(${u.id}) 사원을 목록에서 삭제할까요?`))return;USERS.splice(i,1);closeModal();toast('🗑️ 삭제: '+u.name);rebuildSwitcher();render();}
+  const patch={name,team,role:roleMap[team],scope,owner:owner||null};
+  Object.assign(u,patch);closeModal();toast('✅ 수정: '+name);render();
+  try{const {error}=await SB.from('employees').update(patch).eq('id',u.id);if(error)toast('⚠️ 저장 오류: '+error.message);}catch(e){toast('⚠️ 저장 오류');}}
+async function delUser(i){const u=EMPLOYEES[i];if(!u)return;if(ME&&ME.id===u.login_id){toast('❌ 로그인 중인 본인 계정은 삭제할 수 없어요');return;}
+  if(!confirm(`'${u.name}'(${u.login_id}) 사원을 삭제할까요?\n로그인이 차단되고, 과거 데이터는 그대로 유지됩니다.`))return;
+  EMPLOYEES.splice(i,1);closeModal();toast('🗑️ 삭제(로그인 차단): '+u.name);render();
+  try{const {error}=await SB.from('employees').update({active:false}).eq('id',u.id);if(error)toast('⚠️ 처리 오류: '+error.message);}catch(e){toast('⚠️ 처리 오류');}}
 
 /* ===== 로그인 ===== */
 async function doLogin(){
@@ -1651,8 +1672,8 @@ async function doLogin(){
   const {error} = await SB.auth.signInWithPassword({email, password:pw});
   if(error){toast('❌ 아이디 또는 비밀번호가 틀립니다');return;}
   const {data:emp} = await SB.from('employees').select('*').eq('login_id', id).maybeSingle();
-  ME = emp ? {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined}
-           : {name:id,id:id,team:'',role:'',scope:'all'};
+  if(!emp||emp.active===false){toast('❌ 등록되지 않았거나 비활성화된 계정입니다 (관리자 문의)');await SB.auth.signOut();return;}
+  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||undefined};
   toast('📥 데이터 불러오는 중...');
   await dbLoadAll();
   $('#login').style.display='none';
