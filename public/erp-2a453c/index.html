@@ -471,7 +471,19 @@ let USERS=[
 let ME=USERS[0];
 let EMPLOYEES=[];
 const canSeeAll=()=>ME.scope==='all',isSeller=()=>ME.scope==='self',isLogi=()=>ME.scope==='logi';
-const mine=arr=>isSeller()?arr.filter(x=>x.staff===(ME.owner||ME.name)):arr;
+let SELLERVIEW='';   // 운영/관리자/물류가 특정 셀러만 볼 때 (''=전체)
+const mine=arr=>{
+  if(isSeller())return arr.filter(x=>x.staff===(ME.owner||ME.name));
+  if(SELLERVIEW)return arr.filter(x=>x.staff===SELLERVIEW);
+  return arr;
+};
+function sellerList(){return [...new Set(ORD.map(o=>o.staff).filter(Boolean))].sort();}
+function sellerTabs(){
+  if(isSeller())return '';                 // 셀러/보조는 본인 것만 → 탭 불필요
+  const ss=sellerList();
+  if(!ss.length)return '';
+  return `<div class="tabs" style="margin-bottom:12px"><span class="muted" style="align-self:center;margin-right:6px;font-size:12px;font-weight:700">셀러별 보기</span><button class="${!SELLERVIEW?'on':''}" onclick="SELLERVIEW='';render()">전체</button>${ss.map(s=>`<button class="${SELLERVIEW===s?'on':''}" onclick='SELLERVIEW=${JSON.stringify(s)};render()'>${esc(s)}</button>`).join('')}</div>`;
+}
 const PERM={dash:['all','logi','self'],order:['all','self'],sales:['all','logi','self'],
   ship:['all','logi'],shipped:['all','logi','self'],rx:['all','logi','self'],
   stock:['all','logi','self'],cust:['all','logi','self'],prod:['all','logi'],vendor:['all','logi'],
@@ -873,6 +885,7 @@ function viewSales(){
   return `
   <div class="head"><h1>판매관리 <span class="badge">결제완료</span></h1>
     <p>결제완료 판매 · 출고요청(기간·고객·상품 검색) · 출고현황(당일 작업) · 전체 누적은 판매현황 메뉴</p></div>
+  ${sellerTabs()}
   ${lockBanner()}
   ${SALETAB==='order'?saleToolbar():''}
   <div class="tabs">
@@ -1264,7 +1277,7 @@ function rxFaultBoard(all){const m={};all.filter(o=>o.fault&&o.fault!=='무과�
   if(!keys.length)return `<div class="card"><div class="muted" style="padding:16px">기록된 과실(귀책)이 없습니다 · 회사귀책 사유로 접수된 건만 집계됩니다</div></div>`;
   return `<div class="card"><div class="card-h"><h2 style="margin:0">⚠️ 귀책 현황 <span class="muted" style="font-size:12px;font-weight:400">회사귀책 건만 · 셀러/물류별 누적</span></h2></div><table><thead><tr><th>대상</th><th class="num-cell">과실</th><th>주요 사유</th></tr></thead><tbody>${keys.map(k=>`<tr><td><b>${k}</b></td><td class="num-cell"><span class="pill p-low">${m[k].n}건</span></td><td class="muted">${Object.entries(m[k].reasons).map(([r,c])=>r+' '+c).join(' · ')}</td></tr>`).join('')}</tbody></table></div>`;}
 function viewRx(){const all=mine(ORD).filter(o=>o.rxtype);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=RXVIEWTAB==='active'?active:done;
-  return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}
+  return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}${sellerTabs()}
   <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='done';render()">완료 ${done.length}</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
   ${RXVIEWTAB==='fault'?rxFaultBoard(all):(cur.length?cur.map(rxCard).join(''):`<div class="card"><div class="muted" style="padding:16px">${RXVIEWTAB==='active'?'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)':'완료된 건이 없습니다'}</div></div>`)}`;}
 function viewShipped(){
@@ -1278,6 +1291,7 @@ function viewShipped(){
   if(!shown.length)cards='<div class="card"><div class="muted" style="padding:16px">해당 기간 출고 내역 없음 (출고장에서 송장 입력·출고완료하면 여기에 쌓여요)</div></div>';
   return `
   <div class="head"><h1>판매현황 <span class="badge">누적</span></h1><p>출고완료된 전체 판매내역 · 당월 기본 · 기간·고객·상품 검색</p></div>
+  ${sellerTabs()}
   ${lockBanner()}
   <div class="card">
     <div class="toolbar">
@@ -1393,11 +1407,13 @@ function viewCustomers(){
   const stats=custStats(),q=(CUSTSEARCH||'').trim(),qn=custPhoneNorm(q),ql=q.toLowerCase();
   const dup=phoneDupGroups(),dupN=dup.reduce((a,g)=>a+g.length,0);
   let list=CUSTOMERS;
+  if(!isSeller()&&SELLERVIEW)list=list.filter(c=>c.owner===SELLERVIEW);
   if(q)list=list.filter(c=>(c.name||'').toLowerCase().includes(ql)||(qn&&custPhoneNorm(c.phone).includes(qn))||(c.addr||'').toLowerCase().includes(ql));
   list=[...list].sort((a,b)=>((stats[b.name]||{}).amt||0)-((stats[a.name]||{}).amt||0));
   const shown=list.slice(0,300);
   return `
   <div class="head"><h1>고객관리 <span class="badge">${CUSTOMERS.length.toLocaleString()}명</span></h1><p>구매액 순 정렬 · 검색 · 행에서 바로 수정·삭제 · 같은 번호 중복 분류</p></div>
+  ${sellerTabs()}
   <div class="card" style="margin-bottom:14px"><div class="toolbar">
     <input id="custSearch" placeholder="🔍 이름·연락처·주소 입력 후 Enter" value="${esc(CUSTSEARCH)}" onkeydown="if(event.key==='Enter'){CUSTSEARCH=this.value;render()}" style="width:320px;font-size:14px">
     <span class="grow"></span>
@@ -1601,6 +1617,7 @@ function viewRevenue(){
   return `
   <div class="head"><h1>${isSeller()?'내 실적':'매출현황'}</h1>
     <p>${isSeller()?'본인 판매 실적 및 예상 수당':'사무실 전체 매출 + 셀러별 매출 (결제완료 기준)'} · <b>${rp.label}</b></p></div>
+  ${sellerTabs()}
   ${lockBanner()}
   <div class="tabs" style="margin-bottom:14px">${periodTabs(REVPERIOD,'setRevPeriod')}</div>
   <div class="kpis">
