@@ -1066,10 +1066,18 @@ function shipTabDone(){
 function shipTabBody(){
   const cs=openCustomers();
   if(SHIPTAB==='wait')return waitCard(cs.filter(c=>c.cat==='wait'));
-  if(SHIPTAB==='back')return manageCards(cs.filter(c=>c.cat==='back'),'back');
+  if(SHIPTAB==='back'){const q=(BACKQ||'').trim();
+    const box=`<div class="card" style="margin-bottom:12px"><div class="toolbar"><span class="muted" style="align-self:center">🔍 미송 상품</span><input id="backSearch" placeholder="상품명·번호표·코드 입력 후 Enter (예: 다운반바지)" value="${esc(q)}" onkeydown="if(event.key==='Enter'){BACKQ=this.value.trim();render()}" style="flex:1">${q?`<button class="btn sm gray" onclick="BACKQ='';render()">초기화</button>`:''}</div>${q?backSearchResult(q):`<div class="note">상품을 검색하면, 그 상품이 입고됐을 때 <b>아직 못 받은 고객들</b>을 모아서 보여줍니다.</div>`}</div>`;
+    return box+manageCards(cs.filter(c=>c.cat==='back'),'back');}
   if(SHIPTAB==='bundle')return manageCards(cs.filter(c=>c.cat==='bundle'),'bundle');
   return shipTabDone();
 }
+function backSearchResult(q){const rows=mine(ORD).filter(o=>o.back&&o.ship!=='done'&&(inc(o.code,q)||inc(itemLabel(o),q)||inc(tagShow(o),q)));
+  if(!rows.length)return `<div class="note" style="color:var(--red)">'${esc(q)}' 미송 건이 없습니다.</div>`;
+  return `<div class="note" style="margin-bottom:8px">📦 <b>'${esc(q)}'</b> 미송 — 아래 <b>${rows.length}명</b>에게 입고분을 보내면 됩니다 (출고는 출고대기 탭에서 송장입력)</div>
+  <table><thead><tr><th>번호표</th><th>상품</th><th>고객</th><th>연락처</th><th>주문일</th><th class="num-cell">수량</th></tr></thead><tbody>
+  ${rows.map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td><b>${esc(o.cust)}</b></td><td class="muted barcode">${esc(o.phone||'-')}</td><td class="muted">${o.date||''}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}
+  </tbody></table>`;}
 function openShipPopup(){SHIPPOP=true;render();}
 function closeShipPopup(){SHIPPOP=false;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();}
 function openShipModal(){const t={wait:'출고대기',back:'미송관리',bundle:'합배관리',done:'출고완료'};
@@ -1820,7 +1828,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
