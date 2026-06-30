@@ -1286,20 +1286,21 @@ function viewStock(){
 let CUSTSEARCH='',CUSTTAB='all';
 function custStats(){const m={};ORD.forEach(o=>{if(!o.cust)return;const x=m[o.cust]||(m[o.cust]={cnt:0,amt:0,last:''});x.cnt++;x.amt+=amtOf(o);if((o.date||'')>x.last)x.last=o.date||'';});return m;}
 function custPhoneNorm(p){return (p||'').replace(/[^0-9]/g,'');}
+function formatPhone(p){const d=custPhoneNorm(p);if(d.length===11)return d.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3');if(d.length===10)return d.replace(/(\d{3})(\d{3})(\d{4})/,'$1-$2-$3');return p||'';}
 function phoneDupGroups(){const m={};CUSTOMERS.forEach(c=>{const p=custPhoneNorm(c.phone);if(p.length>=8)(m[p]=m[p]||[]).push(c);});return Object.values(m).filter(a=>a.length>1).sort((a,b)=>b.length-a.length);}
 function custAvatar(name){const ch=(name||'?').trim().charAt(0)||'?';const colors=['#2563eb','#7c3aed','#db2777','#ea580c','#059669','#0891b2','#4f46e5'];let h=0;for(const c of (name||'?'))h=(h*31+c.charCodeAt(0))%colors.length;return `<span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:${colors[h]};color:#fff;font-weight:800;font-size:14px;flex:0 0 auto">${esc(ch)}</span>`;}
 function custActBtns(c){return `<div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="openCustEdit(${c.id})">수정</button><button class="ico-btn" title="삭제" onclick="delCust(${c.id})"><i class="ti ti-trash"></i></button></div>`;}
 function custRow(c,stats){const s=stats[c.name]||{cnt:0,amt:0,last:''};
   return `<tr>
     <td><div style="display:flex;align-items:center;gap:10px">${custAvatar(c.name)}<div><div style="font-weight:700">${esc(c.name)}</div><div class="muted" style="font-size:12px">${esc(c.addr||'주소 미등록')}</div></div></div></td>
-    <td class="barcode" style="font-weight:600">${esc(c.phone||'-')}</td>
+    <td class="barcode" style="font-weight:600">${esc(formatPhone(c.phone)||'-')}</td>
     <td class="num-cell">${s.cnt?s.cnt+'건':'<span class="muted">-</span>'}</td>
     <td class="num-cell" style="font-weight:700">${s.amt?won(s.amt):'<span class="muted">-</span>'}</td>
     <td class="muted" style="font-size:12px">${s.last||'-'}</td>
     <td>${custActBtns(c)}</td></tr>`;}
 function custDupView(dup,stats){
   if(!dup.length)return `<div class="card"><div class="muted" style="padding:18px">같은 연락처로 중복 등록된 고객이 없습니다 👍</div></div>`;
-  return dup.map(g=>`<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">📞 ${esc(g[0].phone)} <span class="muted" style="font-size:12px;font-weight:400">— 닉네임 ${g.length}개 (동일인 의심)</span></h2></div>
+  return dup.map(g=>`<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">📞 ${esc(formatPhone(g[0].phone))} <span class="muted" style="font-size:12px;font-weight:400">— 닉네임 ${g.length}개 (동일인 의심)</span></h2></div>
     <table><tbody>${g.map(c=>{const s=stats[c.name]||{cnt:0,amt:0};return `<tr>
       <td><div style="display:flex;align-items:center;gap:8px">${custAvatar(c.name)}<b>${esc(c.name)}</b></div></td>
       <td class="muted">${esc(c.addr||'-')}</td><td class="num-cell">${s.cnt}건</td><td class="num-cell">${won(s.amt)}</td>
@@ -1442,7 +1443,7 @@ function openCustEdit(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c){toast('고
     <div class="modal-foot"><button class="btn red ghost" onclick="delCust(${id})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveCust()">저장</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mc_name');if(el)el.focus();},40);}
 async function saveCust(){const name=$('#mc_name').value.trim();if(!name){toast('고객명을 입력하세요');return;}
-  const phone=$('#mc_phone').value.trim(),addr=$('#mc_addr').value.trim();
+  const phone=formatPhone($('#mc_phone').value.trim()),addr=$('#mc_addr').value.trim();
   if(CUSTEDIT){const c=CUSTOMERS.find(x=>x.id===CUSTEDIT);if(c){Object.assign(c,{name,phone,addr});await saveCustDB(c);}CUSTEDIT=null;closeModal();toast('✅ 수정 완료: '+name);render();return;}
   if(CUSTOMERS.some(c=>c.name===name&&(c.phone||'')===phone)){toast('이미 등록된 고객입니다 (이름+연락처 동일)');return;}
   const c={name,phone,addr};CUSTOMERS.push(c);
