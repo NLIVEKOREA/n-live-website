@@ -648,7 +648,7 @@ function viewOrder(){
       <button class="btn sm ghost" onclick="addNatjang()">＋ 낱장</button>
       <span class="muted" style="margin:0 2px">|</span>
       <span class="muted" style="font-size:12px">배송비 <b style="color:var(--blue)">자동</b>${OE.shipManual?' <span style="color:var(--amber);font-weight:700">수동지정됨</span>':''}</span>
-      <button class="btn sm" style="background:var(--blue-s);color:var(--blue);border:1px solid #bcd3ff" onclick="addShip(3000,'배송비')">배송비 +3,000</button>
+      <button class="btn sm" style="background:var(--blue-s);color:var(--blue);border:1px solid #bcd3ff" onclick="addShip(4000,'배송비')">배송비 +4,000</button>
       <button class="btn sm" style="background:var(--green-s);color:var(--green);border:1px solid #b9e6c9" onclick="addShip(0,'무료배송')">무료배송 +0</button>
       ${OE.shipManual?`<button class="btn sm gray" onclick="OE.shipManual=false;render()">↻ 자동복구</button>`:''}
       <span class="muted" style="margin-left:auto;font-size:12.5px;display:flex;align-items:center;gap:5px;white-space:nowrap">🆓 무료배송 기준 <input type="number" value="${freeThresh()}" onchange="setFreeThresh(this.value)" style="width:96px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:13px"> 원 이상</span>
@@ -849,7 +849,7 @@ function custKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!
   else{toast('여러 명 검색됨 — 목록에서 선택하세요');custSearch(v);}}
 function pickCustId(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;OE.custId=c.id;OE.zip=c.zip||'';OE.island=islandInfo(OE.zip)||islandByAddr(OE.addr);
   toast('👤 고객: '+c.name+(c.phone?' ('+c.phone+')':' (연락처 미등록)'));render();
-  if(OE.island)setTimeout(function(){alert('🏝️ 이 고객은 도서산간 지역입니다!\n\n· '+OE.island.region+'\n· 택배사 추가비 '+OE.island.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 3,000+추가 3,000)으로 반영됩니다.');},150);}
+  if(OE.island)setTimeout(function(){alert('🏝️ 이 고객은 도서산간 지역입니다!\n\n· '+OE.island.region+'\n· 택배사 추가비 '+OE.island.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 4,000+추가 3,000)으로 반영됩니다.');},150);}
 function pickCust(name){const c=CUSTOMERS.find(x=>x.name===name);if(c)pickCustId(c.id);}
 function pickCustNew(v){OE.cust=v;OE.phone='';OE.addr='';toast('🆕 신규고객 '+v+' (연락처·주소 추후 등록)');render();}
 function clearCust(){OE.cust=null;OE.phone='';OE.addr='';render();}
@@ -892,16 +892,16 @@ function recalcShip(){
   if(!OE.cust)return;
   const goods=shipBase();if(goods<=0)return;
   const isl=islandOf();const th=freeThresh();const free=th>0&&goods>=th;
-  const base=free?0:3000,add=isl?3000:0,price=base+add;
+  const base=free?0:4000,add=isl?3000:0,price=base+add;
   const label=price===0?'무료배송':(isl&&free)?'도서산간 추가배송비':isl?'배송비(도서산간)':'배송비';
   OE.lines.push({kind:'ship',name:label,code:'배송비',color:'',size:'',qty:1,price,auto:true});
 }
-function checkIsland(zip){OE.zip=(zip||'').trim();const info=islandInfo(OE.zip)||islandByAddr(OE.addr);OE.island=info||null;if(info){alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 3,000+추가 3,000)으로 반영됩니다.');}render();}
+function checkIsland(zip){OE.zip=(zip||'').trim();const info=islandInfo(OE.zip)||islandByAddr(OE.addr);OE.island=info||null;if(info){alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 4,000+추가 3,000)으로 반영됩니다.');}render();}
 /* 카카오(다음) 우편번호 검색 — 동적 로드, 키 불필요 */
 function searchAddr(cb){function go(){new daum.Postcode({oncomplete:function(d){cb(d.zonecode||'',d.roadAddress||d.jibunAddress||'');}}).open();}
   if(window.daum&&window.daum.Postcode)return go();
   const s=document.createElement('script');s.src='https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';s.onload=go;s.onerror=function(){toast('⚠️ 주소검색 로드 실패 — 인터넷을 확인하세요');};document.head.appendChild(s);}
-function islandAlert(zip){const info=islandInfo(zip);if(info)alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 고객에겐 기본 배송비 3,000원만 청구하세요.');return info;}
+function islandAlert(zip){const info=islandInfo(zip);if(info)alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 주문 시 배송비가 도서산간 요금(기본 4,000+추가 3,000)으로 자동 반영됩니다.');return info;}
 function custSearchAddr(){searchAddr(function(zip,addr){const z=$('#mc_zip'),a=$('#mc_addr');if(z)z.value=zip;if(a)a.value=addr;islandAlert(zip);});}
 function resetOrder(){OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();}
 let _committing=false;
