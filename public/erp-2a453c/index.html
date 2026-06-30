@@ -351,7 +351,11 @@ async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){const {error}=await S
 async function delOrd(o){try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');}}
 async function saveStock(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');}}
 /* 재고 원자적 가감 — DB에서 qty=qty±delta 계산(동시 차감해도 안 깨짐). 반환된 정확한 값으로 화면 갱신 */
-async function adjustStockDB(s,delta){if(!s)return false;if(s.id==null){s.qty=(s.qty||0)+delta;return true;}try{const {data,error}=await SB.rpc('adjust_stock',{p_id:s.id,p_delta:delta});if(error){console.error('adjustStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');return false;}if(typeof data==='number')s.qty=data;return true;}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');return false;}}
+async function adjustStockDB(s,delta,reason,ref){if(!s)return false;if(s.id==null){s.qty=(s.qty||0)+delta;return true;}try{const {data,error}=await SB.rpc('adjust_stock',{p_id:s.id,p_delta:delta});if(error){console.error('adjustStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');return false;}if(typeof data==='number')s.qty=data;try{await SB.from('stock_log').insert({stock_id:s.id,code:s.code,delta:delta,reason:reason||'조정',ref:ref||null,staff:(window.ME&&ME.name)||null});}catch(e){}return true;}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');return false;}}
+async function openStockLog(id,name){$('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📜 재고 변동내역</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div><div class="note" style="margin-bottom:10px">${esc(name||'')}</div><div id="slBody" class="muted" style="padding:10px">불러오는 중...</div>`;$('#modal').classList.remove('hide');
+  try{const {data}=await SB.from('stock_log').select('*').eq('stock_id',id).order('at',{ascending:false}).limit(300);const rows=data||[];const el=$('#slBody');el.className='';
+    el.innerHTML=rows.length?`<table><thead><tr><th>일시</th><th>구분</th><th class="num-cell">증감</th><th>담당</th><th>메모</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="muted" style="font-size:12px">${String(r.at||'').slice(0,16).replace('T',' ')}</td><td><span class="pill ${r.delta>0?'p-done':'p-low'}">${esc(r.reason||'')}</span></td><td class="num-cell" style="font-weight:700;color:${r.delta>0?'#16a34a':'#dc2626'}">${r.delta>0?'+':''}${r.delta}</td><td class="muted">${esc(r.staff||'-')}</td><td class="muted" style="font-size:12px">${esc(r.ref||'')}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:10px">아직 변동 기록이 없습니다. 지금부터 판매·교환·환불·조정이 자동 기록됩니다.</div>';
+  }catch(e){$('#slBody').innerHTML='<div class="muted" style="padding:10px">불러오기 실패 (잠시 후 다시)</div>';}}
 async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error){console.error('updStock',error);toast('⚠️ 품목 저장 실패 — 다시 시도하세요');}}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error){console.error('insStock',error);toast('⚠️ 품목 등록 실패 — 다시 시도하세요');}if(data)s.id=data.id;}if(s.id&&s.in_price!=null){try{const {error}=await SB.from('stock_cost').upsert({stock_id:s.id,in_price:s.in_price||0});if(error)console.error('cost',error);}catch(e){console.error('cost',e);}}}catch(e){console.error(e);toast('⚠️ 품목 저장 오류');}}
 async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error){console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}else{row.owner=(window.ME&&(ME.owner||ME.name))||null;const {data,error}=await SB.from('customers').insert(row).select('id').single();if(error){console.error('insCust',error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(data){c.id=data.id;c.owner=row.owner;}}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
 async function delCustDB(c){try{if(c.id){const {error}=await SB.from('customers').delete().eq('id',c.id);if(error){console.error('delCust',error);toast('⚠️ 고객 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
@@ -703,7 +707,7 @@ function paidCards(){
 }
 async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';g.items.forEach(o=>{o.pay='paid';o.payway=pw;});toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');render();for(const o of g.items)await saveOrd(o);}
 async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(!confirm('입금확인을 취소하시겠습니까?\n\n'+g.cust+' '+g.items.length+'건이 미결제 상태로 돌아갑니다.'))return;g.items.forEach(o=>{o.pay='unpaid';});toast('↩ 입금확인 취소 → 미결제로 복구: '+g.cust);render();for(const o of g.items)await saveOrd(o);}
-async function cancelGroupBtn(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const removed=[];g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);removed.push({o,s,dq:o.qty});});toast('🗑️ 주문 취소 → 재고 복원: '+g.cust);render();for(const {o,s,dq} of removed){await delOrd(o);if(s)await adjustStockDB(s,dq);}}
+async function cancelGroupBtn(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const removed=[];g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);removed.push({o,s,dq:o.qty});});toast('🗑️ 주문 취소 → 재고 복원: '+g.cust);render();for(const {o,s,dq} of removed){await delOrd(o);if(s)await adjustStockDB(s,dq,'주문취소',o.cust);}}
 
 /* ===== 주문서(고객 안내문) ===== */
 const ACCOUNTS={'박시연':'기업은행 49907863201015',_default:'기업은행 49907863201015'};
@@ -840,7 +844,7 @@ async function commitOrder(){
     const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:l.code,disp:`${l.name} ${l.color} ${l.size}`,tag:tagOf(l.code),color:l.color,size:l.size,qty:l.qty,price:l.price,back:!!l.back,pay:'unpaid',ship:'miss'};
     ORD.unshift(o);created.push({o,s,dq:l.qty});});
   const _cnt=created.length;
-  for(const {o,s,dq} of created){await saveOrd(o);if(s)await adjustStockDB(s,-dq);}
+  for(const {o,s,dq} of created){await saveOrd(o);if(s)await adjustStockDB(s,-dq,'판매',o.cust);}
   toast('✅ 주문서 저장 ('+_cnt+'건)'+(back?' · 미송 '+back+'건 포함':''));
   OE={cust:null,phone:'',addr:'',staff:null,lines:[],date:OE.date};render();
   _committing=false;
@@ -1176,8 +1180,8 @@ function faulteeOf(o){return o.fault==='셀러'?(o.staff||'담당셀러'):o.faul
 function rxStockFor(o){return STOCK.find(s=>s.code===o.code&&(s.color||'')===(o.color||'')&&(s.size||'')===(o.size||''));}
 /* 단계별 재고효과: sign=+1 진입 적용, sign=-1 역산(되돌리기) */
 async function rxStepStockEffect(o,step,sign){const q=o.qty||1;
-  if(step==='gotback'){const s=rxStockFor(o);if(s){await adjustStockDB(s,sign*q);return `${o.code} 재고 ${sign>0?'+':'−'}${q}`;}return '';}
-  if(step==='reship'){const nw=o.rxnew||{};const s=STOCK.find(x=>x.code===nw.code&&(x.color||'')===(nw.color||'')&&(x.size||'')===(nw.size||''));if(s){await adjustStockDB(s,-sign*q);return `${nw.code||'새상품'} 재고 ${sign>0?'−':'+'}${q}`;}return '';}
+  if(step==='gotback'){const s=rxStockFor(o);if(s){await adjustStockDB(s,sign*q,sign>0?'교환/반품 회수입고':'회수취소',o.cust);return `${o.code} 재고 ${sign>0?'+':'−'}${q}`;}return '';}
+  if(step==='reship'){const nw=o.rxnew||{};const s=STOCK.find(x=>x.code===nw.code&&(x.color||'')===(nw.color||'')&&(x.size||'')===(nw.size||''));if(s){await adjustStockDB(s,-sign*q,sign>0?'교환 재발송':'재발송취소',o.cust);return `${nw.code||'새상품'} 재고 ${sign>0?'−':'+'}${q}`;}return '';}
   return '';}
 let RXDRAFT=null,RXVIEWTAB='active';
 function rxOpen(id,type){const o=ORD.find(x=>x.id===id);if(!o)return;RXDRAFT={id,type,reason:RX_REASONS[0].l,fault:RX_REASONS[0].f};renderRxModal(o);}
@@ -1330,12 +1334,13 @@ function viewStock(){
       ${searchBox}
     </div>`:`<div class="toolbar"><span class="grow"></span>${searchBox}</div>`}
     <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>컬러</th><th>사이즈</th>
-      <th class="num-cell">단가</th><th class="num-cell">현재고</th></tr></thead><tbody>
+      <th class="num-cell">단가</th><th class="num-cell">현재고</th><th style="width:64px">내역</th></tr></thead><tbody>
     ${rows.map(s=>`<tr>
       <td>${can?`<input class="barcode" style="width:62px;text-align:center;font-weight:700" value="${s.tag}" onchange="setTag('${s.code}',this.value)">`:`<span class="tagbox">${s.tag}</span>`}</td>
       <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.code}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
       <td class="num-cell muted">${won(s.price)}</td>
       <td class="num-cell" style="font-weight:700">${s.qty}</td>
+      <td>${s.id!=null?`<button class="btn sm ghost" style="padding:4px 8px" title="재고 변동내역" onclick='openStockLog(${s.id},${JSON.stringify((s.name||"")+" "+(s.color||"")+" "+(s.size||""))})'>📜</button>`:''}</td>
       </tr>`).join('')}
     </tbody></table>
   </div>`;
@@ -1642,7 +1647,7 @@ function viewUsers(){
 function payConfirm(id){const o=ORD.find(x=>x.id===id);o.pay='paid';toast('💳 입금확인 → 결제완료! 판매관리로 이동: '+o.cust);render();}
 async function cancelOrder(id){const i=ORD.findIndex(x=>x.id===id);if(i<0)return;const o=ORD[i],s=skuOf(o.code,o.color,o.size);ORD.splice(i,1);
   toast('🗑️ 주문 취소 → 재고 '+o.qty+'개 복원 ('+prodName(o.code)+' '+o.color+')');render();
-  await delOrd(o);if(s)await adjustStockDB(s,o.qty);}
+  await delOrd(o);if(s)await adjustStockDB(s,o.qty,'주문취소',o.cust);}
 function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o.cust+' → '+({req:'출고요청',done:'출고완료'})[st]);render();}
 function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
 function stagedAdd(){
@@ -1664,9 +1669,9 @@ async function setTag(code,val){const t=val.trim();STOCK.filter(s=>s.code===code
 async function scanMove(dir){const raw=$('#scan').value.trim().replace(/\s/g,''),q=parseInt($('#scanQty').value)||1;
   const s=STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'')===raw)||STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'').includes(raw));
   if(!s){toast('❌ 일치 품목 없음: '+raw);return;}if(dir<0&&s.qty<q){toast('⚠️ 재고 부족! 현재고 '+s.qty);return;}
-  await adjustStockDB(s,dir*q);toast((dir>0?'＋입고 ':'－출고 ')+s.name+' '+s.color+' '+Math.abs(dir*q)+'개 → 현재고 '+s.qty);$('#scan').value='';render();}
+  await adjustStockDB(s,dir*q,dir>0?'바코드 입고':'바코드 출고');toast((dir>0?'＋입고 ':'－출고 ')+s.name+' '+s.color+' '+Math.abs(dir*q)+'개 → 현재고 '+s.qty);$('#scan').value='';render();}
 async function stockAdjust(){const idx=parseInt($('#a_code').value),d=parseInt($('#a_qty').value)||0,s=STOCK[idx];
-  if(!s||!d){toast('품목·수량을 확인하세요');return;}await adjustStockDB(s,d);toast('🔧 재고조정: '+s.name+' '+s.color+' '+(d>0?'+':'')+d+' → 현재고 '+s.qty);render();}
+  if(!s||!d){toast('품목·수량을 확인하세요');return;}await adjustStockDB(s,d,'수량조정');toast('🔧 재고조정: '+s.name+' '+s.color+' '+(d>0?'+':'')+d+' → 현재고 '+s.qty);render();}
 function addStock(){const code=$('#n_code').value.trim(),name=$('#n_name').value.trim();
   if(!code||!name){toast('품목코드·품목명은 필수');return;}
   STOCK.push({code,tag:$('#n_tag').value.trim()||'-',name,color:$('#n_color').value.trim()||'-',size:$('#n_size').value.trim()||'F',qty:parseInt($('#n_qty').value)||0,price:parseInt($('#n_price').value)||0});
