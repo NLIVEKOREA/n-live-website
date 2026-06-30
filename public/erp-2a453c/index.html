@@ -640,7 +640,7 @@ function viewOrder(){
       <div class="card-h"><h2>결제완료 <span class="muted" style="font-size:11.5px;font-weight:400">당일 기본</span></h2></div>
       <div class="toolbar">
         <input type="date" value="${CDATE}" onchange="CDATE=this.value;render()" style="flex:1">
-        <input id="cq" placeholder="🔍 닉네임" value="${CQ}" oninput="CQ=this.value;render()" style="flex:1">
+        <input id="cq" placeholder="🔍 닉네임 입력 후 Enter" value="${CQ}" onkeydown="if(event.key==='Enter'){CQ=this.value;render()}" style="flex:1">
       </div>
       ${paidCards()}
     </div>
@@ -1224,7 +1224,7 @@ function viewStock(){
   const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
   const rows=STOCK.filter(smatch).slice(0,200);
   const selN=STAGED.filter(x=>x.chk).length;
-  const searchBox=`<select onchange="STOCKFIELD=this.value;render()" style="padding:9px 12px;border-radius:9px;font-size:13px;font-weight:700">${['전체','번호표','품목코드','품목명'].map(f=>`<option ${STOCKFIELD===f?'selected':''}>${f}</option>`).join('')}</select><input id="stockSearch" placeholder="🔍 ${STOCKFIELD==='전체'?'번호표·품목코드·품목명':STOCKFIELD} 입력" oninput="render()" value="${q}" style="width:320px;font-size:14px">`;
+  const searchBox=`<select onchange="STOCKFIELD=this.value;render()" style="padding:9px 12px;border-radius:9px;font-size:13px;font-weight:700">${['전체','번호표','품목코드','품목명'].map(f=>`<option ${STOCKFIELD===f?'selected':''}>${f}</option>`).join('')}</select><input id="stockSearch" placeholder="🔍 ${STOCKFIELD==='전체'?'번호표·품목코드·품목명':STOCKFIELD} 입력 후 Enter" onkeydown="if(event.key==='Enter')render()" value="${q}" style="width:320px;font-size:14px">`;
   return `
   <div class="head"><h1>재고관리 <span class="badge">핵심</span></h1>
     <p>대량 입고는 아래 <b>품목 등록</b>에서 작업 · 빠른 수정은 재고현황의 품목 클릭(팝업) · 바코드 스캔 입출고</p></div>
@@ -1317,7 +1317,7 @@ function viewCustomers(){
   return `
   <div class="head"><h1>고객관리 <span class="badge">${CUSTOMERS.length.toLocaleString()}명</span></h1><p>구매액 순 정렬 · 검색 · 행에서 바로 수정·삭제 · 같은 번호 중복 분류</p></div>
   <div class="card" style="margin-bottom:14px"><div class="toolbar">
-    <input id="custSearch" placeholder="🔍 이름 · 연락처 · 주소" value="${esc(CUSTSEARCH)}" oninput="CUSTSEARCH=this.value;clearTimeout(window.__ct);window.__ct=setTimeout(render,200)" style="width:320px;font-size:14px">
+    <input id="custSearch" placeholder="🔍 이름·연락처·주소 입력 후 Enter" value="${esc(CUSTSEARCH)}" onkeydown="if(event.key==='Enter'){CUSTSEARCH=this.value;render()}" style="width:320px;font-size:14px">
     <span class="grow"></span>
     <button class="btn" onclick="openCustModal('')">＋ 고객 등록</button>
   </div></div>
