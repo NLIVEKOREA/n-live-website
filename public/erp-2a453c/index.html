@@ -650,9 +650,11 @@ function viewOrder(){
     </div>
   </div>
     <div class="card">
-      <div class="card-h"><h2>결제완료 <span class="muted" style="font-size:11.5px;font-weight:400">당일 기본</span></h2></div>
+      <div class="card-h"><h2>결제완료 <span class="muted" style="font-size:11.5px;font-weight:400">${CDATE?CDATE+' 기준':'전체'}</span></h2></div>
       <div class="toolbar">
         <input type="date" value="${CDATE}" onchange="CDATE=this.value;render()" style="flex:1">
+        <button class="btn sm ${CDATE?'gray':''}" onclick="CDATE='';render()" title="날짜 상관없이 모든 결제완료 보기">전체</button>
+        <button class="btn sm gray" onclick="CDATE=todayStr();render()" title="오늘만">오늘</button>
         <input id="cq" placeholder="🔍 닉네임 입력 후 Enter" value="${CQ}" onkeydown="if(event.key==='Enter'){CQ=this.value;render()}" style="flex:1">
       </div>
       ${paidCards()}
@@ -705,7 +707,7 @@ function paidCards(){
   if(gs.length>show.length)out+=`<div class="muted" style="padding:8px;font-size:12px">… 외 ${gs.length-show.length}건</div>`;
   return out;
 }
-async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';g.items.forEach(o=>{o.pay='paid';o.payway=pw;});toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');render();for(const o of g.items)await saveOrd(o);}
+async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';g.items.forEach(o=>{o.pay='paid';o.payway=pw;});CDATE=(g.date||'').replace(/\//g,'-').slice(0,10)||CDATE;CQ='';toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');render();for(const o of g.items)await saveOrd(o);}
 async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(!confirm('입금확인을 취소하시겠습니까?\n\n'+g.cust+' '+g.items.length+'건이 미결제 상태로 돌아갑니다.'))return;g.items.forEach(o=>{o.pay='unpaid';});toast('↩ 입금확인 취소 → 미결제로 복구: '+g.cust);render();for(const o of g.items)await saveOrd(o);}
 async function cancelGroupBtn(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const removed=[];g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);removed.push({o,s,dq:o.qty});});toast('🗑️ 주문 취소 → 재고 복원: '+g.cust);render();for(const {o,s,dq} of removed){await delOrd(o);if(s)await adjustStockDB(s,dq,'주문취소',o.cust);}}
 
