@@ -612,6 +612,7 @@ function viewDash(){
 /* ===== 주문서입력 (그리드) ===== */
 let OE={cust:null,phone:'',addr:'',staff:null,lines:[]};
 function viewOrder(){
+  recalcShip();
   const unpaid=mine(ORD).filter(o=>o.pay==='unpaid');
   const sellers=USERS.filter(u=>u.team==='셀러팀'&&u.role==='셀러').map(u=>`<option ${OE.staff===u.name?'selected':''}>${u.name}</option>`).join('');
   const total=OE.lines.reduce((a,l)=>a+(l.price||0)*(l.qty||0),0),cnt=OE.lines.reduce((a,l)=>a+(l.qty||0),0);
@@ -646,8 +647,11 @@ function viewOrder(){
     <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;align-items:center">
       <button class="btn sm ghost" onclick="addNatjang()">＋ 낱장</button>
       <span class="muted" style="margin:0 2px">|</span>
+      <span class="muted" style="font-size:12px">배송비 <b style="color:var(--blue)">자동</b>${OE.shipManual?' <span style="color:var(--amber);font-weight:700">수동지정됨</span>':''}</span>
       <button class="btn sm" style="background:var(--blue-s);color:var(--blue);border:1px solid #bcd3ff" onclick="addShip(3000,'배송비')">배송비 +3,000</button>
       <button class="btn sm" style="background:var(--green-s);color:var(--green);border:1px solid #b9e6c9" onclick="addShip(0,'무료배송')">무료배송 +0</button>
+      ${OE.shipManual?`<button class="btn sm gray" onclick="OE.shipManual=false;render()">↻ 자동복구</button>`:''}
+      <span class="muted" style="margin-left:auto;font-size:12.5px;display:flex;align-items:center;gap:5px;white-space:nowrap">🆓 무료배송 기준 <input type="number" value="${freeThresh()}" onchange="setFreeThresh(this.value)" style="width:96px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:13px"> 원 이상</span>
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
       <button class="btn" style="padding:13px 22px;font-size:14px" onclick="commitOrder()">💾 저장 (F8) · 재고 차감</button>
@@ -736,7 +740,7 @@ async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(
   render();}
 async function editOrderGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;
   if(!confirm("'"+g.cust+"' 주문을 주문서입력으로 불러옵니다.\n품목을 추가/삭제한 뒤 [저장]하면 새로 반영됩니다."))return;
-  OE={cust:g.cust,phone:g.phone||'',addr:g.addr||'',staff:g.staff||null,
+  OE={cust:g.cust,phone:g.phone||'',addr:g.addr||'',staff:g.staff||null,shipManual:true,
     date:((g.date||'').replace(/\//g,'-').slice(0,10))||todayStr(),
     lines:g.items.map(function(o){
       if(o.code==='배송비')return {kind:'ship',name:o.disp||'배송비',price:o.price||0,qty:1};
@@ -843,9 +847,9 @@ function custKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!
   else if(m.length===1)pickCustId(m[0].id);
   else if(m.length===0)openCustModal(v);
   else{toast('여러 명 검색됨 — 목록에서 선택하세요');custSearch(v);}}
-function pickCustId(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;OE.custId=c.id;OE.zip=c.zip||'';OE.island=islandInfo(OE.zip);
+function pickCustId(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;OE.custId=c.id;OE.zip=c.zip||'';OE.island=islandInfo(OE.zip)||islandByAddr(OE.addr);
   toast('👤 고객: '+c.name+(c.phone?' ('+c.phone+')':' (연락처 미등록)'));render();
-  if(OE.island)setTimeout(function(){alert('🏝️ 이 고객은 도서산간 지역입니다!\n\n· '+OE.island.region+'\n· 택배사 추가비 '+OE.island.extra.toLocaleString()+'원 지역\n· 고객에겐 기본 배송비 3,000원만 청구하세요.');},150);}
+  if(OE.island)setTimeout(function(){alert('🏝️ 이 고객은 도서산간 지역입니다!\n\n· '+OE.island.region+'\n· 택배사 추가비 '+OE.island.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 3,000+추가 3,000)으로 반영됩니다.');},150);}
 function pickCust(name){const c=CUSTOMERS.find(x=>x.name===name);if(c)pickCustId(c.id);}
 function pickCustNew(v){OE.cust=v;OE.phone='';OE.addr='';toast('🆕 신규고객 '+v+' (연락처·주소 추후 등록)');render();}
 function clearCust(){OE.cust=null;OE.phone='';OE.addr='';render();}
@@ -869,11 +873,30 @@ function lineBack(i,c){OE.lines[i].back=c;render();}
 function removeLine(i){OE.lines.splice(i,1);render();}
 function lineField(i,f,v){if(!OE.lines[i])return;OE.lines[i][f]=(f==='qty'||f==='price')?Math.max(0,parseInt(v)||0):v;render();}
 function addNatjang(){OE.lines.push({kind:'natjang',tag:'',name:'',code:'낱장',color:'',size:'',qty:1,price:0});toast('📝 낱장 행 추가 — 번호표·색상·수량·단가 직접 입력');render();}
-function addShip(price,label){OE.lines.push({kind:'ship',name:label,code:'배송비',color:'',size:'',qty:1,price});toast('🚚 '+label+' 추가됨');render();}
+function addShip(price,label){OE.lines=OE.lines.filter(l=>l.kind!=='ship');OE.lines.push({kind:'ship',name:label,code:'배송비',color:'',size:'',qty:1,price});OE.shipManual=true;toast('🚚 '+label+' 수동지정 (자동계산 해제 · [자동복구]로 되돌림)');render();}
 /* 도서산간 우편번호 [from,to,지역,택배사추가비] */
 const ISLAND_ZIP=[[15654,15654,'경기 안산 풍도/육도',5000],[23008,23010,'인천 강화 섬지역',4500],[23100,23116,'인천 옹진 섬지역',6000],[23124,23136,'인천 옹진 섬지역',6000],[32133,32133,'충남 태안 섬지역',5000],[40200,40240,'경북 울릉도',4000],[46769,46770,'부산 강서구 섬지역',4000],[52571,52571,'경남 사천 섬지역',4000],[53031,53033,'경남 통영 섬지역',4000],[53088,53088,'경남 통영 산양읍 곤리',4000],[53089,53104,'경남 통영 섬지역',4000],[56347,56349,'전북 부안 섬지역',5000],[57068,57069,'전남 영광 섬지역',4000],[58760,58762,'전남 목포 섬지역',6000],[58804,58804,'전남 신안 섬지역',7000],[58809,58809,'전남 신안 섬지역',7000],[58816,58818,'전남 신안 섬지역',7000],[58826,58826,'전남 신안 섬지역',7000],[58832,58832,'전남 신안 섬지역',7000],[58843,58866,'전남 신안 섬지역',7000],[58953,58958,'전남 진도 섬지역',7000],[59127,59127,'전남 완도 섬지역',5000],[59137,59146,'전남 완도 섬지역',5000],[59149,59166,'전남 완도 섬지역',5000],[59167,59170,'전남 완도 도서',5000],[59421,59421,'전남 보성 섬지역',4000],[59563,59563,'전남 고흥 섬지역',5000],[59568,59568,'전남 고흥 섬지역',5000],[59650,59650,'전남 여수 섬지역',8000],[59766,59766,'전남 여수 섬지역',8000],[59783,59783,'전남 여수 섬지역',8000],[59785,59790,'전남 여수 섬지역',8000],[63000,63001,'제주 추자면',7000],[63002,63364,'제주 전지역',3000],[63365,63365,'제주 우도',6000],[63366,63644,'제주 전지역',3000]];
 function islandInfo(zip){const z=parseInt(String(zip||'').replace(/\D/g,''),10);if(!z)return null;for(const r of ISLAND_ZIP){if(z>=r[0]&&z<=r[1])return {region:r[2],extra:r[3]};}return null;}
-function checkIsland(zip){OE.zip=(zip||'').trim();const info=islandInfo(OE.zip);OE.island=info||null;if(info){alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 고객에겐 기본 배송비 3,000원만 청구하세요.\n\n아래 [배송비 +3,000] 버튼을 눌러 추가하세요.');}render();}
+/* 도서산간 주소 키워드 판별 — 우편번호 없어도 주소만으로 섬 지역 감지 (군 전체가 섬인 곳만) */
+const ISLAND_ADDR=[['제주','제주 (도서산간)',3000],['서귀포','제주 서귀포 (도서산간)',3000],['울릉','경북 울릉도',4000],['옹진','인천 옹진 섬지역',6000],['백령','인천 옹진 백령도',6000],['연평','인천 옹진 연평도',6000],['덕적','인천 옹진 덕적도',6000],['신안','전남 신안 섬지역',7000]];
+function islandByAddr(addr){const a=String(addr||'');if(!a)return null;for(const r of ISLAND_ADDR){if(a.indexOf(r[0])>=0)return {region:r[1],extra:r[2]};}return null;}
+function islandOf(){return islandInfo(OE.zip)||islandByAddr(OE.addr||'');}
+/* 무료배송 기준 (회사 공통값, 기본 10만원) */
+function freeThresh(){const v=parseInt(localStorage.getItem('freeshipThreshold'),10);return isNaN(v)?100000:v;}
+function setFreeThresh(v){const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);localStorage.setItem('freeshipThreshold',n);toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료');render();}
+/* 배송비 자동계산 — 상품합계·주소·무료기준에 따라 배송비 라인 자동 세팅 (수동지정 시 건너뜀) */
+function shipBase(){return OE.lines.filter(l=>l.kind!=='ship').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);}
+function recalcShip(){
+  if(OE.shipManual)return;
+  OE.lines=OE.lines.filter(l=>!(l.kind==='ship'&&l.auto));
+  if(!OE.cust)return;
+  const goods=shipBase();if(goods<=0)return;
+  const isl=islandOf();const th=freeThresh();const free=th>0&&goods>=th;
+  const base=free?0:3000,add=isl?3000:0,price=base+add;
+  const label=price===0?'무료배송':(isl&&free)?'도서산간 추가배송비':isl?'배송비(도서산간)':'배송비';
+  OE.lines.push({kind:'ship',name:label,code:'배송비',color:'',size:'',qty:1,price,auto:true});
+}
+function checkIsland(zip){OE.zip=(zip||'').trim();const info=islandInfo(OE.zip)||islandByAddr(OE.addr);OE.island=info||null;if(info){alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 3,000+추가 3,000)으로 반영됩니다.');}render();}
 /* 카카오(다음) 우편번호 검색 — 동적 로드, 키 불필요 */
 function searchAddr(cb){function go(){new daum.Postcode({oncomplete:function(d){cb(d.zonecode||'',d.roadAddress||d.jibunAddress||'');}}).open();}
   if(window.daum&&window.daum.Postcode)return go();
