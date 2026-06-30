@@ -357,7 +357,7 @@ async function openStockLog(id,name){$('#modalBox').innerHTML=`<div style="displ
     el.innerHTML=rows.length?`<table><thead><tr><th>일시</th><th>구분</th><th class="num-cell">증감</th><th>담당</th><th>메모</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="muted" style="font-size:12px">${String(r.at||'').slice(0,16).replace('T',' ')}</td><td><span class="pill ${r.delta>0?'p-done':'p-low'}">${esc(r.reason||'')}</span></td><td class="num-cell" style="font-weight:700;color:${r.delta>0?'#16a34a':'#dc2626'}">${r.delta>0?'+':''}${r.delta}</td><td class="muted">${esc(r.staff||'-')}</td><td class="muted" style="font-size:12px">${esc(r.ref||'')}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:10px">아직 변동 기록이 없습니다. 지금부터 판매·교환·환불·조정이 자동 기록됩니다.</div>';
   }catch(e){$('#slBody').innerHTML='<div class="muted" style="padding:10px">불러오기 실패 (잠시 후 다시)</div>';}}
 async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error){console.error('updStock',error);toast('⚠️ 품목 저장 실패 — 다시 시도하세요');}}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error){console.error('insStock',error);toast('⚠️ 품목 등록 실패 — 다시 시도하세요');}if(data)s.id=data.id;}if(s.id&&s.in_price!=null){try{const {error}=await SB.from('stock_cost').upsert({stock_id:s.id,in_price:s.in_price||0});if(error)console.error('cost',error);}catch(e){console.error('cost',e);}}}catch(e){console.error(e);toast('⚠️ 품목 저장 오류');}}
-async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error){console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}else{row.owner=(window.ME&&(ME.owner||ME.name))||null;const {data,error}=await SB.from('customers').insert(row).select('id').single();if(error){console.error('insCust',error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(data){c.id=data.id;c.owner=row.owner;}}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
+async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null,zip:c.zip||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error){console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}else{row.owner=(window.ME&&(ME.owner||ME.name))||null;const {data,error}=await SB.from('customers').insert(row).select('id').single();if(error){console.error('insCust',error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(data){c.id=data.id;c.owner=row.owner;}}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
 async function delCustDB(c){try{if(c.id){const {error}=await SB.from('customers').delete().eq('id',c.id);if(error){console.error('delCust',error);toast('⚠️ 고객 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 async function delStockDB(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').delete().eq('id',s.id);if(error){console.error('delStock',error);toast('⚠️ 품목 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 /* ===== 기간 헬퍼 (당일 기본) ===== */
@@ -843,8 +843,9 @@ function custKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!
   else if(m.length===1)pickCustId(m[0].id);
   else if(m.length===0)openCustModal(v);
   else{toast('여러 명 검색됨 — 목록에서 선택하세요');custSearch(v);}}
-function pickCustId(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;OE.custId=c.id;
-  toast('👤 고객: '+c.name+(c.phone?' ('+c.phone+')':' (연락처 미등록)'));render();}
+function pickCustId(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;OE.custId=c.id;OE.zip=c.zip||'';OE.island=islandInfo(OE.zip);
+  toast('👤 고객: '+c.name+(c.phone?' ('+c.phone+')':' (연락처 미등록)'));render();
+  if(OE.island)setTimeout(function(){alert('🏝️ 이 고객은 도서산간 지역입니다!\n\n· '+OE.island.region+'\n· 택배사 추가비 '+OE.island.extra.toLocaleString()+'원 지역\n· 고객에겐 기본 배송비 3,000원만 청구하세요.');},150);}
 function pickCust(name){const c=CUSTOMERS.find(x=>x.name===name);if(c)pickCustId(c.id);}
 function pickCustNew(v){OE.cust=v;OE.phone='';OE.addr='';toast('🆕 신규고객 '+v+' (연락처·주소 추후 등록)');render();}
 function clearCust(){OE.cust=null;OE.phone='';OE.addr='';render();}
@@ -873,6 +874,12 @@ function addShip(price,label){OE.lines.push({kind:'ship',name:label,code:'배송
 const ISLAND_ZIP=[[15654,15654,'경기 안산 풍도/육도',5000],[23008,23010,'인천 강화 섬지역',4500],[23100,23116,'인천 옹진 섬지역',6000],[23124,23136,'인천 옹진 섬지역',6000],[32133,32133,'충남 태안 섬지역',5000],[40200,40240,'경북 울릉도',4000],[46769,46770,'부산 강서구 섬지역',4000],[52571,52571,'경남 사천 섬지역',4000],[53031,53033,'경남 통영 섬지역',4000],[53088,53088,'경남 통영 산양읍 곤리',4000],[53089,53104,'경남 통영 섬지역',4000],[56347,56349,'전북 부안 섬지역',5000],[57068,57069,'전남 영광 섬지역',4000],[58760,58762,'전남 목포 섬지역',6000],[58804,58804,'전남 신안 섬지역',7000],[58809,58809,'전남 신안 섬지역',7000],[58816,58818,'전남 신안 섬지역',7000],[58826,58826,'전남 신안 섬지역',7000],[58832,58832,'전남 신안 섬지역',7000],[58843,58866,'전남 신안 섬지역',7000],[58953,58958,'전남 진도 섬지역',7000],[59127,59127,'전남 완도 섬지역',5000],[59137,59146,'전남 완도 섬지역',5000],[59149,59166,'전남 완도 섬지역',5000],[59167,59170,'전남 완도 도서',5000],[59421,59421,'전남 보성 섬지역',4000],[59563,59563,'전남 고흥 섬지역',5000],[59568,59568,'전남 고흥 섬지역',5000],[59650,59650,'전남 여수 섬지역',8000],[59766,59766,'전남 여수 섬지역',8000],[59783,59783,'전남 여수 섬지역',8000],[59785,59790,'전남 여수 섬지역',8000],[63000,63001,'제주 추자면',7000],[63002,63364,'제주 전지역',3000],[63365,63365,'제주 우도',6000],[63366,63644,'제주 전지역',3000]];
 function islandInfo(zip){const z=parseInt(String(zip||'').replace(/\D/g,''),10);if(!z)return null;for(const r of ISLAND_ZIP){if(z>=r[0]&&z<=r[1])return {region:r[2],extra:r[3]};}return null;}
 function checkIsland(zip){OE.zip=(zip||'').trim();const info=islandInfo(OE.zip);OE.island=info||null;if(info){alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 고객에겐 기본 배송비 3,000원만 청구하세요.\n\n아래 [배송비 +3,000] 버튼을 눌러 추가하세요.');}render();}
+/* 카카오(다음) 우편번호 검색 — 동적 로드, 키 불필요 */
+function searchAddr(cb){function go(){new daum.Postcode({oncomplete:function(d){cb(d.zonecode||'',d.roadAddress||d.jibunAddress||'');}}).open();}
+  if(window.daum&&window.daum.Postcode)return go();
+  const s=document.createElement('script');s.src='https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';s.onload=go;s.onerror=function(){toast('⚠️ 주소검색 로드 실패 — 인터넷을 확인하세요');};document.head.appendChild(s);}
+function islandAlert(zip){const info=islandInfo(zip);if(info)alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 고객에겐 기본 배송비 3,000원만 청구하세요.');return info;}
+function custSearchAddr(){searchAddr(function(zip,addr){const z=$('#mc_zip'),a=$('#mc_addr');if(z)z.value=zip;if(a)a.value=addr;islandAlert(zip);});}
 function resetOrder(){OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();}
 let _committing=false;
 async function commitOrder(){
@@ -1561,7 +1568,9 @@ function openCustModal(prefill){prefill=prefill||'';CUSTEDIT=null;
     <h3>고객 신규 등록</h3><div class="ms">검색에 없어 새로 등록합니다. 저장하면 작업 중인 주문에 바로 적용돼요(화면 유지).</div>
     <label>고객명(닉네임)</label><input id="mc_name" value="${esc(prefill)}">
     <label>연락처</label><input id="mc_phone" placeholder="010-0000-0000">
-    <label>주소</label><input id="mc_addr" placeholder="배송 주소">
+    <label>주소</label>
+    <div style="display:flex;gap:6px;margin-bottom:6px"><input id="mc_zip" placeholder="우편번호" readonly style="width:90px;background:#f8fafc"><button type="button" class="btn sm" onclick="custSearchAddr()">🔍 주소검색</button></div>
+    <input id="mc_addr" placeholder="주소검색으로 입력 (도서산간 자동확인)">
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveCust()">등록</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mc_name');if(el)el.focus();},40);}
 function openCustEdit(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c){toast('고객 정보를 찾을 수 없어요');return;}CUSTEDIT=id;
@@ -1569,14 +1578,16 @@ function openCustEdit(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c){toast('고
     <h3>고객 수정</h3><div class="ms"><b>${esc(c.name)}</b> 님의 정보를 수정합니다. 닉네임을 바꿔도 과거 주문은 유지됩니다.</div>
     <label>고객명(닉네임)</label><input id="mc_name" value="${esc(c.name||'')}">
     <label>연락처</label><input id="mc_phone" value="${esc(c.phone||'')}" placeholder="010-0000-0000">
-    <label>주소</label><input id="mc_addr" value="${esc(c.addr||'')}" placeholder="배송 주소">
+    <label>주소</label>
+    <div style="display:flex;gap:6px;margin-bottom:6px"><input id="mc_zip" value="${esc(c.zip||'')}" placeholder="우편번호" readonly style="width:90px;background:#f8fafc"><button type="button" class="btn sm" onclick="custSearchAddr()">🔍 주소검색</button></div>
+    <input id="mc_addr" value="${esc(c.addr||'')}" placeholder="주소검색으로 입력">
     <div class="modal-foot"><button class="btn red ghost" onclick="delCust(${id})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveCust()">저장</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mc_name');if(el)el.focus();},40);}
 async function saveCust(){const name=$('#mc_name').value.trim();if(!name){toast('고객명을 입력하세요');return;}
-  const phone=formatPhone($('#mc_phone').value.trim()),addr=$('#mc_addr').value.trim();
-  if(CUSTEDIT){const c=CUSTOMERS.find(x=>x.id===CUSTEDIT);if(c){Object.assign(c,{name,phone,addr});await saveCustDB(c);}CUSTEDIT=null;closeModal();toast('✅ 수정 완료: '+name);render();return;}
+  const phone=formatPhone($('#mc_phone').value.trim()),addr=$('#mc_addr').value.trim(),zip=($('#mc_zip')&&$('#mc_zip').value.trim())||'';
+  if(CUSTEDIT){const c=CUSTOMERS.find(x=>x.id===CUSTEDIT);if(c){Object.assign(c,{name,phone,addr,zip});await saveCustDB(c);}CUSTEDIT=null;closeModal();toast('✅ 수정 완료: '+name);render();return;}
   if(CUSTOMERS.some(c=>c.name===name&&(c.phone||'')===phone)){toast('이미 등록된 고객입니다 (이름+연락처 동일)');return;}
-  const c={name,phone,addr};CUSTOMERS.push(c);
+  const c={name,phone,addr,zip};CUSTOMERS.push(c);
   closeModal();toast('✅ 고객 등록: '+name);
   if(VIEW==='order'){OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;}
   render();await saveCustDB(c);if(VIEW==='order'&&c.id)OE.custId=c.id;}
