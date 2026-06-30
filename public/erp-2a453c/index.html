@@ -563,7 +563,7 @@ function _salesPrev(key){const cur=periodRange(key);let from,to;const dd=s=>new 
   else if(key==='month'){const f=dd(cur.from);f.setMonth(f.getMonth()-1);from=f.toISOString().slice(0,10);const t=dd(cur.from);t.setDate(0);to=t.toISOString().slice(0,10);}
   else return null;
   return mine(ORD).filter(o=>{if(o.pay!=='paid')return false;const d=(o.date||'').replace(/\//g,'-');return d>=from&&d<=to;}).reduce((a,o)=>a+amtOf(o),0);}
-function _delta(key){const prev=_salesPrev(key);if(prev==null||prev===0)return null;const cur=_salesP(key);const pct=Math.round((cur-prev)/prev*1000)/10;return {pct,dir:Math.sign(cur-prev),label:key==='today'?'전일 대비':key==='week'?'전주 대비':'전월 대비'};}
+function _delta(key){const prev=_salesPrev(key),cur=_salesP(key);if(prev==null||prev===0||cur===0)return null;const pct=Math.round((cur-prev)/prev*1000)/10;return {pct,dir:Math.sign(cur-prev),label:key==='today'?'전일':key==='week'?'전주':'전월'};}
 /* SNS 계정 (URL 등록 + 팔로워 수동입력 → 추이 기록 · 셀러별 저장) */
 const SNS_META={tiktok:{name:'TikTok',ic:'T',bg:'#000000'},instagram:{name:'Instagram',ic:'📷',bg:'#E1306C'},youtube:{name:'YouTube',ic:'▶',bg:'#FF0000'},band:{name:'Naver Band',ic:'B',bg:'#00C73C'}};
 function snsGet(){try{return JSON.parse(localStorage.getItem('erp_sns_'+(ME.id||''))||'{}');}catch(e){return {};}}
@@ -574,8 +574,8 @@ function snsSpark(hist){if(!hist||hist.length<2)return '<svg width="58" height="
 function goalGet(){try{return JSON.parse(localStorage.getItem('erp_goal_'+(ME.id||''))||'{}');}catch(e){return {};}}
 function goalSet(k,v){const g=goalGet();g[k]=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);try{localStorage.setItem('erp_goal_'+(ME.id||''),JSON.stringify(g));}catch(e){}render();}
 function numCard(lab,num,sub,col,ic,onclick,delta){
-  const dlt=delta?`<div style="margin-top:9px"><span style="background:${delta.dir>0?'#e7f6ec':delta.dir<0?'#fee2e2':'#eef2f7'};color:${delta.dir>0?'#16a34a':delta.dir<0?'#ef4444':'#94a3b8'};font-size:11px;font-weight:700;padding:3px 8px;border-radius:7px">${delta.dir>0?'▲':delta.dir<0?'▼':'–'} ${Math.abs(delta.pct)}%</span> <span style="font-size:10.5px;color:#94a3b8">${delta.label||''}</span></div>`:'';
-  return `<div class="kpi"${onclick?` style="cursor:pointer" onclick="${onclick}"`:''}><div><div class="lab">${lab}</div><div class="num">${num}</div>${sub?`<div class="sub" style="color:#94a3b8;font-weight:500;margin-top:7px">${sub}</div>`:''}${dlt}</div><div class="ic ic-${col}"><i class="ti ${ic}"></i></div></div>`;}
+  const dlt=delta?`<div style="margin-top:9px;white-space:nowrap"><span style="background:${delta.dir>0?'#e7f6ec':delta.dir<0?'#fee2e2':'#eef2f7'};color:${delta.dir>0?'#16a34a':delta.dir<0?'#ef4444':'#94a3b8'};font-size:11px;font-weight:700;padding:3px 8px;border-radius:7px">${delta.dir>0?'▲':delta.dir<0?'▼':'–'} ${Math.abs(delta.pct)}%</span> <span style="font-size:10.5px;color:#94a3b8">${delta.label||''}</span></div>`:'';
+  return `<div class="kpi"${onclick?` style="cursor:pointer" onclick="${onclick}"`:''}><div style="min-width:0"><div class="lab" style="white-space:nowrap">${lab}</div><div class="num" style="white-space:nowrap">${num}</div>${sub?`<div class="sub" style="color:#94a3b8;font-weight:500;margin-top:7px;white-space:nowrap">${sub}</div>`:''}${dlt}</div><div class="ic ic-${col}"><i class="ti ${ic}"></i></div></div>`;}
 function listCard(title,rows,more){return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>${title}</h2>${more?`<span class="more" onclick="${more}">더보기</span>`:''}</div><table><tbody>${rows.length?rows.map(r=>`<tr><td>${esc(String(r[0]))}</td><td class="muted" style="text-align:right">${esc(String(r[1]))}</td></tr>`).join(''):'<tr><td class="muted">데이터 없음</td></tr>'}</tbody></table></div>`;}
 function quickCard(){return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>업무 바로가기</h2></div><div class="quick">
   <div class="qi" onclick="go('order')"><div class="qic"><i class="ti ti-clipboard-list"></i></div><span>주문입력</span></div>
@@ -588,8 +588,8 @@ function quickCard(){return `<div class="card" style="grid-column:span 2"><div c
 /* ===== 신규 분석 위젯 렌더 ===== */
 function wAvg(){return numCard('평균 객단가',won(_avgOrder('week')),'주간 기준 · 1인당','b','ti-receipt');}
 function wSettle(){const s=_settle();return numCard('정산 예정',won(s.amt),s.day+' 지급 · 매출 10%','a','ti-wallet');}
-function wRepurchase(){const r=_repurchase();return numCard('재구매율',r.rate+'%','재구매 '+r.rep+'명 / 단골 '+r.tot+'명','p','ti-repeat');}
-function wVip(){const rows=_vipRows(8);return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>단골 / VIP 고객</h2><span class="more" onclick="go('cust')">더보기</span></div>
+function wRepurchase(){const r=_repurchase();return numCard('재구매율',r.rate+'%',r.rep+'명 재구매','p','ti-repeat');}
+function wVip(){const rows=_vipRows(5);return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>단골 / VIP 고객</h2><span class="more" onclick="go('cust')">더보기</span></div>
 <table><thead><tr><th>순위</th><th>고객</th><th>구매</th><th style="text-align:right">누적금액</th><th>최근</th><th>선호</th></tr></thead><tbody>
 ${rows.length?rows.map((r,i)=>`<tr><td>${['🥇','🥈','🥉'][i]||(i+1)}</td><td><b>${esc(r.cust)}</b></td><td>${r.cnt}회</td><td style="text-align:right">${won(r.amt)}</td><td class="muted">${r.last||'-'}</td><td><span class="pill">${esc(r.topcat)}</span></td></tr>`).join(''):'<tr><td colspan="6" class="muted">결제완료 고객 데이터 없음</td></tr>'}
 </tbody></table></div>`;}
@@ -682,13 +682,13 @@ function wRender(id){const today=new Date().toISOString().slice(0,10);
   }
 }
 const POS_DEFAULT={
-  '셀러':['sns','sales_today','sales_week','sales_month','settle','repurchase','vip','taste','topprod','bcast','schedule','quick'],
+  '셀러':['sns','sales_today','sales_week','sales_month','settle','repurchase','taste','vip','topprod','bcast','schedule','quick'],
   '보조':['unpaid','toship','rx','misong','quick'],
   '물류':['toship','done_today','misong','alerts','quick'],
   '운영':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','ship_fee','by_staff','vip','topprod','taste','bcast','quick'],
   '관리자':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','ship_fee','by_staff','vip','topprod','taste','bcast','quick']
 };
-function getUserWidgets(){try{if(localStorage.getItem('erp_wg_ver')!=='2'){localStorage.setItem('erp_wg_ver','2');const def=(POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();saveUserWidgets(def);return def;}const s=localStorage.getItem('erp_wg_'+(ME.id||''));if(s)return JSON.parse(s);}catch(e){}return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();}
+function getUserWidgets(){try{if(localStorage.getItem('erp_wg_ver')!=='3'){localStorage.setItem('erp_wg_ver','3');const def=(POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();saveUserWidgets(def);return def;}const s=localStorage.getItem('erp_wg_'+(ME.id||''));if(s)return JSON.parse(s);}catch(e){}return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();}
 function saveUserWidgets(arr){try{localStorage.setItem('erp_wg_'+(ME.id||''),JSON.stringify(arr));}catch(e){}}
 function wgToggle(id){let a=getUserWidgets();if(a.includes(id))a=a.filter(x=>x!==id);else a.push(id);saveUserWidgets(a);render();renderWidgetEdit();}
 function wgMove(id,dir){let a=getUserWidgets();const i=a.indexOf(id);if(i<0)return;const j=i+dir;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;saveUserWidgets(a);render();renderWidgetEdit();}
