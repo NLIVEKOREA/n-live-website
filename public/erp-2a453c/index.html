@@ -341,6 +341,9 @@ async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){await SB.from('orders
 async function delOrd(o){try{if(o.id)await SB.from('orders').delete().eq('id',o.id);}catch(e){console.error(e);}}
 async function saveStock(s){try{if(s&&s.id!=null)await SB.from('stock').update({qty:s.qty}).eq('id',s.id);}catch(e){console.error(e);}}
 async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,in_price:s.in_price||0,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error)console.error('updStock',error);}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error)console.error('insStock',error);if(data)s.id=data.id;}}catch(e){console.error(e);}}
+async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error)console.error('updCust',error);}else{const {data,error}=await SB.from('customers').insert(row).select('id').single();if(error)console.error('insCust',error);if(data)c.id=data.id;}}catch(e){console.error(e);}}
+async function delCustDB(c){try{if(c.id)await SB.from('customers').delete().eq('id',c.id);}catch(e){console.error(e);}}
+async function delStockDB(s){try{if(s&&s.id!=null)await SB.from('stock').delete().eq('id',s.id);}catch(e){console.error(e);}}
 /* ===== 기간 헬퍼 (당일 기본) ===== */
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function periodRange(key){const d=new Date();const today=d.toISOString().slice(0,10);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:mon.toISOString().slice(0,10),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
@@ -1275,15 +1278,52 @@ function viewStock(){
   </div>`;
 }
 
-/* ===== 고객관리 / 품목관리 ===== */
+/* ===== 고객관리 ===== */
+let CUSTSEARCH='',CUSTTAB='all';
+function custStats(){const m={};ORD.forEach(o=>{if(!o.cust)return;const x=m[o.cust]||(m[o.cust]={cnt:0,amt:0,last:''});x.cnt++;x.amt+=amtOf(o);if((o.date||'')>x.last)x.last=o.date||'';});return m;}
+function custPhoneNorm(p){return (p||'').replace(/[^0-9]/g,'');}
+function phoneDupGroups(){const m={};CUSTOMERS.forEach(c=>{const p=custPhoneNorm(c.phone);if(p.length>=8)(m[p]=m[p]||[]).push(c);});return Object.values(m).filter(a=>a.length>1).sort((a,b)=>b.length-a.length);}
+function custAvatar(name){const ch=(name||'?').trim().charAt(0)||'?';const colors=['#2563eb','#7c3aed','#db2777','#ea580c','#059669','#0891b2','#4f46e5'];let h=0;for(const c of (name||'?'))h=(h*31+c.charCodeAt(0))%colors.length;return `<span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:${colors[h]};color:#fff;font-weight:800;font-size:14px;flex:0 0 auto">${esc(ch)}</span>`;}
+function custActBtns(c){return `<div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="openCustEdit(${c.id})">수정</button><button class="ico-btn" title="삭제" onclick="delCust(${c.id})"><i class="ti ti-trash"></i></button></div>`;}
+function custRow(c,stats){const s=stats[c.name]||{cnt:0,amt:0,last:''};
+  return `<tr>
+    <td><div style="display:flex;align-items:center;gap:10px">${custAvatar(c.name)}<div><div style="font-weight:700">${esc(c.name)}</div><div class="muted" style="font-size:12px">${esc(c.addr||'주소 미등록')}</div></div></div></td>
+    <td class="barcode" style="font-weight:600">${esc(c.phone||'-')}</td>
+    <td class="num-cell">${s.cnt?s.cnt+'건':'<span class="muted">-</span>'}</td>
+    <td class="num-cell" style="font-weight:700">${s.amt?won(s.amt):'<span class="muted">-</span>'}</td>
+    <td class="muted" style="font-size:12px">${s.last||'-'}</td>
+    <td>${custActBtns(c)}</td></tr>`;}
+function custDupView(dup,stats){
+  if(!dup.length)return `<div class="card"><div class="muted" style="padding:18px">같은 연락처로 중복 등록된 고객이 없습니다 👍</div></div>`;
+  return dup.map(g=>`<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">📞 ${esc(g[0].phone)} <span class="muted" style="font-size:12px;font-weight:400">— 닉네임 ${g.length}개 (동일인 의심)</span></h2></div>
+    <table><tbody>${g.map(c=>{const s=stats[c.name]||{cnt:0,amt:0};return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px">${custAvatar(c.name)}<b>${esc(c.name)}</b></div></td>
+      <td class="muted">${esc(c.addr||'-')}</td><td class="num-cell">${s.cnt}건</td><td class="num-cell">${won(s.amt)}</td>
+      <td>${custActBtns(c)}</td></tr>`}).join('')}</tbody></table>
+    <div class="note" style="margin-top:8px">💡 같은 사람이면 닉네임 하나로 통합하고 나머지는 삭제하세요. 과거 주문은 닉네임 기준이라 유지됩니다.</div></div>`).join('');
+}
 function viewCustomers(){
+  const stats=custStats(),q=(CUSTSEARCH||'').trim(),qn=custPhoneNorm(q),ql=q.toLowerCase();
+  const dup=phoneDupGroups(),dupN=dup.reduce((a,g)=>a+g.length,0);
+  let list=CUSTOMERS;
+  if(q)list=list.filter(c=>(c.name||'').toLowerCase().includes(ql)||(qn&&custPhoneNorm(c.phone).includes(qn))||(c.addr||'').toLowerCase().includes(ql));
+  list=[...list].sort((a,b)=>((stats[b.name]||{}).amt||0)-((stats[a.name]||{}).amt||0));
+  const shown=list.slice(0,300);
   return `
-  <div class="head"><h1>고객관리</h1><p>주문 고객 등록·조회 (연락처·주소). 주문 중엔 검색→팝업으로 바로 등록 가능</p></div>
-  <div style="text-align:right;margin-bottom:14px"><button class="btn" onclick="openCustModal('')">＋ 고객 등록</button></div>
-  <div class="card"><div class="card-h"><h2>고객 목록 (${CUSTOMERS.length}명)</h2></div>
-    <table><thead><tr><th>고객명</th><th>연락처</th><th>주소</th></tr></thead><tbody>
-    ${CUSTOMERS.slice(0,200).map(c=>`<tr><td><b>${c.name}</b></td><td class="muted">${c.phone||'-'}</td><td class="muted">${c.addr||'-'}</td></tr>`).join('')}
-    </tbody></table></div>`;
+  <div class="head"><h1>고객관리 <span class="badge">${CUSTOMERS.length.toLocaleString()}명</span></h1><p>구매액 순 정렬 · 검색 · 행에서 바로 수정·삭제 · 같은 번호 중복 분류</p></div>
+  <div class="card" style="margin-bottom:14px"><div class="toolbar">
+    <input id="custSearch" placeholder="🔍 이름 · 연락처 · 주소" value="${esc(CUSTSEARCH)}" oninput="CUSTSEARCH=this.value;clearTimeout(window.__ct);window.__ct=setTimeout(render,200)" style="width:320px;font-size:14px">
+    <span class="grow"></span>
+    <button class="btn" onclick="openCustModal('')">＋ 고객 등록</button>
+  </div></div>
+  <div class="tabs">
+    <button class="${CUSTTAB==='all'?'on':''}" onclick="CUSTTAB='all';render()">전체 ${list.length.toLocaleString()}</button>
+    <button class="${CUSTTAB==='dup'?'on':''}" onclick="CUSTTAB='dup';render()">⚠️ 번호중복 ${dup.length}그룹·${dupN}명</button>
+  </div>
+  ${CUSTTAB==='dup'?custDupView(dup,stats):`
+  <div class="card"><table><thead><tr><th>고객</th><th>연락처</th><th class="num-cell">구매</th><th class="num-cell">구매액</th><th>최근</th><th style="width:92px"></th></tr></thead><tbody>
+    ${shown.map(c=>custRow(c,stats)).join('')||`<tr><td colspan="6" class="muted" style="padding:16px">검색 결과 없음</td></tr>`}
+  </tbody></table>${list.length>shown.length?`<div class="muted" style="padding:10px 14px">… 외 ${(list.length-shown.length).toLocaleString()}명 · 검색으로 좁혀보세요</div>`:''}</div>`}`;
 }
 function viewProducts(){
   const tab=PRODTAB;
@@ -1380,20 +1420,32 @@ function prodCompose(){
 
 /* ===== 신규등록 팝업(모달) ===== */
 function closeModal(){$('#modal').classList.add('hide');$('#modalBox').innerHTML='';}
-function openCustModal(prefill){prefill=prefill||'';
+let CUSTEDIT=null;
+function openCustModal(prefill){prefill=prefill||'';CUSTEDIT=null;
   $('#modalBox').innerHTML=`
     <h3>고객 신규 등록</h3><div class="ms">검색에 없어 새로 등록합니다. 저장하면 작업 중인 주문에 바로 적용돼요(화면 유지).</div>
-    <label>고객명(닉네임)</label><input id="mc_name" value="${prefill}">
+    <label>고객명(닉네임)</label><input id="mc_name" value="${esc(prefill)}">
     <label>연락처</label><input id="mc_phone" placeholder="010-0000-0000">
     <label>주소</label><input id="mc_addr" placeholder="배송 주소">
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveCust()">등록</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mc_name');if(el)el.focus();},40);}
-function saveCust(){const name=$('#mc_name').value.trim();if(!name){toast('고객명을 입력하세요');return;}
-  if(CUSTOMERS.some(c=>c.name===name)){toast('이미 있는 고객입니다');return;}
-  const c={name,phone:$('#mc_phone').value.trim(),addr:$('#mc_addr').value.trim()};CUSTOMERS.push(c);
+function openCustEdit(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c){toast('고객 정보를 찾을 수 없어요');return;}CUSTEDIT=id;
+  $('#modalBox').innerHTML=`
+    <h3>고객 수정</h3><div class="ms"><b>${esc(c.name)}</b> 님의 정보를 수정합니다. 닉네임을 바꿔도 과거 주문은 유지됩니다.</div>
+    <label>고객명(닉네임)</label><input id="mc_name" value="${esc(c.name||'')}">
+    <label>연락처</label><input id="mc_phone" value="${esc(c.phone||'')}" placeholder="010-0000-0000">
+    <label>주소</label><input id="mc_addr" value="${esc(c.addr||'')}" placeholder="배송 주소">
+    <div class="modal-foot"><button class="btn red ghost" onclick="delCust(${id})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveCust()">저장</button></div>`;
+  $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mc_name');if(el)el.focus();},40);}
+async function saveCust(){const name=$('#mc_name').value.trim();if(!name){toast('고객명을 입력하세요');return;}
+  const phone=$('#mc_phone').value.trim(),addr=$('#mc_addr').value.trim();
+  if(CUSTEDIT){const c=CUSTOMERS.find(x=>x.id===CUSTEDIT);if(c){Object.assign(c,{name,phone,addr});await saveCustDB(c);}CUSTEDIT=null;closeModal();toast('✅ 수정 완료: '+name);render();return;}
+  if(CUSTOMERS.some(c=>c.name===name&&(c.phone||'')===phone)){toast('이미 등록된 고객입니다 (이름+연락처 동일)');return;}
+  const c={name,phone,addr};CUSTOMERS.push(c);
   closeModal();toast('✅ 고객 등록: '+name);
   if(VIEW==='order'){OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;}
-  render();}
+  render();await saveCustDB(c);if(VIEW==='order'&&c.id)OE.custId=c.id;}
+async function delCust(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;if(!confirm(`'${c.name}' 고객을 삭제할까요?\n과거 주문 내역은 닉네임 기준이라 그대로 유지됩니다.`))return;const i=CUSTOMERS.indexOf(c);if(i>=0)CUSTOMERS.splice(i,1);CUSTEDIT=null;closeModal();toast('🗑️ 삭제: '+c.name);render();await delCustDB(c);}
 function prodFormHTML(s){s=s||{};const cat=s.category||'';const showSeason=CAT_HASSEASON(cat);
   return `
     <div class="modal-row"><div><label>검색창내용(번호표)</label><input id="mp_tag" value="${esc(s.tag||'')}" placeholder="063"></div>
@@ -1417,7 +1469,7 @@ function openProdModal(prefill){prefill=prefill||'';PRODEDIT=null;const isNum=/^
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mp_code');if(el)el.focus();},40);}
 function openProdEdit(id){const s=STOCK.find(x=>x.id===id);if(!s){toast('품목 정보를 찾을 수 없어요');return;}PRODEDIT=id;
   $('#modalBox').innerHTML=`<h3>품목 수정</h3><div class="ms">등록 시 입력한 내용을 수정합니다. 저장하면 이 품목이 보이는 모든 화면에 반영돼요.</div>${prodFormHTML(s)}
-    <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
+    <div class="modal-foot"><button class="btn red ghost" onclick="delProd()">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');}
 async function saveProd(){const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
   if(!code||!name){toast('품목코드·품목명은 필수');return;}
@@ -1428,6 +1480,7 @@ async function saveProd(){const code=$('#mp_code').value.trim(),name=$('#mp_name
   await saveStockRow(s);
   const wasEditing=editing;PRODEDIT=null;closeModal();toast(wasEditing?('✅ 수정: '+name):('✅ 품목 등록: '+name));
   if(!wasEditing&&VIEW==='order')addLineByCode(code);else render();}
+async function delProd(){if(PRODEDIT==null)return;const s=STOCK.find(x=>x.id===PRODEDIT);if(!s){closeModal();return;}if(!confirm(`'${s.name}' 품목을 재고에서 완전히 삭제할까요?`))return;const i=STOCK.indexOf(s);if(i>=0)STOCK.splice(i,1);PRODEDIT=null;closeModal();toast('🗑️ 품목 삭제: '+s.name);render();await delStockDB(s);}
 
 /* ===== 사입처 ===== */
 function viewVendor(){
@@ -1443,8 +1496,8 @@ function viewVendor(){
     </div>
   </div>
   <div class="card"><div class="card-h"><h2>사입처 목록 (${VENDORS.length}곳)</h2></div>
-    <table><thead><tr><th>사입처명</th><th>구분</th><th>메모</th></tr></thead><tbody>
-    ${VENDORS.map(v=>`<tr><td><b>${v.name}</b></td><td>${v.type==='해외'?'<span class="pill p-req">해외</span>':'<span class="pill p-done">국내</span>'}</td><td class="muted">${v.memo}</td></tr>`).join('')}
+    <table><thead><tr><th>사입처명</th><th>구분</th><th>메모</th><th style="width:92px"></th></tr></thead><tbody>
+    ${VENDORS.map((v,i)=>`<tr><td><b>${esc(v.name)}</b></td><td>${v.type==='해외'?'<span class="pill p-req">해외</span>':'<span class="pill p-done">국내</span>'}</td><td class="muted">${esc(v.memo||'-')}</td><td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editVendor(${i})">수정</button><button class="ico-btn" title="삭제" onclick="delVendor(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join('')}
     </tbody></table>
   </div>`;
 }
@@ -1553,7 +1606,16 @@ function addStock(){const code=$('#n_code').value.trim(),name=$('#n_name').value
   STOCK.push({code,tag:$('#n_tag').value.trim()||'-',name,color:$('#n_color').value.trim()||'-',size:$('#n_size').value.trim()||'F',qty:parseInt($('#n_qty').value)||0,price:parseInt($('#n_price').value)||0});
   toast('✅ 신규 품목 등록: ['+($('#n_tag').value.trim()||'-')+'] '+name);render();}
 function addVendor(){const name=$('#v_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}
-  VENDORS.push({name,type:$('#v_type').value,memo:$('#v_memo').value.trim()||'-'});toast('✅ 사입처 등록: '+name);render();}
+  VENDORS.push({name,type:$('#v_type').value,memo:$('#v_memo').value.trim()||'-'});$('#v_name').value='';$('#v_memo').value='';toast('✅ 사입처 등록: '+name);render();}
+function editVendor(i){const v=VENDORS[i];if(!v)return;
+  $('#modalBox').innerHTML=`<h3>사입처 수정</h3>
+    <label>사입처명</label><input id="ve_name" value="${esc(v.name)}">
+    <label>구분</label><select id="ve_type"><option ${v.type==='해외'?'selected':''}>해외</option><option ${v.type==='국내'?'selected':''}>국내</option></select>
+    <label>메모</label><input id="ve_memo" value="${esc(v.memo||'')}">
+    <div class="modal-foot"><button class="btn red ghost" onclick="delVendor(${i})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveVendorEdit(${i})">저장</button></div>`;
+  $('#modal').classList.remove('hide');}
+function saveVendorEdit(i){const v=VENDORS[i];if(!v)return;const name=$('#ve_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}v.name=name;v.type=$('#ve_type').value;v.memo=$('#ve_memo').value.trim()||'-';closeModal();toast('✅ 수정: '+name);render();}
+function delVendor(i){const v=VENDORS[i];if(!v)return;if(!confirm(`'${v.name}' 사입처를 삭제할까요?`))return;VENDORS.splice(i,1);closeModal();toast('🗑️ 삭제: '+v.name);render();}
 function toggleEmpForm(){$('#empForm').classList.toggle('hide');}
 function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value.trim(),pw=$('#f_pw').value.trim();
   if(!name||!id||!pw){toast('이름·아이디·비밀번호를 입력하세요');return;}if(USERS.some(u=>u.id===id)){toast('❌ 이미 있는 아이디');return;}
