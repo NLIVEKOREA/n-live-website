@@ -2981,30 +2981,35 @@ function liveCopyUrl(slug){const url=liveUrl(slug);
 /* --- 상품 추가: ERP 재고 연결 --- */
 function liveAddSearch(sid){
   window._liveAddSid=sid;
-  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">🔎 ERP 상품 연결</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
-    <input id="lv_q" placeholder="품번 또는 상품명 검색" oninput="liveSearchRun()" style="width:100%;height:42px;border:1px solid var(--line);border-radius:9px;padding:0 12px">
-    <div id="lv_res" class="muted" style="margin-top:10px;max-height:52vh;overflow:auto">품번이나 상품명을 입력하세요.</div>`;
-  $('#modal').classList.remove('hide');setTimeout(()=>{const q=$('#lv_q');if(q)q.focus();},40);
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">🔎 ERP 상품 연결</h3><span style="flex:1"></span><button class="btn gray sm" onclick="liveFinishAdd()">✕</button></div>
+    <input id="lv_q" placeholder="품번 또는 상품명 검색 (비우면 전체 목록)" oninput="liveSearchRun()" style="width:100%;height:44px;border:1px solid var(--line);border-radius:9px;padding:0 12px">
+    <div class="muted" style="font-size:12px;margin:7px 0 8px">상품을 눌러 이 방송에 담으세요. 여러 개 담은 뒤 <b>[완료]</b>를 누르면 됩니다.</div>
+    <div id="lv_res" style="max-height:48vh;overflow:auto"></div>
+    <div class="modal-foot"><span id="lv_cnt" class="muted" style="flex:1;align-self:center">담은 상품 ${liveProdsOf(sid).length}개</span><button class="btn" onclick="liveFinishAdd()">완료</button></div>`;
+  $('#modal').classList.remove('hide');liveSearchRun();setTimeout(()=>{const q=$('#lv_q');if(q)q.focus();},40);
 }
+function liveFinishAdd(){closeModal();render();}
 function liveSearchRun(){
-  const q=($('#lv_q').value||'').trim();const el=$('#lv_res');
-  if(q.length<1){el.innerHTML='품번이나 상품명을 입력하세요.';return;}
+  const q=($('#lv_q').value||'').trim();const el=$('#lv_res');if(!el)return;
+  const added=new Set(liveProdsOf(window._liveAddSid).map(p=>p.stock_code).filter(Boolean));
   const seen={};const groups=[];
-  STOCK.forEach(s=>{if(!inc(s.code,q)&&!inc(s.name,q))return;if(seen[s.code]!=null)return;seen[s.code]=1;
+  STOCK.forEach(s=>{if(q&&!inc(s.code,q)&&!inc(s.name,q))return;if(seen[s.code]!=null)return;seen[s.code]=1;
     const rows=STOCK.filter(x=>x.code===s.code);const qty=rows.reduce((a,r)=>a+(r.qty||0),0);
     groups.push({code:s.code,name:s.name,price:s.price,qty});});
-  el.className='';
-  el.innerHTML=groups.length?`<table class="tbl"><tbody>${groups.slice(0,40).map(g=>`<tr>
-    <td><b>${esc(g.name)}</b><br><span class="muted" style="font-size:11px">품번 ${esc(g.code)} · 재고 ${g.qty}</span></td>
-    <td class="num-cell">${won(g.price||0)}</td>
-    <td><button class="btn sm" onclick="liveAddStock('${escAttr(g.code)}')">추가</button></td></tr>`).join('')}</tbody></table>`
-    :'<div class="muted">검색 결과 없음</div>';
+  el.innerHTML=groups.length?groups.slice(0,60).map(g=>{const on=added.has(g.code);return `
+    <button class="lv-pick" ${on?'disabled':''} onclick="liveAddStock('${escAttr(g.code)}')" style="display:flex;width:100%;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);border-radius:10px;padding:11px;margin-bottom:7px;background:${on?'#eef7ee':'#fff'};cursor:${on?'default':'pointer'}">
+      <span style="flex:1;min-width:0"><b>${esc(g.name)}</b><br><span class="muted" style="font-size:11px">품번 ${esc(g.code)} · 재고 ${g.qty} · ${won(g.price||0)}</span></span>
+      <span class="btn sm ${on?'gray':'green'}" style="pointer-events:none;flex:0 0 auto">${on?'✓ 담김':'+ 담기'}</span>
+    </button>`;}).join(''):`<div class="muted" style="padding:12px">${q?'검색 결과 없음':'등록된 재고가 없습니다.'}</div>`;
 }
 async function liveAddStock(code){
   const sid=window._liveAddSid;const st=STOCK.find(x=>x.code===code);if(!st)return;
   const sort=(liveProdsOf(sid).reduce((m,p)=>Math.max(m,p.sort),0))+1;
   try{const {error}=await SB.from('session_products').insert({session_id:sid,stock_code:code,name:st.name,live_price:st.price||0,sort,active:true});
-    if(error){console.error(error);toast('⚠️ 추가 실패');return;}toast('✅ 추가: '+st.name);await liveReload();
+    if(error){console.error(error);toast('⚠️ 추가 실패: '+(error.message||''));return;}
+    toast('✅ 담김: '+st.name);
+    try{const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];}catch(e){console.error(e);}
+    liveSearchRun();const c=$('#lv_cnt');if(c)c.textContent='담은 상품 '+liveProdsOf(sid).length+'개';
   }catch(e){console.error(e);toast('⚠️ 오류');}
 }
 /* --- 상품 추가: 캡처 이미지 --- */
