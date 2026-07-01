@@ -2418,6 +2418,12 @@ function viewRevenue(){
   const inRP=d=>{d=String(d||'').slice(0,10);return REVPERIOD==='all'||(d>=rp.from&&d<=rp.to);};
   const retSum=CUSTLOG.filter(l=>(l.type==='취소'||l.type==='환불')&&inRP(l.at)).reduce((a,l)=>a+(l.amount||0),0);
   const byStaff={};paid.forEach(o=>byStaff[o.staff]=(byStaff[o.staff]||0)+amtOf(o));
+  const bar1=(lab,frac,val)=>`<div class="pbar-row"><span class="pbar-lab">${esc(lab)}</span><div class="pbar-track"><div class="pbar-fill" style="width:${Math.max(2,Math.round(frac*100))}%"></div></div><span class="pbar-val">${val}</span></div>`;
+  const byDate={};paid.forEach(o=>{const d=(o.date||'').replace(/\//g,'-').slice(0,10);if(d)byDate[d]=(byDate[d]||0)+amtOf(o);});const dArr=Object.entries(byDate).sort();const maxD=Math.max(1,...dArr.map(x=>x[1]));
+  const byPay={};paid.forEach(o=>{const p=o.payway||'미지정';byPay[p]=(byPay[p]||0)+amtOf(o);});const payArr=Object.entries(byPay).sort((a,b)=>b[1]-a[1]);const maxPay=Math.max(1,...payArr.map(x=>x[1]));
+  const byProd={};paid.filter(_isGoods).forEach(o=>{const k=o.disp||prodName(o.code)||o.code;byProd[k]=(byProd[k]||0)+amtOf(o);});const topP=Object.entries(byProd).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  let cost=0;if(!isSeller())paid.filter(_isGoods).forEach(o=>{const s=skuOf(o.code,o.color,o.size);if(s&&s.in_price)cost+=(s.in_price||0)*(o.qty||0);});
+  const profit=total-cost,marginPct=total>0?Math.round(profit/total*1000)/10:0,refRate=total>0?Math.round(retSum/total*1000)/10:0;
   const m=isSeller()?'내 ':'';
   return `
   <div class="head"><h1>${isSeller()?'내 실적':'매출현황'}</h1>
@@ -2438,8 +2444,27 @@ function viewRevenue(){
       : Object.entries(byStaff).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${k}</td><td class="num-cell">${won(v)}</td>
           <td><div style="background:var(--blue-s);border-radius:6px;height:20px;width:${total?Math.round(v/total*100):0}%;min-width:40px;display:flex;align-items:center;padding-left:8px;font-size:11px;color:var(--blue);font-weight:700">${total?Math.round(v/total*100):0}%</div></td></tr>`).join('')||'<tr><td class="muted">없음</td></tr>'}
     </tbody></table>
-  </div>`;
+  </div>
+  <div class="card" style="margin-top:14px"><div class="card-h"><h2>📈 일별 매출 추이 <span class="muted" style="font-size:12px;font-weight:400">${rp.label}</span></h2><button class="btn sm ghost" onclick="revenueCSV()"><i class="ti ti-download"></i> 주문 CSV</button></div>
+    ${dArr.length?dArr.map(([d,v])=>bar1(d,v/maxD,won(v))).join(''):'<div class="muted" style="padding:10px">데이터 없음</div>'}
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+    <div class="card"><div class="card-h"><h2>💳 결제수단별</h2></div>${payArr.length?payArr.map(([k,v])=>bar1(k,v/maxPay,won(v))).join(''):'<div class="muted" style="padding:10px">없음</div>'}
+      <div class="note">취소·환불률 <b>${refRate}%</b> · 환불액 ${won(retSum)}</div></div>
+    <div class="card"><div class="card-h"><h2>🏆 상품 매출 TOP 10</h2></div><table><tbody>${topP.length?topP.map(([k,v],i)=>`<tr><td style="width:24px;color:var(--blue);font-weight:800">${i+1}</td><td>${esc(k)}</td><td class="num-cell">${won(v)}</td></tr>`).join(''):'<tr><td class="muted">없음</td></tr>'}</tbody></table></div>
+  </div>
+  ${!isSeller()?`<div class="card" style="margin-top:14px"><div class="card-h"><h2>💰 매출총이익 <span class="muted" style="font-size:12px;font-weight:400">원가 등록 상품 기준</span></h2></div>
+    <div class="kpis" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+      <div class="kpi"><div><div class="lab">매출</div><div class="num" style="font-size:18px">${won(total)}</div></div></div>
+      <div class="kpi"><div><div class="lab">매입원가</div><div class="num" style="font-size:18px">${won(cost)}</div></div></div>
+      <div class="kpi"><div><div class="lab">매출총이익</div><div class="num" style="font-size:18px;color:#059669">${won(profit)}</div></div></div>
+      <div class="kpi"><div><div class="lab">이익률</div><div class="num" style="font-size:18px">${marginPct}%</div></div></div>
+    </div><div class="note">※ 원가 미등록 상품은 원가 0으로 계산돼 이익이 과대평가될 수 있어요.</div></div>`:''}`;
 }
+function revenueCSV(){const rp=periodRange(REVPERIOD);let paid=mine(ORD).filter(o=>o.pay==='paid');if(REVPERIOD!=='all')paid=paid.filter(o=>{const d=(o.date||'').replace(/\//g,'-');return d>=rp.from&&d<=rp.to;});
+  const rows=[['날짜','고객','담당셀러','품목','색상','사이즈','수량','단가','금액','결제수단']];
+  paid.forEach(o=>rows.push([(o.date||''),o.cust||'',o.staff||'',o.disp||prodName(o.code)||o.code,o.color||'',o.size||'',o.qty||0,o.price||0,amtOf(o),o.payway||'']));
+  downloadCSV(rows,'매출_'+REVPERIOD);}
 
 /* ===== 직원·급여 / 사원관리 ===== */
 /* 급여 — 사원별 기본급/수당률(매출%) 수정 가능. 미설정 시 직급별 기본값. 판매실적은 당월 자동연동 */
