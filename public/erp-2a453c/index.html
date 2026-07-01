@@ -1931,7 +1931,7 @@ function viewRevenue(){
 const PAY_BASE={'셀러':2000000,'보조':2300000,'운영':2300000,'물류':2300000,'관리자':3000000};
 const PAY_RATE={'셀러':10,'보조':3,'운영':0,'물류':0,'관리자':0};
 function _staffSales(name){return ORD.filter(o=>o.staff===name&&o.pay==='paid'&&_inRange(o,'month')&&o.code!=='배송비'&&o.code!=='낱장').reduce((a,o)=>a+amtOf(o),0);}
-function empPay(e){const base=(e.base_salary!=null&&e.base_salary!=='')?+e.base_salary:(PAY_BASE[e.role]||0);const rate=(e.comm_rate!=null&&e.comm_rate!=='')?+e.comm_rate:(PAY_RATE[e.role]||0);const sales=(e.role==='셀러'||e.role==='보조')?_staffSales(e.name):0;const comm=Math.round(sales*rate/100);return {base:base,rate:rate,sales:sales,comm:comm,total:base+comm};}
+function empPay(e){const base=(e.base_salary!=null&&e.base_salary!==''&&+e.base_salary>0)?+e.base_salary:(PAY_BASE[e.role]||0);const rate=(e.comm_rate!=null&&e.comm_rate!==''&&+e.comm_rate>=0&&String(e.comm_rate)!=='')?+e.comm_rate:(PAY_RATE[e.role]||0);const sales=(e.role==='셀러'||e.role==='보조')?_staffSales(e.name):0;const comm=Math.round(sales*rate/100);return {base:base,rate:rate,sales:sales,comm:comm,total:base+comm};}
 function saveEmpPay(idx,field,val){const e=EMPLOYEES[idx];if(!e)return;e[field]=(val===''?null:Math.max(0,parseFloat(val)||0));render();if(e.id!=null)SB.from('employees').update({[field]:e[field]}).eq('id',e.id).then(function(r){if(r.error){toast('⚠️ 급여 저장 실패 — 다시 시도');console.warn('empPay',r.error.message);}else toast('💾 저장됨');});}
 function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&(canSeeAll()||e.name===ME.name));
   return `
