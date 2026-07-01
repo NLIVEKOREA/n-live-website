@@ -577,7 +577,7 @@ function sellerTabs(){
 }
 const PERM={dash:['all','logi','self'],sns:['all','self'],order:['all','self'],sales:['all','self'],
   ship:['all','logi'],shipped:['all','logi','self'],rx:['all','logi','self'],
-  stock:['all','logi','self'],cust:['all','self'],prod:['all'],vendor:['all','logi','self'],
+  stock:['all','logi','self'],cust:['all','self'],prod:['all'],vendor:['all','logi'],
   revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
 const menuAllowed=v=>(PERM[v]||['all']).includes(ME.scope);
 function lockBanner(){
