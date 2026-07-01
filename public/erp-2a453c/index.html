@@ -401,7 +401,8 @@ async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr
 async function delCustDB(c){try{if(c.id){const {error}=await SB.from('customers').delete().eq('id',c.id);if(error){console.error('delCust',error);toast('⚠️ 고객 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 async function delStockDB(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').delete().eq('id',s.id);if(error){console.error('delStock',error);toast('⚠️ 품목 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 /* ===== 기간 헬퍼 (당일 기본) ===== */
-function todayStr(){return new Date().toISOString().slice(0,10);}
+function ymd(dt){return new Date(dt.getTime()+324e5).toISOString().slice(0,10);}/* KST(UTC+9) 기준 YYYY-MM-DD — 한국 오전에 전날로 밀리는 문제 방지 */
+function todayStr(){return ymd(new Date());}
 /* CJ대한통운 출고 요일 — 월~금만 출고, 토·일 미출고 */
 function isBizDay(d){const day=(d?new Date(d):new Date()).getDay();return day>=1&&day<=5;}
 function nextBizDay(d){const x=new Date(d||new Date());do{x.setDate(x.getDate()+1);}while(x.getDay()===0||x.getDay()===6);return x;}
@@ -456,7 +457,7 @@ function openAlerts(){const a=getAlerts();$('#modalBox').innerHTML=`<h3>🔔 알
 function openMessages(){$('#modalBox').innerHTML=`<h3>✉ 메시지</h3><div class="ms">운영팀 ↔ 셀러 <b>내부 소통</b> 공간입니다 (고객 CS 아님).</div>
   <div class="muted" style="padding:24px 10px;text-align:center"><i class="ti ti-message-2" style="font-size:32px;color:#cbd5e1"></i><div style="margin-top:10px;line-height:1.6">내부 메시지 기능은 준비 중입니다.<br>지금 급한 공유는 카카오/전화로 해주세요.<br><span style="font-size:12px">(고객 알림은 <b onclick="closeModal();go('kakao')" style="color:#2563eb;cursor:pointer">카카오 연동</b> 메뉴에서)</span></div></div>
   <div class="modal-foot"><button class="btn" onclick="closeModal()">닫기</button></div>`;$('#modal').classList.remove('hide');}
-function periodRange(key){const d=new Date();const today=d.toISOString().slice(0,10);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:mon.toISOString().slice(0,10),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
+function periodRange(key){const d=new Date();const today=ymd(d);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:ymd(mon),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
 function periodTabs(cur,fn){return ['today','week','month','all'].map(k=>`<button class="${cur===k?'on':''}" onclick="${fn}('${k}')">${({today:'오늘',week:'이번 주',month:'이번 달',all:'누적'})[k]}</button>`).join('');}
 /* ===== 카테고리 ===== */
 const CAT_TREE={
@@ -593,11 +594,13 @@ function lockBanner(){
 const won=n=>'₩'+n.toLocaleString();
 const $=s=>document.querySelector(s);
 const inc=(h,n)=>String(h||'').toLowerCase().includes(String(n||'').toLowerCase());
-const esc=s=>String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+/* onclick 등 HTML속성 안의 JS 문자열용: JS 이스케이프 + HTML 인코딩 */
+const escAttr=s=>String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const COLLAPSED=new Set();
 function tog(k){COLLAPSED.has(k)?COLLAPSED.delete(k):COLLAPSED.add(k);render();}
 function expAll(){COLLAPSED.clear();render();}
-function collBtn(k){return `<button class="ico-btn" onclick="tog('${esc(k)}')" title="접기/펼치기" aria-label="접기/펼치기"><i class="ti ti-chevron-${COLLAPSED.has(k)?'right':'down'}"></i></button>`;}
+function collBtn(k){return `<button class="ico-btn" onclick="tog('${escAttr(k)}')" title="접기/펼치기" aria-label="접기/펼치기"><i class="ti ti-chevron-${COLLAPSED.has(k)?'right':'down'}"></i></button>`;}
 function saleCollAll(){const t=SALETAB;(t==='order'?grpDC(orderRows()):grpDC(shipRows())).forEach(g=>COLLAPSED.add((t==='order'?'so:':'sp:')+g.date+g.cust));render();}
 function shipCollAll(){openCustomers().forEach(c=>COLLAPSED.add(c.cat==='wait'?('w:'+c.cust):('m:'+c.cat+c.cust)));render();}
 function ordCollAll(){orderGroups('unpaid').forEach(g=>COLLAPSED.add('os:unpaid'+g.date+g.cust));orderGroups('paid').forEach(g=>COLLAPSED.add('pd:'+g.date+g.cust));render();}
@@ -669,8 +672,8 @@ ${tr.length?`<div style="display:flex;align-items:flex-end;gap:4px;height:52px;m
 <table><thead><tr><th>신규고객</th><th>가입</th><th style="text-align:right">주문</th><th style="text-align:right">매출</th></tr></thead><tbody>${rows.length?rows.slice(0,6).map(r=>`<tr><td><b>${esc(r.name)}</b></td><td class="muted">${r.date}</td><td style="text-align:right">${r.items}건</td><td style="text-align:right">${won(r.amt)}</td></tr>`).join(''):'<tr><td colspan="4" class="muted">이번달 신규 고객 없음</td></tr>'}</tbody></table></div>`;}
 /* 미송 → 동대문 발주서: 당일 미송품목을 거래처(사입처)별로 모아 카톡 복사용 텍스트 생성 */
 function misongPOText(){
-  const items=mine(ORD).filter(o=>o.back&&o.code!=='배송비'&&o.code!=='낱장');
-  if(!items.length)return '당일 미송 품목이 없습니다.';
+  const items=mine(ORD).filter(o=>o.back&&o.code!=='배송비'&&o.code!=='낱장'&&o.code!=='적립금');
+  if(!items.length)return '미송 품목이 없습니다.';
   const byV={};let total=0,cnt=0;
   items.forEach(o=>{const s=STOCK.find(x=>x.code===o.code);const v=(s&&s.vendor)||'사입처 미지정';if(!byV[v])byV[v]=[];byV[v].push(o);});
   let txt='[동대문 발주 · '+todayStr()+']\n';
@@ -684,9 +687,9 @@ function openMisongPO(){const txt=misongPOText();
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">닫기</button><button class="btn" onclick="(function(){const t=document.getElementById('poTxt');t.select();navigator.clipboard.writeText(t.value).then(function(){toast('📋 복사 완료 — 카톡에 붙여넣으세요')}).catch(function(){document.execCommand('copy');toast('📋 복사됨')});})()">📋 전체 복사</button></div>`;
   $('#modal').classList.remove('hide');}
 function _salesPrev(key){const cur=periodRange(key);let from,to;const dd=s=>new Date(s+'T00:00:00');
-  if(key==='today'){const x=dd(cur.from);x.setDate(x.getDate()-1);from=to=x.toISOString().slice(0,10);}
-  else if(key==='week'){const f=dd(cur.from);f.setDate(f.getDate()-7);const t=dd(cur.from);t.setDate(t.getDate()-1);from=f.toISOString().slice(0,10);to=t.toISOString().slice(0,10);}
-  else if(key==='month'){const f=dd(cur.from);f.setMonth(f.getMonth()-1);from=f.toISOString().slice(0,10);const t=dd(cur.from);t.setDate(0);to=t.toISOString().slice(0,10);}
+  if(key==='today'){const x=dd(cur.from);x.setDate(x.getDate()-1);from=to=ymd(x);}
+  else if(key==='week'){const f=dd(cur.from);f.setDate(f.getDate()-7);const t=dd(cur.from);t.setDate(t.getDate()-1);from=ymd(f);to=ymd(t);}
+  else if(key==='month'){const f=dd(cur.from);f.setMonth(f.getMonth()-1);from=ymd(f);const t=dd(cur.from);t.setDate(0);to=ymd(t);}
   else return null;
   return mine(ORD).filter(o=>{if(o.pay!=='paid')return false;const d=(o.date||'').replace(/\//g,'-');return d>=from&&d<=to;}).reduce((a,o)=>a+amtOf(o),0);}
 function _delta(key){const prev=_salesPrev(key),cur=_salesP(key);if(prev==null||prev===0||cur===0)return null;const pct=Math.round((cur-prev)/prev*1000)/10;return {pct,dir:Math.sign(cur-prev),label:key==='today'?'전일':key==='week'?'전주':'전월'};}
@@ -715,13 +718,13 @@ function snsReg(plat){const m=SNS_META[plat],d=snsGet(),cur=d[plat]||{};
   const url=prompt(m.name+' 프로필 주소(URL)를 붙여넣으세요:',cur.url||'https://');if(url==null)return;
   d[plat]={url:url.trim(),fol:cur.fol||0,hist:cur.hist||[]};snsSave(d);closeModal();
   if(SNS_FETCHABLE.includes(plat)){toast('🔄 '+m.name+' 팔로워 수집 중...');fetchFollowers(plat);}
-  else{const f=prompt('팔로워 수를 입력하세요 (숫자만):',cur.fol!=null?String(cur.fol):'');if(f!=null){const n=parseInt(String(f).replace(/\D/g,''),10)||0;const hist=(d[plat].hist||[]).slice(-89),today=new Date().toISOString().slice(0,10);if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=n;else hist.push([today,n]);d[plat].fol=n;d[plat].hist=hist;snsSave(d);}toast('✅ '+m.name+' 등록됨');render();}}
+  else{const f=prompt('팔로워 수를 입력하세요 (숫자만):',cur.fol!=null?String(cur.fol):'');if(f!=null){const n=parseInt(String(f).replace(/\D/g,''),10)||0;const hist=(d[plat].hist||[]).slice(-89),today=todayStr();if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=n;else hist.push([today,n]);d[plat].fol=n;d[plat].hist=hist;snsSave(d);}toast('✅ '+m.name+' 등록됨');render();}}
 function snsOpen(plat){const d=snsGet();if(d[plat]&&d[plat].url)window.open(d[plat].url,'_blank');}
 function snsDel(plat){const d=snsGet();if(!d[plat])return;if(!confirm(SNS_META[plat].name+' 연동을 삭제할까요?'))return;delete d[plat];snsSave(d);toast('🗑️ '+SNS_META[plat].name+' 삭제');render();}
 function snsSpark(hist){if(!hist||hist.length<2)return '<svg width="58" height="26"></svg>';const vals=hist.map(h=>h[1]),max=Math.max(...vals),min=Math.min(...vals),range=max-min||1,n=vals.length,W=58,H=26;const pts=vals.map((v,i)=>`${(i/(n-1))*W},${H-((v-min)/range)*(H-5)-3}`).join(' ');return `<svg width="58" height="26" viewBox="0 0 58 26"><polyline points="${pts}" fill="none" stroke="${vals[n-1]>=vals[0]?'#2563eb':'#94a3b8'}" stroke-width="2"/></svg>`;}
 /* SNS 팔로워 자동수집 — 서버 API(/api/sns-followers, Codex 작성)로 URL에서 팔로워 긁어와 일자별 기록 */
-async function fetchFollowers(plat,silent){const d=snsGet(),s=d[plat];if(!s||!s.url)return false;try{const r=await fetch('/api/sns-followers?platform='+encodeURIComponent(plat)+'&url='+encodeURIComponent(s.url));const j=await r.json();if(j&&j.ok&&j.followers!=null){const hist=(s.hist||[]).slice(-89),today=new Date().toISOString().slice(0,10);if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=j.followers;else hist.push([today,j.followers]);s.fol=j.followers;s.hist=hist;snsSave(d);if(!silent){toast('🔄 '+SNS_META[plat].name+' 팔로워 '+j.followers.toLocaleString());render();}return true;}else{if(!silent)toast('⚠️ '+SNS_META[plat].name+' 자동수집 실패: '+((j&&j.note)||'차단됨')+' — 수동입력 가능');return false;}}catch(e){if(!silent)toast('⚠️ '+SNS_META[plat].name+' 수집 오류 (실서버에서만 작동)');return false;}}
-async function fetchAllFollowers(){toast('🔄 팔로워 자동수집 중...');let ok=0;const d=snsGet();for(const p of ['tiktok','instagram','youtube','band']){if(d[p]&&d[p].url&&await fetchFollowers(p,true))ok++;}try{const pr=snsGet();PREFS.sns_lastfetch=new Date().toISOString().slice(0,10);savePrefs();}catch(e){}render();toast(ok?('✅ 자동수집 완료 — '+ok+'개 채널 갱신'):'⚠️ 수집된 채널 없음 (URL 등록/차단 확인)');}
+async function fetchFollowers(plat,silent){const d=snsGet(),s=d[plat];if(!s||!s.url)return false;try{const r=await fetch('/api/sns-followers?platform='+encodeURIComponent(plat)+'&url='+encodeURIComponent(s.url));const j=await r.json();if(j&&j.ok&&j.followers!=null){const hist=(s.hist||[]).slice(-89),today=todayStr();if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=j.followers;else hist.push([today,j.followers]);s.fol=j.followers;s.hist=hist;snsSave(d);if(!silent){toast('🔄 '+SNS_META[plat].name+' 팔로워 '+j.followers.toLocaleString());render();}return true;}else{if(!silent)toast('⚠️ '+SNS_META[plat].name+' 자동수집 실패: '+((j&&j.note)||'차단됨')+' — 수동입력 가능');return false;}}catch(e){if(!silent)toast('⚠️ '+SNS_META[plat].name+' 수집 오류 (실서버에서만 작동)');return false;}}
+async function fetchAllFollowers(){toast('🔄 팔로워 자동수집 중...');let ok=0;const d=snsGet();for(const p of ['tiktok','instagram','youtube','band']){if(d[p]&&d[p].url&&await fetchFollowers(p,true))ok++;}try{const pr=snsGet();PREFS.sns_lastfetch=todayStr();savePrefs();}catch(e){}render();toast(ok?('✅ 자동수집 완료 — '+ok+'개 채널 갱신'):'⚠️ 수집된 채널 없음 (URL 등록/차단 확인)');}
 function viewSns(){const d=snsGet();const reg=SNS_ALL.filter(p=>d[p]&&d[p].url);
   const total=reg.reduce((a,p)=>a+((d[p]&&d[p].fol)||0),0);let recentDelta=0;reg.forEach(p=>{const s=d[p];if(s.hist&&s.hist.length>=2)recentDelta+=(s.fol-s.hist[s.hist.length-2][1]);});
   const maxFol=Math.max(1,...reg.map(p=>d[p].fol||0));
@@ -832,7 +835,7 @@ function wMsgReact(){return wPlaceholder('고객 메시지 반응','발송·열�
 /* 방송 스케줄러 — 셀러 본인 주간 스케줄(요일·시간6h·방송실1/2·플랫폼) 등록, 모든 셀러 조회 */
 const SCH_PLATFORMS=['틱톡','유튜브','인스타','쇼핑라이브','기타'];
 const SCH_TIMES=(()=>{const a=[];for(let h=9;h<=27;h++){const hh=(h%24).toString().padStart(2,'0');a.push(hh+':00');a.push(hh+':30');}return a;})();
-function schWeekDates(offset){const d=new Date();const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd+(offset||0)*7);return [0,1,2,3,4,5,6].map(i=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return x.toISOString().slice(0,10);});}
+function schWeekDates(offset){const d=new Date();const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd+(offset||0)*7);return [0,1,2,3,4,5,6].map(i=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return ymd(x);});}
 function schColor(name){const c=['#2563eb','#7c3aed','#db2777','#ea580c','#059669','#0891b2','#4f46e5','#c026d3'];let h=0;for(const ch of String(name||'?'))h=(h*31+ch.charCodeAt(0))%c.length;return c[h];}
 function addHours(t,n){if(!t)return '';const p=t.split(':').map(Number);return String((p[0]+n)%24).padStart(2,'0')+':'+String(p[1]||0).padStart(2,'0');}
 function wSchedule(){const dates=schWeekDates(0),days=['월','화','수','목','금','토','일'];
@@ -864,7 +867,7 @@ async function saveSchedule(){const d=window._schD;if(!d)return;const me=(ME.own
     await dbLoadAll();closeModal();toast('✅ 방송 스케줄 저장됨 — 셀러들이 볼 수 있어요');render();
   }catch(e){toast('⚠️ 저장 오류 (실서버에서만 작동)');}}
 const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',sales_avg:'평균 객단가',settle:'정산 예정',repurchase:'재구매율',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',ship_fee:'배송비 집계(당월)',misong:'미송 대기',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',vip:'단골/VIP 고객',taste:'고객 구매성향',topprod:'인기 상품',lowprod:'관리 필요 상품',bcast:'방송 성과',goal:'목표 달성률',alerts:'알림/체크 필요',schedule:'방송 스케줄',sns:'등록 SNS',inflow:'유입 채널',msg_react:'메시지 반응',new_cust:'신규 고객',quick:'업무 바로가기'};
-function wRender(id){const today=new Date().toISOString().slice(0,10);
+function wRender(id){const today=todayStr();
   switch(id){
     case 'sales_today':return numCard('당일 매출',won(_salesP('today')),'주문 '+_cntP('today')+'건','g','ti-cash',null,_delta('today'));
     case 'sales_week':return numCard('주간 매출',won(_salesP('week')),'주문 '+_cntP('week')+'건','b','ti-cash',null,_delta('week'));
@@ -1203,7 +1206,7 @@ function custSearch(v){const d=$('#custDrop');if(!d)return;v=v.trim();
   const m=CUSTOMERS.filter(c=>inc(c.name,v)||(c.phone&&c.phone.replace(/[^0-9]/g,'').includes(v.replace(/[^0-9]/g,'')))&&/\d/.test(v)).slice(0,25);
   const nameCnt={};m.forEach(c=>nameCnt[c.name]=(nameCnt[c.name]||0)+1);
   d.innerHTML=m.length?m.map(c=>`<div class="drop-i" onclick="pickCustId(${c.id})"><b>${esc(c.name)}</b>${nameCnt[c.name]>1?' <span class="pill p-miss" style="font-size:10px;padding:1px 5px">동명이인</span>':''}<span class="muted" style="margin-left:auto">${esc(c.phone||'연락처 미등록')}</span></div>`).join('')
-    :`<div class="drop-i" onclick="openCustModal('${esc(v)}')">검색결과 없음 · <b style="color:var(--blue)">＋ 신규고객 '${esc(v)}' 팝업등록</b></div>`;}
+    :`<div class="drop-i" onclick="openCustModal('${escAttr(v)}')">검색결과 없음 · <b style="color:var(--blue)">＋ 신규고객 '${esc(v)}' 팝업등록</b></div>`;}
 function custKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!v)return;
   const exact=CUSTOMERS.filter(c=>c.name===v),m=CUSTOMERS.filter(c=>inc(c.name,v));
   if(exact.length===1)pickCustId(exact[0].id);
@@ -1232,7 +1235,7 @@ function addLineByCode(code){
   OE.lines.push({code,name:prodName(code),color,size:sk.size,qty:1,price:sk.price,back:sk.qty<=0});render();}
 function lineColor(i,color){const l=OE.lines[i];l.color=color;const sizesIn=STOCK.filter(s=>s.code===l.code&&s.color===color),sk=sizesIn.find(s=>s.qty>0)||sizesIn[0];l.size=sk.size;l.price=sk.price;l.back=(sk||{}).qty<=0;render();}
 function lineSize(i,size){const l=OE.lines[i],sk=skuOf(l.code,l.color,size);l.size=size;if(sk)l.price=sk.price;l.back=(sk||{}).qty<=0;render();}
-function lineQty(i,v){OE.lines[i].qty=Math.max(1,parseInt(v)||1);render();}
+function lineQty(i,v){const l=OE.lines[i];if(!l)return;l.qty=Math.max(1,parseInt(v)||1);if(!l.kind){const sk=skuOf(l.code,l.color,l.size);if(sk)l.back=l.qty>(sk.qty||0);}render();}
 function lineBack(i,c){OE.lines[i].back=c;render();}
 function removeLine(i){OE.lines.splice(i,1);render();}
 function lineField(i,f,v){if(!OE.lines[i])return;OE.lines[i][f]=(f==='qty'||f==='price')?Math.max(0,parseInt(v)||0):v;render();}
@@ -1344,7 +1347,7 @@ function baseRows(){
   return rows;
 }
 function orderRowsAll(){return baseRows().filter(o=>o.ship!=='done'&&!RXSET.includes(o.req)&&(!o.req||o.req==='없음'));}
-function orderRowsToday(){const t=new Date().toISOString().slice(0,10);return orderRowsAll().filter(o=>(o.date||'').replace(/\//g,'-')===t);}
+function orderRowsToday(){const t=todayStr();return orderRowsAll().filter(o=>(o.date||'').replace(/\//g,'-')===t);}
 function orderRows(){return ORDTAB==='today'?orderRowsToday():orderRowsAll();}
 function shipRows(){const d=SHIPDATE||todayStr();return mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-').slice(0,10)===d&&!RXSET.includes(o.req)&&((o.req==='출고요청'||o.req==='합배요청')||o.ship==='done'));}
 function rxAll(){return baseRows().filter(o=>o.req==='교환요청'||o.req==='환불요청');}
@@ -1476,7 +1479,7 @@ function manageCards(list,cat){
 function shipToggle(id){if(SHIPCHK.has(id))SHIPCHK.delete(id);else SHIPCHK.add(id);render();}
 async function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];if(!c)return;
   const trk=($('#trk_wait_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
-  const _td=new Date().toISOString().slice(0,10);
+  const _td=todayStr();
   const prev=c.lines.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   c.lines.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
   let ok=true;for(const o of c.lines){if(await saveOrd(o)===false)ok=false;}
@@ -1486,7 +1489,7 @@ async function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];
 async function shipChecked(cat,i){const c=openCustomers().filter(x=>x.cat===cat)[i];if(!c)return;
   const sel=c.lines.filter(l=>SHIPCHK.has(l.id));if(!sel.length){toast('출고할 상품을 체크하세요');return;}
   const trk=($('#trk_'+cat+'_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
-  const _td=new Date().toISOString().slice(0,10);
+  const _td=todayStr();
   const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
   let ok=true;for(const o of sel){if(await saveOrd(o)===false)ok=false;}
@@ -1524,7 +1527,7 @@ async function shipPopAction(){
   const trk=($('#ptrk')?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const sel=cat==='wait'?c.lines:c.lines.filter(l=>SHIPCHK.has(l.id));
   if(!sel.length){toast('출고할 상품을 체크하세요');return;}
-  const _td=new Date().toISOString().slice(0,10);
+  const _td=todayStr();
   const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
   let ok=true;for(const o of sel){if(await saveOrd(o)===false)ok=false;}
@@ -1933,7 +1936,7 @@ function renderCustDetail(c,logs){
     <div class="kpi"><div><div class="lab">적립금</div><div class="num" style="font-size:20px;color:#059669">${won(c.points||0)}</div><div class="sub">사용 가능</div></div></div>
     <div class="kpi"><div><div class="lab">최근 구매</div><div class="num" style="font-size:15px">${st.last||'-'}</div></div></div>
   </div>
-  ${sec('💰 적립금 <span class="muted" style="font-size:12px;font-weight:400">현재 '+won(c.points||0)+'</span>',`<div style="padding:0 0 6px"><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn sm" onclick="custAdjustPoints(${c.id},1)">＋ 수동 적립</button><button class="btn sm gray" onclick="custAdjustPoints(${c.id},-1)">－ 차감</button><span class="muted" style="align-self:center;font-size:12px">주문관리에서 적립금 사용은 B단계에서 추가됩니다</span></div>${logRows(pointLog)}</div>`)}
+  ${sec('💰 적립금 <span class="muted" style="font-size:12px;font-weight:400">현재 '+won(c.points||0)+'</span>',`<div style="padding:0 0 6px"><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn sm" onclick="custAdjustPoints(${c.id},1)">＋ 수동 적립</button><button class="btn sm gray" onclick="custAdjustPoints(${c.id},-1)">－ 차감</button><span class="muted" style="align-self:center;font-size:12px">주문관리에서 적립금을 사용할 수 있습니다</span></div>${logRows(pointLog)}</div>`)}
   ${sec('↩️ 취소·환불 이력 <span class="muted" style="font-size:12px;font-weight:400">'+csLog.length+'건</span>',logRows(csLog))}
   ${sec('🔄 교환·반품 이력 <span class="muted" style="font-size:12px;font-weight:400">'+rx.length+'건</span>',rx.length?`<table><thead><tr><th>일시</th><th>구분</th><th>상품</th><th>사유</th><th>진행</th></tr></thead><tbody>${rx.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.rxdate||o.date)}</td><td><span class="pill p-req">${rxTypeLabel(o)}</span></td><td>${itemLabel(o)}</td><td class="muted">${esc(o.rxreason||'-')}</td><td>${o.rxstat==='done'?'<span class="pill p-done">완료</span>':'<span class="pill p-req">진행중</span>'}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">내역 없음</div>')}
   ${sec('📦 미송 이력 <span class="muted" style="font-size:12px;font-weight:400">'+back.length+'건 대기중</span>',back.length?`<table><thead><tr><th>주문일</th><th>번호표</th><th>상품</th><th class="num-cell">수량</th></tr></thead><tbody>${back.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.date)}</td><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">현재 미송 대기 없음</div>')}
@@ -2136,11 +2139,11 @@ function openProdModal(prefill){prefill=prefill||'';PRODEDIT=null;const isNum=/^
   $('#modalBox').innerHTML=`<h3>품목 신규 등록</h3><div class="ms">검색에 없어 새로 등록합니다. 저장하면 작업 중인 주문에 바로 추가돼요(화면 유지).</div>${prodFormHTML(isNum?{code:prefill}:{name:prefill})}
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mp_code');if(el)el.focus();},40);}
-function openProdEdit(id){const s=STOCK.find(x=>x.id===id);if(!s){toast('품목 정보를 찾을 수 없어요');return;}PRODEDIT=id;
+function openProdEdit(id){if(isSeller()){toast('셀러팀은 재고 조회만 가능합니다');return;}const s=STOCK.find(x=>x.id===id);if(!s){toast('품목 정보를 찾을 수 없어요');return;}PRODEDIT=id;
   $('#modalBox').innerHTML=`<h3>품목 수정</h3><div style="display:flex;align-items:center;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:9px;padding:9px 12px;margin-bottom:8px"><span class="muted" style="font-size:12px">전체 품목코드</span><b class="barcode" style="font-size:15px;color:#2563eb">${skuFullCode(s.code,s.color,s.size)}</b><span class="muted" style="font-size:11px">· 색상·사이즈 순서로 자동 부여</span></div><div class="ms">등록 시 입력한 내용을 수정합니다. 저장하면 이 품목이 보이는 모든 화면에 반영돼요.</div>${prodFormHTML(s)}
     <div class="modal-foot"><button class="btn red ghost" onclick="delProd()">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');}
-async function saveProd(){const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
+async function saveProd(){if(isSeller()){toast('권한이 없습니다');return;}const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
   if(!code||!name){toast('품목코드·품목명은 필수');return;}
   const d={code,tag:$('#mp_tag').value.trim()||'-',vendor:$('#mp_vendor').value.trim()||null,name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',in_price:parseInt($('#mp_inprice').value)||0,price:parseInt($('#mp_price').value)||0,category:$('#mp_cat').value||null,subcategory:$('#mp_subcat').value||null,season:(CAT_HASSEASON($('#mp_cat').value)?$('#mp_season').value:'')||null,qty:parseInt($('#mp_qty').value)||0};
   const editing=PRODEDIT!=null;let s;
@@ -2149,7 +2152,7 @@ async function saveProd(){const code=$('#mp_code').value.trim(),name=$('#mp_name
   await saveStockRow(s);
   const wasEditing=editing;PRODEDIT=null;closeModal();toast(wasEditing?('✅ 수정: '+name):('✅ 품목 등록: '+name));
   if(!wasEditing&&VIEW==='order')addLineByCode(code);else render();}
-async function delProd(){if(PRODEDIT==null)return;const s=STOCK.find(x=>x.id===PRODEDIT);if(!s){closeModal();return;}if(!confirm(`'${s.name}' 품목을 재고에서 완전히 삭제할까요?`))return;const i=STOCK.indexOf(s);if(i>=0)STOCK.splice(i,1);PRODEDIT=null;closeModal();toast('🗑️ 품목 삭제: '+s.name);render();await delStockDB(s);}
+async function delProd(){if(isSeller()){toast('권한이 없습니다');return;}if(PRODEDIT==null)return;const s=STOCK.find(x=>x.id===PRODEDIT);if(!s){closeModal();return;}if(!confirm(`'${s.name}' 품목을 재고에서 완전히 삭제할까요?`))return;const i=STOCK.indexOf(s);if(i>=0)STOCK.splice(i,1);PRODEDIT=null;closeModal();toast('🗑️ 품목 삭제: '+s.name);render();await delStockDB(s);}
 /* 입고목록(STAGED) 항목 수정 — 저장 전 대기 항목을 팝업에서 고침(다 지우고 다시 안 써도 됨) */
 let STAGEEDIT=null;
 function openStageEdit(i){const x=STAGED[i];if(!x){toast('항목을 찾을 수 없어요');return;}STAGEEDIT=i;
@@ -2268,7 +2271,7 @@ function viewUsers(){
     <div class="form-grid">
       <input id="f_name" placeholder="이름" style="width:100px">
       <input id="f_id" placeholder="아이디(영문/숫자)" style="width:140px">
-      <input id="f_pw" placeholder="비밀번호(4자 이상)" style="width:150px">
+      <input id="f_pw" placeholder="비밀번호(6자 이상)" style="width:150px">
       <select id="f_team"><option>운영팀</option><option>물류팀</option><option>셀러팀</option></select>
       <select id="f_scope"><option value="all">전체권한</option><option value="logi">물류범위</option><option value="self">본인자료만</option></select>
       <input id="f_owner" placeholder="담당셀러(보조만)" style="width:130px">
