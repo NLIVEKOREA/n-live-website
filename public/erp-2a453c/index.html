@@ -610,7 +610,7 @@ const SIZE_ORDER=['F','FREE','FR','ONE','ONESIZE','XS','S','M','L','XL','2XL','X
 function sizeRank(sz){const s=String(sz==null?'':sz).toUpperCase().replace(/\s/g,'');const i=SIZE_ORDER.indexOf(s);if(i>=0)return i;const n=parseInt(s,10);if(!isNaN(n))return 200+n;return 100;}
 function normCode6(code){const g=String(code==null?'':code).replace(/\D/g,'');return (g.length===5||g.length===6)?g.padStart(6,'0'):String(code==null?'':code);}
 function isFreeSize(sz){return !sz||['F','FREE','FR','ONE','ONESIZE'].includes(String(sz).toUpperCase());}
-function skuFullCode(code,color,size,pool){const src=pool||STOCK;const same=src.filter(x=>String(x.code)===String(code));const colors=[];same.forEach(x=>{if(x.color&&x.color!=='-'&&colors.indexOf(x.color)<0)colors.push(x.color);});const sizes=[...new Set(same.map(x=>x.size).filter(Boolean))].sort((a,b)=>sizeRank(a)-sizeRank(b));const c6=normCode6(code);const ci=colors.indexOf(color);const cp=ci>=0?'-'+String(ci+1).padStart(2,'0'):'';const si=sizes.indexOf(size);const sp=isFreeSize(size)?'':(si>=0?'-'+String(si+1).padStart(2,'0'):'');return c6+cp+sp;}
+function skuFullCode(code,color,size,pool){const raw=String(code==null?'':code);if(raw.includes('-'))return raw;/* 구 데이터: 전체코드가 code에 통째로 저장됨 → 그대로 표시(접미사 재부여 안 함) */const src=pool||STOCK;const same=src.filter(x=>String(x.code)===String(code));const colors=[];same.forEach(x=>{if(x.color&&x.color!=='-'&&colors.indexOf(x.color)<0)colors.push(x.color);});const sizes=[...new Set(same.map(x=>x.size).filter(Boolean))].sort((a,b)=>sizeRank(a)-sizeRank(b));const c6=normCode6(code);const ci=colors.indexOf(color);const cp=ci>=0?'-'+String(ci+1).padStart(2,'0'):'';const si=sizes.indexOf(size);const sp=isFreeSize(size)?'':(si>=0?'-'+String(si+1).padStart(2,'0'):'');return c6+cp+sp;}
 function nextProductCode(){let mx=0;STOCK.forEach(s=>{const g=String(s.code||'').replace(/\D/g,'');if(g.length===5||g.length===6){const n=parseInt(g,10);if(n>mx)mx=n;}});return String(mx+1).padStart(6,'0');}
 const colorsOf=c=>[...new Set(STOCK.filter(s=>s.code===c).map(s=>s.color))];
 const itemLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
@@ -1982,7 +1982,7 @@ async function delCust(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;if(
 function prodFormHTML(s){s=s||{};const cat=s.category||'';const showSeason=CAT_HASSEASON(cat);
   return `
     <div class="modal-row"><div><label>검색창내용(번호표)</label><input id="mp_tag" value="${esc(s.tag||'')}" placeholder="063"></div>
-      <div><label>품목코드</label><input id="mp_code" value="${esc(s.code||'')}" placeholder="10099"></div></div>
+      <div><label>기본 상품번호 <span class="muted" style="font-size:11px">색상·사이즈 접미사는 자동</span></label><input id="mp_code" value="${esc(s.code||'')}" placeholder="011016"></div></div>
     <label>구매처(사입처)</label><input id="mp_vendor" list="mp_vendorList" value="${esc(s.vendor||'')}" placeholder="🔍 입력 또는 선택 (예: eun)">
     <datalist id="mp_vendorList">${VENDORS.map(v=>`<option value="${esc(v.name)}">`).join('')}</datalist>
     <label>품목명</label><input id="mp_name" value="${esc(s.name||'')}">
@@ -2001,7 +2001,7 @@ function openProdModal(prefill){prefill=prefill||'';PRODEDIT=null;const isNum=/^
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mp_code');if(el)el.focus();},40);}
 function openProdEdit(id){const s=STOCK.find(x=>x.id===id);if(!s){toast('품목 정보를 찾을 수 없어요');return;}PRODEDIT=id;
-  $('#modalBox').innerHTML=`<h3>품목 수정</h3><div class="ms">등록 시 입력한 내용을 수정합니다. 저장하면 이 품목이 보이는 모든 화면에 반영돼요.</div>${prodFormHTML(s)}
+  $('#modalBox').innerHTML=`<h3>품목 수정</h3><div style="display:flex;align-items:center;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:9px;padding:9px 12px;margin-bottom:8px"><span class="muted" style="font-size:12px">전체 품목코드</span><b class="barcode" style="font-size:15px;color:#2563eb">${skuFullCode(s.code,s.color,s.size)}</b><span class="muted" style="font-size:11px">· 색상·사이즈 순서로 자동 부여</span></div><div class="ms">등록 시 입력한 내용을 수정합니다. 저장하면 이 품목이 보이는 모든 화면에 반영돼요.</div>${prodFormHTML(s)}
     <div class="modal-foot"><button class="btn red ghost" onclick="delProd()">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');}
 async function saveProd(){const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
