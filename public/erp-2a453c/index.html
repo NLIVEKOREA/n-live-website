@@ -1727,6 +1727,19 @@ function statusBaseRows(){
   if(SHPQ){if(SHPFIELD==='상품번호')rows=rows.filter(o=>inc(o.code,SHPQ)||inc(skuFullCode(o.code,o.color,o.size),SHPQ)||inc(itemLabel(o),SHPQ));else if(SHPFIELD==='번호표')rows=rows.filter(o=>inc(tagShow(o),SHPQ));else if(SHPFIELD==='송장')rows=rows.filter(o=>inc(o.track,SHPQ));else rows=rows.filter(o=>inc(o.cust,SHPQ));}
   return rows;
 }
+/* 반품(출고됨)과 환불(미출고)은 같은 rxtype='refund' — 라벨만 출고여부로 구분 */
+function rxTypeLabel(o){return o.rxtype==='refund'?((o.ship==='done'&&o.track)?'반품':'환불'):((RX_TYPES[o.rxtype]||{}).l||'CS');}
+/* 미출고 상태에서 취소/환불 — 물건이 안 나갔으니 재고만 복원(둘 다 결제금액은 사장님이 직접 환불) */
+async function cancelSale(id,kind){const o=ORD.find(x=>x.id===id);if(!o)return;const label=kind||'취소';
+  if(!confirm('['+label+']\n'+o.cust+' · '+itemLabel(o)+' '+o.qty+'개 · '+won(amtOf(o))+'\n\n이 주문을 '+label+' 처리할까요?\n· 차감됐던 재고가 복원됩니다'+(label==='환불'?'\n· 결제금액은 사장님이 직접 환불해 주세요':'')))return;
+  await cancelOrder(id,label);}
+/* 판매현황 상태별 액션 버튼 — 출고완료: 교환/반품 · 미출고: 환불/취소 */
+function csActionCell(o){const B='btn sm ghost',ST='padding:3px 7px;font-size:11px';
+  if(o.rxtype)return `<span class="pill ${o.rxstat==='done'?'':'p-req'}">${rxTypeLabel(o)}${o.rxstat==='done'?' 완료':' 진행'}</span>`;
+  if(o.code==='배송비'||o.code==='낱장')return (o.ship==='done'&&o.track)?`<span class="barcode muted">${esc(o.track)}</span>`:'<span class="muted">-</span>';
+  if(o.ship==='done'&&o.track)return `<span class="barcode muted">${esc(o.track)}</span> <button class="${B}" style="${ST}" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="${B}" style="${ST}" onclick="rxOpen(${o.id},'refund')">반품</button>`;
+  return `<button class="${B}" style="${ST}" onclick="cancelSale(${o.id},'환불')">환불</button><button class="btn sm red ghost" style="${ST}" onclick="cancelSale(${o.id},'취소')">취소</button>`;
+}
 function statusCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='ss:'+g.date+g.cust;
   return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
     <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
@@ -1734,7 +1747,7 @@ function statusCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='ss:'+g.d
     ${g.items.map(o=>{const st=saleStatus(o),pill=SHP_STATE_PILL[st]||['p-gray',st||'-'];return `<tr>
       <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td>
       <td><span class="pill ${pill[0]}">${pill[1]}</span></td>
-      <td>${o.ship==='done'&&o.track?`<span class="barcode muted">${esc(o.track)}</span> ${o.rxtype?`<span class="pill ${o.rxstat==='done'?'':'p-req'}">${RX_TYPES[o.rxtype].l}${o.rxstat==='done'?' 완료':' 진행'}</span>`:`<button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'refund')">반품</button>`}`:(o.rxtype&&o.rxstat!=='done'?`<span class="pill p-req">${RX_TYPES[o.rxtype].l} 진행</span>`:'<span class="muted">-</span>')}</td>
+      <td>${csActionCell(o)}</td>
     </tr>`;}).join('')}
     </tbody></table></div>`;
 }
