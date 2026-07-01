@@ -64,6 +64,11 @@ button,input,select,textarea{font:inherit}
 .numtag{display:inline-block;background:#e8efff;color:#1d4ed8;border-radius:5px;padding:2px 6px;font-size:11px;font-weight:900;vertical-align:middle}
 .remembered{background:#eef7ee;border:1px solid #cde8cd;border-radius:10px;padding:10px 12px;font-size:12px;color:#256029;display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .remembered a{color:#1d4ed8;cursor:pointer;text-decoration:underline;margin-left:auto;white-space:nowrap}
+.paysel{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.paybtn{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid #d9dee7;border-radius:11px;padding:13px 8px;background:#fff;font-size:14px;font-weight:800;cursor:pointer;color:#111}
+.paybtn small{font-size:10px;font-weight:600;color:#98a2b3}
+.paybtn.sel{border:2px solid var(--blue);background:#edf3ff;color:var(--blue)}
+.paybtn.sel small{color:var(--blue)}
 </style>
 </head>
 <body>
@@ -87,6 +92,7 @@ let CURP=null;        // 현재 상세 상품
 let SEL={color:null,size:null,qty:1};
 let DONE=null;        // 주문완료 결과
 let CUST={receiver:'',nick:'',phone:'',addr:'',addr_detail:'',agree:false};
+let PAYM='현금';        // 결제방법: 현금 | 카드
 
 const $=s=>document.querySelector(s);
 const won=n=>'₩'+Number(n||0).toLocaleString();
@@ -213,17 +219,23 @@ function renderForm(){
         <div><label>휴대폰번호 *</label><input id="f_phone" value="${esc(CUST.phone)}" inputmode="numeric" placeholder="010-0000-0000"></div></div>
       <label>배송지 *</label><input id="f_addr" value="${esc(CUST.addr)}" placeholder="도로명/지번 주소">
       <label>상세주소</label><input id="f_addr2" value="${esc(CUST.addr_detail)}" placeholder="동/호수 등">
+      <label style="display:block;font-size:12px;color:#475467;font-weight:750;margin:14px 0 6px">결제 방법 *</label>
+      <div class="paysel">
+        <button type="button" class="paybtn ${PAYM==='현금'?'sel':''}" onclick="setPay('현금')">💵 현금(계좌이체)<small>계좌번호를 바로 안내</small></button>
+        <button type="button" class="paybtn ${PAYM==='카드'?'sel':''}" onclick="setPay('카드')">💳 카드<small>직원이 결제링크 발송</small></button>
+      </div>
       <label class="agree"><input type="checkbox" id="f_agree" ${CUST.agree?'checked':''}>
         <span>주문 처리 및 배송을 위한 개인정보 수집·이용, 교환·반품 정책에 동의합니다. (필수)</span></label>
       <div class="sum" style="margin-top:6px"><div><span>상품금액</span><b>${won(subtotal())}</b></div>
         <div><span>배송비</span><b>${sf?won(sf):'무료'}</b></div>
         <div class="total"><span>주문금액</span><span>${won(subtotal()+sf)}</span></div></div>
-      <p style="font-size:12px;color:#98a2b3;line-height:1.6">주문 후 담당 직원이 계좌이체 안내 또는 페이히어 결제링크를 보내드립니다. 입금이 확인되면 상품이 준비·발송됩니다.</p>
+      <p style="font-size:12px;color:#98a2b3;line-height:1.6">같은 방송에서 여러 번 주문하면 <b>배송비는 한 번만</b> 붙고 무료배송 기준도 합산돼요. ${PAYM==='현금'?'현금 선택 시 주문 완료 화면에 계좌번호가 안내됩니다.':'카드 선택 시 직원이 결제링크(페이히어)를 보내드립니다.'}</p>
      </div>
      <div class="foot"><button class="cta green" id="orderBtn" onclick="submitOrder()">주문하기</button></div>`;
 }
-function grabForm(){CUST.nick=$('#f_nick').value.trim();CUST.receiver=$('#f_recv').value.trim();CUST.phone=$('#f_phone').value.trim();
-  CUST.addr=$('#f_addr').value.trim();CUST.addr_detail=$('#f_addr2').value.trim();CUST.agree=$('#f_agree').checked;}
+function grabForm(){const g=id=>{const e=$('#'+id);return e?e.value.trim():'';};CUST.nick=g('f_nick');CUST.receiver=g('f_recv');CUST.phone=g('f_phone');
+  CUST.addr=g('f_addr');CUST.addr_detail=g('f_addr2');const a=$('#f_agree');CUST.agree=a?a.checked:CUST.agree;}
+function setPay(v){grabForm();PAYM=v;render();}
 async function submitOrder(){
   grabForm();
   if(!CUST.receiver){toast('받는 분 성함을 입력해 주세요.');return;}
@@ -234,7 +246,7 @@ async function submitOrder(){
   try{
     const items=CART.map(x=>({product_id:x.product_id,color:x.color,size:x.size,qty:x.qty}));
     const {data,error}=await SB.rpc('create_live_order',{p_slug:SLUG,
-      p_customer:{receiver:CUST.receiver,nick:CUST.nick,phone:CUST.phone,addr:CUST.addr,addr_detail:CUST.addr_detail,agree:true},
+      p_customer:{receiver:CUST.receiver,nick:CUST.nick,phone:CUST.phone,addr:CUST.addr,addr_detail:CUST.addr_detail,agree:true,paymethod:PAYM},
       p_items:items});
     if(error){console.error(error);toast('주문 저장에 실패했습니다. 다시 시도해 주세요.');btn.disabled=false;btn.textContent='주문하기';return;}
     if(!data||!data.ok){toast((data&&data.msg)||'주문을 완료할 수 없습니다.');btn.disabled=false;btn.textContent='주문하기';
@@ -255,16 +267,19 @@ function renderDone(){
         <div><span>배송비</span><b>${d.ship_fee?won(d.ship_fee):'무료'}</b></div>
         <div style="border-top:1px solid var(--line);margin-top:4px;padding-top:9px"><span style="font-weight:800">주문금액</span><b style="font-size:16px">${won(d.total)}</b></div>
       </div>
-      <div class="paynote">💳 <b>다음 안내</b><br>
-        · 방송 채팅/카톡으로 계좌번호 또는 페이히어 링크를 받으세요.<br>
-        · <b>입금이 확인된 순서대로</b> 재고가 배정됩니다. 빠른 입금 부탁드려요!<br>
-        · 입금 확인 후 상품 준비·발송이 시작됩니다.</div>
+      ${d.paymethod==='카드'?`<div class="paynote">💳 <b>카드 결제 안내</b><br>
+        · 담당 직원이 <b>페이히어 결제링크</b>를 방송 채팅/카톡으로 보내드립니다.<br>
+        · 링크로 결제하시면 상품 준비·발송이 시작됩니다.<br>
+        · <b>입금(결제) 순서대로</b> 재고가 배정돼요. 조금만 기다려주세요!</div>`
+       :`<div class="paynote">💵 <b>계좌이체 안내</b>${d.pay_info?`<div style="background:#fff;border:1px solid #cfe0ff;border-radius:8px;padding:10px;margin:8px 0;font-size:14px;font-weight:800;color:#111;text-align:center">${esc(d.pay_info)}</div>`:'<br>· 방송 채팅/카톡으로 계좌번호를 안내드립니다.<br>'}
+        · 위 <b>주문금액 ${won(d.total)}</b>을 입금해 주세요. (여러 번 주문하셨으면 <b>합계 한 번에</b>)<br>
+        · <b>입금 확인 순서대로</b> 재고가 배정됩니다. 빠른 입금 부탁드려요!</div>`}
       <button class="cta ghost" style="margin-top:20px" onclick="CART=[];DONE=null;go('home')">쇼핑 계속하기</button>
      </div>`;
 }
 function go(v){VIEW=v;window.scrollTo(0,0);render();}
 window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSize;window.qc=qc;window.addCart=addCart;
-window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;
+window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 load();
 </script>
