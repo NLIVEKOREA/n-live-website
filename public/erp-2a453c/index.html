@@ -414,9 +414,9 @@ function getAlerts(){const a=[],wd=new Date().getDay(),dd=new Date().getDate();
   const unpaidG=new Set(mine(ORD).filter(o=>o.pay==='unpaid').map(o=>(o.date||'')+'|'+o.cust)).size;
   if(unpaidG)a.push({ic:'ti-clipboard-list',t:'미입금 주문 '+unpaidG+'건 — 입금확인 필요',go:"go('order')"});
   const toship=mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done').length;
-  if(toship)a.push({ic:'ti-truck',t:'출고 대기 '+toship+'건'+((wd===0||wd===6)?' · 오늘 주말(미출고)':''),go:"go('ship')"});
-  const back=mine(ORD).filter(o=>o.back).length;
-  if(back)a.push({ic:'ti-clock',t:'미송 대기 '+back+'건 — 재입고/발주 확인',go:"go('ship')"});
+  if(toship)a.push({ic:'ti-truck',t:'출고 대기 상품 '+toship+'개'+((wd===0||wd===6)?' · 오늘 주말(미출고)':''),go:"go('ship')"});
+  const back=mine(ORD).filter(o=>o.back&&o.code!=='배송비'&&o.code!=='적립금').length;
+  if(back)a.push({ic:'ti-clock',t:'미송 상품 '+back+'개 — 재입고/발주 확인',go:"go('ship')"});
   const rx=mine(ORD).filter(o=>o.req==='교환요청'||o.req==='환불요청'||o.rxstat==='wait'||o.rxstat==='req').length;
   if(rx)a.push({ic:'ti-refresh',t:'교환/반품 요청 '+rx+'건',go:"go('sales')"});
   const out=STOCK.filter(s=>s.qty<=0).length; if(out)a.push({ic:'ti-alert-triangle',t:'품절 '+out+'개 품목 — 판매 전 확인',go:"go('stock')"});
@@ -965,7 +965,7 @@ function viewDash(){
     return `<div class="grid-stack-item" gs-id="${id}" gs-w="${s.w||sz.w}" gs-h="${s.h||sz.h}"${s.x!=null?` gs-x="${s.x}"`:''}${s.y!=null?` gs-y="${s.y}"`:''}><div class="grid-stack-item-content"><button class="wx" title="위젯 제거" onclick="event.stopPropagation();wgToggle('${id}')">×</button>${wRender(id)}</div></div>`;}).join('');
   return `
   <div class="greet">
-    <div><h1><b>${ME.name}</b> ${ME.role}님, 오늘도 좋은 방송 되세요! 👋</h1>
+    <div><h1><b>${ME.name}</b> ${ME.role}님, ${({all:'오늘도 좋은 하루 되세요!',logi:'안전한 출고 시작하세요!',self:'오늘도 좋은 방송 되세요!'}[ME.scope]||'오늘 처리할 업무를 확인하세요!')} 👋</h1>
       <p>${ME.team} · ${ME.role} 맞춤 대시보드</p></div>
     <div style="display:flex;gap:8px"><button class="btn sm gray" onclick="resetLayout()"><i class="ti ti-arrows-minimize"></i> 배치 초기화</button><button class="btn sm ghost" onclick="openWidgetEdit()"><i class="ti ti-layout-grid-add"></i> 위젯 편집</button></div>
   </div>
@@ -981,6 +981,10 @@ function viewOrder(){
   const unpaid=mine(ORD).filter(o=>o.pay==='unpaid');
   const sellers=USERS.filter(u=>u.team==='셀러팀'&&u.role==='셀러').map(u=>`<option ${OE.staff===u.name?'selected':''}>${u.name}</option>`).join('');
   const total=OE.lines.reduce((a,l)=>a+(l.price||0)*(l.qty||0),0),cnt=OE.lines.reduce((a,l)=>a+(l.qty||0),0);
+  // 합배 안내 — 선택한 고객의 아직 출고 안 된 주문(합쳐질 대상)
+  const priorOrders=OE.cust?mine(ORD).filter(o=>o.cust===OE.cust&&o.ship!=='done'&&o.code!=='배송비'&&o.code!=='적립금'):[];
+  const priorDates=[...new Set(priorOrders.map(o=>o.date))].sort();
+  const mergeBanner=priorOrders.length?`<div class="note" style="background:#eff6ff;border:1px solid #bcd3ff;color:#1e40af;margin-bottom:10px">🔗 <b>${esc(OE.cust)}</b> 고객은 아직 출고 안 된 주문이 <b>${priorOrders.length}건</b> 있습니다 (${priorDates.join(', ')}) — 이번 주문은 <b>합배</b>로 함께 나갑니다.</div>`:'';
   return `
   <div class="head"><h1>주문서입력 <span class="badge">결제 전</span></h1>
     <p>방송 중 주문 접수 · 고객/품목 <b>일부만 입력+Enter</b>로 검색 · 저장(F8) 시 재고 차감, 취소 시 복원</p></div>
@@ -998,6 +1002,7 @@ function viewOrder(){
       <label>연락처</label><div class="fld"><input value="${OE.phone||''}" placeholder="고객 선택 시 자동" readonly></div>
       <label>주소</label><div class="fld" style="grid-column:span 3"><input value="${esc((OE.zip?'['+OE.zip+'] ':'')+(OE.addr||'')+(OE.island?'   🏝️ '+OE.island.region+' (도서산간)':''))}" placeholder="고객 선택 시 자동 (우편번호·주소 함께)" readonly style="${OE.island?'border:1.5px solid var(--amber);background:#fff8ec':''}"></div>
     </div></div>
+    ${mergeBanner}
     <table class="ogrid"><thead><tr>
       <th style="width:32px">No</th><th style="width:78px">번호표</th><th style="width:86px">품목코드</th><th>품목명</th>
       <th style="width:96px">색상</th><th style="width:86px">규격</th><th style="width:60px">수량</th><th style="width:62px">현재고</th>
@@ -1361,7 +1366,7 @@ function setShipReq(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;if(v==='�
 function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(o)o.reason=v;render();}
 function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   return `<div class="card${COLLAPSED.has('so:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:80px">상태</th><th style="width:130px">요청</th></tr></thead><tbody>
     ${g.items.map(o=>{const dr=reqDraftOf(o);return `<tr ${o.back?'style="background:#fffaf3"':''}>
@@ -1376,7 +1381,7 @@ function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
 }
 function shipCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   return `<div class="card${COLLAPSED.has('sp:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('sp:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('sp:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:92px">출고상태</th><th style="width:120px">송장번호</th><th style="width:108px">반품/교환</th><th style="width:130px">사유</th></tr></thead><tbody>
     ${g.items.map(o=>{const sel=RXSET.includes(o.req)?o.req:'유지';return `<tr>
@@ -1647,7 +1652,7 @@ function openShipGuide(date,cust){
 function copySG(){const ta=$('#sgText');if(!ta)return;ta.select();try{document.execCommand('copy');}catch(e){}if(navigator.clipboard)navigator.clipboard.writeText(ta.value);toast('📋 안내문구 복사됨 — 카톡/문자에 붙여넣기');}
 function shippedCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='sd:'+g.date+g.cust;
   return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>송장번호</th><th>CS처리</th></tr></thead><tbody>
     ${g.items.map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td><td class="barcode muted">${o.track||'-'}</td><td>${o.rxtype?`<span class="pill ${o.rxstat==='done'?'':'p-req'}">${RX_TYPES[o.rxtype].l}${o.rxstat==='done'?' 완료':' 진행'}</span>`:`<div style="display:flex;gap:3px"><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'refund')">반품</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'cancel')">취소</button></div>`}</td></tr>`).join('')}
     </tbody></table></div>`;
@@ -1786,7 +1791,7 @@ function csActionCell(o){const B='btn sm ghost',ST='padding:3px 7px;font-size:11
 }
 function statusCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='ss:'+g.date+g.cust;
   return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>상태</th><th>송장·CS</th></tr></thead><tbody>
     ${g.items.map(o=>{const st=saleStatus(o),pill=SHP_STATE_PILL[st]||['p-gray',st||'-'];return `<tr>
       <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td>
@@ -2448,7 +2453,8 @@ const KAKAO_DESC={'입금완료':'입금확인 시 고객에게 자동 발송','
 function toggleKakaoAlert(k){KAKAO.alerts[k]=!KAKAO.alerts[k];toast('알림 '+(KAKAO.alerts[k]?'켜짐':'꺼짐')+': '+k);render();}
 function viewKakao(){const t=KAKAOTAB;
   return `
-  <div class="head"><h1>카카오 연동 <span class="badge">알림톡·채널</span></h1><p>채널 연결 · 알림 설정 · 템플릿 · 발송내역 · 챗봇 (데모)</p></div>
+  <div class="head"><h1>카카오 연동 <span class="badge" style="background:#fef3c7;color:#b45309">데모·미연동</span></h1><p>채널 연결 · 알림 설정 · 템플릿 · 발송내역 · 챗봇 (데모)</p></div>
+  <div class="note" style="background:#fffbeb;border:1px solid #fcd34d;color:#92400e;margin-bottom:12px">⚠️ <b>아직 실제 연동 전 데모 화면입니다.</b> 아래 연결됨·충전잔액·친구수·발송내역은 모두 <b>샘플 값</b>이며 실제로 발송되지 않습니다. 실연동은 솔라피 등 발송대행 계약 후 적용됩니다.</div>
   <div class="tabs">
     <button class="${t==='set'?'on':''}" onclick="KAKAOTAB='set';render()">연동 설정</button>
     <button class="${t==='alert'?'on':''}" onclick="KAKAOTAB='alert';render()">알림 설정</button>
@@ -2460,8 +2466,8 @@ function viewKakao(){const t=KAKAOTAB;
 }
 function kakaoSet(){return `
   <div class="kpis">
-    <div class="kpi"><div><div class="lab">채널 연결</div><div class="num" style="font-size:18px;color:var(--green)">연결됨</div><div class="sub">@${KAKAO.channel}</div></div><div class="ic ic-g"><i class="ti ti-circle-check"></i></div></div>
-    <div class="kpi"><div><div class="lab">발송 대행사</div><div class="num" style="font-size:18px">솔라피</div><div class="sub">API 연결됨</div></div><div class="ic ic-b"><i class="ti ti-plug"></i></div></div>
+    <div class="kpi"><div><div class="lab">채널 연결</div><div class="num" style="font-size:18px;color:#94a3b8">데모</div><div class="sub">@${KAKAO.channel} (샘플)</div></div><div class="ic ic-g"><i class="ti ti-circle-check"></i></div></div>
+    <div class="kpi"><div><div class="lab">발송 대행사</div><div class="num" style="font-size:18px">솔라피</div><div class="sub">미연동 (샘플)</div></div><div class="ic ic-b"><i class="ti ti-plug"></i></div></div>
     <div class="kpi"><div><div class="lab">충전 잔액</div><div class="num">${won(KAKAO.balance)}</div><div class="sub warn">약 ${Math.floor(KAKAO.balance/9)}건분</div></div><div class="ic ic-a"><i class="ti ti-wallet"></i></div></div>
     <div class="kpi"><div><div class="lab">채널 친구</div><div class="num">1,284</div><div class="sub up">친구톡 발송 가능</div></div><div class="ic ic-p"><i class="ti ti-users"></i></div></div>
   </div>
@@ -2495,7 +2501,7 @@ function kakaoLog(){const tot=KAKAO_LOG.reduce((a,x)=>a+x.cost,0);return `
 }
 function kakaoBot(){return `
   <div class="kpis">
-    <div class="kpi"><div><div class="lab">챗봇</div><div class="num" style="font-size:18px;color:var(--green)">연결됨</div><div class="sub">주문·배송 조회 응답</div></div><div class="ic ic-g"><i class="ti ti-robot"></i></div></div>
+    <div class="kpi"><div><div class="lab">챗봇</div><div class="num" style="font-size:18px;color:#94a3b8">데모</div><div class="sub">주문·배송 조회 응답 (샘플)</div></div><div class="ic ic-g"><i class="ti ti-robot"></i></div></div>
     <div class="kpi"><div><div class="lab">오늘 챗봇 응답</div><div class="num">47</div><div class="sub">무료</div></div><div class="ic ic-b"><i class="ti ti-message-dots"></i></div></div>
     <div class="kpi"><div><div class="lab">신규 유입(가입)</div><div class="num">12</div><div class="sub up">→ 고객 자동등록</div></div><div class="ic ic-p"><i class="ti ti-user-plus"></i></div></div>
     <div class="kpi"><div><div class="lab">주소 자동완성</div><div class="num" style="font-size:18px">사용중</div><div class="sub">무료</div></div><div class="ic ic-a"><i class="ti ti-map-pin"></i></div></div>
