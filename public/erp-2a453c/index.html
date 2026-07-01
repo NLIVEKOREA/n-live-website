@@ -605,6 +605,13 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');cl
 const prodName=c=>{const s=STOCK.find(x=>x.code===c);return s?s.name:c;};
 const tagOf=c=>{const s=STOCK.find(x=>x.code===c);return s?s.tag:'';};
 const skuOf=(c,col,sz)=>STOCK.find(x=>x.code===c&&x.color===col&&x.size===sz);
+/* 품목코드 체계: 상품번호6-색상번호-사이즈번호. 저장은 code(불변)+색상명+사이즈명, 표시코드는 정렬해서 실시간 계산 */
+const SIZE_ORDER=['F','FREE','FR','ONE','ONESIZE','XS','S','M','L','XL','2XL','XXL','3XL','XXXL','4XL'];
+function sizeRank(sz){const s=String(sz==null?'':sz).toUpperCase().replace(/\s/g,'');const i=SIZE_ORDER.indexOf(s);if(i>=0)return i;const n=parseInt(s,10);if(!isNaN(n))return 200+n;return 100;}
+function normCode6(code){const g=String(code==null?'':code).replace(/\D/g,'');return (g.length===5||g.length===6)?g.padStart(6,'0'):String(code==null?'':code);}
+function isFreeSize(sz){return !sz||['F','FREE','FR','ONE','ONESIZE'].includes(String(sz).toUpperCase());}
+function skuFullCode(code,color,size){const same=STOCK.filter(x=>String(x.code)===String(code));const colors=[];same.forEach(x=>{if(x.color&&colors.indexOf(x.color)<0)colors.push(x.color);});const sizes=[...new Set(same.map(x=>x.size).filter(Boolean))].sort((a,b)=>sizeRank(a)-sizeRank(b));const c6=normCode6(code);const ci=colors.indexOf(color);const cp=ci>=0?'-'+String(ci+1).padStart(2,'0'):'';const si=sizes.indexOf(size);const sp=isFreeSize(size)?'':(si>=0?'-'+String(si+1).padStart(2,'0'):'');return c6+cp+sp;}
+function nextProductCode(){let mx=0;STOCK.forEach(s=>{const g=String(s.code||'').replace(/\D/g,'');if(g.length===5||g.length===6){const n=parseInt(g,10);if(n>mx)mx=n;}});return String(mx+1).padStart(6,'0');}
 const colorsOf=c=>[...new Set(STOCK.filter(s=>s.code===c).map(s=>s.color))];
 const itemLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
 const tagShow=o=>(o.tag&&o.tag!=='-')?o.tag:tagOf(o.code);
@@ -1743,7 +1750,7 @@ function viewStock(){
     <p>대량 입고는 아래 <b>품목 등록</b>에서 작업 · 빠른 수정은 재고현황의 품목 클릭(팝업) · 바코드 스캔 입출고</p></div>
   ${isSeller()?`<div class="lock">🔒 셀러팀 ${ME.name} — 재고는 <b>조회만</b> 가능</div>`:''}
   ${can?`<div class="card" style="margin-bottom:16px">
-    <div class="card-h"><h2>＋ 품목 등록 <span class="muted" style="font-size:12px;font-weight:400">대량 입고 작업 — 입력 후 [목록에 추가], 체크해서 한 번에 저장</span></h2></div>
+    <div class="card-h"><h2>＋ 품목 등록 <span class="muted" style="font-size:12px;font-weight:400">색상·사이즈 조합은 [일괄 등록] · 낱개는 아래 입력</span></h2><button class="btn sm" onclick="openBulkAdd()"><i class="ti ti-layout-grid-add"></i> 상품 일괄등록</button></div>
     <div class="form-grid">
       <input id="sf_tag" placeholder="번호표" value="${esc(SFORM.tag)}" oninput="SFORM.tag=this.value" style="width:78px">
       <input id="sf_code" placeholder="품목코드*" value="${esc(SFORM.code)}" oninput="SFORM.code=this.value" style="width:100px">
@@ -2114,6 +2121,33 @@ async function cancelOrder(id){const i=ORD.findIndex(x=>x.id===id);if(i<0)return
   await delOrd(o);if(s)await adjustStockDB(s,o.qty,'주문취소',o.cust);}
 function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o.cust+' → '+({req:'출고요청',done:'출고완료'})[st]);render();}
 function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
+/* 상품 일괄등록 — 6자리 자동번호 + 색상·사이즈 매트릭스 → SKU 자동생성 */
+let BULK={};
+function openBulkAdd(){BULK={name:'',code:nextProductCode(),vendor:'',cat:'',subcat:'',season:'',inprice:'',price:'',colors:'',sizes:['F'],qty:{}};renderBulk();$('#modal').classList.remove('hide');}
+function bulkSet(f,v){BULK[f]=v;if(f==='cat')BULK.subcat='';renderBulk();}
+function bulkSize(sz,on){BULK.sizes=BULK.sizes||[];if(on){if(!BULK.sizes.includes(sz))BULK.sizes.push(sz);}else BULK.sizes=BULK.sizes.filter(x=>x!==sz);renderBulk();}
+function bulkQty(key,v){BULK.qty[key]=Math.max(0,parseInt(v)||0);}
+function renderBulk(){const b=BULK;const colors=String(b.colors||'').split(',').map(c=>c.trim()).filter(Boolean);const sizes=(b.sizes||[]).slice().sort((a,x)=>sizeRank(a)-sizeRank(x));
+  const catOpt=Object.keys(CAT_TREE).map(c=>`<option ${c===b.cat?'selected':''}>${c}</option>`).join('');const subOpt=(CAT_TREE[b.cat]||[]).map(x=>`<option ${x===b.subcat?'selected':''}>${x}</option>`).join('');
+  const chips=['F','XS','S','M','L','XL','2XL','3XL'].map(sz=>{const on=b.sizes.includes(sz);return `<label style="display:inline-flex;align-items:center;padding:5px 11px;border:1.5px solid ${on?'#2563eb':'var(--line)'};border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;background:${on?'#eaf1ff':'#fff'};color:${on?'#2563eb':'#334155'}"><input type="checkbox" ${on?'checked':''} onchange="bulkSize('${sz}',this.checked)" style="display:none">${sz}</label>`;}).join('');
+  let matrix='<div class="muted" style="padding:16px;text-align:center;border:1px dashed var(--line);border-radius:10px;margin-top:10px">색상과 사이즈를 넣으면 여기에 수량 입력표가 생겨요</div>';
+  if(colors.length&&sizes.length){matrix=`<div style="overflow:auto;margin-top:10px"><table style="min-width:100%"><thead><tr><th style="text-align:left">색상 \\ 사이즈</th>${sizes.map(sz=>`<th style="text-align:center">${sz}${isFreeSize(sz)?'':`<div style="font-size:9px;color:#94a3b8">-${String(sizes.indexOf(sz)+1).padStart(2,'0')}</div>`}</th>`).join('')}</tr></thead><tbody>
+    ${colors.map((c,ci)=>`<tr><td style="font-weight:700;white-space:nowrap">${esc(c)} <span class="muted" style="font-size:9px">-${String(ci+1).padStart(2,'0')}</span></td>${sizes.map(sz=>`<td style="text-align:center"><input type="number" min="0" value="${b.qty[c+'|'+sz]||''}" placeholder="0" onchange="bulkQty('${esc(c)}|${esc(sz)}',this.value)" style="width:54px;text-align:center;padding:5px"></td>`).join('')}</tr>`).join('')}
+    </tbody></table></div><div class="muted" style="font-size:11px;margin-top:7px">💡 품목코드는 <b>${normCode6(b.code)}-01${sizes.length>1||!isFreeSize(sizes[0])?'-01':''}</b>부터 색상·사이즈 순서대로 자동 부여 · 수량 0인 칸은 등록 안 됨</div>`;}
+  $('#modalBox').innerHTML=`<h3>🆕 상품 일괄 등록 <span style="font-size:12px;color:#64748b;font-weight:500">색상·사이즈를 한 번에</span></h3>
+  <div class="modal-row"><div><label>상품명 *</label><input value="${esc(b.name)}" oninput="BULK.name=this.value" placeholder="예: 데일리 루즈핏 니트"></div><div><label>상품번호 (6자리·자동)</label><input value="${esc(b.code)}" oninput="BULK.code=this.value" style="font-weight:700;color:#2563eb"></div></div>
+  <div class="modal-row"><div><label>사입처</label><input list="bulkVendor" value="${esc(b.vendor)}" oninput="BULK.vendor=this.value" placeholder="예: eun"><datalist id="bulkVendor">${VENDORS.map(v=>`<option value="${esc(v.name)}">`).join('')}</datalist></div><div><label>카테고리 · 종류</label><div style="display:flex;gap:6px"><select onchange="bulkSet('cat',this.value)" style="flex:1"><option value="">-</option>${catOpt}</select><select onchange="BULK.subcat=this.value" style="flex:1"><option value="">종류</option>${subOpt}</select></div></div></div>
+  <div class="modal-row"><div><label>입고단가(원가)</label><input type="number" value="${b.inprice}" oninput="BULK.inprice=this.value" placeholder="0"></div><div><label>출고단가(판매가)</label><input type="number" value="${b.price}" oninput="BULK.price=this.value" placeholder="0"></div></div>
+  <label>색상 <span class="muted" style="font-size:11px">쉼표로 구분</span></label><input value="${esc(b.colors)}" oninput="BULK.colors=this.value;clearTimeout(window._bt);window._bt=setTimeout(renderBulk,450)" placeholder="블랙, 화이트, 아이보리">
+  <label style="margin-top:10px;display:block">사이즈 <span class="muted" style="font-size:11px">F=프리(생략), 여러 개 선택 가능</span></label><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">${chips}</div>
+  ${matrix}
+  <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveBulk()">＋ 입고 목록에 추가</button></div>`;}
+function saveBulk(){const b=BULK;if(!String(b.name).trim()){toast('상품명을 입력하세요');return;}
+  const colors=String(b.colors||'').split(',').map(c=>c.trim()).filter(Boolean);const sizes=(b.sizes||[]).slice().sort((a,x)=>sizeRank(a)-sizeRank(x));
+  if(!colors.length){toast('색상을 하나 이상 입력하세요');return;}if(!sizes.length){toast('사이즈를 선택하세요');return;}
+  let n=0;colors.forEach(c=>{sizes.forEach(sz=>{const q=b.qty[c+'|'+sz]||0;if(q<=0)return;STAGED.unshift({chk:true,tag:'-',code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q});n++;});});
+  if(!n){toast('수량을 입력한 칸이 없어요');return;}
+  closeModal();toast('✅ '+n+'개 SKU가 입고 목록에 추가됨 — 확인 후 [저장]하세요');render();}
 function stagedAdd(){
   if(!SFORM.code.trim()||!SFORM.name.trim()){toast('품목코드·품목명은 필수');return;}
   STAGED.unshift({chk:true,tag:SFORM.tag.trim()||'-',code:SFORM.code.trim(),vendor:SFORM.vendor.trim()||null,name:SFORM.name.trim(),color:SFORM.color.trim()||'-',size:SFORM.size.trim()||'F',in_price:parseInt(SFORM.inprice)||0,price:parseInt(SFORM.price)||0,category:SFORM.cat||null,subcategory:SFORM.subcat||null,season:(CAT_HASSEASON(SFORM.cat)?SFORM.season:'')||null,qty:parseInt(SFORM.qty)||0});
