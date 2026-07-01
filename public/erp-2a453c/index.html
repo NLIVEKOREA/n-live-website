@@ -1992,7 +1992,7 @@ function viewShipped(){
 function viewStock(){
   const q=($('#stockSearch')?.value||'').trim(),can=!isSeller(),fld=STOCKFIELD;
   const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
-  const rows=STOCK.filter(smatch).slice(0,200);
+  const flist=stockFilterSort();const stotal=flist.length;const spages=Math.max(1,Math.ceil(stotal/STOCK_PGSIZE));const spg=Math.min(STOCKPAGE,spages);const sfrom=(spg-1)*STOCK_PGSIZE;const rows=flist.slice(sfrom,sfrom+STOCK_PGSIZE);
   const selN=STAGED.filter(x=>x.chk).length;
   const searchBox=`<select onchange="STOCKFIELD=this.value;render()" style="padding:9px 12px;border-radius:9px;font-size:13px;font-weight:700">${['전체','번호표','품목코드','품목명'].map(f=>`<option ${STOCKFIELD===f?'selected':''}>${f}</option>`).join('')}</select><input id="stockSearch" placeholder="🔍 ${STOCKFIELD==='전체'?'번호표·품목코드·품목명':STOCKFIELD} 입력 후 Enter" onkeydown="if(event.key==='Enter')render()" value="${q}" style="width:320px;font-size:14px">`;
   return `
@@ -2031,8 +2031,8 @@ function viewStock(){
     `:`<div class="note" style="margin-top:12px">아직 추가된 품목이 없어요. 위에서 입력하고 <b>[＋ 목록에 추가]</b>를 누르면 여기에 쌓입니다.</div>`}
   </div>`:''}
   <div class="card">
-    <div class="card-h"><h2>재고 현황 <span class="muted" style="font-size:12px;font-weight:400">${STOCK.length} SKU</span></h2></div>
-    <div class="note">💡 <b>품목코드·품목명을 클릭</b>하면 빠르게 수정(팝업)할 수 있어요. 번호표는 표에서 바로 수정.</div>
+    <div class="card-h"><h2>재고 현황 <span class="muted" style="font-size:12px;font-weight:400">${STOCK.length} SKU</span></h2><button class="btn sm ghost" onclick="stockCSV()"><i class="ti ti-download"></i> CSV</button></div>
+    <div class="note">💡 <b>품목코드·품목명을 클릭</b>하면 빠르게 수정(팝업) · 번호표는 표에서 바로 수정 · <b>헤더 클릭 정렬</b></div>
     ${can?`<div class="toolbar">
       <input id="scan" class="barcode" placeholder="📷 바코드 (예: 10012검정F)" style="width:200px">
       <input id="scanQty" type="number" value="1" min="1" style="width:60px">
@@ -2041,16 +2041,18 @@ function viewStock(){
       <span class="grow"></span>
       ${searchBox}
     </div>`:`<div class="toolbar"><span class="grow"></span>${searchBox}</div>`}
-    <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>컬러</th><th>사이즈</th>
-      <th class="num-cell">단가</th><th class="num-cell">현재고</th><th style="width:96px">라벨·내역</th></tr></thead><tbody>
+    <div class="note" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span>전체 <b>${stotal.toLocaleString()}</b> SKU 중 <b>${stotal?sfrom+1:0}–${Math.min(sfrom+STOCK_PGSIZE,stotal)}</b></span><span class="grow"></span>${pageBar(spg,spages,'stockPage')}</div>
+    <table><thead><tr>${sortTh('번호표','tag',STOCKSORT,'stockSort')}${sortTh('품목코드','code',STOCKSORT,'stockSort')}${sortTh('품목명','name',STOCKSORT,'stockSort')}<th>컬러</th><th>사이즈</th>
+      ${sortTh('단가','price',STOCKSORT,'stockSort','num-cell')}${sortTh('현재고','qty',STOCKSORT,'stockSort','num-cell')}<th style="width:120px">라벨·내역</th></tr></thead><tbody>
     ${rows.map(s=>`<tr>
       <td>${can?`<input class="barcode" style="width:62px;text-align:center;font-weight:700" value="${s.tag}" onchange="setTag('${s.code}',this.value)">`:`<span class="tagbox">${s.tag}</span>`}</td>
       <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${skuFullCode(s.code,s.color,s.size)}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
       <td class="num-cell muted">${won(s.price)}</td>
       <td class="num-cell" style="font-weight:700">${s.qty}</td>
-      <td style="white-space:nowrap">${s.id!=null?`<button class="btn sm ghost" style="padding:4px 7px" title="바코드 라벨 출력" onclick="askLabel(${s.id})">🏷️</button> <button class="btn sm ghost" style="padding:4px 7px" title="재고 변동내역" onclick='openStockLog(${s.id},${JSON.stringify((s.name||"")+" "+(s.color||"")+" "+(s.size||""))})'>📜</button>`:''}</td>
-      </tr>`).join('')}
+      <td style="white-space:nowrap">${s.id!=null?`<button class="btn sm ghost" style="padding:4px 8px" aria-label="바코드 라벨 출력" title="바코드 라벨 출력" onclick="askLabel(${s.id})">🏷️ 라벨</button> <button class="btn sm ghost" style="padding:4px 8px" aria-label="재고 변동내역" title="재고 변동내역" onclick='openStockLog(${s.id},${JSON.stringify((s.name||"")+" "+(s.color||"")+" "+(s.size||""))})'>📜 이력</button>`:''}</td>
+      </tr>`).join('')||`<tr><td colspan="7" class="muted" style="padding:16px">검색 결과 없음</td></tr>`}
     </tbody></table>
+    ${spages>1?`<div style="text-align:center;padding:10px 0 2px">${pageBar(spg,spages,'stockPage')}</div>`:''}
   </div>`;
 }
 
@@ -2435,9 +2437,14 @@ function empPay(e){const base=(e.base_salary!=null&&e.base_salary!==''&&+e.base_
     return {base:base,rate:assistRate,sales:own+assist,comm:comm,total:base+comm,own:own,assist:assist,ownRate:ownRate,assistRate:assistRate};
   }
   const sales=e.role==='셀러'?_staffSalesBy('staff',e.name):0;const comm=Math.round(sales*rate/100);return {base:base,rate:rate,sales:sales,comm:comm,total:base+comm};}
-function saveEmpPay(idx,field,val){const e=EMPLOYEES[idx];if(!e)return;e[field]=(val===''?null:Math.max(0,parseFloat(val)||0));render();if(e.id!=null)SB.from('employees').update({[field]:e[field]}).eq('id',e.id).then(function(r){if(r.error){toast('⚠️ 급여 저장 실패 — 다시 시도');console.warn('empPay',r.error.message);}else toast('💾 저장됨');});}
+function saveEmpPay(idx,field,val){const e=EMPLOYEES[idx];if(!e)return;const nv=(val===''?null:Math.max(0,parseFloat(val)||0));const oldv=e[field];const label=field==='base_salary'?'기본급':field==='comm_rate'?'라이브 수당률':'수당률';
+  const suspect=(field==='base_salary'&&oldv>0&&nv!=null&&(nv>oldv*3||nv<oldv/3))||(field==='comm_rate'&&nv!=null&&nv>50);
+  if(suspect&&!confirm('⚠️ 값이 크게 바뀝니다 — 오타 확인\n\n'+e.name+' · '+label+'\n'+(oldv==null?'-':(+oldv).toLocaleString())+' → '+(nv==null?'-':nv.toLocaleString())+'\n\n이대로 저장할까요?')){render();return;}
+  e[field]=nv;render();if(e.id!=null)SB.from('employees').update({[field]:e[field]}).eq('id',e.id).then(function(r){if(r.error){toast('⚠️ 급여 저장 실패 — 다시 시도');console.warn('empPay',r.error.message);}else toast('💾 저장됨: '+e.name+' '+label);});}
 /* 보조 직접판매 수당률 — own_rate 컬럼 없이 앱 설정(user_prefs, DB저장)에 보관 */
-function saveOwnRate(name,val){if(typeof PREFS==='undefined')return;PREFS.emp_own_rate=PREFS.emp_own_rate||{};PREFS.emp_own_rate[name]=(val===''?null:Math.max(0,parseFloat(val)||0));if(typeof savePrefs==='function')savePrefs();toast('💾 직접판매율 저장');render();}
+function saveOwnRate(name,val){if(typeof PREFS==='undefined')return;const nv=(val===''?null:Math.max(0,parseFloat(val)||0));
+  if(nv!=null&&nv>50&&!confirm('⚠️ 직접판매율이 '+nv+'%로 큽니다 — 오타 확인\n\n이대로 저장할까요?')){render();return;}
+  PREFS.emp_own_rate=PREFS.emp_own_rate||{};PREFS.emp_own_rate[name]=nv;if(typeof savePrefs==='function')savePrefs();toast('💾 직접판매율 저장');render();}
 function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&(canSeeAll()||e.name===ME.name));
   const isMgmt=e=>e.role==='관리자'||e.role==='운영';
   const mgmt=list.filter(isMgmt),payList=list.filter(e=>!isMgmt(e));
@@ -2716,7 +2723,16 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',SHPSTATUS='all',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',SHPSTATUS='all',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',STOCKSORT={f:'qty',d:1},STOCKPAGE=1,PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
+const STOCK_PGSIZE=100;
+function stockFilterSort(){const q=($('#stockSearch')&&$('#stockSearch').value||'').trim(),fld=STOCKFIELD;
+  const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
+  let list=STOCK.filter(smatch);
+  const sv=s=>STOCKSORT.f==='code'?skuFullCode(s.code,s.color,s.size):STOCKSORT.f==='name'?(s.name||''):STOCKSORT.f==='price'?(s.price||0):STOCKSORT.f==='tag'?(s.tag||''):(s.qty||0);
+  return [...list].sort((a,b)=>{const va=sv(a),vb=sv(b);return typeof va==='string'?STOCKSORT.d*String(va).localeCompare(String(vb)):STOCKSORT.d*(va-vb);});}
+function stockSort(f){if(STOCKSORT.f===f)STOCKSORT.d*=-1;else{STOCKSORT.f=f;STOCKSORT.d=(f==='name'||f==='code'?1:-1);}STOCKPAGE=1;render();}
+function stockPage(p){STOCKPAGE=Math.max(1,p);render();}
+function stockCSV(){const list=stockFilterSort();const rows=[['품목코드','품목명','색상','사이즈','번호표','단가','현재고','사입처']];list.forEach(s=>rows.push([skuFullCode(s.code,s.color,s.size),s.name||'',s.color||'',s.size||'',s.tag||'',s.price||0,s.qty||0,s.vendor||'']));downloadCSV(rows,'재고목록');}
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 const VIEW_LABELS={dash:'대시보드',order:'주문관리',sales:'판매관리',ship:'출고장',shipped:'판매현황',rx:'교환·반품',stock:'재고관리',revenue:'매출현황',sns:'SNS 관리',cust:'고객관리',prod:'상품현황',vendor:'사입처관리',emp:'직원·급여',users:'사원관리',kakao:'카카오 연동'};
 function toggleSideNav(force){
@@ -2728,7 +2744,7 @@ function toggleSideNav(force){
 function closeSideNav(){toggleSideNav(false);}
 function enhanceResponsiveUI(root){
   if(!root)return;
-  root.querySelectorAll('table').forEach(t=>{if(t.parentElement&&t.parentElement.classList.contains('table-wrap'))return;const w=document.createElement('div');w.className='table-wrap';t.parentNode.insertBefore(w,t);w.appendChild(t);});
+  root.querySelectorAll('table').forEach(t=>{if(t.classList.contains('ogrid'))return;/* 주문 입력표는 래핑 제외 — 항상 전체 높이로 펼침(내부 스크롤 방지) */if(t.parentElement&&t.parentElement.classList.contains('table-wrap'))return;const w=document.createElement('div');w.className='table-wrap';t.parentNode.insertBefore(w,t);w.appendChild(t);});
 }
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}}
