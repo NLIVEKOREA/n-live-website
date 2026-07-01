@@ -254,9 +254,18 @@
   .oc-pw{flex:0 0 auto;width:66px;padding:6px;font-size:12px;border-radius:7px}
   .orderstatus{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:16px;align-items:start}
   @media(max-width:1100px){.orderstatus{grid-template-columns:1fr}}
-  .orderwrap2{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,1fr);gap:16px;align-items:start}
-  @media(max-width:1100px){.orderwrap2{grid-template-columns:1fr}}
+  .orderwrap2{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
   .ow-left{display:flex;flex-direction:column;gap:16px}
+  .oe-actbar{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}
+  .oe-actbar .oe-sum{margin-left:auto;font-size:15px;color:var(--gray)}
+  .oe-actbar .oe-sum b{font-size:20px;color:var(--ink)}
+  .oe-actbar .oe-btns{display:flex;gap:8px;order:-1}
+  @media(max-width:767px){
+    .oe-actbar{position:sticky;bottom:0;z-index:5;flex-direction:column;align-items:stretch;gap:10px;margin:14px -12px 0;padding:12px 12px calc(12px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
+    .oe-actbar .oe-sum{margin-left:0;text-align:center;font-size:16px}
+    .oe-actbar .oe-btns{order:0}
+    .oe-actbar .oe-btns .btn{flex:1}
+  }
   /* 출고장 고객 카드 (가독성 정리) */
   .sg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
   @media(max-width:1000px){.sg-grid{grid-template-columns:1fr}}
@@ -1146,11 +1155,12 @@ function viewOrder(){
       <button class="btn sm" style="background:#f0fdf4;color:#059669;border:1px solid #b9e6c9" onclick="usePoints()" ${OE.cust&&custPoints(OE.cust)>0?'':'disabled title="적립금 보유 고객만"'}>💰 적립금 사용${OE.cust?' <b>(보유 '+won(custPoints(OE.cust))+')</b>':''}</button>
       <span class="muted" style="margin-left:auto;font-size:12.5px;display:flex;align-items:center;gap:5px;white-space:nowrap">🆓 무료배송 기준 <input type="number" value="${freeThresh()}" onchange="setFreeThresh(this.value)" style="width:96px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:13px"> 원 이상</span>
     </div>
-    <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
-      <button class="btn" style="padding:13px 22px;font-size:14px" onclick="commitOrder()">💾 저장 (F8) · 재고 차감</button>
-      <button class="btn gray" style="padding:13px 18px" onclick="resetOrder()">다시 작성</button>
-      <span class="grow"></span>
-      <span class="muted" style="font-size:14px">합계 <b style="font-size:19px;color:var(--ink)">${won(total)}</b></span>
+    <div class="oe-actbar">
+      <span class="oe-sum">합계 <b>${won(total)}</b></span>
+      <div class="oe-btns">
+        <button class="btn" style="padding:13px 22px;font-size:14px" onclick="commitOrder()">💾 저장 (F8)</button>
+        <button class="btn gray" style="padding:13px 18px" onclick="resetOrder()">다시 작성</button>
+      </div>
     </div>
   </div>
   <div class="card">
