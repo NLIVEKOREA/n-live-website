@@ -420,6 +420,16 @@ function getAlerts(){const a=[],wd=new Date().getDay(),dd=new Date().getDate();
   if(dd>=5&&dd<=7)a.push({ic:'ti-wallet',t:'정산일(매월 7일) 임박',go:"go('revenue')"});
   return a;}
 function alertCount(){return getAlerts().length;}
+/* 바코드 — 값은 품목 고유번호(N+id), 라벨엔 품목명·색상·사이즈·가격을 글자로. Xprinter XP-DT427B(40x30mm) 기준 */
+function skuBarcode(id){return 'N'+String(id).padStart(6,'0');}
+function skuFromBarcode(v){const m=String(v||'').trim().toUpperCase().match(/^N(\d{1,7})$/);return m?parseInt(m[1],10):null;}
+function openLabel(id,copies){const s=STOCK.find(x=>x.id===id);if(!s){toast('품목을 찾을 수 없어요');return;}
+  const n=Math.max(1,Math.min(50,parseInt(copies,10)||1)),val=skuBarcode(id);
+  const one=`<div class="lbl"><div class="nm">${esc(s.name||'')}</div><div class="cs">${esc(s.color||'')} / ${esc(s.size||'')}</div><svg class="bc"></svg><div class="pr">${won(s.price)}</div></div>`;
+  const w=window.open('','_blank','width=440,height=360');
+  w.document.write('<html><head><meta charset="utf-8"><scr'+'ipt src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/scr'+'ipt><style>@page{size:40mm 30mm;margin:0}*{box-sizing:border-box}body{margin:0;font-family:\'Malgun Gothic\',sans-serif}.lbl{width:40mm;height:30mm;padding:1.5mm;text-align:center;page-break-after:always;display:flex;flex-direction:column;justify-content:center;gap:0.5mm}.nm{font-size:8pt;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cs{font-size:7pt;color:#333}.bc{width:100%;height:11mm}.pr{font-size:8pt;font-weight:bold}</style></head><body>'+one.repeat(n)+'<scr'+'ipt>document.querySelectorAll(".bc").forEach(function(el){JsBarcode(el,"'+val+'",{format:"CODE128",height:34,fontSize:8,margin:0,displayValue:true});});setTimeout(function(){window.print();},450);<\/scr'+'ipt></body></html>');
+  w.document.close();}
+function askLabel(id){const c=prompt('출력할 라벨 장수를 입력하세요 (입고 수량만큼):','1');if(c===null)return;openLabel(id,c);}
 function openAlerts(){const a=getAlerts();$('#modalBox').innerHTML=`<h3>🔔 알림 · 지금 확인할 것</h3><div class="ms">시스템이 자동으로 잡아낸 할 일이에요. 클릭하면 해당 메뉴로 이동합니다.</div>
   <div style="display:flex;flex-direction:column;gap:7px;max-height:340px;overflow:auto">${a.length?a.map(x=>`<div onclick="closeModal();${x.go}" style="display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;cursor:pointer"><i class="ti ${x.ic}" style="font-size:19px;color:#2563eb;flex:0 0 auto"></i><span style="flex:1;font-size:13px">${x.t}</span><i class="ti ti-chevron-right" style="color:#94a3b8"></i></div>`).join(''):'<div class="muted" style="padding:18px;text-align:center">✅ 지금 처리할 알림이 없습니다</div>'}</div>
   <div class="modal-foot"><button class="btn" onclick="closeModal()">닫기</button></div>`;$('#modal').classList.remove('hide');}
@@ -1687,13 +1697,13 @@ function viewStock(){
       ${searchBox}
     </div>`:`<div class="toolbar"><span class="grow"></span>${searchBox}</div>`}
     <table><thead><tr><th>번호표</th><th>품목코드</th><th>품목명</th><th>컬러</th><th>사이즈</th>
-      <th class="num-cell">단가</th><th class="num-cell">현재고</th><th style="width:64px">내역</th></tr></thead><tbody>
+      <th class="num-cell">단가</th><th class="num-cell">현재고</th><th style="width:96px">라벨·내역</th></tr></thead><tbody>
     ${rows.map(s=>`<tr>
       <td>${can?`<input class="barcode" style="width:62px;text-align:center;font-weight:700" value="${s.tag}" onchange="setTag('${s.code}',this.value)">`:`<span class="tagbox">${s.tag}</span>`}</td>
       <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.code}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
       <td class="num-cell muted">${won(s.price)}</td>
       <td class="num-cell" style="font-weight:700">${s.qty}</td>
-      <td>${s.id!=null?`<button class="btn sm ghost" style="padding:4px 8px" title="재고 변동내역" onclick='openStockLog(${s.id},${JSON.stringify((s.name||"")+" "+(s.color||"")+" "+(s.size||""))})'>📜</button>`:''}</td>
+      <td style="white-space:nowrap">${s.id!=null?`<button class="btn sm ghost" style="padding:4px 7px" title="바코드 라벨 출력" onclick="askLabel(${s.id})">🏷️</button> <button class="btn sm ghost" style="padding:4px 7px" title="재고 변동내역" onclick='openStockLog(${s.id},${JSON.stringify((s.name||"")+" "+(s.color||"")+" "+(s.size||""))})'>📜</button>`:''}</td>
       </tr>`).join('')}
     </tbody></table>
   </div>`;
