@@ -1750,7 +1750,8 @@ function viewStock(){
     <p>대량 입고는 아래 <b>품목 등록</b>에서 작업 · 빠른 수정은 재고현황의 품목 클릭(팝업) · 바코드 스캔 입출고</p></div>
   ${isSeller()?`<div class="lock">🔒 셀러팀 ${ME.name} — 재고는 <b>조회만</b> 가능</div>`:''}
   ${can?`<div class="card" style="margin-bottom:16px">
-    <div class="card-h"><h2>＋ 품목 등록 <span class="muted" style="font-size:12px;font-weight:400">색상·사이즈 조합은 [일괄 등록] · 낱개는 아래 입력</span></h2><button class="btn sm" onclick="openBulkAdd()"><i class="ti ti-layout-grid-add"></i> 상품 일괄등록</button></div>
+    <div class="card-h"><h2>＋ 품목 등록 <span class="muted" style="font-size:12px;font-weight:400">색상·사이즈 조합은 [일괄 등록] · 낱개는 아래 입력</span></h2><div style="display:flex;gap:8px"><button class="btn sm ghost" onclick="openReceiptScan()" title="사입 영수증 사진을 올리면 AI가 품목을 자동으로 읽어 입고목록에 채웁니다">📸 영수증 자동입고</button><button class="btn sm" onclick="openBulkAdd()"><i class="ti ti-layout-grid-add"></i> 상품 일괄등록</button></div></div>
+    <input id="receiptFile" type="file" accept="image/*" capture="environment" style="display:none" onchange="receiptPicked(this)">
     <div class="form-grid">
       <input id="sf_tag" placeholder="번호표" value="${esc(SFORM.tag)}" oninput="SFORM.tag=this.value" style="width:78px">
       <input id="sf_code" placeholder="품목코드*" value="${esc(SFORM.code)}" oninput="SFORM.code=this.value" style="width:100px">
@@ -2025,6 +2026,29 @@ function saveStageEdit(){if(STAGEEDIT==null)return;const x=STAGED[STAGEEDIT];if(
   Object.assign(x,{code,tag:$('#mp_tag').value.trim()||'-',vendor:$('#mp_vendor').value.trim()||null,name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',in_price:parseInt($('#mp_inprice').value)||0,price:parseInt($('#mp_price').value)||0,category:$('#mp_cat').value||null,subcategory:$('#mp_subcat').value||null,season:(CAT_HASSEASON($('#mp_cat').value)?$('#mp_season').value:'')||null,qty:parseInt($('#mp_qty').value)||0});
   STAGEEDIT=null;closeModal();toast('✏️ 입고목록 수정: '+name);render();}
 function delStageEdit(){if(STAGEEDIT==null)return;STAGED.splice(STAGEEDIT,1);STAGEEDIT=null;closeModal();toast('🗑️ 입고목록에서 삭제');render();}
+/* ===== 📸 영수증 자동입고 (사입 영수증 사진 → AI 파싱 → 입고목록) ===== */
+const RECEIPT_API='https://n-live.co.kr/api/parse-receipt/';
+function openReceiptScan(){const el=$('#receiptFile');if(!el){toast('업로드 준비 실패 — 새로고침 후 다시');return;}el.value='';el.click();}
+function receiptPicked(input){const f=input.files&&input.files[0];if(!f)return;receiptScan(f);}
+// 폰 사진은 수 MB라 캔버스로 긴 변 1600px·JPEG로 줄여 업로드(속도·비용↓)
+function shrinkImage(file,maxSide){return new Promise((resolve,reject)=>{const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(url);let{width:w,height:h}=img;const m=maxSide||1600;if(Math.max(w,h)>m){const r=m/Math.max(w,h);w=Math.round(w*r);h=Math.round(h*r);}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);resolve(cv.toDataURL('image/jpeg',0.82));};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('이미지를 읽지 못했어요'));};img.src=url;});}
+async function receiptScan(file){
+  let dataUrl;try{dataUrl=await shrinkImage(file,1600);}catch(e){toast('⚠️ '+e.message);return;}
+  toast('📸 AI가 영수증을 읽는 중… (10~20초)');
+  let res;try{
+    const r=await fetch(RECEIPT_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:dataUrl})});
+    res=await r.json();
+  }catch(e){toast('⚠️ 서버 연결 실패 — 인터넷 확인 후 다시');return;}
+  if(!res||!res.ok){toast('⚠️ '+((res&&res.note)||'인식 실패 — 사진을 더 선명하게 찍어보세요'));return;}
+  const items=res.items||[];if(!items.length){toast('품목을 못 찾았어요 — 사진이 흐리면 다시');return;}
+  // 같은 품목명 = 같은 상품코드(색상만 다름) → 이름별로 코드 하나씩 자동부여
+  let base=parseInt(nextProductCode(),10)||1;const codeByName={};
+  items.forEach(it=>{const nm=String(it.name||'').trim();if(!codeByName[nm]){codeByName[nm]=String(base).padStart(6,'0');base++;}});
+  items.forEach(it=>{const nm=String(it.name||'').trim();
+    STAGED.unshift({chk:true,tag:'-',code:codeByName[nm],vendor:null,name:nm,color:String(it.color||'').trim()||'-',size:String(it.size||'').trim()||'F',in_price:parseInt(it.price)||0,price:0,category:null,subcategory:null,season:null,qty:parseInt(it.qty)||1});
+  });
+  toast('✅ 영수증에서 '+items.length+'개 품목을 입고목록에 담았어요 — 출고가·번호표 확인 후 저장하세요');render();
+}
 
 /* ===== 사입처 ===== */
 function viewVendor(){
