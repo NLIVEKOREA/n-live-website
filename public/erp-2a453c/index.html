@@ -1729,10 +1729,27 @@ function statusBaseRows(){
 }
 /* 반품(출고됨)과 환불(미출고)은 같은 rxtype='refund' — 라벨만 출고여부로 구분 */
 function rxTypeLabel(o){return o.rxtype==='refund'?((o.ship==='done'&&o.track)?'반품':'환불'):((RX_TYPES[o.rxtype]||{}).l||'CS');}
-/* 미출고 상태에서 취소/환불 — 물건이 안 나갔으니 재고만 복원(둘 다 결제금액은 사장님이 직접 환불) */
-async function cancelSale(id,kind){const o=ORD.find(x=>x.id===id);if(!o)return;const label=kind||'취소';
-  if(!confirm('['+label+']\n'+o.cust+' · '+itemLabel(o)+' '+o.qty+'개 · '+won(amtOf(o))+'\n\n이 주문을 '+label+' 처리할까요?\n· 차감됐던 재고가 복원됩니다'+(label==='환불'?'\n· 결제금액은 사장님이 직접 환불해 주세요':'')))return;
-  await cancelOrder(id,label);}
+/* 미출고 상태에서 취소/환불 — 모달로 열어 적립금 적립 여부 확인 후 처리 */
+let CANCELDRAFT=null;
+function cancelSale(id,kind){const o=ORD.find(x=>x.id===id);if(!o)return;CANCELDRAFT={id,kind:kind||'취소',amount:amtOf(o),toPoints:false};renderCancelModal(o);}
+function renderCancelModal(o){const d=CANCELDRAFT;const bal=custPoints(o.cust);
+  $('#modalBox').className='modal-box';
+  $('#modalBox').innerHTML=`<h3>${d.kind} 처리</h3>
+    <div class="note" style="margin-bottom:12px"><b>${esc(o.cust)}</b> · ${itemLabel(o)} ×${o.qty} · ${won(amtOf(o))}</div>
+    <label>환불 금액</label><input id="cxAmt" type="number" value="${d.amount}" oninput="CANCELDRAFT.amount=parseInt(this.value)||0" style="font-size:15px;font-weight:700">
+    <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;font-weight:700"><input type="checkbox" ${d.toPoints?'checked':''} onchange="CANCELDRAFT.toPoints=this.checked;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))"> 💰 현금 환불 대신 <b style="color:#059669">적립금으로 적립</b></label>
+    <div class="note" style="margin-top:10px">${d.toPoints?`💰 <b>${esc(o.cust)}</b> 적립금 <b style="color:#059669">+${won(d.amount)}</b> (현재 ${won(bal)} → <b>${won(bal+d.amount)}</b>)`:'💵 현금/계좌 환불은 사장님이 직접 처리하세요. 차감됐던 재고는 복원됩니다.'}</div>
+    <div class="modal-foot"><button class="btn gray" onclick="closeModal()">닫기</button><button class="btn" onclick="cancelSaleCommit()">${d.kind} 확정</button></div>`;
+  $('#modal').classList.remove('hide');}
+async function cancelSaleCommit(){const d=CANCELDRAFT;if(!d)return;const o=ORD.find(x=>x.id===d.id);if(!o){closeModal();return;}
+  const cust=o.cust,item=itemLabel(o),amt=Math.max(0,d.amount||0),toP=d.toPoints,kind=d.kind;
+  const i=ORD.indexOf(o);if(i>=0)ORD.splice(i,1);const s=skuOf(o.code,o.color,o.size);
+  closeModal();CANCELDRAFT=null;
+  toast('🗑️ '+kind+' 처리 → 재고 복원'+(toP?' · 적립금 +'+won(amt):''));render();
+  await delOrd(o);if(s)await adjustStockDB(s,o.qty,kind,cust);
+  if(toP)await addPoints(cust,amt,kind,{item,amount:amt,reason:'적립금 적립'});
+  else await logCust(cust,kind,{item,amount:amt,reason:'현금/계좌 환불'});
+}
 /* 판매현황 상태별 액션 버튼 — 출고완료: 교환/반품 · 미출고: 환불/취소 */
 function csActionCell(o){const B='btn sm ghost',ST='padding:3px 7px;font-size:11px';
   if(o.rxtype)return `<span class="pill ${o.rxstat==='done'?'':'p-req'}">${rxTypeLabel(o)}${o.rxstat==='done'?' 완료':' 진행'}</span>`;
@@ -1859,17 +1876,60 @@ function viewStock(){
 /* ===== 고객관리 ===== */
 let CUSTSEARCH='',CUSTTAB='all';
 function custStats(){const m={};ORD.forEach(o=>{if(!o.cust)return;const x=m[o.cust]||(m[o.cust]={cnt:0,amt:0,last:''});x.cnt++;x.amt+=amtOf(o);if((o.date||'')>x.last)x.last=o.date||'';});return m;}
+/* ===== 고객별 원장(적립금·취소·환불 이력) ===== */
+function custPoints(name){const c=CUSTOMERS.find(x=>x.name===name);return (c&&c.points)||0;}
+async function logCust(custName,type,opt){opt=opt||{};const c=CUSTOMERS.find(x=>x.name===custName);const owner=(c&&c.owner)||((typeof ME!=='undefined'&&ME&&(ME.owner||ME.name)))||null;
+  try{const {error}=await SB.from('cust_log').insert({cust:custName,owner:owner,type:type,item:opt.item||null,amount:opt.amount||0,points_delta:opt.points||0,reason:opt.reason||null,staff:(typeof ME!=='undefined'&&ME&&ME.name)||null});if(error)console.error('logCust',error);}catch(e){console.error('logCust',e);}}
+async function addPoints(custName,delta,type,opt){opt=opt||{};const c=CUSTOMERS.find(x=>x.name===custName);if(!c){toast('고객을 찾을 수 없어요');return false;}
+  const nv=Math.max(0,(c.points||0)+delta);c.points=nv;
+  try{const {error}=await SB.from('customers').update({points:nv}).eq('id',c.id);if(error){console.error('points',error);toast('⚠️ 적립금 저장 실패 — 다시 시도하세요');}}catch(e){console.error(e);}
+  await logCust(custName,type,{points:delta,amount:opt.amount||0,item:opt.item||null,reason:opt.reason||null});
+  return true;}
+function custFlagBadge(c){if(!c||!c.flag)return '';const m={'주의':'p-req','블랙리스트':'p-low'};return ` <span class="pill ${m[c.flag]||'p-gray'}">${esc(c.flag)}</span>`;}
+async function openCustDetail(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c){toast('고객을 찾을 수 없어요');return;}
+  $('#modalBox').className='modal-box modal-wide';$('#modalBox').innerHTML='<div style="padding:24px" class="muted">불러오는 중…</div>';$('#modal').classList.remove('hide');
+  let logs=[];try{const {data}=await SB.from('cust_log').select('*').eq('cust',c.name).order('at',{ascending:false}).limit(200);logs=data||[];}catch(e){console.error('custlog',e);}
+  renderCustDetail(c,logs);}
+function renderCustDetail(c,logs){
+  const st=custStats()[c.name]||{cnt:0,amt:0,last:''};
+  const rx=mine(ORD).filter(o=>o.cust===c.name&&o.rxtype);
+  const back=mine(ORD).filter(o=>o.cust===c.name&&(o.back||o.req==='미송')&&o.ship!=='done');
+  const pointLog=logs.filter(l=>l.points_delta&&l.points_delta!==0);
+  const csLog=logs.filter(l=>l.type==='취소'||l.type==='환불');
+  const fdt=s=>String(s||'').slice(0,10);
+  const flagBtn=(f,l,cl)=>`<button class="btn sm ${c.flag===f?cl:'ghost'}" onclick="setCustFlag(${c.id},${f?`'${f}'`:'null'})">${l}</button>`;
+  const sec=(title,body)=>`<div class="card" style="margin-top:12px"><div class="card-h"><h2 style="margin:0;font-size:15px">${title}</h2></div>${body}</div>`;
+  const logRows=arr=>arr.length?`<table><thead><tr><th>일시</th><th>구분</th><th>내용</th><th class="num-cell">금액</th><th class="num-cell">적립금</th><th>담당</th></tr></thead><tbody>${arr.map(l=>`<tr><td class="muted" style="font-size:12px">${fdt(l.at)}</td><td><span class="pill ${l.type==='환불'||l.type==='취소'?'p-low':'p-done'}">${esc(l.type)}</span></td><td>${esc(l.item||l.reason||'-')}</td><td class="num-cell muted">${l.amount?won(l.amount):'-'}</td><td class="num-cell" style="font-weight:700;color:${l.points_delta>0?'#059669':l.points_delta<0?'#dc2626':'#94a3b8'}">${l.points_delta?(l.points_delta>0?'+':'')+won(l.points_delta):'-'}</td><td class="muted">${esc(l.staff||'-')}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">내역 없음</div>';
+  $('#modalBox').className='modal-box modal-wide';
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><h3 style="margin:0">${custAvatar(c.name)} ${esc(c.name)}${custFlagBadge(c)}</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕ 닫기</button></div>
+  <div class="sg-sub" style="margin-bottom:10px">📞 ${esc(formatPhone(c.phone)||'-')}　📍 ${esc(c.addr||'-')}</div>
+  <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div><div class="lab">총 구매</div><div class="num">${st.cnt||0}</div><div class="sub">건</div></div></div>
+    <div class="kpi"><div><div class="lab">총 구매액</div><div class="num" style="font-size:18px">${won(st.amt||0)}</div><div class="sub">누적</div></div></div>
+    <div class="kpi"><div><div class="lab">적립금</div><div class="num" style="font-size:20px;color:#059669">${won(c.points||0)}</div><div class="sub">사용 가능</div></div></div>
+    <div class="kpi"><div><div class="lab">최근 구매</div><div class="num" style="font-size:15px">${st.last||'-'}</div></div></div>
+  </div>
+  ${sec('💰 적립금 <span class="muted" style="font-size:12px;font-weight:400">현재 '+won(c.points||0)+'</span>',`<div style="padding:0 0 6px"><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn sm" onclick="custAdjustPoints(${c.id},1)">＋ 수동 적립</button><button class="btn sm gray" onclick="custAdjustPoints(${c.id},-1)">－ 차감</button><span class="muted" style="align-self:center;font-size:12px">주문관리에서 적립금 사용은 B단계에서 추가됩니다</span></div>${logRows(pointLog)}</div>`)}
+  ${sec('↩️ 취소·환불 이력 <span class="muted" style="font-size:12px;font-weight:400">'+csLog.length+'건</span>',logRows(csLog))}
+  ${sec('🔄 교환·반품 이력 <span class="muted" style="font-size:12px;font-weight:400">'+rx.length+'건</span>',rx.length?`<table><thead><tr><th>일시</th><th>구분</th><th>상품</th><th>사유</th><th>진행</th></tr></thead><tbody>${rx.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.rxdate||o.date)}</td><td><span class="pill p-req">${rxTypeLabel(o)}</span></td><td>${itemLabel(o)}</td><td class="muted">${esc(o.rxreason||'-')}</td><td>${o.rxstat==='done'?'<span class="pill p-done">완료</span>':'<span class="pill p-req">진행중</span>'}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">내역 없음</div>')}
+  ${sec('📦 미송 이력 <span class="muted" style="font-size:12px;font-weight:400">'+back.length+'건 대기중</span>',back.length?`<table><thead><tr><th>주문일</th><th>번호표</th><th>상품</th><th class="num-cell">수량</th></tr></thead><tbody>${back.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.date)}</td><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">현재 미송 대기 없음</div>')}
+  ${sec('🚩 주의/블랙리스트',`<div style="padding:2px 0"><div style="display:flex;gap:6px;margin-bottom:10px">${flagBtn(null,'정상','')}${flagBtn('주의','⚠️ 주의','btn')}${flagBtn('블랙리스트','⛔ 블랙리스트','red')}</div><label>메모 <span class="muted" style="font-size:11px">문제 이력·특이사항</span></label><textarea id="cdMemo" style="width:100%;height:70px;padding:10px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:13px" placeholder="예: 잦은 단순변심 취소, 반말 고객 등">${esc(c.memo||'')}</textarea><div style="margin-top:8px"><button class="btn sm" onclick="saveCustMemo(${c.id})">메모 저장</button></div></div>`)}`;
+  $('#modal').classList.remove('hide');}
+async function setCustFlag(id,flag){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;c.flag=flag||null;try{const {error}=await SB.from('customers').update({flag:c.flag}).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패');}}catch(e){console.error(e);}toast(flag?('🚩 '+flag+': '+c.name):'표시 해제: '+c.name);openCustDetail(id);}
+async function saveCustMemo(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;const v=($('#cdMemo')&&$('#cdMemo').value||'').trim();c.memo=v||null;try{const {error}=await SB.from('customers').update({memo:c.memo}).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패');}else toast('📝 메모 저장');}catch(e){console.error(e);}}
+async function custAdjustPoints(id,sign){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;const raw=prompt((sign>0?'적립할':'차감할')+' 금액 (원)');if(raw==null)return;const amt=parseInt(String(raw).replace(/[^\d]/g,''))||0;if(amt<=0){toast('금액을 입력하세요');return;}const reason=prompt('사유 (선택)','')||'';await addPoints(c.name,sign*amt,sign>0?'적립조정':'적립차감',{reason:reason||'수동 조정'});toast((sign>0?'💰 적립 +':'➖ 차감 −')+won(amt)+' · '+c.name);openCustDetail(id);}
 function custPhoneNorm(p){return (p||'').replace(/[^0-9]/g,'');}
 function formatPhone(p){const d=custPhoneNorm(p);if(d.length===11)return d.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3');if(d.length===10)return d.replace(/(\d{3})(\d{3})(\d{4})/,'$1-$2-$3');return p||'';}
 function phoneDupGroups(){const m={};CUSTOMERS.forEach(c=>{const p=custPhoneNorm(c.phone);if(p.length>=8)(m[p]=m[p]||[]).push(c);});return Object.values(m).filter(a=>a.length>1).sort((a,b)=>b.length-a.length);}
 function custAvatar(name){const ch=(name||'?').trim().charAt(0)||'?';const colors=['#2563eb','#7c3aed','#db2777','#ea580c','#059669','#0891b2','#4f46e5'];let h=0;for(const c of (name||'?'))h=(h*31+c.charCodeAt(0))%colors.length;return `<span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:${colors[h]};color:#fff;font-weight:800;font-size:14px;flex:0 0 auto">${esc(ch)}</span>`;}
-function custActBtns(c){return `<div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="openCustEdit(${c.id})">수정</button><button class="ico-btn" title="삭제" onclick="delCust(${c.id})"><i class="ti ti-trash"></i></button></div>`;}
+function custActBtns(c){return `<div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm" onclick="openCustDetail(${c.id})">상세</button><button class="btn sm ghost" onclick="openCustEdit(${c.id})">수정</button><button class="ico-btn" title="삭제" onclick="delCust(${c.id})"><i class="ti ti-trash"></i></button></div>`;}
 function custRow(c,stats){const s=stats[c.name]||{cnt:0,amt:0,last:''};
   return `<tr>
-    <td><div style="display:flex;align-items:center;gap:10px">${custAvatar(c.name)}<div><div style="font-weight:700">${esc(c.name)}</div><div class="muted" style="font-size:12px">${esc(c.addr||'주소 미등록')}</div></div></div></td>
+    <td><div style="display:flex;align-items:center;gap:10px">${custAvatar(c.name)}<div><div style="font-weight:700">${esc(c.name)}${custFlagBadge(c)}</div><div class="muted" style="font-size:12px">${esc(c.addr||'주소 미등록')}</div></div></div></td>
     <td class="barcode" style="font-weight:600">${esc(formatPhone(c.phone)||'-')}</td>
     <td class="num-cell">${s.cnt?s.cnt+'건':'<span class="muted">-</span>'}</td>
     <td class="num-cell" style="font-weight:700">${s.amt?won(s.amt):'<span class="muted">-</span>'}</td>
+    <td class="num-cell" style="font-weight:700;color:${(c.points||0)>0?'#059669':'#94a3b8'}">${(c.points||0)>0?won(c.points):'-'}</td>
     <td class="muted" style="font-size:12px">${s.last||'-'}</td>
     <td>${custActBtns(c)}</td></tr>`;}
 function custDupView(dup,stats){
@@ -1902,8 +1962,8 @@ function viewCustomers(){
     <button class="${CUSTTAB==='dup'?'on':''}" onclick="CUSTTAB='dup';render()">⚠️ 번호중복 ${dup.length}그룹·${dupN}명</button>
   </div>
   ${CUSTTAB==='dup'?custDupView(dup,stats):`
-  <div class="card"><table><thead><tr><th>고객</th><th>연락처</th><th class="num-cell">구매</th><th class="num-cell">구매액</th><th>최근</th><th style="width:92px"></th></tr></thead><tbody>
-    ${shown.map(c=>custRow(c,stats)).join('')||`<tr><td colspan="6" class="muted" style="padding:16px">검색 결과 없음</td></tr>`}
+  <div class="card"><table><thead><tr><th>고객</th><th>연락처</th><th class="num-cell">구매</th><th class="num-cell">구매액</th><th class="num-cell">적립금</th><th>최근</th><th style="width:150px"></th></tr></thead><tbody>
+    ${shown.map(c=>custRow(c,stats)).join('')||`<tr><td colspan="7" class="muted" style="padding:16px">검색 결과 없음</td></tr>`}
   </tbody></table>${list.length>shown.length?`<div class="muted" style="padding:10px 14px">… 외 ${(list.length-shown.length).toLocaleString()}명 · 검색으로 좁혀보세요</div>`:''}</div>`}`;
 }
 function viewProducts(){
@@ -2207,10 +2267,8 @@ function payConfirm(id){const o=ORD.find(x=>x.id===id);o.pay='paid';toast('💳 
 async function cancelOrder(id,reason){const i=ORD.findIndex(x=>x.id===id);if(i<0)return;const o=ORD[i],s=skuOf(o.code,o.color,o.size);ORD.splice(i,1);
   toast('🗑️ 주문 취소 → 재고 '+o.qty+'개 복원 ('+prodName(o.code)+' '+o.color+')');render();
   await delOrd(o);if(s)await adjustStockDB(s,o.qty,reason||'주문취소',o.cust);}
-/* 미송 상품 취소 — 배송지연 등으로 고객이 취소 요청 시. 차감됐던(마이너스) 재고 복원 */
-async function cancelBackOrder(id){const o=ORD.find(x=>x.id===id);if(!o)return;
-  if(!confirm('[미송 취소]\n'+o.cust+' · '+itemLabel(o)+' '+o.qty+'개\n\n이 미송 주문을 취소할까요?\n(배송지연 등 · 차감됐던 재고가 복원됩니다)'))return;
-  await cancelOrder(id,'미송취소');}
+/* 미송 상품 취소 — 배송지연 등. 적립금 적립 여부 포함한 취소/환불 모달로 연결 */
+function cancelBackOrder(id){cancelSale(id,'취소');}
 function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o.cust+' → '+({req:'출고요청',done:'출고완료'})[st]);render();}
 function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
 /* 상품 일괄등록 — 6자리 자동번호 + 색상·사이즈 매트릭스 → SKU 자동생성 */
