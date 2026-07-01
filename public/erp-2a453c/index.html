@@ -350,6 +350,7 @@ const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:r.cust,phone:r.ph
 const ORD2DB=o=>{const r={order_date:_toDate(o.date),staff:o.staff,cust:o.cust,phone:o.phone,addr:o.addr,code:o.code,item_name:o.disp,tag:o.tag,color:o.color,size:o.size,qty:o.qty,price:o.price,pay:o.pay,payway:o.payway||null,ship:o.ship,req:o.req||null,prog:o.prog||null,back:!!o.back,track:o.track||null,reason:o.reason||null,shipped_date:o.shipped_date||null};r.rxtype=o.rxtype||null;r.rxstat=o.rxstat||null;r.rxreason=o.rxreason||null;r.fault=o.fault||null;r.rxdate=o.rxdate||null;r.rxdone=o.rxdone||null;r.rxnew=o.rxnew||null;return r;};
 async function dbFetchAll(table,col,asc){let all=[],f=0;const sz=1000;while(true){const {data,error}=await SB.from(table).select('*').order(col,{ascending:asc!==false}).range(f,f+sz-1);if(error){console.error(table,error);break;}all=all.concat(data||[]);if(!data||data.length<sz)break;f+=sz;}return all;}
 let SHIPPING=[];
+let SCHED=[];
 /* 사용자 개인설정 — 위젯배치/목록·SNS·목표·무료배송기준을 계정별로 DB(user_prefs)에 영구저장.
    어느 기기에서 로그인해도 본인 설정 유지. ME.auth_id 없으면 localStorage 폴백. */
 let PREFS={},_savePrefsT=null;
@@ -372,11 +373,13 @@ async function dbLoadAll(){
     const or=await dbFetchAll('orders','id',false);
     const sh=await SB.from('shipping').select('*').order('month');
     const em=await SB.from('employees').select('*').order('id');
+    const bs=await SB.from('broadcast_schedule').select('*').order('date');
     STOCK.length=0;st.forEach(r=>STOCK.push(r));
     CUSTOMERS.length=0;cu.forEach(r=>CUSTOMERS.push(r));
     ORD.length=0;or.forEach(r=>ORD.push(DB2ORD(r)));
     SHIPPING=sh.data||[];
     EMPLOYEES.length=0;(em.data||[]).forEach(r=>EMPLOYEES.push(r));
+    SCHED=(bs&&bs.data)||[];
     if(window.ME&&(ME.scope==='all'||ME.scope==='logi')){try{const sc=await SB.from('stock_cost').select('*');if(sc&&sc.data){const cm={};sc.data.forEach(r=>cm[r.stock_id]=r.in_price);STOCK.forEach(s=>{s.in_price=cm[s.id]!=null?cm[s.id]:0;});}}catch(e){console.error('cost',e);}}else{STOCK.forEach(s=>{s.in_price=0;});}
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
 }
@@ -794,7 +797,40 @@ const rows=plats.map(p=>{const m=SNS_META[p],s=d[p];
 return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>등록 SNS</h2><span class="more" onclick="go('sns')">상세 ›</span></div><div style="display:flex;flex-direction:column;gap:12px">${rows}</div></div>`;}
 function wInflow(){return wPlaceholder('유입 채널','어느 SNS가 매출로 이어지는지 분석 (데이터 연동 준비중)','ti-route');}
 function wMsgReact(){return wPlaceholder('고객 메시지 반응','발송·열람·클릭·전환율 (메시지 시스템 연동 준비중)','ti-message-2');}
-function wSchedule(){return wPlaceholder('방송 스케줄','주간 방송일정·방송실·다른 셀러 조회 (다음 업데이트에서 구현)','ti-calendar-event');}
+/* 방송 스케줄러 — 셀러 본인 주간 스케줄(요일·시간6h·방송실1/2·플랫폼) 등록, 모든 셀러 조회 */
+const SCH_PLATFORMS=['틱톡','유튜브','인스타','쇼핑라이브','기타'];
+const SCH_TIMES=(()=>{const a=[];for(let h=9;h<=27;h++){const hh=(h%24).toString().padStart(2,'0');a.push(hh+':00');a.push(hh+':30');}return a;})();
+function schWeekDates(offset){const d=new Date();const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd+(offset||0)*7);return [0,1,2,3,4,5,6].map(i=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return x.toISOString().slice(0,10);});}
+function schColor(name){const c=['#2563eb','#7c3aed','#db2777','#ea580c','#059669','#0891b2','#4f46e5','#c026d3'];let h=0;for(const ch of String(name||'?'))h=(h*31+ch.charCodeAt(0))%c.length;return c[h];}
+function addHours(t,n){if(!t)return '';const p=t.split(':').map(Number);return String((p[0]+n)%24).padStart(2,'0')+':'+String(p[1]||0).padStart(2,'0');}
+function wSchedule(){const dates=schWeekDates(0),days=['월','화','수','목','금','토','일'];
+  const cell=arr=>arr.length?arr.map(s=>`<div style="font-size:10px;padding:2px 5px;border-radius:5px;background:${schColor(s.seller)};color:#fff;margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(s.seller)} ${s.start_time||''}~${s.end_time||''} ${esc(s.platforms||'')}">${esc(s.seller)} ${s.start_time||''}~${s.end_time||''}${s.platforms?' '+esc(s.platforms):''}</div>`).join(''):'<span class="muted" style="font-size:10px">-</span>';
+  const rows=days.map((dy,i)=>{const dt=dates[i];const r1=SCHED.filter(s=>s.date===dt&&s.room==1),r2=SCHED.filter(s=>s.date===dt&&s.room==2);const wk=new Date(dt).getDay(),wknd=wk===0||wk===6;
+    return `<tr style="${wknd?'background:#fafbfc':''}"><td style="font-weight:700;white-space:nowrap;${wknd?'color:#ef4444':''}">${dy}<span class="muted" style="font-size:9px;display:block">${dt.slice(5)}</span></td><td style="vertical-align:top">${cell(r1)}</td><td style="vertical-align:top">${cell(r2)}</td></tr>`;}).join('');
+  return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>방송 스케줄 <span class="muted" style="font-size:11px">${dates[0].slice(5)}~${dates[6].slice(5)}</span></h2><div style="display:flex;gap:5px">${isSeller()?`<button class="btn sm ghost" onclick="openSchedule(0)">이번주</button><button class="btn sm" onclick="openSchedule(1)">＋ 다음주 등록</button>`:''}</div></div>
+  <table><thead><tr><th style="width:42px">요일</th><th>1번 방송실</th><th>2번 방송실</th></tr></thead><tbody>${rows}</tbody></table></div>`;}
+function openSchedule(offset){const dates=schWeekDates(offset),days=['월','화','수','목','금','토','일'];const me=(ME.owner||ME.name);const ex={};SCHED.filter(s=>s.seller===me&&dates.includes(s.date)).forEach(s=>ex[s.date]=s);
+  window._schD={offset:offset,dates:dates,rows:days.map((dy,i)=>{const e=ex[dates[i]]||{};return {day:dy,date:dates[i],on:!!e.id,start:e.start_time||'20:00',end:e.end_time||'02:00',room:e.room||1,platforms:e.platforms||'틱톡'};})};
+  renderSchedule();$('#modal').classList.remove('hide');}
+function schSet(i,f,v){const d=window._schD;if(!d||!d.rows[i])return;d.rows[i][f]=v;if(f==='start')d.rows[i].end=addHours(v,6);renderSchedule();}
+function renderSchedule(){const d=window._schD;if(!d)return;const me=(ME.owner||ME.name);const opt=v=>SCH_TIMES.map(t=>`<option ${t===v?'selected':''}>${t}</option>`).join('');
+  $('#modalBox').innerHTML=`<h3>📅 방송 스케줄 등록 <span style="font-size:13px;color:#64748b;font-weight:500">${d.dates[0].slice(5)}~${d.dates[6].slice(5)} · ${esc(me)}</span></h3>
+  <div class="ms">방송하는 요일만 체크 → 시작시간 고르면 <b>종료 +6시간</b> 자동(수정가능) → 방송실·플랫폼 선택. 저장하면 <b>모든 셀러가 봅니다.</b></div>
+  <div style="max-height:360px;overflow:auto"><table><thead><tr><th>방송</th><th>요일</th><th>시작</th><th>종료</th><th>방송실</th><th>플랫폼</th></tr></thead><tbody>
+  ${d.rows.map((r,i)=>{const wk=new Date(r.date).getDay(),wknd=wk===0||wk===6;return `<tr style="${r.on?'':'opacity:.45'}"><td style="text-align:center"><input type="checkbox" ${r.on?'checked':''} onchange="schSet(${i},'on',this.checked)"></td>
+    <td style="font-weight:700;${wknd?'color:#ef4444':''}">${r.day}<span class="muted" style="font-size:10px"> ${r.date.slice(5)}</span></td>
+    <td><select onchange="schSet(${i},'start',this.value)" ${r.on?'':'disabled'} style="padding:4px 6px">${opt(r.start)}</select></td>
+    <td><select onchange="schSet(${i},'end',this.value)" ${r.on?'':'disabled'} style="padding:4px 6px">${opt(r.end)}</select></td>
+    <td><select onchange="schSet(${i},'room',+this.value)" ${r.on?'':'disabled'} style="padding:4px 6px"><option value="1" ${r.room==1?'selected':''}>1번</option><option value="2" ${r.room==2?'selected':''}>2번</option></select></td>
+    <td><select onchange="schSet(${i},'platforms',this.value)" ${r.on?'':'disabled'} style="padding:4px 6px">${SCH_PLATFORMS.map(p=>`<option ${p===r.platforms?'selected':''}>${p}</option>`).join('')}</select></td></tr>`;}).join('')}
+  </tbody></table></div>
+  <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveSchedule()">저장</button></div>`;}
+async function saveSchedule(){const d=window._schD;if(!d)return;const me=(ME.owner||ME.name);
+  try{await SB.from('broadcast_schedule').delete().eq('seller',me).in('date',d.dates);
+    const ins=d.rows.filter(r=>r.on).map(r=>({seller:me,date:r.date,start_time:r.start,end_time:r.end,room:r.room,platforms:r.platforms}));
+    if(ins.length){const {error}=await SB.from('broadcast_schedule').insert(ins);if(error){toast('⚠️ 저장 실패: '+error.message);return;}}
+    await dbLoadAll();closeModal();toast('✅ 방송 스케줄 저장됨 — 셀러들이 볼 수 있어요');render();
+  }catch(e){toast('⚠️ 저장 오류 (실서버에서만 작동)');}}
 const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',sales_avg:'평균 객단가',settle:'정산 예정',repurchase:'재구매율',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',ship_fee:'배송비 집계(당월)',misong:'미송 대기',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',vip:'단골/VIP 고객',taste:'고객 구매성향',topprod:'인기 상품',lowprod:'관리 필요 상품',bcast:'방송 성과',goal:'목표 달성률',alerts:'알림/체크 필요',schedule:'방송 스케줄',sns:'등록 SNS',inflow:'유입 채널',msg_react:'메시지 반응',new_cust:'신규 고객',quick:'업무 바로가기'};
 function wRender(id){const today=new Date().toISOString().slice(0,10);
   switch(id){
