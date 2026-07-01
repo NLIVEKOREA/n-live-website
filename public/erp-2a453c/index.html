@@ -289,6 +289,9 @@
   img{height:auto}
   .table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}
   .table-wrap>table{min-width:max-content}
+  .table-wrap>.ogrid{min-width:920px}
+  .main .table-wrap>table:not(.ogrid){min-width:640px}
+  .modal-box .table-wrap>table{min-width:600px}
   .table-wrap th,.table-wrap td{white-space:nowrap}
   .table-wrap td.wrap-cell{white-space:normal;min-width:180px;max-width:320px}
   .truncate{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -311,6 +314,9 @@
     .tb-user{padding-left:10px}
     .grid-stack{min-height:0}
     .row.r-2-1,.row.r-3,.orderstatus,.orderwrap2{grid-template-columns:1fr}
+    .main [style*="grid-template-columns:repeat(3"],.modal-box [style*="grid-template-columns:repeat(3"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .orderwrap{grid-template-columns:1fr}
+    .drop2{max-width:calc(100vw - 48px)}
   }
   @media (max-width:767px){
     body{font-size:13px}
@@ -329,6 +335,21 @@
     .toolbar{align-items:stretch;flex-direction:column}
     .toolbar>*{width:100%!important;max-width:none!important}
     .toolbar .btn{width:100%}
+    .toolbar .grow{display:none}
+    .form-grid{align-items:stretch;flex-direction:column}
+    .form-grid>*{width:100%!important;max-width:none!important}
+    .oehdr{padding:14px 12px}
+    .oehdr-grid{grid-template-columns:1fr;gap:6px}
+    .oehdr-grid label{margin-top:6px}
+    .orderwrap,.orderwrap2,.orderstatus{display:block}
+    .orderwrap>*+*,.orderwrap2>*+*,.orderstatus>*+*{margin-top:14px}
+    .ord-cards{grid-template-columns:1fr}
+    .ord-card,.sg-card{min-width:0}
+    .ord-top,.ord-btns,.oc-head,.oc-btns,.card-act{flex-wrap:wrap}
+    .ord-amt{margin-left:0;width:100%}
+    .oc-btns .btn{flex:1 1 calc(50% - 6px)}
+    .main [style*="grid-template-columns"],.modal-box [style*="grid-template-columns"]{grid-template-columns:1fr!important}
+    .main [style*="width:320px"],.main [style*="width:240px"],.main [style*="width:210px"],.main [style*="width:200px"],.main [style*="width:180px"],.main [style*="width:150px"]{width:100%!important;max-width:none!important}
     .tabs{overflow-x:auto;padding-bottom:4px}
     .tabs button{flex:0 0 auto}
     .modal-bg{align-items:flex-end;padding:0}
@@ -341,6 +362,11 @@
     .pbar-track{order:3;flex-basis:100%}
     .sg-foot{align-items:stretch;flex-direction:column}
     .sg-foot input,.sg-foot .btn{width:100%;max-width:none}
+    .seg{max-width:100%;overflow-x:auto}
+    .seg button{flex:1 0 auto}
+    .kw-row{align-items:flex-start}
+    .kw-row .l{font-size:13px}
+    .drop2{position:fixed;left:12px;right:12px;top:auto;bottom:12px;min-width:0;max-width:none;max-height:45vh}
   }
 </style>
 </head>
@@ -1088,7 +1114,13 @@ function viewOrder(){
         ${OE.cust?`<input value="${OE.cust}" readonly onclick="clearCust()" title="클릭 시 변경" style="cursor:pointer;font-weight:700;color:var(--blue)">`
                  :`<div style="display:flex;gap:6px"><input id="custIn" placeholder="고객명 일부+Enter (예: 박시)" autocomplete="off" oninput="custSearch(this.value)" onkeydown="custKey(event)" style="flex:1"><button class="btn sm ghost" style="flex:0 0 auto;white-space:nowrap" onclick="openCustModal('')">＋ 신규</button></div><div id="custDrop" class="drop2"></div>`}
       </div>
-      <label>담당자</label><div class="fld">${isSeller()?`<input value="${ME.owner}" readonly>`:`<select id="oeStaff" onchange="OE.staff=this.value">${sellers}</select>`}</div>
+      <label>${ME.role==='보조'?'매출귀속':'담당자'}</label><div class="fld">${
+        ME.role==='보조'
+          ? `<select onchange="OE.staff=this.value;render()" title="처리자: ${esc(ME.name)}">${[[ME.owner||'',`${esc(ME.owner||'담당셀러')} 라방 (내 수수료 3%)`],[ME.name,`${esc(ME.name)} 내 판매 (10%)`]].map(([v,l])=>`<option value="${escAttr(v)}" ${(OE.staff||ME.owner)===v?'selected':''}>${l}</option>`).join('')}</select>`
+          : isSeller()
+            ? `<input value="${esc(ME.owner||ME.name)}" readonly>`
+            : `<select id="oeStaff" onchange="OE.staff=this.value">${sellers}</select>`
+      }</div>
       <label>연락처</label><div class="fld"><input value="${OE.phone||''}" placeholder="고객 선택 시 자동" readonly></div>
       <label>주소</label><div class="fld" style="grid-column:span 3"><input value="${esc((OE.zip?'['+OE.zip+'] ':'')+(OE.addr||'')+(OE.island?'   🏝️ '+OE.island.region+' (도서산간)':''))}" placeholder="고객 선택 시 자동 (우편번호·주소 함께)" readonly style="${OE.island?'border:1.5px solid var(--amber);background:#fff8ec':''}"></div>
     </div></div>
@@ -1387,7 +1419,7 @@ async function commitOrder(){
   if(!OE.cust){toast('고객을 선택하세요');return;}
   if(!OE.lines.length){toast('품목을 추가하세요');return;}
   _committing=true;
-  const staff=isSeller()?(ME.owner||ME.name):(OE.staff||$('#oeStaff')?.value||'박시연');
+  const staff=isSeller()?(OE.staff||ME.owner||ME.name):(OE.staff||$('#oeStaff')?.value||'박시연');
   let back=0;const created=[];
   const _editOrig=OE.editOrig||[];/* 수정모드면 원주문 목록 — 저장 성공 후 교체 */
   const today=(OE.date||todayStr()).replace(/-/g,'/');
@@ -2358,7 +2390,15 @@ const PAY_BASE={'셀러':2000000,'보조':2300000,'운영':2300000,'물류':2300
 const PAY_RATE={'셀러':10,'보조':3,'운영':0,'물류':0,'관리자':0};
 function _staffSalesBy(field,name){return ORD.filter(o=>o[field]===name&&o.pay==='paid'&&_inRange(o,'month')&&_isGoods(o)).reduce((a,o)=>a+amtOf(o),0);}
 function _staffSales(name){return _staffSalesBy('staff',name);}/* 셀러 실적 = 담당(staff) */
-function empPay(e){const base=(e.base_salary!=null&&e.base_salary!==''&&+e.base_salary>0)?+e.base_salary:(PAY_BASE[e.role]||0);const rate=(e.comm_rate!=null&&e.comm_rate!==''&&+e.comm_rate>=0&&String(e.comm_rate)!=='')?+e.comm_rate:(PAY_RATE[e.role]||0);const sales=e.role==='보조'?_staffSalesBy('staff',e.owner||e.name):(e.role==='셀러'?_staffSalesBy('staff',e.name):0);const comm=Math.round(sales*rate/100);return {base:base,rate:rate,sales:sales,comm:comm,total:base+comm};}
+function empPay(e){const base=(e.base_salary!=null&&e.base_salary!==''&&+e.base_salary>0)?+e.base_salary:(PAY_BASE[e.role]||0);const rate=(e.comm_rate!=null&&e.comm_rate!==''&&+e.comm_rate>=0&&String(e.comm_rate)!=='')?+e.comm_rate:(PAY_RATE[e.role]||0);
+  if(e.role==='보조'){
+    const own=_staffSalesBy('staff',e.name);/* 본인 판매(매출귀속=본인) */
+    const assist=ORD.filter(o=>o.staff===(e.owner||'')&&o.created_by===e.name&&o.pay==='paid'&&_inRange(o,'month')&&_isGoods(o)).reduce((a,o)=>a+amtOf(o),0);/* 담당셀러 라방 중 본인 처리분 */
+    const ownRate=PAY_RATE['셀러']||10,assistRate=rate;
+    const comm=Math.round(own*ownRate/100+assist*assistRate/100);
+    return {base:base,rate:assistRate,sales:own+assist,comm:comm,total:base+comm,own:own,assist:assist,ownRate:ownRate,assistRate:assistRate};
+  }
+  const sales=e.role==='셀러'?_staffSalesBy('staff',e.name):0;const comm=Math.round(sales*rate/100);return {base:base,rate:rate,sales:sales,comm:comm,total:base+comm};}
 function saveEmpPay(idx,field,val){const e=EMPLOYEES[idx];if(!e)return;e[field]=(val===''?null:Math.max(0,parseFloat(val)||0));render();if(e.id!=null)SB.from('employees').update({[field]:e[field]}).eq('id',e.id).then(function(r){if(r.error){toast('⚠️ 급여 저장 실패 — 다시 시도');console.warn('empPay',r.error.message);}else toast('💾 저장됨');});}
 function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&(canSeeAll()||e.name===ME.name));
   const isMgmt=e=>e.role==='관리자'||e.role==='운영';
@@ -2375,8 +2415,8 @@ function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&(canSeeAll()
     ${payList.length?payList.map(e=>{const p=empPay(e),idx=EMPLOYEES.indexOf(e);return `<tr>
       <td><b>${esc(e.name)}</b></td><td class="muted">${esc(e.role||'')}</td>
       <td class="num-cell">${canSeeAll()?`<input type="number" value="${p.base}" onchange="saveEmpPay(${idx},'base_salary',this.value)" style="width:104px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:won(p.base)}</td>
-      <td class="num-cell">${(canSeeAll()&&(e.role==='셀러'||e.role==='보조'))?`<input type="number" value="${p.rate}" onchange="saveEmpPay(${idx},'comm_rate',this.value)" style="width:58px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:p.rate+'%'}</td>
-      <td class="num-cell">${won(p.sales)}</td><td class="num-cell up">+${won(p.comm)}</td><td class="num-cell"><b>${won(p.total)}</b></td></tr>`;}).join(''):'<tr><td colspan="7" class="muted">직원 데이터 없음 (사원관리에서 등록)</td></tr>'}
+      <td class="num-cell">${(canSeeAll()&&(e.role==='셀러'||e.role==='보조'))?`<input type="number" value="${p.rate}" onchange="saveEmpPay(${idx},'comm_rate',this.value)" style="width:58px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:p.rate+'%'}${e.role==='보조'?'<div class="muted" style="font-size:10px">내판매 '+(p.ownRate||10)+'%</div>':''}</td>
+      <td class="num-cell">${won(p.sales)}${e.role==='보조'&&p.own!=null?`<div class="muted" style="font-size:10px">내판매 ${won(p.own)} · 라방 ${won(p.assist)}</div>`:''}</td><td class="num-cell up">+${won(p.comm)}</td><td class="num-cell"><b>${won(p.total)}</b></td></tr>`;}).join(''):'<tr><td colspan="7" class="muted">직원 데이터 없음 (사원관리에서 등록)</td></tr>'}
     </tbody></table>
   </div>`;
 }
