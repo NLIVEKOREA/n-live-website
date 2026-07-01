@@ -555,7 +555,7 @@ async function openStockLog(id,name){$('#modalBox').innerHTML=`<div style="displ
   try{const {data}=await SB.from('stock_log').select('*').eq('stock_id',id).order('at',{ascending:false}).limit(300);const rows=data||[];const el=$('#slBody');el.className='';
     el.innerHTML=rows.length?`<table><thead><tr><th>일시</th><th>구분</th><th class="num-cell">증감</th><th>담당</th><th>메모</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="muted" style="font-size:12px">${String(r.at||'').slice(0,16).replace('T',' ')}</td><td><span class="pill ${r.delta>0?'p-done':'p-low'}">${esc(r.reason||'')}</span></td><td class="num-cell" style="font-weight:700;color:${r.delta>0?'#16a34a':'#dc2626'}">${r.delta>0?'+':''}${r.delta}</td><td class="muted">${esc(r.staff||'-')}</td><td class="muted" style="font-size:12px">${esc(r.ref||'')}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:10px">아직 변동 기록이 없습니다. 지금부터 판매·교환·환불·조정이 자동 기록됩니다.</div>';
   }catch(e){$('#slBody').innerHTML='<div class="muted" style="padding:10px">불러오기 실패 (잠시 후 다시)</div>';}}
-async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error){console.error('updStock',error);toast('⚠️ 품목 저장 실패 — 다시 시도하세요');}}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error){console.error('insStock',error);toast('⚠️ 품목 등록 실패 — 다시 시도하세요');}if(data){s.id=data.id;if((s.qty||0)!==0){try{await SB.from('stock_log').insert({stock_id:s.id,code:s.code,delta:s.qty,reason:'신규입고',ref:s.vendor||null,staff:(typeof ME!=='undefined'&&ME&&ME.name)||null});}catch(e){console.error('log입고',e);}}}}if(s.id&&s.in_price!=null){try{const {error}=await SB.from('stock_cost').upsert({stock_id:s.id,in_price:s.in_price||0});if(error)console.error('cost',error);}catch(e){console.error('cost',e);}}}catch(e){console.error(e);toast('⚠️ 품목 저장 오류');}}
+async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null,sample:!!s.sample};if(s.id){const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error){console.error('updStock',error);toast('⚠️ 품목 저장 실패 — 다시 시도하세요');}}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error){console.error('insStock',error);toast('⚠️ 품목 등록 실패 — 다시 시도하세요');}if(data){s.id=data.id;if((s.qty||0)!==0){try{await SB.from('stock_log').insert({stock_id:s.id,code:s.code,delta:s.qty,reason:'신규입고',ref:s.vendor||null,staff:(typeof ME!=='undefined'&&ME&&ME.name)||null});}catch(e){console.error('log입고',e);}}}}if(s.id&&s.in_price!=null){try{const {error}=await SB.from('stock_cost').upsert({stock_id:s.id,in_price:s.in_price||0});if(error)console.error('cost',error);}catch(e){console.error('cost',e);}}}catch(e){console.error(e);toast('⚠️ 품목 저장 오류');}}
 async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null,zip:c.zip||null};if(c.id){const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error){console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}else{row.owner=((typeof ME!=='undefined'&&ME&&(ME.owner||ME.name)))||null;row.created_at=new Date().toISOString();let res=await SB.from('customers').insert(row).select('id,created_at').single();if(res.error&&/created_at/i.test(res.error.message||'')){delete row.created_at;res=await SB.from('customers').insert(row).select('id').single();}if(res.error){console.error('insCust',res.error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(res.data){c.id=res.data.id;c.owner=row.owner;c.created_at=res.data.created_at;}}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
 async function delCustDB(c){try{if(c.id){const {error}=await SB.from('customers').delete().eq('id',c.id);if(error){console.error('delCust',error);toast('⚠️ 고객 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 async function delStockDB(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').delete().eq('id',s.id);if(error){console.error('delStock',error);toast('⚠️ 품목 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
@@ -789,6 +789,10 @@ function skuFullCode(code,color,size,pool){const raw=String(code==null?'':code);
 function nextProductCode(){let mx=0;STOCK.forEach(s=>{const g=String(s.code||'').replace(/\D/g,'');if(g.length===5||g.length===6){const n=parseInt(g,10);if(n>mx)mx=n;}});return String(mx+1).padStart(6,'0');}
 const colorsOf=c=>[...new Set(STOCK.filter(s=>s.code===c).map(s=>s.color))];
 const itemLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
+/* 샘플 상품(반납대상): 재고에 sample=true인 품목. 내부 화면에만 ⚠️샘플 표시(고객 문자엔 미표시) */
+function isSampleCode(code,color,size){const t=skuOf(code,color,size);return !!(t&&t.sample);}
+function isSampleO(o){if(!o||!o.code)return false;const t=skuOf(o.code,o.color,o.size);if(t)return !!t.sample;return STOCK.some(x=>x.code===o.code&&x.sample);}
+function sampleBadge(o){return isSampleO(o)?' <span class="pill" style="background:#fff7ed;color:#c2410c;border:1px solid #fdba74;font-size:10px;font-weight:800">⚠️샘플</span>':'';}
 const tagShow=o=>{
   if(o&&o.source==='shop'){/* 링크주문: 번호표(품번) 우선 표시 — LIVE 대신 품번이 따라가야 함 */
     if(o.code&&o.code!=='배송비'&&o.code!=='방송상품'&&o.code!=='적립금')return baseCode(o.code)+'번';
@@ -882,7 +886,7 @@ function boVendorCard(vendor,items,ordered){const q=items.reduce((a,o)=>a+(o.qty
   return `<div class="ord-card" style="${ordered?'border-color:#a7d8b0':''}">
     <div class="oc-head"><b>🏭 ${esc(vendor)}</b> <span class="muted" style="font-size:12px">${items.length}품목 · ${q}개</span>${ordered?'<span class="pill p-done">주문완료·입고전</span>':''}<span class="grow"></span>${amt?`<span class="oc-total">입고 ${won(amt)}</span>`:''}</div>
     <div style="overflow:auto"><table class="tbl"><thead><tr><th>품목</th><th>색상</th><th>사이즈</th><th class="num-cell">수량</th><th class="num-cell">입고단가</th><th>고객</th></tr></thead><tbody>
-    ${items.map(o=>`<tr><td><b>${esc(o.disp||prodName(o.code))}</b><br><span class="muted" style="font-size:11px">${esc(o.code)}</span></td><td>${esc(o.color||'-')}</td><td>${esc(o.size||'-')}</td><td class="num-cell">${o.qty||0}</td><td class="num-cell">${boInPrice(o)?won(boInPrice(o)):'-'}</td><td class="muted">${esc(o.cust||'')}${o.source==='shop'?' 🔗':''}</td></tr>`).join('')}
+    ${items.map(o=>`<tr><td><b>${esc(o.disp||prodName(o.code))}</b>${sampleBadge(o)}<br><span class="muted" style="font-size:11px">${esc(o.code)}</span></td><td>${esc(o.color||'-')}</td><td>${esc(o.size||'-')}</td><td class="num-cell">${o.qty||0}</td><td class="num-cell">${boInPrice(o)?won(boInPrice(o)):'-'}</td><td class="muted">${esc(o.cust||'')}${o.source==='shop'?' 🔗':''}</td></tr>`).join('')}
     </tbody></table></div>
     <div class="oc-btns">${ordered
       ?`<span class="muted" style="align-self:center;font-size:12px">입고되면 출고장 → 미송관리에서 송장 입력·발송</span><button class="btn sm gray" style="margin-left:auto" onclick="boRevert('${escAttr(vendor)}')">↩ 주문필요로</button>`
@@ -1314,7 +1318,7 @@ function orderStatusCards(pay){
       <div class="ord-card${COLLAPSED.has('os:'+pay+g.date+g.cust)?' collapsed':''}${isShop?' shop-order':''}">
         <div class="oc-head">${collBtn('os:'+pay+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
         ${g.phone||(isShop&&payw)?`<div class="oc-sub">${g.phone?'📞 '+g.phone:''}${isShop&&payw?` · 💳 고객선택: <b>${esc(payw)}</b>${payw==='카드'?' (결제링크 발송 필요)':''}`:''}</div>`:''}
-        <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}</span><span class="muted">${o.qty}개</span><span class="oc-amt">${won(amtOf(o))}</span></div>`).join('')}</div>
+        <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="muted">${o.qty}개</span><span class="oc-amt">${won(amtOf(o))}</span></div>`).join('')}</div>
         ${pay==='unpaid'
           ?`<div class="oc-btns"><button class="btn sm ghost" onclick="openOrderSheet(${idx})">주문서</button><button class="btn sm ghost" onclick="editOrderGroup(${idx})">✏️수정</button><select id="pw${idx}" class="oc-pw"><option ${payw==='현금'?'selected':''}>현금</option><option ${payw==='카드'?'selected':''}>카드</option></select></div><div class="oc-btns" style="border-top:0;padding-top:6px"><button class="btn sm" onclick="payGroup(${idx})">입금확인</button><button class="btn sm red" onclick="cancelGroupBtn(${idx})">취소</button></div>`
           :`<div class="oc-btns"><span class="muted" style="align-self:center;font-size:12px">💳 ${g.items[0].payway||'-'}</span><button class="btn sm gray" style="margin-left:auto;flex:0 0 auto" onclick="unpayGroup(${idx})">↩ 입금확인 취소</button></div>`}
@@ -1334,7 +1338,7 @@ function paidCards(){
     <div class="ord-card${COLLAPSED.has('pd:'+g.date+g.cust)?' collapsed':''}${g.items.some(o=>o.source==='shop')?' shop-order':''}">
       <div class="oc-head">${collBtn('pd:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}<span class="pill p-done">결제완료</span><span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
       <div class="oc-sub">${g.date||''}${g.phone?' · '+g.phone:''} · 💳 ${g.items[0].payway||'-'}</div>
-      <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}</span><span class="muted">${o.qty}개</span></div>`).join('')}</div>
+      <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="muted">${o.qty}개</span></div>`).join('')}</div>
       <div class="oc-btns"><button class="btn sm gray" style="flex:1" onclick="unpayGroup(${idx})">↩ 입금확인 취소</button></div>
     </div>`;}).join('');
   let out='<div class="ord-cards">'+html+'</div>';
@@ -1351,9 +1355,12 @@ async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;con
     for(const o of g.items){
       if(o.source==='shop'&&o.reservation_expires_at&&o.code&&o.code!=='배송비'&&o.code!=='방송상품'){
         const s=skuOf(o.code,o.color,o.size);
-        if(s)await adjustStockDB(s,-o.qty,'라이브 입금확인',o.cust);
+        const samp=isSampleO(o),short=s&&(s.qty||0)<o.qty;/* 샘플·재고부족 → 자동 미송(수기 주문과 동일). 재고 차감 안 함 */
+        const upd={reservation_expires_at:null};
+        if(samp||short){o.back=true;o.req='미송';upd.back=true;upd.req='미송';}
+        else if(s){await adjustStockDB(s,-o.qty,'라이브 입금확인',o.cust);}
         o.reservation_expires_at=null;
-        try{await SB.from('orders').update({reservation_expires_at:null}).eq('id',o.id);}catch(e){console.error(e);}
+        try{await SB.from('orders').update(upd).eq('id',o.id);}catch(e){console.error(e);}
       }
     }
     CDATE=(g.date||'').replace(/\//g,'-').slice(0,10)||CDATE;CQ='';toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');}
@@ -1367,7 +1374,7 @@ async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(
   if(ok){
     /* 링크주문 입금확인 취소 → 실차감했던 재고 원복 + 가예약 재설정(30분) */
     for(const o of g.items){
-      if(o.source==='shop'&&!o.reservation_expires_at&&o.code&&o.code!=='배송비'&&o.code!=='방송상품'){
+      if(o.source==='shop'&&!o.reservation_expires_at&&!o.back&&o.code&&o.code!=='배송비'&&o.code!=='방송상품'){
         const s=skuOf(o.code,o.color,o.size);
         if(s)await adjustStockDB(s,o.qty,'라이브 입금취소 원복',o.cust);
         const exp=new Date(Date.now()+30*60000).toISOString();o.reservation_expires_at=exp;
@@ -1568,6 +1575,10 @@ async function commitOrder(){
   if(_committing)return;
   if(!OE.cust){toast('고객을 선택하세요');return;}
   if(!OE.lines.length){toast('품목을 추가하세요');return;}
+  /* 샘플 상품(반납대상) → 자동 미송(재주문). 확인 팝업 후 진행 */
+  const _samp=OE.lines.filter(l=>l.code&&l.code!=='배송비'&&l.code!=='적립금'&&l.code!=='낱장'&&!l.back&&isSampleCode(l.code,l.color,l.size));
+  if(_samp.length&&!confirm('⚠️ 샘플 상품이 포함되어 있습니다:\n'+_samp.map(l=>'· '+(l.name||l.code)+' '+(l.color||'')+' '+(l.size||'')).join('\n')+'\n\n샘플은 반납 대상이라 자동으로 미송(재주문) 처리되어 [미송사입]에서 거래처 재주문으로 관리됩니다.\n\n계속할까요?'))return;
+  _samp.forEach(l=>l.back=true);
   _committing=true;
   const noStk=!!OE.noStockAdjust;const carry=OE.shopCarry||null;/* 링크주문 수정: 재고 손대지 않고 식별필드 보존 */
   const staff=isSeller()?(OE.staff||ME.owner||ME.name):(OE.staff||$('#oeStaff')?.value||'박시연');
@@ -1654,7 +1665,7 @@ function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:80px">상태</th><th style="width:130px">요청</th></tr></thead><tbody>
     ${g.items.map(o=>{const dr=reqDraftOf(o);return `<tr ${o.back?'style="background:#fffaf3"':''}>
-      <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${o.back?' <span class="pill p-low">미송</span>':''}</td>
+      <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}${o.back?' <span class="pill p-low">미송</span>':''}</td>
       <td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td>
       <td>${statePill(o)}</td>
       <td>${o.back?'<span class="pill p-low">미송 보류</span>':`<select onchange="setReqDraft(${o.id},'req',this.value)" style="padding:6px 7px;font-size:12px;border-radius:7px;font-weight:700">${['없음','출고요청','합배요청'].map(s=>`<option ${dr===s?'selected':''}>${s}</option>`).join('')}</select>`}</td>
@@ -1669,7 +1680,7 @@ function shipCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:92px">출고상태</th><th style="width:120px">송장번호</th><th style="width:108px">반품/교환</th><th style="width:130px">사유</th></tr></thead><tbody>
     ${g.items.map(o=>{const sel=RXSET.includes(o.req)?o.req:'유지';return `<tr>
-      <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td>
+      <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td>
       <td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td>
       <td>${reqPill(o)}</td>
       <td class="barcode muted">${o.track||'-'}</td>
@@ -1735,7 +1746,7 @@ function waitCard(list){
     <div class="sg-head">${collBtn('w:'+c.cust)}<span class="sg-name">${c.cust}</span>${payBadge(c.lines[0]&&c.lines[0].payway)}<span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('wait',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>
     <div class="sg-rows">
-    ${c.lines.map(o=>`<div class="sg-row"><span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}</span><span class="sg-qty">${o.qty}개</span>
+    ${c.lines.map(o=>`<div class="sg-row"><span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="sg-qty">${o.qty}개</span>
       <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span></div>`).join('')}
     </div>
     <div class="sg-foot"><input id="trk_wait_${i}" placeholder="송장번호 입력"><button class="btn green" onclick="shipWait(${i})">✅ 출고완료</button></div>
@@ -1755,7 +1766,7 @@ function manageCards(list,cat){
       <div class="sg-row ${o.back?'dim':''}">
         ${canShip?`<button class="sg-pick ${sel?'on':''}" onclick="shipToggle(${o.id})">${sel?'☑ 선택됨':'☐ 출고선택'}</button>`:'<span class="sg-pick no">미송 보류</span>'}
         <span class="tagbox">${tagShow(o)}</span>
-        <span class="sg-nm">${itemLabel(o)}${o.back?(o.bo_status==='ordered'?' <span class="pill p-done" style="font-size:10px">🏭 거래처 주문완료</span>':' <span class="pill p-low" style="font-size:10px">발주 전</span>'):''}</span>
+        <span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}${o.back?(o.bo_status==='ordered'?' <span class="pill p-done" style="font-size:10px">🏭 거래처 주문완료</span>':' <span class="pill p-low" style="font-size:10px">발주 전</span>'):''}</span>
         <span class="sg-qty">${o.qty}개</span>
         <span class="sg-stk ${(q!=null&&q<=0)?'low':''}">재고 ${q==null?'-':q}</span>
         <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span>
@@ -1805,7 +1816,7 @@ function custPopBody(){
     ${c.lines.map(o=>{const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=cat==='back'?(progOf(o)==='포장'):(!o.back&&(q==null||q>0)),sel=SHIPCHK.has(o.id);return `
       <div class="sg-row ${o.back?'dim':''}">
         ${isWait?'':(canShip?`<button class="sg-pick ${sel?'on':''}" onclick="shipToggle(${o.id})">${sel?'☑ 선택됨':'☐ 출고선택'}</button>`:'<span class="sg-pick no">미송 보류</span>')}
-        <span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}</span><span class="sg-qty">${o.qty}개</span>
+        <span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="sg-qty">${o.qty}개</span>
         ${isWait?'':`<span class="sg-stk ${(q!=null&&q<=0)?'low':''}">재고 ${q==null?'-':q}</span>`}
         <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span>
         ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
@@ -1837,7 +1848,7 @@ function shipTabDone(){
     <div class="note">💡 기본은 <b>오늘 출고완료</b>건만 표시 · 기간 선택으로 누적 조회. (과거 이전분은 출고일 미기록이라 '누적'에서 보입니다)</div>
     <div class="tabs" style="margin:10px 0">${periodTabs(DONEPERIOD,'setDonePeriod')}</div>
     <table><thead><tr><th>출고일</th><th>고객</th><th>주문#</th><th>품목</th><th class="num-cell">수량</th><th>배송비</th><th>송장번호</th><th>담당</th></tr></thead><tbody>
-    ${done.slice(0,300).map(o=>`<tr><td class="muted">${o.shipped_date||o.date||'-'}</td><td>${esc(o.cust||'')}</td><td class="muted">#${o.id}</td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td><td>${o.code==='배송비'?'<span class="pill p-req">배송비</span>':'-'}</td><td class="barcode">${o.track}</td><td class="muted">${esc(o.staff||'-')}</td></tr>`).join('')||'<tr><td colspan="8" class="muted">해당 기간 출고완료 없음</td></tr>'}
+    ${done.slice(0,300).map(o=>`<tr><td class="muted">${o.shipped_date||o.date||'-'}</td><td>${esc(o.cust||'')}</td><td class="muted">#${o.id}</td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td><td>${o.code==='배송비'?'<span class="pill p-req">배송비</span>':'-'}</td><td class="barcode">${o.track}</td><td class="muted">${esc(o.staff||'-')}</td></tr>`).join('')||'<tr><td colspan="8" class="muted">해당 기간 출고완료 없음</td></tr>'}
     </tbody></table></div>`;
 }
 function shipTabBody(){
@@ -1853,7 +1864,7 @@ function backSearchResult(q){const rows=mine(ORD).filter(o=>o.back&&o.ship!=='do
   if(!rows.length)return `<div class="note" style="color:var(--red)">'${esc(q)}' 미송 건이 없습니다.</div>`;
   return `<div class="note" style="margin-bottom:8px">📦 <b>'${esc(q)}'</b> 미송 — 아래 <b>${rows.length}명</b>에게 입고분을 보내면 됩니다 (출고는 출고대기 탭에서 송장입력)</div>
   <table><thead><tr><th>번호표</th><th>상품</th><th>고객</th><th>연락처</th><th>주문일</th><th class="num-cell">수량</th></tr></thead><tbody>
-  ${rows.map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td><b>${esc(o.cust)}</b></td><td class="muted barcode">${esc(o.phone||'-')}</td><td class="muted">${o.date||''}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}
+  ${rows.map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td><b>${esc(o.cust)}</b></td><td class="muted barcode">${esc(o.phone||'-')}</td><td class="muted">${o.date||''}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}
   </tbody></table>`;}
 function openShipPopup(){SHIPPOP=true;render();}
 function closeShipPopup(){SHIPPOP=false;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();}
@@ -1905,7 +1916,7 @@ function rxBlock(){
   <div class="card">
     <div class="note">💡 판매관리에서 상태를 <b>${label}</b>으로 바꾼 건이 여기로 모입니다. (판매관리 리스트에도 그대로 유지 · 사유는 판매관리에서 변경)</div>
     <table><thead><tr><th>일자</th><th>주문#</th><th>고객</th><th>번호표</th><th>품목</th><th class="num-cell">금액</th><th>사유</th></tr></thead><tbody>
-    ${cur.map(o=>`<tr><td class="muted">${o.date||''}</td><td class="muted">#${o.id}</td><td>${o.cust}</td><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${won(amtOf(o))}</td><td><span class="pill ${RXTAB==='ret'?'p-low':'p-req'}">${o.reason||'-'}</span></td></tr>`).join('')||`<tr><td colspan="7" class="muted">${label} 건 없음 (판매관리 상태에서 ${label} 선택 시 표시)</td></tr>`}
+    ${cur.map(o=>`<tr><td class="muted">${o.date||''}</td><td class="muted">#${o.id}</td><td>${o.cust}</td><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${won(amtOf(o))}</td><td><span class="pill ${RXTAB==='ret'?'p-low':'p-req'}">${o.reason||'-'}</span></td></tr>`).join('')||`<tr><td colspan="7" class="muted">${label} 건 없음 (판매관리 상태에서 ${label} 선택 시 표시)</td></tr>`}
     </tbody></table></div>`;
 }
 
@@ -1941,7 +1952,7 @@ function shippedCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='sd:'+g.
   return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
     <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>송장번호</th><th>CS처리</th></tr></thead><tbody>
-    ${g.items.map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td><td class="barcode muted">${o.track||'-'}</td><td>${o.rxtype?`<span class="pill ${o.rxstat==='done'?'':'p-req'}">${RX_TYPES[o.rxtype].l}${o.rxstat==='done'?' 완료':' 진행'}</span>`:`<div style="display:flex;gap:3px"><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'refund')">반품</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'cancel')">취소</button></div>`}</td></tr>`).join('')}
+    ${g.items.map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td><td class="barcode muted">${o.track||'-'}</td><td>${o.rxtype?`<span class="pill ${o.rxstat==='done'?'':'p-req'}">${RX_TYPES[o.rxtype].l}${o.rxstat==='done'?' 완료':' 진행'}</span>`:`<div style="display:flex;gap:3px"><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'refund')">반품</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'cancel')">취소</button></div>`}</td></tr>`).join('')}
     </tbody></table></div>`;
 }
 
@@ -2081,7 +2092,7 @@ function statusCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='ss:'+g.d
     <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>상태</th><th>송장·CS</th></tr></thead><tbody>
     ${g.items.map(o=>{const st=saleStatus(o),pill=SHP_STATE_PILL[st]||['p-gray',st||'-'];return `<tr>
-      <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td>
+      <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td>
       <td><span class="pill ${pill[0]}">${pill[1]}</span></td>
       <td>${csActionCell(o)}</td>
     </tr>`;}).join('')}
@@ -2185,7 +2196,7 @@ function viewStock(){
       ${sortTh('단가','price',STOCKSORT,'stockSort','num-cell')}${sortTh('현재고','qty',STOCKSORT,'stockSort','num-cell')}<th style="width:120px">라벨·내역</th></tr></thead><tbody>
     ${rows.map(s=>`<tr>
       <td>${can?`<input class="barcode" style="width:62px;text-align:center;font-weight:700" value="${s.tag}" onchange="setTag('${s.code}',this.value)">`:`<span class="tagbox">${s.tag}</span>`}</td>
-      <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${skuFullCode(s.code,s.color,s.size)}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
+      <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${skuFullCode(s.code,s.color,s.size)}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}${s.sample?' <span class="pill" style="background:#fff7ed;color:#c2410c;border:1px solid #fdba74;font-size:10px;font-weight:800">⚠️샘플</span>':''}</td><td>${s.color}</td><td>${s.size}</td>
       <td class="num-cell muted">${won(s.price)}</td>
       <td class="num-cell" style="font-weight:700">${s.qty}</td>
       <td style="white-space:nowrap">${s.id!=null?`<button class="btn sm ghost" style="padding:4px 8px" aria-label="바코드 라벨 출력" title="바코드 라벨 출력" onclick="askLabel(${s.id})">🏷️ 라벨</button> <button class="btn sm ghost" style="padding:4px 8px" aria-label="재고 변동내역" title="재고 변동내역" onclick='openStockLog(${s.id},${JSON.stringify((s.name||"")+" "+(s.color||"")+" "+(s.size||""))})'>📜 이력</button>`:''}</td>
@@ -2256,8 +2267,8 @@ function renderCustDetail(c,logs){
   </div>
   ${sec('💰 적립금 <span class="muted" style="font-size:12px;font-weight:400">현재 '+won(c.points||0)+'</span>',`<div style="padding:0 0 6px"><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn sm" onclick="custAdjustPoints(${c.id},1)">＋ 수동 적립</button><button class="btn sm gray" onclick="custAdjustPoints(${c.id},-1)">－ 차감</button><span class="muted" style="align-self:center;font-size:12px">주문관리에서 적립금을 사용할 수 있습니다</span></div>${logRows(pointLog)}</div>`)}
   ${sec('↩️ 취소·환불 이력 <span class="muted" style="font-size:12px;font-weight:400">'+csLog.length+'건</span>',logRows(csLog))}
-  ${sec('🔄 교환·반품 이력 <span class="muted" style="font-size:12px;font-weight:400">'+rx.length+'건</span>',rx.length?`<table><thead><tr><th>일시</th><th>구분</th><th>상품</th><th>사유</th><th>진행</th></tr></thead><tbody>${rx.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.rxdate||o.date)}</td><td><span class="pill p-req">${rxTypeLabel(o)}</span></td><td>${itemLabel(o)}</td><td class="muted">${esc(o.rxreason||'-')}</td><td>${o.rxstat==='done'?'<span class="pill p-done">완료</span>':'<span class="pill p-req">진행중</span>'}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">내역 없음</div>')}
-  ${sec('📦 미송 이력 <span class="muted" style="font-size:12px;font-weight:400">'+back.length+'건 대기중</span>',back.length?`<table><thead><tr><th>주문일</th><th>번호표</th><th>상품</th><th class="num-cell">수량</th></tr></thead><tbody>${back.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.date)}</td><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">현재 미송 대기 없음</div>')}
+  ${sec('🔄 교환·반품 이력 <span class="muted" style="font-size:12px;font-weight:400">'+rx.length+'건</span>',rx.length?`<table><thead><tr><th>일시</th><th>구분</th><th>상품</th><th>사유</th><th>진행</th></tr></thead><tbody>${rx.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.rxdate||o.date)}</td><td><span class="pill p-req">${rxTypeLabel(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="muted">${esc(o.rxreason||'-')}</td><td>${o.rxstat==='done'?'<span class="pill p-done">완료</span>':'<span class="pill p-req">진행중</span>'}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">내역 없음</div>')}
+  ${sec('📦 미송 이력 <span class="muted" style="font-size:12px;font-weight:400">'+back.length+'건 대기중</span>',back.length?`<table><thead><tr><th>주문일</th><th>번호표</th><th>상품</th><th class="num-cell">수량</th></tr></thead><tbody>${back.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.date)}</td><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">현재 미송 대기 없음</div>')}
   ${sec('🚩 주의/블랙리스트',`<div style="padding:2px 0"><div style="display:flex;gap:6px;margin-bottom:10px">${flagBtn(null,'정상','')}${flagBtn('주의','⚠️ 주의','btn')}${flagBtn('블랙리스트','⛔ 블랙리스트','red')}</div><label>메모 <span class="muted" style="font-size:11px">문제 이력·특이사항</span></label><textarea id="cdMemo" style="width:100%;height:70px;padding:10px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:13px" placeholder="예: 잦은 단순변심 취소, 반말 고객 등">${esc(c.memo||'')}</textarea><div style="margin-top:8px"><button class="btn sm" onclick="saveCustMemo(${c.id})">메모 저장</button></div></div>`)}`;
   $('#modal').classList.remove('hide');}
 async function setCustFlag(id,flag){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;c.flag=flag||null;try{const {error}=await SB.from('customers').update({flag:c.flag}).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패');}}catch(e){console.error(e);}toast(flag?('🚩 '+flag+': '+c.name):'표시 해제: '+c.name);openCustDetail(id);}
@@ -2471,7 +2482,10 @@ function prodFormHTML(s){s=s||{};const cat=s.category||'';const showSeason=CAT_H
     <div class="modal-row"><div><label>카테고리</label><select id="mp_cat" onchange="catChange()">${[''].concat(Object.keys(CAT_TREE)).map(c=>`<option ${c===cat?'selected':''}>${c}</option>`).join('')}</select></div>
       <div><label>종류</label><select id="mp_subcat">${[''].concat(CAT_TREE[cat]||[]).map(x=>`<option ${x===(s.subcategory||'')?'selected':''}>${x}</option>`).join('')}</select></div></div>
     <div id="mp_seasonRow" class="modal-row" style="${showSeason?'':'display:none'}"><div><label>계절</label><select id="mp_season">${[''].concat(SEASONS).map(x=>`<option ${x===(s.season||'')?'selected':''}>${x}</option>`).join('')}</select></div><div></div></div>
-    <label>재고수량</label><input id="mp_qty" type="number" value="${s.qty!=null?s.qty:0}">`;
+    <label>재고수량</label><input id="mp_qty" type="number" value="${s.qty!=null?s.qty:0}">
+    <label style="display:flex;gap:9px;align-items:flex-start;margin-top:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;padding:11px;cursor:pointer">
+      <input type="checkbox" id="mp_sample" ${s.sample?'checked':''} style="width:19px;height:19px;margin-top:1px;flex:0 0 auto">
+      <span style="font-size:13px;color:#9a3412"><b>⚠️ 샘플 상품</b> (반납 대상)<br><span style="font-size:11px;color:#c2410c">동대문/업체 샘플. 판매는 가능하지만 <b>주문 시 자동으로 미송(재주문) 처리</b>되고 미송사입에서 관리됩니다. 모든 화면에 ⚠️샘플 표시됩니다.</span></span></label>`;
 }
 function catChange(){const cat=$('#mp_cat').value;$('#mp_subcat').innerHTML=[''].concat(CAT_TREE[cat]||[]).map(x=>`<option>${x}</option>`).join('');$('#mp_seasonRow').style.display=CAT_HASSEASON(cat)?'':'none';}
 function openProdModal(prefill){prefill=prefill||'';PRODEDIT=null;const isNum=/^\d+$/.test(prefill);
@@ -2484,7 +2498,7 @@ function openProdEdit(id){if(isSeller()){toast('셀러팀은 재고 조회만 �
   $('#modal').classList.remove('hide');}
 async function saveProd(){if(isSeller()){toast('권한이 없습니다');return;}const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
   if(!code||!name){toast('품목코드·품목명은 필수');return;}
-  const d={code,tag:$('#mp_tag').value.trim()||'-',vendor:$('#mp_vendor').value.trim()||null,name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',in_price:parseInt($('#mp_inprice').value)||0,price:parseInt($('#mp_price').value)||0,category:$('#mp_cat').value||null,subcategory:$('#mp_subcat').value||null,season:(CAT_HASSEASON($('#mp_cat').value)?$('#mp_season').value:'')||null,qty:parseInt($('#mp_qty').value)||0};
+  const d={code,tag:$('#mp_tag').value.trim()||'-',vendor:$('#mp_vendor').value.trim()||null,name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',in_price:parseInt($('#mp_inprice').value)||0,price:parseInt($('#mp_price').value)||0,category:$('#mp_cat').value||null,subcategory:$('#mp_subcat').value||null,season:(CAT_HASSEASON($('#mp_cat').value)?$('#mp_season').value:'')||null,qty:parseInt($('#mp_qty').value)||0,sample:!!($('#mp_sample')&&$('#mp_sample').checked)};
   const editing=PRODEDIT!=null;let s;
   if(editing){s=STOCK.find(x=>x.id===PRODEDIT);if(s)Object.assign(s,d);}
   else{s=Object.assign({},d);STOCK.unshift(s);}
