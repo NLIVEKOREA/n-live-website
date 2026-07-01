@@ -325,8 +325,8 @@
     <header class="topbar">
       <div style="flex:1"></div>
       <div class="tb-icons">
-        <span class="tb-ic"><i class="ti ti-bell"></i><span class="bdg">5</span></span>
-        <span class="tb-ic"><i class="ti ti-mail"></i><span class="bdg">2</span></span>
+        <span class="tb-ic" onclick="openAlerts()" style="cursor:pointer" title="알림 — 지금 할 일"><i class="ti ti-bell"></i><span class="bdg" id="alertBdg">0</span></span>
+        <span class="tb-ic" onclick="openMessages()" style="cursor:pointer" title="메시지 — 내부 소통"><i class="ti ti-mail"></i><span class="bdg" id="msgBdg" style="background:#94a3b8;display:none">0</span></span>
         <span class="tb-ic"><i class="ti ti-help-circle"></i></span>
         <div class="tb-user">
           <div style="text-align:right"><div class="nm" id="tbName">나영식</div><div class="rl" id="tbRole">운영팀 · 관리자</div></div>
@@ -405,6 +405,27 @@ function nextBizDay(d){const x=new Date(d||new Date());do{x.setDate(x.getDate()+
 function shipDayBanner(){const now=new Date(),wd=now.getDay(),days=['일','월','화','수','목','금','토'];
   if(wd===0||wd===6){const nb=nextBizDay(now);return `<div class="note" style="background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c">🚫 오늘(${days[wd]})은 <b>CJ대한통운 미출고일</b>입니다 · 접수 주문은 <b>${nb.getMonth()+1}/${nb.getDate()}(${days[nb.getDay()]}) 출고 예정</b> — 출고는 월~금만 가능합니다.</div>`;}
   return `<div class="note" style="background:#f0fdf4;border:1px solid #86efac;color:#15803d">✅ 오늘(${days[wd]})은 <b>CJ대한통운 출고 가능일</b>입니다 · 대기·미송분을 오늘 처리하세요.</div>`;}
+/* 🔔 알림 = 시스템이 자동 감지한 '지금 할 일' (미입금·출고·재고·반품·정산) */
+function getAlerts(){const a=[],wd=new Date().getDay(),dd=new Date().getDate();
+  const unpaidG=new Set(mine(ORD).filter(o=>o.pay==='unpaid').map(o=>(o.date||'')+'|'+o.cust)).size;
+  if(unpaidG)a.push({ic:'ti-clipboard-list',t:'미입금 주문 '+unpaidG+'건 — 입금확인 필요',go:"go('order')"});
+  const toship=mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done').length;
+  if(toship)a.push({ic:'ti-truck',t:'출고 대기 '+toship+'건'+((wd===0||wd===6)?' · 오늘 주말(미출고)':''),go:"go('ship')"});
+  const back=mine(ORD).filter(o=>o.back).length;
+  if(back)a.push({ic:'ti-clock',t:'미송 대기 '+back+'건 — 재입고/발주 확인',go:"go('ship')"});
+  const rx=mine(ORD).filter(o=>o.req==='교환요청'||o.req==='환불요청'||o.rxstat==='wait'||o.rxstat==='req').length;
+  if(rx)a.push({ic:'ti-refresh',t:'교환/반품 요청 '+rx+'건',go:"go('sales')"});
+  const out=STOCK.filter(s=>s.qty<=0).length; if(out)a.push({ic:'ti-alert-triangle',t:'품절 '+out+'개 품목 — 판매 전 확인',go:"go('stock')"});
+  const low=STOCK.filter(s=>s.qty>0&&s.qty<=2).length; if(low)a.push({ic:'ti-alert-hexagon',t:'재고 부족(2개 이하) '+low+'개',go:"go('stock')"});
+  if(dd>=5&&dd<=7)a.push({ic:'ti-wallet',t:'정산일(매월 7일) 임박',go:"go('revenue')"});
+  return a;}
+function alertCount(){return getAlerts().length;}
+function openAlerts(){const a=getAlerts();$('#modalBox').innerHTML=`<h3>🔔 알림 · 지금 확인할 것</h3><div class="ms">시스템이 자동으로 잡아낸 할 일이에요. 클릭하면 해당 메뉴로 이동합니다.</div>
+  <div style="display:flex;flex-direction:column;gap:7px;max-height:340px;overflow:auto">${a.length?a.map(x=>`<div onclick="closeModal();${x.go}" style="display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;cursor:pointer"><i class="ti ${x.ic}" style="font-size:19px;color:#2563eb;flex:0 0 auto"></i><span style="flex:1;font-size:13px">${x.t}</span><i class="ti ti-chevron-right" style="color:#94a3b8"></i></div>`).join(''):'<div class="muted" style="padding:18px;text-align:center">✅ 지금 처리할 알림이 없습니다</div>'}</div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">닫기</button></div>`;$('#modal').classList.remove('hide');}
+function openMessages(){$('#modalBox').innerHTML=`<h3>✉ 메시지</h3><div class="ms">운영팀 ↔ 셀러 <b>내부 소통</b> 공간입니다 (고객 CS 아님).</div>
+  <div class="muted" style="padding:24px 10px;text-align:center"><i class="ti ti-message-2" style="font-size:32px;color:#cbd5e1"></i><div style="margin-top:10px;line-height:1.6">내부 메시지 기능은 준비 중입니다.<br>지금 급한 공유는 카카오/전화로 해주세요.<br><span style="font-size:12px">(고객 알림은 <b onclick="closeModal();go('kakao')" style="color:#2563eb;cursor:pointer">카카오 연동</b> 메뉴에서)</span></div></div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">닫기</button></div>`;$('#modal').classList.remove('hide');}
 function periodRange(key){const d=new Date();const today=d.toISOString().slice(0,10);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:mon.toISOString().slice(0,10),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
 function periodTabs(cur,fn){return ['today','week','month','all'].map(k=>`<button class="${cur===k?'on':''}" onclick="${fn}('${k}')">${({today:'오늘',week:'이번 주',month:'이번 달',all:'누적'})[k]}</button>`).join('');}
 /* ===== 카테고리 ===== */
@@ -2176,7 +2197,7 @@ function kakaoBot(){return `
 let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
-function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
+function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}}
 function render(){_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();if(VIEW==='dash')setTimeout(initDashGrid,0);updateTopbar();if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
   if(CUSTPOP){const c=openCustomers().filter(x=>x.cat===CUSTPOP.cat)[CUSTPOP.i];if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
