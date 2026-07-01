@@ -342,7 +342,7 @@
 
 <script>
 /* ===== Supabase 연동 ===== */
-const SB = window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao');
+const SB = window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storage:window.localStorage}});
 const SB_DOMAIN='@n-live.co.kr';
 function _authClient(){return window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao',{auth:{persistSession:false,autoRefreshToken:false,storageKey:'erp_tmp_signup'}});}
 const _toDate=d=>{if(!d)return null;const m=String(d).match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);return m?`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`:null;};
@@ -1966,7 +1966,7 @@ function custPhoneNorm(p){return (p||'').replace(/[^0-9]/g,'');}
 function formatPhone(p){const d=custPhoneNorm(p);if(d.length===11)return d.replace(/(\d{3})(\d{4})(\d{4})/,'$1-$2-$3');if(d.length===10)return d.replace(/(\d{3})(\d{3})(\d{4})/,'$1-$2-$3');return p||'';}
 function phoneDupGroups(){const m={};CUSTOMERS.forEach(c=>{const p=custPhoneNorm(c.phone);if(p.length>=8)(m[p]=m[p]||[]).push(c);});return Object.values(m).filter(a=>a.length>1).sort((a,b)=>b.length-a.length);}
 function custAvatar(name){const ch=(name||'?').trim().charAt(0)||'?';const colors=['#2563eb','#7c3aed','#db2777','#ea580c','#059669','#0891b2','#4f46e5'];let h=0;for(const c of (name||'?'))h=(h*31+c.charCodeAt(0))%colors.length;return `<span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:${colors[h]};color:#fff;font-weight:800;font-size:14px;flex:0 0 auto">${esc(ch)}</span>`;}
-function custActBtns(c){return `<div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm" onclick="openCustDetail(${c.id})">상세</button><button class="btn sm ghost" onclick="openCustEdit(${c.id})">수정</button><button class="ico-btn" title="삭제" onclick="delCust(${c.id})"><i class="ti ti-trash"></i></button></div>`;}
+function custActBtns(c){return `<div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm" onclick="openCustDetail(${c.id})">상세</button><button class="btn sm ghost" onclick="openCustEdit(${c.id})">수정</button><button class="ico-btn" aria-label="삭제" title="삭제" onclick="delCust(${c.id})"><i class="ti ti-trash"></i></button></div>`;}
 function custRow(c,stats){const s=stats[c.name]||{cnt:0,amt:0,last:''};
   return `<tr>
     <td><div style="display:flex;align-items:center;gap:10px">${custAvatar(c.name)}<div><div style="font-weight:700">${esc(c.name)}${custFlagBadge(c)}</div><div class="muted" style="font-size:12px">${esc(c.addr||'주소 미등록')}</div></div></div></td>
@@ -2221,7 +2221,7 @@ function viewVendor(){
   </div>
   <div class="card"><div class="card-h"><h2>사입처 목록 (${VENDORS.length}곳)</h2></div>
     <table><thead><tr><th>사입처명</th><th>구분</th><th>메모</th><th style="width:92px"></th></tr></thead><tbody>
-    ${VENDORS.map((v,i)=>`<tr><td><b>${esc(v.name)}</b></td><td>${v.type==='해외'?'<span class="pill p-req">해외</span>':'<span class="pill p-done">국내</span>'}</td><td class="muted">${esc(v.memo||'-')}</td><td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editVendor(${i})">수정</button><button class="ico-btn" title="삭제" onclick="delVendor(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join('')}
+    ${VENDORS.map((v,i)=>`<tr><td><b>${esc(v.name)}</b></td><td>${v.type==='해외'?'<span class="pill p-req">해외</span>':'<span class="pill p-done">국내</span>'}</td><td class="muted">${esc(v.memo||'-')}</td><td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editVendor(${i})">수정</button><button class="ico-btn" aria-label="삭제" title="삭제" onclick="delVendor(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join('')}
     </tbody></table>
   </div>`;
 }
@@ -2301,7 +2301,7 @@ function viewUsers(){
     ${EMPLOYEES.length?EMPLOYEES.map((u,i)=>`<tr><td><b class="prod-link" title="클릭하여 전체 수정" onclick="editUser(${i})">${esc(u.name)}</b></td><td class="barcode">${esc(u.login_id)}</td>
       <td>${esc(u.team||'-')}</td><td>${esc(u.role||'-')}</td><td>${scopeL[u.scope]||u.scope||'-'}</td>
       <td class="muted">${esc(u.owner||'-')}</td>
-      <td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editUser(${i})">수정</button><button class="ico-btn" title="삭제(비활성)" onclick="delUser(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join(''):`<tr><td colspan="7" class="muted" style="padding:16px">등록된 사원이 없습니다. 위에서 추가하세요.</td></tr>`}
+      <td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="editUser(${i})">수정</button><button class="ico-btn" aria-label="사원 비활성 처리" title="삭제(비활성)" onclick="delUser(${i})"><i class="ti ti-trash"></i></button></div></td></tr>`).join(''):`<tr><td colspan="7" class="muted" style="padding:16px">등록된 사원이 없습니다. 위에서 추가하세요.</td></tr>`}
     </tbody></table>
   </div>`;
 }
