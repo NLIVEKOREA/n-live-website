@@ -399,6 +399,12 @@ async function delCustDB(c){try{if(c.id){const {error}=await SB.from('customers'
 async function delStockDB(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').delete().eq('id',s.id);if(error){console.error('delStock',error);toast('⚠️ 품목 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 /* ===== 기간 헬퍼 (당일 기본) ===== */
 function todayStr(){return new Date().toISOString().slice(0,10);}
+/* CJ대한통운 출고 요일 — 월~금만 출고, 토·일 미출고 */
+function isBizDay(d){const day=(d?new Date(d):new Date()).getDay();return day>=1&&day<=5;}
+function nextBizDay(d){const x=new Date(d||new Date());do{x.setDate(x.getDate()+1);}while(x.getDay()===0||x.getDay()===6);return x;}
+function shipDayBanner(){const now=new Date(),wd=now.getDay(),days=['일','월','화','수','목','금','토'];
+  if(wd===0||wd===6){const nb=nextBizDay(now);return `<div class="note" style="background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c">🚫 오늘(${days[wd]})은 <b>CJ대한통운 미출고일</b>입니다 · 접수 주문은 <b>${nb.getMonth()+1}/${nb.getDate()}(${days[nb.getDay()]}) 출고 예정</b> — 출고는 월~금만 가능합니다.</div>`;}
+  return `<div class="note" style="background:#f0fdf4;border:1px solid #86efac;color:#15803d">✅ 오늘(${days[wd]})은 <b>CJ대한통운 출고 가능일</b>입니다 · 대기·미송분을 오늘 처리하세요.</div>`;}
 function periodRange(key){const d=new Date();const today=d.toISOString().slice(0,10);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:mon.toISOString().slice(0,10),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
 function periodTabs(cur,fn){return ['today','week','month','all'].map(k=>`<button class="${cur===k?'on':''}" onclick="${fn}('${k}')">${({today:'오늘',week:'이번 주',month:'이번 달',all:'누적'})[k]}</button>`).join('');}
 /* ===== 카테고리 ===== */
@@ -1154,15 +1160,15 @@ async function commitOrder(){
 function viewSales(){
   return `
   <div class="head"><h1>판매관리 <span class="badge">결제완료</span></h1>
-    <p>결제완료 판매 · 출고요청(기간·고객·상품 검색) · 출고현황(당일 작업) · 전체 누적은 판매현황 메뉴</p></div>
+    <p><b>출고 대기</b>: 아직 안 나간 주문(기간·검색) → <b>출고 작업·완료</b>: 당일 송장입력·출고 처리 · 전체 누적은 판매현황 메뉴</p></div>
   ${sellerTabs()}
   ${lockBanner()}
   ${SALETAB==='order'?saleToolbar():''}
   <div class="tabs">
-    <button class="${SALETAB==='order'?'on':''}" onclick="SALETAB='order';render()">출고요청 ${orderRows().length}</button>
-    <button class="${SALETAB==='ship'?'on':''}" onclick="SALETAB='ship';render()">출고현황(당일) ${shipRows().length}</button>
+    <button class="${SALETAB==='order'?'on':''}" onclick="SALETAB='order';render()"><i class="ti ti-package"></i> 출고 대기 ${orderRows().length}</button>
+    <button class="${SALETAB==='ship'?'on':''}" onclick="SALETAB='ship';render()"><i class="ti ti-truck-delivery"></i> 출고 작업·완료 ${shipRows().length}</button>
   </div>
-  ${SALETAB==='order'?`<div class="tabs" style="margin-bottom:10px"><button class="${ORDTAB==='all'?'on':''}" onclick="ORDTAB='all';render()">전체 출고요청 ${orderRowsAll().length}</button><button class="${ORDTAB==='today'?'on':''}" onclick="ORDTAB='today';render()">당일 출고요청 ${orderRowsToday().length}</button></div>${saleListCards('order')}`:`<div class="card" style="margin-bottom:12px"><div class="toolbar"><span class="muted" style="align-self:center">📅 출고 작업일</span><input type="date" value="${SHIPDATE||todayStr()}" onchange="SHIPDATE=this.value;render()"><button class="btn sm gray" onclick="SHIPDATE='';render()">오늘</button><span class="grow"></span><span class="muted" style="font-size:12px">당일 출고요청·완료 건 · 전체 누적은 <b>판매현황</b> 메뉴</span></div></div>${saleListCards('ship')}`}`;
+  ${SALETAB==='order'?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="muted" style="font-size:12px">기간</span><div class="tabs" style="margin:0"><button class="${ORDTAB==='today'?'on':''}" onclick="ORDTAB='today';render()">당일 ${orderRowsToday().length}</button><button class="${ORDTAB==='all'?'on':''}" onclick="ORDTAB='all';render()">전체 ${orderRowsAll().length}</button></div></div>${saleListCards('order')}`:`<div class="card" style="margin-bottom:12px"><div class="toolbar"><span class="muted" style="align-self:center">📅 출고 작업일</span><input type="date" value="${SHIPDATE||todayStr()}" onchange="SHIPDATE=this.value;render()"><button class="btn sm gray" onclick="SHIPDATE='';render()">오늘</button><span class="grow"></span><span class="muted" style="font-size:12px">당일 출고요청·완료 건 · 전체 누적은 <b>판매현황</b> 메뉴</span></div></div>${saleListCards('ship')}`}`;
 }
 function dataLastYM(){const ds=mine(ORD).filter(o=>o.pay==='paid').map(o=>(o.date||'').replace(/\//g,'-')).filter(Boolean).sort();return ds.length?ds[ds.length-1].slice(0,7):'2026-06';}
 function setPeriod(k){
@@ -1419,6 +1425,7 @@ function viewShip(){
   <div class="head"><h1>출고장 <span class="badge">물류</span></h1>
     <p>출고대기 / 미송 / 합배 / 출고완료 · 상품별 진행상황 관리 · 체크 + 송장 입력 시 출고완료</p></div>
   ${lockBanner()}
+  ${shipDayBanner()}
   <div class="kpis">
     <div class="kpi"><div><div class="lab">출고 대기</div><div class="num">${cnt(wait)}</div><div class="sub warn">${wait.length}고객</div></div><div class="ic ic-b"><i class="ti ti-truck"></i></div></div>
     <div class="kpi"><div><div class="lab">미송 고객</div><div class="num">${back.length}</div><div class="sub down">미송품 ${backItems}개</div></div><div class="ic ic-r"><i class="ti ti-clock"></i></div></div>
