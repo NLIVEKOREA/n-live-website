@@ -303,6 +303,7 @@
       <button data-v="rx"><span class="ic"><i class="ti ti-arrows-exchange"></i></span>교환·반품</button>
       <button data-v="stock"><span class="ic"><i class="ti ti-box"></i></span>재고관리</button>
       <button data-v="revenue"><span class="ic"><i class="ti ti-chart-bar"></i></span>매출현황</button>
+      <button data-v="sns"><span class="ic"><i class="ti ti-brand-instagram"></i></span>SNS 관리</button>
       <div class="sec">기초정보</div>
       <button data-v="cust"><span class="ic"><i class="ti ti-user"></i></span>고객관리</button>
       <button data-v="prod"><span class="ic"><i class="ti ti-chart-bar"></i></span>상품현황</button>
@@ -520,7 +521,7 @@ function sellerTabs(){
   if(!ss.length)return '';
   return `<div class="tabs" style="margin-bottom:12px"><span class="muted" style="align-self:center;margin-right:6px;font-size:12px;font-weight:700">셀러별 보기</span><button class="${!SELLERVIEW?'on':''}" onclick="SELLERVIEW='';render()">전체</button>${ss.map(s=>`<button class="${SELLERVIEW===s?'on':''}" onclick='SELLERVIEW=${JSON.stringify(s)};render()'>${esc(s)}</button>`).join('')}</div>`;
 }
-const PERM={dash:['all','logi','self'],order:['all','self'],sales:['all','self'],
+const PERM={dash:['all','logi','self'],sns:['all','self'],order:['all','self'],sales:['all','self'],
   ship:['all','logi'],shipped:['all','logi','self'],rx:['all','logi','self'],
   stock:['all','logi','self'],cust:['all','self'],prod:['all'],vendor:['all','logi','self'],
   revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
@@ -625,6 +626,38 @@ function snsSave(d){PREFS.sns=d;savePrefs();}
 function snsReg(plat){const m=SNS_META[plat],d=snsGet(),cur=d[plat]||{};const url=prompt(m.name+' 주소(URL)를 붙여넣으세요:',cur.url||'https://');if(url==null)return;const fol=prompt('현재 팔로워 수를 입력하세요 (숫자만):',cur.fol!=null?String(cur.fol):'');if(fol==null)return;const f=parseInt(String(fol).replace(/\D/g,''),10)||0;const hist=(cur.hist||[]).slice(-13);const today=new Date().toISOString().slice(0,10);if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=f;else hist.push([today,f]);d[plat]={url:url.trim(),fol:f,hist};snsSave(d);toast('✅ '+m.name+' 연동됨');render();}
 function snsOpen(plat){const d=snsGet();if(d[plat]&&d[plat].url)window.open(d[plat].url,'_blank');else snsReg(plat);}
 function snsSpark(hist){if(!hist||hist.length<2)return '<svg width="58" height="26"></svg>';const vals=hist.map(h=>h[1]),max=Math.max(...vals),min=Math.min(...vals),range=max-min||1,n=vals.length,W=58,H=26;const pts=vals.map((v,i)=>`${(i/(n-1))*W},${H-((v-min)/range)*(H-5)-3}`).join(' ');return `<svg width="58" height="26" viewBox="0 0 58 26"><polyline points="${pts}" fill="none" stroke="${vals[n-1]>=vals[0]?'#2563eb':'#94a3b8'}" stroke-width="2"/></svg>`;}
+/* SNS 팔로워 자동수집 — 서버 API(/api/sns-followers, Codex 작성)로 URL에서 팔로워 긁어와 일자별 기록 */
+async function fetchFollowers(plat,silent){const d=snsGet(),s=d[plat];if(!s||!s.url)return false;try{const r=await fetch('/api/sns-followers?platform='+encodeURIComponent(plat)+'&url='+encodeURIComponent(s.url));const j=await r.json();if(j&&j.ok&&j.followers!=null){const hist=(s.hist||[]).slice(-89),today=new Date().toISOString().slice(0,10);if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=j.followers;else hist.push([today,j.followers]);s.fol=j.followers;s.hist=hist;snsSave(d);if(!silent){toast('🔄 '+SNS_META[plat].name+' 팔로워 '+j.followers.toLocaleString());render();}return true;}else{if(!silent)toast('⚠️ '+SNS_META[plat].name+' 자동수집 실패: '+((j&&j.note)||'차단됨')+' — 수동입력 가능');return false;}}catch(e){if(!silent)toast('⚠️ '+SNS_META[plat].name+' 수집 오류 (실서버에서만 작동)');return false;}}
+async function fetchAllFollowers(){toast('🔄 팔로워 자동수집 중...');let ok=0;const d=snsGet();for(const p of ['tiktok','instagram','youtube','band']){if(d[p]&&d[p].url&&await fetchFollowers(p,true))ok++;}try{const pr=snsGet();PREFS.sns_lastfetch=new Date().toISOString().slice(0,10);savePrefs();}catch(e){}render();toast(ok?('✅ 자동수집 완료 — '+ok+'개 채널 갱신'):'⚠️ 수집된 채널 없음 (URL 등록/차단 확인)');}
+function viewSns(){const d=snsGet();const plats=[['tiktok','#000000'],['instagram','#E1306C'],['youtube','#FF0000'],['band','#00C73C']];
+  const total=plats.reduce((a,p)=>a+((d[p[0]]&&d[p[0]].fol)||0),0);let recentDelta=0;plats.forEach(p=>{const s=d[p[0]];if(s&&s.hist&&s.hist.length>=2)recentDelta+=(s.fol-s.hist[s.hist.length-2][1]);});
+  const cards=plats.map(function(pp){const p=pp[0],bg=pp[1],m=SNS_META[p],s=d[p]||{},hist=s.hist||[];const delta=hist.length>=2?(s.fol-hist[hist.length-2][1]):0;
+    const tr=hist.slice(-30),vals=tr.map(h=>h[1]),mx=Math.max.apply(null,vals.concat([1])),mn=Math.min.apply(null,vals.concat([mx])),rg=(mx-mn)||1,W=280,H=64;
+    const pts=tr.length>1?tr.map((h,i)=>`${(i/(tr.length-1))*W},${H-((h[1]-mn)/rg)*(H-8)-4}`).join(' '):'';
+    return `<div class="card">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
+        <div style="width:44px;height:44px;border-radius:12px;background:${bg};color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;flex:0 0 auto">${m.ic}</div>
+        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700">${m.name}</div>${s.url?`<a href="${esc(s.url)}" target="_blank" style="font-size:11px;color:#2563eb;text-decoration:none;word-break:break-all">${esc(String(s.url).slice(0,46))} ↗</a>`:'<div style="font-size:11.5px;color:#94a3b8">URL 미등록 — [등록]을 눌러 프로필 주소를 넣으세요</div>'}</div>
+        <button class="btn sm ghost" onclick="snsReg('${p}')" style="flex:0 0 auto">${s.url?'수정':'＋등록'}</button>
+      </div>
+      <div style="display:flex;gap:18px;align-items:flex-end;margin-bottom:10px">
+        <div><div class="muted" style="font-size:11px">팔로워</div><div style="font-size:25px;font-weight:800;letter-spacing:-.5px">${(s.fol||0).toLocaleString()}</div></div>
+        <div style="padding-bottom:5px"><span style="font-size:13px;font-weight:700;color:${delta>0?'#16a34a':delta<0?'#ef4444':'#94a3b8'}">${delta>0?'▲ '+delta.toLocaleString():delta<0?'▼ '+Math.abs(delta).toLocaleString():'– 변동없음'}</span></div>
+        <span class="grow"></span>
+        ${s.url?`<button class="btn sm" onclick="fetchFollowers('${p}')" style="flex:0 0 auto">🔄 수집</button>`:''}
+      </div>
+      ${tr.length>1?`<svg viewBox="0 0 ${W} ${H+4}" style="width:100%;height:66px"><polyline points="${pts}" fill="none" stroke="${bg==='#000000'?'#2563eb':bg}" stroke-width="2.2"/></svg><div class="muted" style="font-size:10px;text-align:right">최근 ${tr.length}일 추이</div>`:`<div class="muted" style="font-size:11.5px;padding:10px 0;text-align:center">📈 추이 데이터 없음 — [🔄 수집]하면 오늘부터 매일 기록됩니다</div>`}
+    </div>`;}).join('');
+  return `<div class="head"><h1>SNS 관리 <span class="badge">팔로워 · 성과</span></h1><p>등록한 SNS URL에서 <b>팔로워를 서버가 자동 수집</b>해 매일 증감을 기록합니다 · 일부 플랫폼은 차단 시 수동입력</p></div>
+  ${lockBanner()}
+  <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><div><div class="lab">총 팔로워</div><div class="num">${total.toLocaleString()}</div><div class="sub" style="color:#94a3b8;margin-top:6px">4개 채널 합산</div></div><div class="ic ic-b"><i class="ti ti-users-group"></i></div></div>
+    <div class="kpi"><div><div class="lab">최근 증감</div><div class="num ${recentDelta>0?'up':recentDelta<0?'down':''}">${recentDelta>0?'+':''}${recentDelta.toLocaleString()}</div><div class="sub" style="color:#94a3b8;margin-top:6px">직전 기록 대비</div></div><div class="ic ic-g"><i class="ti ti-trending-up"></i></div></div>
+    <div class="kpi" style="cursor:pointer" onclick="fetchAllFollowers()"><div><div class="lab">자동 수집</div><div class="num" style="font-size:19px;color:#2563eb">🔄 전체 새로고침</div><div class="sub" style="color:#94a3b8;margin-top:6px">등록된 URL에서 팔로워 긁어오기</div></div><div class="ic ic-b"><i class="ti ti-refresh"></i></div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">${cards}</div>
+  <div class="note" style="margin-top:14px">💡 <b>자동수집</b>은 실서버(n-live.co.kr)에서 작동합니다. YouTube는 안정적으로 긁히고, TikTok·Instagram·밴드는 플랫폼 차단 시 실패할 수 있어요(그때는 수집칸에서 수동입력). 하루 한 번 로그인 시 자동 갱신됩니다.</div>`;
+}
 function goalGet(){return PREFS.goal||{};}
 function goalSet(k,v){const g=PREFS.goal||{};g[k]=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.goal=g;savePrefs();render();}
 function numCard(lab,num,sub,col,ic,onclick,delta){
@@ -697,7 +730,7 @@ const rows=plats.map(p=>{const m=SNS_META[p],s=d[p];
     <div style="text-align:right;flex:0 0 auto"><div style="font-size:14px;font-weight:800">${(s.fol||0).toLocaleString()}</div><div style="font-size:10.5px;font-weight:700;color:${delta>0?'#16a34a':delta<0?'#ef4444':'#94a3b8'}">${delta>0?'▲ '+delta.toLocaleString():delta<0?'▼ '+Math.abs(delta).toLocaleString():'–'}</div></div>
     ${snsSpark(hist)}
     <button class="ico-btn" onclick="snsReg('${p}')" title="수정" style="width:26px;height:26px;font-size:12px;flex:0 0 auto">✎</button></div>`;}).join('');
-return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>등록 SNS</h2><span class="muted" style="font-size:11px">팔로워 · 증감 · 추이</span></div><div style="display:flex;flex-direction:column;gap:12px">${rows}</div></div>`;}
+return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>등록 SNS</h2><span class="more" onclick="go('sns')">상세 ›</span></div><div style="display:flex;flex-direction:column;gap:12px">${rows}</div></div>`;}
 function wInflow(){return wPlaceholder('유입 채널','어느 SNS가 매출로 이어지는지 분석 (데이터 연동 준비중)','ti-route');}
 function wMsgReact(){return wPlaceholder('고객 메시지 반응','발송·열람·클릭·전환율 (메시지 시스템 연동 준비중)','ti-message-2');}
 function wSchedule(){return wPlaceholder('방송 스케줄','주간 방송일정·방송실·다른 셀러 조회 (다음 업데이트에서 구현)','ti-calendar-event');}
@@ -2134,7 +2167,7 @@ function kakaoBot(){return `
 
 /* ===== 라우팅 ===== */
 let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
-const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,emp:viewEmp,users:viewUsers,kakao:viewKakao};
+const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];}
 function render(){_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();if(VIEW==='dash')setTimeout(initDashGrid,0);updateTopbar();if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
