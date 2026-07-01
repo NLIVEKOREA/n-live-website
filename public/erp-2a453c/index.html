@@ -684,43 +684,69 @@ function _salesPrev(key){const cur=periodRange(key);let from,to;const dd=s=>new 
   return mine(ORD).filter(o=>{if(o.pay!=='paid')return false;const d=(o.date||'').replace(/\//g,'-');return d>=from&&d<=to;}).reduce((a,o)=>a+amtOf(o),0);}
 function _delta(key){const prev=_salesPrev(key),cur=_salesP(key);if(prev==null||prev===0||cur===0)return null;const pct=Math.round((cur-prev)/prev*1000)/10;return {pct,dir:Math.sign(cur-prev),label:key==='today'?'전일':key==='week'?'전주':'전월'};}
 /* SNS 계정 (URL 등록 + 팔로워 수동입력 → 추이 기록 · 셀러별 저장) */
-const SNS_META={tiktok:{name:'TikTok',ic:'T',bg:'#000000'},instagram:{name:'Instagram',ic:'📷',bg:'#E1306C'},youtube:{name:'YouTube',ic:'▶',bg:'#FF0000'},band:{name:'Naver Band',ic:'B',bg:'#00C73C'}};
+const SNS_META={tiktok:{name:'TikTok'},youtube:{name:'YouTube'},instagram:{name:'Instagram'},band:{name:'네이버 밴드'},naver:{name:'쇼핑라이브'}};
+const SNS_ALL=['tiktok','youtube','instagram','band','naver'];
+const SNS_FETCHABLE=['tiktok','youtube','instagram']; /* 서버로 팔로워 긁히는 플랫폼 */
+/* 공식 브랜드 로고 SVG (앱아이콘 스타일) */
+function snsIcon(p,s){s=s||36;const A=`width="${s}" height="${s}" viewBox="0 0 40 40" style="border-radius:${Math.round(s*0.27)}px;flex:0 0 auto;display:block"`;
+ if(p==='tiktok')return `<svg ${A}><rect width="40" height="40" rx="11" fill="#010101"/><path fill="#fff" transform="translate(8.7,8.5) scale(0.95)" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>`;
+ if(p==='youtube')return `<svg ${A}><rect width="40" height="40" rx="11" fill="#FF0000"/><path fill="#fff" d="M16.5 13.2l10.3 6.8-10.3 6.8z"/></svg>`;
+ if(p==='instagram')return `<svg ${A}><defs><linearGradient id="ig${s}" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".25" stop-color="#FA7E1E"/><stop offset=".5" stop-color="#D62976"/><stop offset=".75" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#ig${s})"/><rect x="11.5" y="11.5" width="17" height="17" rx="5.5" fill="none" stroke="#fff" stroke-width="2.3"/><circle cx="20" cy="20" r="4.4" fill="none" stroke="#fff" stroke-width="2.3"/><circle cx="26.2" cy="13.8" r="1.4" fill="#fff"/></svg>`;
+ if(p==='band')return `<svg ${A}><rect width="40" height="40" rx="11" fill="#03C75A"/><path fill="#fff" d="M14.2 12.5h4.6c2.7 0 4.4 1.2 4.4 3.3 0 1.3-.7 2.2-1.9 2.6 1.5.4 2.4 1.4 2.4 3 0 2.4-1.9 3.6-4.9 3.6h-4.6zm3 5h1.4c1 0 1.6-.4 1.6-1.2s-.6-1.1-1.6-1.1h-1.4zm0 5.5h1.6c1.1 0 1.8-.4 1.8-1.3s-.7-1.3-1.8-1.3h-1.6z"/></svg>`;
+ if(p==='naver')return `<svg ${A}><rect width="40" height="40" rx="11" fill="#03C75A"/><path fill="#fff" d="M15 12.5h3.6l3.6 5.4v-5.4H25.5v15h-3.6l-3.6-5.4v5.4H15z"/></svg>`;
+ return `<svg ${A}><rect width="40" height="40" rx="11" fill="#94a3b8"/></svg>`;}
 function snsGet(){return PREFS.sns||{};}
 function snsSave(d){PREFS.sns=d;savePrefs();}
-function snsReg(plat){const m=SNS_META[plat],d=snsGet(),cur=d[plat]||{};const url=prompt(m.name+' 주소(URL)를 붙여넣으세요:',cur.url||'https://');if(url==null)return;const fol=prompt('현재 팔로워 수를 입력하세요 (숫자만):',cur.fol!=null?String(cur.fol):'');if(fol==null)return;const f=parseInt(String(fol).replace(/\D/g,''),10)||0;const hist=(cur.hist||[]).slice(-13);const today=new Date().toISOString().slice(0,10);if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=f;else hist.push([today,f]);d[plat]={url:url.trim(),fol:f,hist};snsSave(d);toast('✅ '+m.name+' 연동됨');render();}
-function snsOpen(plat){const d=snsGet();if(d[plat]&&d[plat].url)window.open(d[plat].url,'_blank');else snsReg(plat);}
+function snsAdd(){const d=snsGet(),avail=SNS_ALL.filter(p=>!(d[p]&&d[p].url));
+  if(!avail.length){toast('모든 플랫폼이 이미 등록됐어요');return;}
+  $('#modalBox').innerHTML=`<h3>＋ SNS 채널 추가</h3><div class="ms">등록할 플랫폼을 고르세요. URL만 넣으면 팔로워는 <b>서버가 자동 수집</b>합니다(틱톡·유튜브·인스타). 밴드·쇼핑라이브는 수동입력.</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:14px 0">
+  ${avail.map(p=>`<div onclick="snsReg('${p}')" style="cursor:pointer;text-align:center;width:80px"><div style="display:flex;justify-content:center">${snsIcon(p,54)}</div><div style="font-size:12px;margin-top:7px;font-weight:600">${SNS_META[p].name}</div><div style="font-size:9px;color:#94a3b8">${SNS_FETCHABLE.includes(p)?'자동수집':'수동입력'}</div></div>`).join('')}
+  </div><div class="modal-foot"><button class="btn gray" onclick="closeModal()">닫기</button></div>`;
+  $('#modal').classList.remove('hide');}
+function snsReg(plat){const m=SNS_META[plat],d=snsGet(),cur=d[plat]||{};
+  const url=prompt(m.name+' 프로필 주소(URL)를 붙여넣으세요:',cur.url||'https://');if(url==null)return;
+  d[plat]={url:url.trim(),fol:cur.fol||0,hist:cur.hist||[]};snsSave(d);closeModal();
+  if(SNS_FETCHABLE.includes(plat)){toast('🔄 '+m.name+' 팔로워 수집 중...');fetchFollowers(plat);}
+  else{const f=prompt('팔로워 수를 입력하세요 (숫자만):',cur.fol!=null?String(cur.fol):'');if(f!=null){const n=parseInt(String(f).replace(/\D/g,''),10)||0;const hist=(d[plat].hist||[]).slice(-89),today=new Date().toISOString().slice(0,10);if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=n;else hist.push([today,n]);d[plat].fol=n;d[plat].hist=hist;snsSave(d);}toast('✅ '+m.name+' 등록됨');render();}}
+function snsOpen(plat){const d=snsGet();if(d[plat]&&d[plat].url)window.open(d[plat].url,'_blank');}
+function snsDel(plat){const d=snsGet();if(!d[plat])return;if(!confirm(SNS_META[plat].name+' 연동을 삭제할까요?'))return;delete d[plat];snsSave(d);toast('🗑️ '+SNS_META[plat].name+' 삭제');render();}
 function snsSpark(hist){if(!hist||hist.length<2)return '<svg width="58" height="26"></svg>';const vals=hist.map(h=>h[1]),max=Math.max(...vals),min=Math.min(...vals),range=max-min||1,n=vals.length,W=58,H=26;const pts=vals.map((v,i)=>`${(i/(n-1))*W},${H-((v-min)/range)*(H-5)-3}`).join(' ');return `<svg width="58" height="26" viewBox="0 0 58 26"><polyline points="${pts}" fill="none" stroke="${vals[n-1]>=vals[0]?'#2563eb':'#94a3b8'}" stroke-width="2"/></svg>`;}
 /* SNS 팔로워 자동수집 — 서버 API(/api/sns-followers, Codex 작성)로 URL에서 팔로워 긁어와 일자별 기록 */
 async function fetchFollowers(plat,silent){const d=snsGet(),s=d[plat];if(!s||!s.url)return false;try{const r=await fetch('/api/sns-followers?platform='+encodeURIComponent(plat)+'&url='+encodeURIComponent(s.url));const j=await r.json();if(j&&j.ok&&j.followers!=null){const hist=(s.hist||[]).slice(-89),today=new Date().toISOString().slice(0,10);if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=j.followers;else hist.push([today,j.followers]);s.fol=j.followers;s.hist=hist;snsSave(d);if(!silent){toast('🔄 '+SNS_META[plat].name+' 팔로워 '+j.followers.toLocaleString());render();}return true;}else{if(!silent)toast('⚠️ '+SNS_META[plat].name+' 자동수집 실패: '+((j&&j.note)||'차단됨')+' — 수동입력 가능');return false;}}catch(e){if(!silent)toast('⚠️ '+SNS_META[plat].name+' 수집 오류 (실서버에서만 작동)');return false;}}
 async function fetchAllFollowers(){toast('🔄 팔로워 자동수집 중...');let ok=0;const d=snsGet();for(const p of ['tiktok','instagram','youtube','band']){if(d[p]&&d[p].url&&await fetchFollowers(p,true))ok++;}try{const pr=snsGet();PREFS.sns_lastfetch=new Date().toISOString().slice(0,10);savePrefs();}catch(e){}render();toast(ok?('✅ 자동수집 완료 — '+ok+'개 채널 갱신'):'⚠️ 수집된 채널 없음 (URL 등록/차단 확인)');}
-function viewSns(){const d=snsGet();const plats=[['tiktok','#000000'],['instagram','#E1306C'],['youtube','#FF0000'],['band','#00C73C']];
-  const total=plats.reduce((a,p)=>a+((d[p[0]]&&d[p[0]].fol)||0),0);let recentDelta=0;plats.forEach(p=>{const s=d[p[0]];if(s&&s.hist&&s.hist.length>=2)recentDelta+=(s.fol-s.hist[s.hist.length-2][1]);});
-  const cards=plats.map(function(pp){const p=pp[0],bg=pp[1],m=SNS_META[p],s=d[p]||{},hist=s.hist||[];const delta=hist.length>=2?(s.fol-hist[hist.length-2][1]):0;
+function viewSns(){const d=snsGet();const reg=SNS_ALL.filter(p=>d[p]&&d[p].url);
+  const total=reg.reduce((a,p)=>a+((d[p]&&d[p].fol)||0),0);let recentDelta=0;reg.forEach(p=>{const s=d[p];if(s.hist&&s.hist.length>=2)recentDelta+=(s.fol-s.hist[s.hist.length-2][1]);});
+  const maxFol=Math.max(1,...reg.map(p=>d[p].fol||0));
+  const cards=reg.map(function(p){const m=SNS_META[p],s=d[p]||{},hist=s.hist||[];const delta=hist.length>=2?(s.fol-hist[hist.length-2][1]):0;
     const tr=hist.slice(-30),vals=tr.map(h=>h[1]),mx=Math.max.apply(null,vals.concat([1])),mn=Math.min.apply(null,vals.concat([mx])),rg=(mx-mn)||1,W=280,H=64;
     const pts=tr.length>1?tr.map((h,i)=>`${(i/(tr.length-1))*W},${H-((h[1]-mn)/rg)*(H-8)-4}`).join(' '):'';
     return `<div class="card">
       <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
-        <div style="width:44px;height:44px;border-radius:12px;background:${bg};color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;flex:0 0 auto">${m.ic}</div>
-        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700">${m.name}</div>${s.url?`<a href="${esc(s.url)}" target="_blank" style="font-size:11px;color:#2563eb;text-decoration:none;word-break:break-all">${esc(String(s.url).slice(0,46))} ↗</a>`:'<div style="font-size:11.5px;color:#94a3b8">URL 미등록 — [등록]을 눌러 프로필 주소를 넣으세요</div>'}</div>
-        <button class="btn sm ghost" onclick="snsReg('${p}')" style="flex:0 0 auto">${s.url?'수정':'＋등록'}</button>
+        ${snsIcon(p,44)}
+        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700">${m.name}</div><a href="${esc(s.url)}" target="_blank" style="font-size:11px;color:#2563eb;text-decoration:none;word-break:break-all">${esc(String(s.url).slice(0,44))} ↗</a></div>
+        <button class="ico-btn" onclick="snsDel('${p}')" title="삭제" style="flex:0 0 auto">🗑️</button>
       </div>
       <div style="display:flex;gap:18px;align-items:flex-end;margin-bottom:10px">
         <div><div class="muted" style="font-size:11px">팔로워</div><div style="font-size:25px;font-weight:800;letter-spacing:-.5px">${(s.fol||0).toLocaleString()}</div></div>
         <div style="padding-bottom:5px"><span style="font-size:13px;font-weight:700;color:${delta>0?'#16a34a':delta<0?'#ef4444':'#94a3b8'}">${delta>0?'▲ '+delta.toLocaleString():delta<0?'▼ '+Math.abs(delta).toLocaleString():'– 변동없음'}</span></div>
         <span class="grow"></span>
-        ${s.url?`<button class="btn sm" onclick="fetchFollowers('${p}')" style="flex:0 0 auto">🔄 수집</button>`:''}
+        <button class="btn sm" onclick="${SNS_FETCHABLE.includes(p)?`fetchFollowers('${p}')`:`snsReg('${p}')`}" style="flex:0 0 auto">${SNS_FETCHABLE.includes(p)?'🔄 수집':'✎ 입력'}</button>
       </div>
-      ${tr.length>1?`<svg viewBox="0 0 ${W} ${H+4}" style="width:100%;height:66px"><polyline points="${pts}" fill="none" stroke="${bg==='#000000'?'#2563eb':bg}" stroke-width="2.2"/></svg><div class="muted" style="font-size:10px;text-align:right">최근 ${tr.length}일 추이</div>`:`<div class="muted" style="font-size:11.5px;padding:10px 0;text-align:center">📈 추이 데이터 없음 — [🔄 수집]하면 오늘부터 매일 기록됩니다</div>`}
+      ${tr.length>1?`<svg viewBox="0 0 ${W} ${H+4}" style="width:100%;height:66px"><polyline points="${pts}" fill="none" stroke="#2563eb" stroke-width="2.2"/></svg><div class="muted" style="font-size:10px;text-align:right">최근 ${tr.length}일 추이</div>`:`<div class="muted" style="font-size:11.5px;padding:10px 0;text-align:center">📈 추이 없음 — [수집/입력]하면 오늘부터 매일 기록</div>`}
     </div>`;}).join('');
-  return `<div class="head"><h1>SNS 관리 <span class="badge">팔로워 · 성과</span></h1><p>등록한 SNS URL에서 <b>팔로워를 서버가 자동 수집</b>해 매일 증감을 기록합니다 · 일부 플랫폼은 차단 시 수동입력</p></div>
+  const compare=reg.map(function(p){const s=d[p];const pct=Math.round((s.fol||0)/maxFol*100);return `<div style="display:flex;align-items:center;gap:9px;margin:6px 0">${snsIcon(p,24)}<span style="width:66px;font-size:12px">${SNS_META[p].name}</span><div style="flex:1;background:#eef2f7;border-radius:5px;height:9px"><div style="width:${pct}%;background:#2563eb;height:9px;border-radius:5px"></div></div><b style="width:74px;text-align:right;font-size:12px">${(s.fol||0).toLocaleString()}</b></div>`;}).join('');
+  return `<div class="head"><h1>SNS 관리 <span class="badge">팔로워 · 성장</span></h1><p>등록한 SNS URL에서 <b>팔로워를 서버가 자동 수집</b>해 매일 증감을 기록합니다 · 밴드·쇼핑라이브는 수동입력</p></div>
   ${lockBanner()}
   <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
-    <div class="kpi"><div><div class="lab">총 팔로워</div><div class="num">${total.toLocaleString()}</div><div class="sub" style="color:#94a3b8;margin-top:6px">4개 채널 합산</div></div><div class="ic ic-b"><i class="ti ti-users-group"></i></div></div>
+    <div class="kpi"><div><div class="lab">총 팔로워</div><div class="num">${total.toLocaleString()}</div><div class="sub" style="color:#94a3b8;margin-top:6px">${reg.length}개 채널 합산</div></div><div class="ic ic-b"><i class="ti ti-users-group"></i></div></div>
     <div class="kpi"><div><div class="lab">최근 증감</div><div class="num ${recentDelta>0?'up':recentDelta<0?'down':''}">${recentDelta>0?'+':''}${recentDelta.toLocaleString()}</div><div class="sub" style="color:#94a3b8;margin-top:6px">직전 기록 대비</div></div><div class="ic ic-g"><i class="ti ti-trending-up"></i></div></div>
-    <div class="kpi" style="cursor:pointer" onclick="fetchAllFollowers()"><div><div class="lab">자동 수집</div><div class="num" style="font-size:19px;color:#2563eb">🔄 전체 새로고침</div><div class="sub" style="color:#94a3b8;margin-top:6px">등록된 URL에서 팔로워 긁어오기</div></div><div class="ic ic-b"><i class="ti ti-refresh"></i></div></div>
+    <div class="kpi" style="cursor:pointer" onclick="snsAdd()"><div><div class="lab">채널 추가</div><div class="num" style="font-size:19px;color:#2563eb">＋ SNS 추가</div><div class="sub" style="color:#94a3b8;margin-top:6px">플랫폼 선택 → URL</div></div><div class="ic ic-b"><i class="ti ti-plus"></i></div></div>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">${cards}</div>
-  <div class="note" style="margin-top:14px">💡 <b>자동수집</b>은 실서버(n-live.co.kr)에서 작동합니다. YouTube는 안정적으로 긁히고, TikTok·Instagram·밴드는 플랫폼 차단 시 실패할 수 있어요(그때는 수집칸에서 수동입력). 하루 한 번 로그인 시 자동 갱신됩니다.</div>`;
+  ${reg.length?`<div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn sm" onclick="fetchAllFollowers()">🔄 전체 팔로워 새로고침</button><button class="btn sm ghost" onclick="snsAdd()">＋ SNS 추가</button></div>
+  <div class="card" style="margin-bottom:14px"><div class="card-h"><h2>플랫폼 비교</h2></div>${compare}</div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">${cards}</div>`:'<div class="card"><div class="muted" style="padding:26px;text-align:center">등록된 SNS가 없어요 · 위 [＋ SNS 추가]로 플랫폼을 골라 시작하세요</div></div>'}
+  <div class="note" style="margin-top:14px">💡 <b>자동수집</b>은 실서버(n-live.co.kr)에서 작동 · 틱톡·유튜브·인스타는 자동, 밴드·쇼핑라이브는 수동입력. 하루 한 번 로그인 시 자동 갱신됩니다.</div>`;
 }
 function goalGet(){return PREFS.goal||{};}
 function goalSet(k,v){const g=PREFS.goal||{};g[k]=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.goal=g;savePrefs();render();}
@@ -784,17 +810,16 @@ ${row('ti-alert-triangle','재고 부족(2개 이하)',low,'#f59e0b',"go('stock'
 ${row('ti-x','품절',out,'#ef4444',"go('stock')")}
 </div></div>`;}
 function wPlaceholder(title,desc,ic){return `<div class="card" style="grid-column:span 2;opacity:.8"><div class="card-h"><h2>${title} <span class="pill" style="background:#eef2f7;color:#94a3b8">준비중</span></h2></div><div style="padding:20px;text-align:center;color:#94a3b8"><i class="ti ${ic}" style="font-size:30px"></i><div style="margin-top:8px;font-size:13px">${desc}</div></div></div>`;}
-function wSns(){const d=snsGet(),plats=['tiktok','instagram','youtube','band'];
-const rows=plats.map(p=>{const m=SNS_META[p],s=d[p];
-  if(!s||!s.url)return `<div style="display:flex;align-items:center;gap:10px"><div style="width:34px;height:34px;border-radius:10px;background:${m.bg};color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex:0 0 auto">${m.ic}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700">${m.name}</div><div style="font-size:11px;color:#94a3b8">미등록</div></div><button class="btn sm ghost" onclick="snsReg('${p}')">＋ URL 등록</button></div>`;
-  const hist=s.hist||[],delta=hist.length>=2?s.fol-hist[hist.length-2][1]:0;
-  return `<div style="display:flex;align-items:center;gap:10px">
-    <div onclick="snsOpen('${p}')" title="${esc(s.url)}" style="width:34px;height:34px;border-radius:10px;background:${m.bg};color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;cursor:pointer;flex:0 0 auto">${m.ic}</div>
-    <div onclick="snsOpen('${p}')" style="flex:1;min-width:0;cursor:pointer"><div style="font-size:13px;font-weight:700">${m.name} <span style="font-size:10px;color:#2563eb">↗</span></div><div style="font-size:11px;color:#94a3b8">바로가기 ›</div></div>
-    <div style="text-align:right;flex:0 0 auto"><div style="font-size:14px;font-weight:800">${(s.fol||0).toLocaleString()}</div><div style="font-size:10.5px;font-weight:700;color:${delta>0?'#16a34a':delta<0?'#ef4444':'#94a3b8'}">${delta>0?'▲ '+delta.toLocaleString():delta<0?'▼ '+Math.abs(delta).toLocaleString():'–'}</div></div>
-    ${snsSpark(hist)}
-    <button class="ico-btn" onclick="snsReg('${p}')" title="수정" style="width:26px;height:26px;font-size:12px;flex:0 0 auto">✎</button></div>`;}).join('');
-return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>등록 SNS</h2><span class="more" onclick="go('sns')">상세 ›</span></div><div style="display:flex;flex-direction:column;gap:12px">${rows}</div></div>`;}
+function wSns(){const d=snsGet(),reg=SNS_ALL.filter(p=>d[p]&&d[p].url);
+  const rows=reg.map(p=>{const m=SNS_META[p],s=d[p],hist=s.hist||[],delta=hist.length>=2?s.fol-hist[hist.length-2][1]:0;
+    return `<div style="display:flex;align-items:center;gap:10px">
+      <div onclick="snsOpen('${p}')" title="${esc(s.url)}" style="cursor:pointer;flex:0 0 auto">${snsIcon(p,34)}</div>
+      <div onclick="snsOpen('${p}')" style="flex:1;min-width:0;cursor:pointer"><div style="font-size:13px;font-weight:700">${m.name} <span style="font-size:10px;color:#2563eb">↗</span></div><div style="font-size:11px;color:#94a3b8">바로가기 ›</div></div>
+      <div style="text-align:right;flex:0 0 auto"><div style="font-size:14px;font-weight:800">${(s.fol||0).toLocaleString()}</div><div style="font-size:10.5px;font-weight:700;color:${delta>0?'#16a34a':delta<0?'#ef4444':'#94a3b8'}">${delta>0?'▲ '+delta.toLocaleString():delta<0?'▼ '+Math.abs(delta).toLocaleString():'–'}</div></div>
+      ${snsSpark(hist)}</div>`;}).join('');
+  return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>등록 SNS</h2><span class="more" onclick="go('sns')">상세 ›</span></div>
+    ${reg.length?`<div style="display:flex;flex-direction:column;gap:12px">${rows}</div>`:'<div class="muted" style="font-size:12px;padding:10px 0;text-align:center">아직 등록된 SNS가 없어요</div>'}
+    <button class="btn sm ghost" style="width:100%;margin-top:12px" onclick="snsAdd()">＋ SNS 추가</button></div>`;}
 function wInflow(){return wPlaceholder('유입 채널','어느 SNS가 매출로 이어지는지 분석 (데이터 연동 준비중)','ti-route');}
 function wMsgReact(){return wPlaceholder('고객 메시지 반응','발송·열람·클릭·전환율 (메시지 시스템 연동 준비중)','ti-message-2');}
 /* 방송 스케줄러 — 셀러 본인 주간 스케줄(요일·시간6h·방송실1/2·플랫폼) 등록, 모든 셀러 조회 */
