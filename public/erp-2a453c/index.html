@@ -2372,7 +2372,7 @@ function prodCompose(){
 }
 
 /* ===== 신규등록 팝업(모달) ===== */
-function closeModal(){$('#modal').classList.add('hide');$('#modalBox').innerHTML='';}
+function closeModal(){try{if(typeof imgStopCap==='function')imgStopCap();}catch(e){}$('#modal').classList.add('hide');$('#modalBox').innerHTML='';}
 let CUSTEDIT=null;
 function openCustModal(prefill){prefill=prefill||'';CUSTEDIT=null;
   $('#modalBox').innerHTML=`
@@ -3069,14 +3069,13 @@ function livePhotoModal(base){
   window._photoBase=base;const cur=PIMG[base]||'';
   $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📷 상품사진 · 품번 ${esc(base)}</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
     <div class="muted" style="font-size:12px;margin-bottom:10px">한 번 등록하면 이 품번(${esc(base)})의 모든 방송에서 자동으로 사용됩니다. (입고 때 미리 등록해두면 편해요)</div>
-    <div id="pm_paste" tabindex="0" style="border:2px dashed #cbd5e1;border-radius:10px;padding:18px;text-align:center;color:#667085;font-size:13px;cursor:text;outline:none">📋 여기를 클릭 후 <b>Ctrl+V</b>로 사진 붙여넣기<br><span style="font-size:11px">또는 아래에서 파일 선택</span></div>
-    <div style="font-size:12px;color:#98a2b3;margin-top:8px">파일: <input id="pm_img" type="file" accept="image/*"></div>
-    <img id="pm_prev" alt="" src="${esc(cur)}" style="display:${cur?'block':'none'};max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--line);margin-top:8px">
+    ${imgPickerHtml('pm')}
+    ${cur?`<div class="muted" style="font-size:11px;margin-top:8px">현재 등록된 사진:</div><img alt="" src="${esc(cur)}" style="display:block;max-width:100%;max-height:150px;border-radius:8px;border:1px solid var(--line);margin-top:4px">`:''}
     <div class="modal-foot">${cur?`<button class="btn red ghost" onclick="livePhotoDelete('${escAttr(base)}')">사진 삭제</button>`:''}<span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="pm_save" onclick="livePhotoSave()">저장</button></div>`;
-  $('#modal').classList.remove('hide');liveBindPaste('pm_paste','pm_prev','_photoBlob');
+  $('#modal').classList.remove('hide');imgPickerBind('pm');
 }
 async function livePhotoSave(){
-  const base=window._photoBase;const f=$('#pm_img').files[0];const src=window._photoBlob||f;
+  const base=window._photoBase;const src=window._imgBlob;
   if(!src){toast('사진을 붙여넣거나 파일을 선택하세요');return;}
   const btn=$('#pm_save');btn.disabled=true;btn.textContent='업로드 중...';
   try{const blob=await liveCompress(src);const path='products/'+base+'_'+Date.now()+'.jpg';
@@ -3120,18 +3119,82 @@ function liveAddCapture(sid){
       <label>색상 (쉼표로 구분)</label><input id="lc_colors" placeholder="크림,블랙">
       <label>사이즈 (쉼표로 구분)</label><input id="lc_sizes" placeholder="F 또는 S,M,L">
       <label>상품 이미지</label>
-      <div id="lc_paste" tabindex="0" style="border:2px dashed #cbd5e1;border-radius:10px;padding:16px;text-align:center;color:#667085;font-size:13px;cursor:text;outline:none">📋 여기를 <b>클릭</b>한 뒤 <b>Ctrl+V</b>로 방송화면 캡처를 붙여넣으세요<br><span style="font-size:11px">(캡처: Win+Shift+S 로 화면 영역 복사 후 여기서 붙여넣기)</span></div>
-      <div style="font-size:11px;color:#98a2b3;margin-top:6px">또는 파일 선택: <input id="lc_img" type="file" accept="image/*" style="display:inline-block"></div>
-      <img id="lc_previmg" alt="" style="display:none;max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--line);margin-top:8px">
+      ${imgPickerHtml('lc')}
     </div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="lc_save" onclick="liveSaveCapture()">추가</button></div>`;
-  $('#modal').classList.remove('hide');liveBindPaste('lc_paste','lc_previmg','_lcPasteBlob');
+  $('#modal').classList.remove('hide');imgPickerBind('lc');
 }
-function liveBindPaste(zoneId,prevId,slot){
-  window[slot]=null;const zone=$('#'+zoneId);if(!zone)return;
-  zone.addEventListener('paste',e=>{const items=(e.clipboardData||{}).items||[];for(const it of items){if(it.type&&it.type.indexOf('image')===0){const f=it.getAsFile();if(f){window[slot]=f;const pv=$('#'+prevId);if(pv){pv.src=URL.createObjectURL(f);pv.style.display='block';}zone.innerHTML='✅ 붙여넣기 완료 — 다시 붙여넣으면 교체됩니다';toast('📋 이미지 붙여넣기 완료');}e.preventDefault();return;}}});
-  const fi=$('#lc_img');if(fi)fi.addEventListener('change',()=>{const f=fi.files[0];if(f){window[slot]=null;const pv=$('#'+prevId);if(pv){pv.src=URL.createObjectURL(f);pv.style.display='block';}}});
+/* ===== 통합 이미지 입력기: A(붙여넣기=Win+Shift+S 영역스니핑) / B(화면공유+드래그 크롭) · 마지막 선택 기억 ===== */
+function imgDefaultMethod(){try{return localStorage.getItem('nlive_img_method')||'paste';}catch(e){return 'paste';}}
+function imgPickerHtml(prefix){return `
+  <div class="imgtabs" style="display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
+    <button type="button" class="imgtab btn sm gray" data-m="paste" onclick="imgSetMethod('${prefix}','paste')">📋 붙여넣기</button>
+    <button type="button" class="imgtab btn sm gray" data-m="capture" onclick="imgSetMethod('${prefix}','capture')">📸 화면 캡처(영역)</button>
+    <span class="muted" style="font-size:11px">마지막 선택이 기본값</span>
+  </div>
+  <div id="${prefix}_paste_wrap">
+    <div id="${prefix}_paste" tabindex="0" style="border:2px dashed #cbd5e1;border-radius:10px;padding:14px;text-align:center;color:#667085;font-size:13px;cursor:text;outline:none">📋 여기 클릭 → <b>Win+Shift+S</b>로 영역 선택 → <b>Ctrl+V</b> 붙여넣기</div>
+    <div style="font-size:11px;color:#98a2b3;margin-top:6px">파일: <input id="${prefix}_img" type="file" accept="image/*"></div>
+  </div>
+  <div id="${prefix}_cap_wrap" style="display:none">
+    <button type="button" class="btn sm" onclick="imgStartCapture('${prefix}')">🖥️ 화면 공유 시작 / 다시 캡처</button>
+    <div class="muted" style="font-size:11px;margin-top:6px">방송 창을 고르면 화면이 떠요. 마우스로 <b>영역을 드래그</b>하면 그 부분만 저장됩니다. (PC 전용 · 모바일은 붙여넣기)</div>
+    <div id="${prefix}_capstage" style="display:none;margin-top:8px"></div>
+  </div>
+  <img id="${prefix}_prev" alt="" style="display:none;max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--line);margin-top:8px">`;}
+function imgSetMethod(prefix,m){try{localStorage.setItem('nlive_img_method',m);}catch(e){}
+  const pw=$('#'+prefix+'_paste_wrap'),cw=$('#'+prefix+'_cap_wrap');if(pw)pw.style.display=m==='paste'?'':'none';if(cw)cw.style.display=m==='capture'?'':'none';
+  [...document.querySelectorAll('.imgtab')].forEach(b=>{b.className='imgtab btn sm'+(b.dataset.m===m?'':' gray');});
+  if(m==='paste'){const z=$('#'+prefix+'_paste');if(z)setTimeout(()=>{try{z.focus();}catch(e){}},20);}}
+function imgPreview(prefix,blob){const pv=$('#'+prefix+'_prev');if(pv){pv.src=URL.createObjectURL(blob);pv.style.display='block';}}
+function imgPickerBind(prefix){window._imgBlob=null;window._capFrame=null;
+  const zone=$('#'+prefix+'_paste');
+  if(zone)zone.addEventListener('paste',e=>{const items=(e.clipboardData||{}).items||[];for(const it of items){if(it.type&&it.type.indexOf('image')===0){const f=it.getAsFile();if(f){window._imgBlob=f;imgPreview(prefix,f);zone.innerHTML='✅ 붙여넣기 완료 — 다시 붙여넣으면 교체';toast('📋 붙여넣기 완료');}e.preventDefault();return;}}});
+  const fi=$('#'+prefix+'_img');if(fi)fi.addEventListener('change',()=>{const f=fi.files[0];if(f){window._imgBlob=f;imgPreview(prefix,f);}});
+  imgSetMethod(prefix,imgDefaultMethod());}
+async function imgStartCapture(prefix){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){toast('이 기기는 화면캡처 미지원 — 붙여넣기·파일을 쓰세요');return;}
+  try{
+    if(!window._capStream||!window._capStream.active){
+      window._capStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:false});
+      const tk=window._capStream.getVideoTracks()[0];if(tk)tk.addEventListener('ended',()=>{window._capStream=null;});
+    }
+    const v=document.createElement('video');v.srcObject=window._capStream;v.muted=true;await v.play();
+    await new Promise(r=>setTimeout(r,180));
+    const fw=v.videoWidth||1280,fh=v.videoHeight||720;
+    const fc=document.createElement('canvas');fc.width=fw;fc.height=fh;fc.getContext('2d').drawImage(v,0,0,fw,fh);
+    try{v.pause();}catch(e){}v.srcObject=null;
+    window._capFrame={canvas:fc,w:fw,h:fh};imgRenderCropStage(prefix);
+  }catch(e){console.error(e);toast('화면 공유 취소됨');}
 }
+function imgRenderCropStage(prefix){const stage=$('#'+prefix+'_capstage');if(!stage||!window._capFrame)return;
+  stage.style.display='block';
+  stage.innerHTML=`<div class="muted" style="font-size:12px;margin-bottom:6px">🖱️ 저장할 <b>영역을 드래그</b>하세요.</div>
+    <div id="${prefix}_cropbox" style="position:relative;width:100%;max-width:520px;user-select:none;touch-action:none;border:1px solid var(--line);border-radius:8px;overflow:hidden">
+      <img src="${window._capFrame.canvas.toDataURL('image/jpeg',0.9)}" style="width:100%;display:block;pointer-events:none" draggable="false">
+      <div id="${prefix}_sel" style="position:absolute;border:2px dashed #2563eb;background:rgba(37,99,235,.15);display:none"></div>
+    </div>
+    <div style="margin-top:8px"><button type="button" class="btn sm gray" onclick="imgUseWhole('${prefix}')">전체 사용</button></div>`;
+  imgBindCrop(prefix);}
+function imgBindCrop(prefix){const box=$('#'+prefix+'_cropbox'),sel=$('#'+prefix+'_sel');if(!box)return;
+  let sx,sy,drag=false;
+  const pt=e=>{const r=box.getBoundingClientRect();const t=e.touches&&e.touches[0];const cx=(t?t.clientX:e.clientX)-r.left,cy=(t?t.clientY:e.clientY)-r.top;return {x:Math.max(0,Math.min(box.clientWidth,cx)),y:Math.max(0,Math.min(box.clientHeight,cy))};};
+  const down=e=>{drag=true;const p=pt(e);sx=p.x;sy=p.y;sel.style.display='block';sel.style.left=sx+'px';sel.style.top=sy+'px';sel.style.width='0px';sel.style.height='0px';e.preventDefault();};
+  const move=e=>{if(!drag)return;const p=pt(e);sel.style.left=Math.min(sx,p.x)+'px';sel.style.top=Math.min(sy,p.y)+'px';sel.style.width=Math.abs(p.x-sx)+'px';sel.style.height=Math.abs(p.y-sy)+'px';e.preventDefault();};
+  const up=()=>{if(!drag)return;drag=false;const w=parseFloat(sel.style.width)||0,h=parseFloat(sel.style.height)||0;if(w<8||h<8){sel.style.display='none';return;}
+    const scale=window._capFrame.w/box.clientWidth;imgCropTo(prefix,parseFloat(sel.style.left)*scale,parseFloat(sel.style.top)*scale,w*scale,h*scale);};
+  if(window._imgMove)window.removeEventListener('mousemove',window._imgMove);if(window._imgUp)window.removeEventListener('mouseup',window._imgUp);
+  window._imgMove=move;window._imgUp=up;
+  box.addEventListener('mousedown',down);window.addEventListener('mousemove',move);window.addEventListener('mouseup',up);
+  box.addEventListener('touchstart',down);box.addEventListener('touchmove',move);box.addEventListener('touchend',up);}
+function imgCropTo(prefix,x,y,w,h){const fc=window._capFrame.canvas;const c=document.createElement('canvas');c.width=Math.round(w);c.height=Math.round(h);
+  c.getContext('2d').drawImage(fc,x,y,w,h,0,0,w,h);c.toBlob(b=>{if(!b)return;window._imgBlob=b;imgPreview(prefix,b);toast('📸 영역 캡처 완료!');},'image/jpeg',0.85);}
+function imgUseWhole(prefix){window._capFrame.canvas.toBlob(b=>{if(!b)return;window._imgBlob=b;imgPreview(prefix,b);toast('📸 전체 화면 캡처');},'image/jpeg',0.85);}
+function imgStopCap(){try{if(window._capStream)window._capStream.getTracks().forEach(t=>t.stop());}catch(e){}window._capStream=null;window._capFrame=null;
+  if(window._imgMove){window.removeEventListener('mousemove',window._imgMove);window._imgMove=null;}
+  if(window._imgUp){window.removeEventListener('mouseup',window._imgUp);window._imgUp=null;}}
+/* 하위호환: 기존 호출부가 남아있어도 안전하게 새 피커로 연결 */
+function liveBindPaste(zoneId,prevId,slot){const prefix=(zoneId||'').replace('_paste','');imgPickerBind(prefix);}
 function liveCompress(file){return new Promise((res,rej)=>{const img=new Image();const fr=new FileReader();
   fr.onload=()=>{img.onload=()=>{const max=1080;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}
     const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
@@ -3140,9 +3203,8 @@ async function liveSaveCapture(){
   const sid=window._liveAddSid;const name=$('#lc_name').value.trim();const price=+$('#lc_price').value||0;
   if(!name){toast('상품명을 입력하세요');return;}if(price<=0){toast('방송가를 입력하세요');return;}
   const btn=$('#lc_save');btn.disabled=true;btn.textContent='업로드 중...';
-  let image_url=null;const f=$('#lc_img').files[0];const pasted=window._lcPasteBlob;
+  let image_url=null;const srcBlob=window._imgBlob;
   try{
-    const srcBlob=pasted||f;
     if(srcBlob){const blob=await liveCompress(srcBlob);const path=liveSlugify((LIVE_SESS.find(x=>x.id===sid)||{}).seller||'s')+'/'+sid+'/'+Date.now()+'.jpg';
       const {error:ue}=await SB.storage.from('live').upload(path,blob,{contentType:'image/jpeg',upsert:true});
       if(ue){console.error('upload',ue);toast('⚠️ 이미지 업로드 실패 — 이미지 없이 등록합니다');}
@@ -3169,18 +3231,16 @@ function liveAddManual(sid){
       <div class="row2"><div><label>수량(판매가능)</label><input id="lm_qty" type="number" value="1"></div>
         <div><label>색상(선택, 쉼표)</label><input id="lm_colors" placeholder="비우면 옵션없음"></div></div>
       <label>상품 이미지(선택)</label>
-      <div id="lm_paste" tabindex="0" style="border:2px dashed #cbd5e1;border-radius:10px;padding:14px;text-align:center;color:#667085;font-size:13px;cursor:text;outline:none">📋 클릭 후 <b>Ctrl+V</b>로 붙여넣기 (없어도 됨)</div>
-      <div style="font-size:11px;color:#98a2b3;margin-top:6px">파일: <input id="lm_img" type="file" accept="image/*"></div>
-      <img id="lm_prev" alt="" style="display:none;max-width:100%;max-height:170px;border-radius:8px;border:1px solid var(--line);margin-top:8px">
+      ${imgPickerHtml('lm')}
     </div>
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="lm_save" onclick="liveSaveManual()">추가</button></div>`;
-  $('#modal').classList.remove('hide');liveBindPaste('lm_paste','lm_prev','_manualBlob');
+  $('#modal').classList.remove('hide');imgPickerBind('lm');
 }
 async function liveSaveManual(){
   const sid=window._liveAddSid;const code=($('#lm_code').value||'').trim();const name=($('#lm_name').value||'').trim();const price=+$('#lm_price').value||0;const qty=Math.max(1,+$('#lm_qty').value||1);
   if(!code){toast('품목번호를 입력하세요');return;}if(!name){toast('품목명을 입력하세요');return;}if(price<=0){toast('방송가를 입력하세요');return;}
   const btn=$('#lm_save');btn.disabled=true;btn.textContent='저장 중...';
-  let image_url=null;const src=window._manualBlob||$('#lm_img').files[0];
+  let image_url=null;const src=window._imgBlob;
   try{
     if(src){const blob=await liveCompress(src);const path=liveSlugify((LIVE_SESS.find(x=>x.id===sid)||{}).seller||'s')+'/'+sid+'/m'+Date.now()+'.jpg';
       const {error:ue}=await SB.storage.from('live').upload(path,blob,{contentType:'image/jpeg',upsert:true});
