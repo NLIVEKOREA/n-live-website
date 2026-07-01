@@ -12,5 +12,13 @@ const nextConfig = {
       { source: "/erp-2a453c/", destination: "/erp-2a453c/index.html" },
     ];
   },
+  // ERP는 단일 HTML — 배포 즉시 최신이 오도록 매번 재검증(캐시된 옛 버전 방지)
+  async headers() {
+    return [
+      { source: "/erp-2a453c", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
+      { source: "/erp-2a453c/", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
+      { source: "/erp-2a453c/:path*", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
+    ];
+  },
 };
 export default nextConfig;
