@@ -205,7 +205,10 @@
   .modal-box input,.modal-box select{width:100%}
   .modal-row{display:flex;gap:10px}
   .modal-row>div{flex:1}
-  .modal-foot{display:flex;gap:8px;margin-top:22px}
+  .modal-foot{display:flex;gap:8px;margin-top:22px;justify-content:flex-end;align-items:center}
+  /* 버튼 위치 규칙: 저장/확인/다시작성=우하단(modal-foot 기본) · 중대결정=하단중앙 */
+  .modal-foot.center{justify-content:center}
+  .mf-critical{width:100%;display:flex;justify-content:center;margin-top:10px}
   .modal-foot .btn{flex:1;padding:12px}
   .modal-wide{width:min(1120px,94vw);max-height:88vh;overflow:auto}
   .modal-cust{width:min(680px,94vw);max-height:88vh;overflow:auto}
@@ -315,6 +318,9 @@
   .sort-th{cursor:pointer;user-select:none;white-space:nowrap}
   .sort-th:hover{color:var(--blue)}.sort-th.on{color:var(--blue)}
   .filterbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  /* 버튼 위치 규칙: 검색=툴바 우측상단 · 필터(칩)=좌측상단 */
+  .toolbar input[type="search"],.toolbar input:not([type]),.toolbar .search-input{margin-left:auto}
+  .toolbar .chipf,.toolbar .filterbar{margin-left:0}
   .chipf{font-size:12.5px;font-weight:700;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#475569;cursor:pointer}
   .chipf:hover{border-color:var(--blue);color:var(--blue)}
   .chipf.on{background:var(--blue);color:#fff;border-color:var(--blue)}
@@ -3149,14 +3155,6 @@ async function liveMove(id,dir){const p=SESS_PROD.find(x=>x.id===id);if(!p)retur
   const a=list[i],b=list[j];const sa=a.sort,sb=b.sort;try{await SB.from('session_products').update({sort:sb}).eq('id',a.id);await SB.from('session_products').update({sort:sa}).eq('id',b.id);await liveReload();}catch(e){console.error(e);}}
 async function liveDelProduct(id){const p=SESS_PROD.find(x=>x.id===id);if(!p)return;if(!confirm("'"+(p.name||'')+"' 상품을 방송에서 뺄까요?"))return;
   try{const {error}=await SB.from('session_products').delete().eq('id',id);if(error){console.error(error);toast('⚠️ 삭제 실패');return;}toast('삭제됨');await liveReload();}catch(e){console.error(e);}}
-/* 링크주문 가예약 연장 — 미결제 shop주문의 만료시각을 세션 기준(기본 30분)만큼 미룸 */
-async function liveExtendGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;
-  const shopItems=g.items.filter(o=>o.source==='shop'&&o.id!=null);if(!shopItems.length){toast('링크주문이 아닙니다');return;}
-  const sid=shopItems[0].session_id;const sess=(LIVE_SESS||[]).find(x=>x.id===sid);const mins=(sess&&sess.reserve_min)||30;
-  const exp=new Date(Date.now()+mins*60000).toISOString();
-  const ids=shopItems.map(o=>o.id);
-  try{const {error}=await SB.from('orders').update({reservation_expires_at:exp}).in('id',ids);if(error){console.error(error);toast('⚠️ 연장 실패');return;}
-    shopItems.forEach(o=>o.reservation_expires_at=exp);toast('⏰ 가예약 '+mins+'분 연장');render();}catch(e){console.error(e);toast('⚠️ 오류');}}
 
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,live:viewLive,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 const VIEW_LABELS={dash:'대시보드',order:'주문관리',sales:'판매관리',live:'라이브 판매',ship:'출고장',shipped:'판매현황',rx:'교환·반품',stock:'재고관리',revenue:'매출현황',sns:'SNS 관리',cust:'고객관리',prod:'상품현황',vendor:'사입처관리',emp:'직원·급여',users:'사원관리',kakao:'카카오 연동'};
