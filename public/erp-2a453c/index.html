@@ -1115,14 +1115,16 @@ function paidCards(){
 async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';
   const prev=g.items.map(o=>({pay:o.pay,payway:o.payway}));
   g.items.forEach(o=>{o.pay='paid';o.payway=pw;});
-  let ok=true;for(const o of g.items){if(await saveOrd(o)===false)ok=false;}
+  const ids=g.items.map(o=>o.id).filter(x=>x!=null);
+  let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({pay:'paid',payway:pw}).in('id',ids);if(error){console.error('payGroup',error);ok=false;}}catch(e){console.error(e);ok=false;}}
   if(ok){CDATE=(g.date||'').replace(/\//g,'-').slice(0,10)||CDATE;CQ='';toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');}
   else{g.items.forEach((o,i)=>{o.pay=prev[i].pay;o.payway=prev[i].payway;});toast('⚠️ 저장 실패 — 변경이 취소됐어요. 다시 시도하세요');}
   render();}
 async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(!confirm('입금확인을 취소하시겠습니까?\n\n'+g.cust+' '+g.items.length+'건이 미결제 상태로 돌아갑니다.'))return;
   const prev=g.items.map(o=>o.pay);
   g.items.forEach(o=>{o.pay='unpaid';});
-  let ok=true;for(const o of g.items){if(await saveOrd(o)===false)ok=false;}
+  const ids=g.items.map(o=>o.id).filter(x=>x!=null);
+  let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({pay:'unpaid'}).in('id',ids);if(error){console.error('unpayGroup',error);ok=false;}}catch(e){console.error(e);ok=false;}}
   if(ok)toast('↩ 입금확인 취소 → 미결제로 복구: '+g.cust);
   else{g.items.forEach((o,i)=>{o.pay=prev[i];});toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
@@ -1136,10 +1138,8 @@ async function editOrderGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)retu
       var s=skuOf(o.code,o.color,o.size);
       return {code:o.code,name:(s&&s.name)||o.disp||o.code,color:o.color||'',size:o.size||'',qty:o.qty,price:o.price,tag:o.tag||(s&&s.tag)||'',back:!!o.back};
     })};
-  var items=g.items.slice();
-  for(const o of items){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);}
-  VIEW='order';render();toast('✏️ 수정 모드 — 항목 변경 후 [저장]을 누르세요');
-  for(const o of items){await delOrd(o);const s=skuOf(o.code,o.color,o.size);if(s&&o.code!=='낱장'&&o.code!=='배송비')await adjustStockDB(s,o.qty,'주문수정 복원',o.cust);}
+  OE.editOrig=g.items.slice();/* 원주문 보존 — 저장 성공 시에만 교체(도중 이탈해도 원주문 유지) */
+  VIEW='order';render();toast('✏️ 수정 모드 — 항목 변경 후 [저장]하면 반영됩니다 (저장 전엔 원주문 그대로 유지)');
 }
 async function cancelGroupBtn(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const removed=[];g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);removed.push({o,s,dq:o.qty});});toast('🗑️ 주문 취소 → 재고 복원: '+g.cust);render();for(const {o,s,dq} of removed){await delOrd(o);if(s)await adjustStockDB(s,dq,'주문취소',o.cust);}}
 
@@ -1241,7 +1241,7 @@ function pickCustId(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;OE.cus
   if(OE.island)setTimeout(function(){alert('🏝️ 이 고객은 도서산간 지역입니다!\n\n· '+OE.island.region+'\n· 택배사 추가비 '+OE.island.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 4,000+추가 3,000)으로 반영됩니다.');},150);}
 function pickCust(name){const c=CUSTOMERS.find(x=>x.name===name);if(c)pickCustId(c.id);}
 function pickCustNew(v){OE.cust=v;OE.phone='';OE.addr='';toast('🆕 신규고객 '+v+' (연락처·주소 추후 등록)');render();}
-function clearCust(){OE.cust=null;OE.phone='';OE.addr='';render();}
+function clearCust(){OE.cust=null;OE.phone='';OE.addr='';OE.editOrig=null;render();}
 /* 품목 검색(행 추가) */
 function entrySearch(v){const d=$('#entryDrop');if(!d)return;v=v.trim();if(!v){d.innerHTML='';return;}
   const codes=[...new Set(STOCK.filter(s=>inc(s.tag,v)||inc(s.code,v)||inc(s.name,v)).map(s=>s.code))];
@@ -1316,6 +1316,7 @@ async function commitOrder(){
   _committing=true;
   const staff=isSeller()?(ME.owner||ME.name):(OE.staff||$('#oeStaff')?.value||'박시연');
   let back=0;const created=[];
+  const _editOrig=OE.editOrig||[];/* 수정모드면 원주문 목록 — 저장 성공 후 교체 */
   const today=(OE.date||todayStr()).replace(/-/g,'/');
   OE.lines.forEach(l=>{
     if(l.kind==='ship'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'배송비',disp:l.name,tag:'배송비',color:'',size:'',qty:1,price:l.price,back:false,pay:'unpaid',ship:'miss'};ORD.unshift(o);created.push({o,s:null});return;}
@@ -1326,8 +1327,16 @@ async function commitOrder(){
     ORD.unshift(o);created.push({o,s,dq:l.qty});});
   const _cnt=created.length;
   const _by=(typeof ME!=='undefined'&&ME&&ME.name)||null;created.forEach(({o})=>{o.created_by=_by;});/* 실제 입력자 기록 — 보조 실적 산정용 */
-  for(const {o,s,dq,points} of created){await saveOrd(o);if(s)await adjustStockDB(s,-dq,'판매',o.cust);if(points)await addPoints(o.cust,points,'적립사용',{item:'주문 사용',amount:Math.abs(points)});}
-  toast('✅ 주문서 저장 ('+_cnt+'건)'+(back?' · 미송 '+back+'건 포함':''));
+  let _failed=0;
+  for(const {o,s,dq,points} of created){
+    const ok=await saveOrd(o);
+    if(ok===false){_failed++;const _i=ORD.indexOf(o);if(_i>=0)ORD.splice(_i,1);continue;}/* 저장 실패 → 재고·적립금 손대지 않고 로컬에서도 제거 */
+    if(s)await adjustStockDB(s,-dq,'판매',o.cust);
+    if(points)await addPoints(o.cust,points,'적립사용',{item:'주문 사용',amount:Math.abs(points)});
+  }
+  // 수정모드: 새 주문이 전부 저장된 경우에만 원주문 삭제+재고 원복(부분 실패 시 원주문 보존)
+  if(_editOrig.length){if(_failed===0){for(const o of _editOrig){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);const s=skuOf(o.code,o.color,o.size);if(s&&o.code!=='낱장'&&o.code!=='배송비'&&o.code!=='적립금')await adjustStockDB(s,o.qty,'주문수정 원복',o.cust);}}else{toast('⚠️ 일부 저장 실패 — 원주문은 그대로 두었습니다. 확인 후 다시 시도하세요');}}
+  toast((_failed?'⚠️ ':'✅ ')+'주문서 저장 ('+(_cnt-_failed)+'건)'+(back?' · 미송 '+back+'건 포함':'')+(_failed?' · '+_failed+'건 저장 실패(재고 미차감)':''));
   OE={cust:null,phone:'',addr:'',staff:null,lines:[],date:OE.date};render();
   _committing=false;
 }
@@ -1505,7 +1514,8 @@ async function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];
   const _td=todayStr();
   const prev=c.lines.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   c.lines.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
-  let ok=true;for(const o of c.lines){if(await saveOrd(o)===false)ok=false;}
+  const ids=c.lines.map(o=>o.id).filter(x=>x!=null);
+  let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({ship:'done',track:trk,back:false,req:null,shipped_date:_td}).in('id',ids);if(error){console.error('shipWait',error);ok=false;}}catch(e){console.error(e);ok=false;}}
   if(ok)toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);
   else{c.lines.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
@@ -1515,7 +1525,8 @@ async function shipChecked(cat,i){const c=openCustomers().filter(x=>x.cat===cat)
   const _td=todayStr();
   const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
-  let ok=true;for(const o of sel){if(await saveOrd(o)===false)ok=false;}
+  const ids=sel.map(o=>o.id).filter(x=>x!=null);
+  let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({ship:'done',track:trk,back:false,req:null,shipped_date:_td}).in('id',ids);if(error){console.error('shipDone',error);ok=false;}}catch(e){console.error(e);ok=false;}}
   if(ok){sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);}
   else{sel.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
@@ -1553,7 +1564,8 @@ async function shipPopAction(){
   const _td=todayStr();
   const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
-  let ok=true;for(const o of sel){if(await saveOrd(o)===false)ok=false;}
+  const ids=sel.map(o=>o.id).filter(x=>x!=null);
+  let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({ship:'done',track:trk,back:false,req:null,shipped_date:_td}).in('id',ids);if(error){console.error('shipDone',error);ok=false;}}catch(e){console.error(e);ok=false;}}
   if(ok){sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}
   else{sel.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();
@@ -1931,8 +1943,8 @@ function custPoints(name){const c=CUSTOMERS.find(x=>x.name===name);return (c&&c.
 async function logCust(custName,type,opt){opt=opt||{};const c=CUSTOMERS.find(x=>x.name===custName);const owner=(c&&c.owner)||((typeof ME!=='undefined'&&ME&&(ME.owner||ME.name)))||null;
   try{const {error}=await SB.from('cust_log').insert({cust:custName,owner:owner,type:type,item:opt.item||null,amount:opt.amount||0,points_delta:opt.points||0,reason:opt.reason||null,staff:(typeof ME!=='undefined'&&ME&&ME.name)||null});if(error)console.error('logCust',error);}catch(e){console.error('logCust',e);}}
 async function addPoints(custName,delta,type,opt){opt=opt||{};const c=CUSTOMERS.find(x=>x.name===custName);if(!c){toast('고객을 찾을 수 없어요');return false;}
-  const nv=Math.max(0,(c.points||0)+delta);c.points=nv;
-  try{const {error}=await SB.from('customers').update({points:nv}).eq('id',c.id);if(error){console.error('points',error);toast('⚠️ 적립금 저장 실패 — 다시 시도하세요');}}catch(e){console.error(e);}
+  if(c.id!=null){try{const {data,error}=await SB.rpc('adjust_points',{p_id:c.id,p_delta:delta});if(error){console.error('points',error);toast('⚠️ 적립금 저장 실패 — 다시 시도하세요');return false;}if(typeof data==='number')c.points=data;}catch(e){console.error(e);toast('⚠️ 적립금 저장 오류');return false;}}
+  else{c.points=Math.max(0,(c.points||0)+delta);}
   await logCust(custName,type,{points:delta,amount:opt.amount||0,item:opt.item||null,reason:opt.reason||null});
   return true;}
 function custFlagBadge(c){if(!c||!c.flag)return '';const m={'주의':'p-req','블랙리스트':'p-low'};return ` <span class="pill ${m[c.flag]||'p-gray'}">${esc(c.flag)}</span>`;}
