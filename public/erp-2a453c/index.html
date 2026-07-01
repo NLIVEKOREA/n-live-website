@@ -2150,10 +2150,20 @@ function custDupView(dup,stats){
   return dup.map(g=>`<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">📞 ${esc(formatPhone(g[0].phone))} <span class="muted" style="font-size:12px;font-weight:400">— 닉네임 ${g.length}개 (동일인 의심)</span></h2></div>
     <table><tbody>${g.map(c=>{const s=stats[c.name]||{cnt:0,amt:0};return `<tr>
       <td><div style="display:flex;align-items:center;gap:8px">${custAvatar(c.name)}<b>${esc(c.name)}</b></div></td>
-      <td class="muted">${esc(c.addr||'-')}</td><td class="num-cell">${s.cnt}건</td><td class="num-cell">${won(s.amt)}</td>
+      <td class="muted">${esc(c.addr||'-')}</td><td class="num-cell">${s.cnt}건</td><td class="num-cell">${won(s.amt)}</td><td class="num-cell muted">${(c.points||0)>0?won(c.points):'-'}</td>
+      <td><button class="btn sm green" onclick="mergeGroupInto('${escAttr(c.name)}','${custPhoneNorm(c.phone)}')">⭐ 이 이름으로 통합</button></td>
       <td>${custActBtns(c)}</td></tr>`}).join('')}</tbody></table>
-    <div class="note" style="margin-top:8px">💡 같은 사람이면 닉네임 하나로 통합하고 나머지는 삭제하세요. 과거 주문은 닉네임 기준이라 유지됩니다.</div></div>`).join('');
+    <div class="note" style="margin-top:8px">💡 같은 사람이면 <b>[⭐ 이 이름으로 통합]</b> — 나머지 닉네임의 주문·적립금이 이 이름으로 합쳐지고 중복 기록은 삭제됩니다.</div></div>`).join('');
 }
+async function mergeGroupInto(keeperName,pnorm){const grp=CUSTOMERS.filter(c=>custPhoneNorm(c.phone)===pnorm);const keeper=grp.find(c=>c.name===keeperName);const others=grp.filter(c=>c.name!==keeperName);if(!keeper||!others.length)return;
+  const stats=custStats();let totO=0,totP=0;others.forEach(o=>{totO+=(stats[o.name]||{}).cnt||0;totP+=o.points||0;});
+  if(!confirm('동일 연락처 고객을 \''+keeperName+'\' 하나로 통합할까요?\n\n통합 대상: '+others.map(o=>o.name).join(', ')+'\n· 주문 '+totO+'건 → '+keeperName+'\n· 적립금 '+won(totP)+' 합산\n· 나머지 '+others.length+'개 고객기록 삭제\n\n※ 되돌리기 어렵습니다. 신중히.'))return;
+  for(const o of others){ORD.forEach(x=>{if(x.cust===o.name)x.cust=keeperName;});if(!keeper.addr&&o.addr)keeper.addr=o.addr;if(!keeper.memo&&o.memo)keeper.memo=o.memo;if(!keeper.flag&&o.flag)keeper.flag=o.flag;const i=CUSTOMERS.indexOf(o);if(i>=0)CUSTOMERS.splice(i,1);}
+  keeper.points=(keeper.points||0)+totP;toast('✅ 통합 완료 → '+keeperName+' (주문 '+totO+'건 이동)');render();
+  try{for(const o of others){await SB.from('orders').update({cust:keeperName}).eq('cust',o.name);await SB.from('cust_log').update({cust:keeperName}).eq('cust',o.name);if(o.id!=null)await SB.from('customers').delete().eq('id',o.id);}
+    if(totP&&keeper.id!=null)await SB.rpc('adjust_points',{p_id:keeper.id,p_delta:totP});
+    if(keeper.id!=null)await SB.from('customers').update({addr:keeper.addr,memo:keeper.memo,flag:keeper.flag}).eq('id',keeper.id);
+  }catch(e){console.error('merge',e);toast('⚠️ 통합 저장 일부 실패 — 새로고침으로 확인하세요');}}
 function pageBar(pg,pages,fn){if(pages<=1)return '';let s='<div class="pagebar">';s+=`<button class="btn sm gray" ${pg<=1?'disabled':''} onclick="${fn}(${pg-1})" aria-label="이전">‹</button>`;
   let a=Math.max(1,pg-3),b=Math.min(pages,a+6);a=Math.max(1,b-6);
   if(a>1){s+=`<button class="btn sm ghost" onclick="${fn}(1)">1</button>`+(a>2?'<span class="muted">…</span>':'');}
@@ -2795,7 +2805,7 @@ function toggleSideNav(force){
 function closeSideNav(){toggleSideNav(false);}
 function enhanceResponsiveUI(root){
   if(!root)return;
-  root.querySelectorAll('table').forEach(t=>{if(t.classList.contains('ogrid'))return;/* 주문 입력표는 래핑 제외 — 항상 전체 높이로 펼침(내부 스크롤 방지) */if(t.parentElement&&t.parentElement.classList.contains('table-wrap'))return;const w=document.createElement('div');w.className='table-wrap';t.parentNode.insertBefore(w,t);w.appendChild(t);});
+  root.querySelectorAll('table').forEach(t=>{if(t.parentElement&&t.parentElement.classList.contains('table-wrap'))return;const w=document.createElement('div');w.className='table-wrap';t.parentNode.insertBefore(w,t);w.appendChild(t);});
 }
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}}
