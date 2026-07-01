@@ -2394,7 +2394,7 @@ function empPay(e){const base=(e.base_salary!=null&&e.base_salary!==''&&+e.base_
   if(e.role==='보조'){
     const own=_staffSalesBy('staff',e.name);/* 본인 판매(매출귀속=본인) */
     const assist=ORD.filter(o=>o.staff===(e.owner||'')&&o.created_by===e.name&&o.pay==='paid'&&_inRange(o,'month')&&_isGoods(o)).reduce((a,o)=>a+amtOf(o),0);/* 담당셀러 라방 중 본인 처리분 */
-    const ownRate=PAY_RATE['셀러']||10,assistRate=rate;
+    const ownRate=(e.own_rate!=null&&e.own_rate!==''&&+e.own_rate>=0&&String(e.own_rate)!=='')?+e.own_rate:(PAY_RATE['셀러']||10),assistRate=rate;
     const comm=Math.round(own*ownRate/100+assist*assistRate/100);
     return {base:base,rate:assistRate,sales:own+assist,comm:comm,total:base+comm,own:own,assist:assist,ownRate:ownRate,assistRate:assistRate};
   }
@@ -2415,7 +2415,12 @@ function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&(canSeeAll()
     ${payList.length?payList.map(e=>{const p=empPay(e),idx=EMPLOYEES.indexOf(e);return `<tr>
       <td><b>${esc(e.name)}</b></td><td class="muted">${esc(e.role||'')}</td>
       <td class="num-cell">${canSeeAll()?`<input type="number" value="${p.base}" onchange="saveEmpPay(${idx},'base_salary',this.value)" style="width:104px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:won(p.base)}</td>
-      <td class="num-cell">${(canSeeAll()&&(e.role==='셀러'||e.role==='보조'))?`<input type="number" value="${p.rate}" onchange="saveEmpPay(${idx},'comm_rate',this.value)" style="width:58px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:p.rate+'%'}${e.role==='보조'?'<div class="muted" style="font-size:10px">내판매 '+(p.ownRate||10)+'%</div>':''}</td>
+      <td class="num-cell">${e.role==='보조'
+        ?`<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+            <span style="font-size:11px;color:#64748b;white-space:nowrap">라이브 ${canSeeAll()?`<input type="number" value="${p.assistRate}" onchange="saveEmpPay(${idx},'comm_rate',this.value)" style="width:44px;text-align:right;padding:3px 5px;border:1px solid var(--line);border-radius:6px">`:p.assistRate}%</span>
+            <span style="font-size:11px;color:#64748b;white-space:nowrap">직접 ${canSeeAll()?`<input type="number" value="${p.ownRate}" onchange="saveEmpPay(${idx},'own_rate',this.value)" style="width:44px;text-align:right;padding:3px 5px;border:1px solid var(--line);border-radius:6px">`:p.ownRate}%</span>
+          </div>`
+        :(canSeeAll()&&e.role==='셀러')?`<input type="number" value="${p.rate}" onchange="saveEmpPay(${idx},'comm_rate',this.value)" style="width:58px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:p.rate+'%'}</td>
       <td class="num-cell">${won(p.sales)}${e.role==='보조'&&p.own!=null?`<div class="muted" style="font-size:10px">내판매 ${won(p.own)} · 라방 ${won(p.assist)}</div>`:''}</td><td class="num-cell up">+${won(p.comm)}</td><td class="num-cell"><b>${won(p.total)}</b></td></tr>`;}).join(''):'<tr><td colspan="7" class="muted">직원 데이터 없음 (사원관리에서 등록)</td></tr>'}
     </tbody></table>
   </div>`;
