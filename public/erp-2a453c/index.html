@@ -610,7 +610,7 @@ const SIZE_ORDER=['F','FREE','FR','ONE','ONESIZE','XS','S','M','L','XL','2XL','X
 function sizeRank(sz){const s=String(sz==null?'':sz).toUpperCase().replace(/\s/g,'');const i=SIZE_ORDER.indexOf(s);if(i>=0)return i;const n=parseInt(s,10);if(!isNaN(n))return 200+n;return 100;}
 function normCode6(code){const g=String(code==null?'':code).replace(/\D/g,'');return (g.length===5||g.length===6)?g.padStart(6,'0'):String(code==null?'':code);}
 function isFreeSize(sz){return !sz||['F','FREE','FR','ONE','ONESIZE'].includes(String(sz).toUpperCase());}
-function skuFullCode(code,color,size){const same=STOCK.filter(x=>String(x.code)===String(code));const colors=[];same.forEach(x=>{if(x.color&&colors.indexOf(x.color)<0)colors.push(x.color);});const sizes=[...new Set(same.map(x=>x.size).filter(Boolean))].sort((a,b)=>sizeRank(a)-sizeRank(b));const c6=normCode6(code);const ci=colors.indexOf(color);const cp=ci>=0?'-'+String(ci+1).padStart(2,'0'):'';const si=sizes.indexOf(size);const sp=isFreeSize(size)?'':(si>=0?'-'+String(si+1).padStart(2,'0'):'');return c6+cp+sp;}
+function skuFullCode(code,color,size,pool){const src=pool||STOCK;const same=src.filter(x=>String(x.code)===String(code));const colors=[];same.forEach(x=>{if(x.color&&x.color!=='-'&&colors.indexOf(x.color)<0)colors.push(x.color);});const sizes=[...new Set(same.map(x=>x.size).filter(Boolean))].sort((a,b)=>sizeRank(a)-sizeRank(b));const c6=normCode6(code);const ci=colors.indexOf(color);const cp=ci>=0?'-'+String(ci+1).padStart(2,'0'):'';const si=sizes.indexOf(size);const sp=isFreeSize(size)?'':(si>=0?'-'+String(si+1).padStart(2,'0'):'');return c6+cp+sp;}
 function nextProductCode(){let mx=0;STOCK.forEach(s=>{const g=String(s.code||'').replace(/\D/g,'');if(g.length===5||g.length===6){const n=parseInt(g,10);if(n>mx)mx=n;}});return String(mx+1).padStart(6,'0');}
 const colorsOf=c=>[...new Set(STOCK.filter(s=>s.code===c).map(s=>s.color))];
 const itemLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
@@ -1772,7 +1772,7 @@ function viewStock(){
     <table><thead><tr><th style="width:34px"><input type="checkbox" ${STAGED.length&&STAGED.every(x=>x.chk)?'checked':''} onclick="stagedAllToggle(this.checked)"></th><th>번호표</th><th>품목코드</th><th>품목명</th><th>색상</th><th>사이즈</th><th>구매처</th><th>카테고리</th><th class="num-cell">입고가</th><th class="num-cell">출고가</th><th class="num-cell">수량</th><th style="width:34px"></th></tr></thead><tbody>
       ${STAGED.map((x,i)=>`<tr>
         <td><input type="checkbox" ${x.chk?'checked':''} onclick="stagedToggle(${i})"></td>
-        <td><span class="tagbox">${esc(x.tag)}</span></td><td class="barcode muted">${esc(x.code)}</td><td>${esc(x.name)}</td><td>${esc(x.color)}</td><td>${esc(x.size)}</td><td class="muted">${esc(x.vendor||'-')}</td><td class="muted">${esc(x.category||'-')}${x.subcategory?'·'+esc(x.subcategory):''}${x.season?'·'+esc(x.season):''}</td><td class="num-cell muted">${won(x.in_price)}</td><td class="num-cell">${won(x.price)}</td><td class="num-cell">${x.qty}</td>
+        <td><span class="tagbox">${esc(x.tag)}</span></td><td class="barcode muted prod-link" title="클릭하여 수정" onclick="openStageEdit(${i})">${esc(skuFullCode(x.code,x.color,x.size,STOCK.concat(STAGED)))}</td><td class="prod-link" title="클릭하여 수정" onclick="openStageEdit(${i})">${esc(x.name)}</td><td>${esc(x.color)}</td><td>${esc(x.size)}</td><td class="muted">${esc(x.vendor||'-')}</td><td class="muted">${esc(x.category||'-')}${x.subcategory?'·'+esc(x.subcategory):''}${x.season?'·'+esc(x.season):''}</td><td class="num-cell muted">${won(x.in_price)}</td><td class="num-cell">${won(x.price)}</td><td class="num-cell">${x.qty}</td>
         <td><button class="ico-btn" title="삭제" onclick="stagedDel(${i})"><i class="ti ti-x"></i></button></td>
       </tr>`).join('')}
     </tbody></table>
@@ -1794,7 +1794,7 @@ function viewStock(){
       <th class="num-cell">단가</th><th class="num-cell">현재고</th><th style="width:96px">라벨·내역</th></tr></thead><tbody>
     ${rows.map(s=>`<tr>
       <td>${can?`<input class="barcode" style="width:62px;text-align:center;font-weight:700" value="${s.tag}" onchange="setTag('${s.code}',this.value)">`:`<span class="tagbox">${s.tag}</span>`}</td>
-      <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.code}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
+      <td class="muted barcode prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${skuFullCode(s.code,s.color,s.size)}</td><td class="prod-link" title="클릭하여 수정" onclick="openProdEdit(${s.id})">${s.name}</td><td>${s.color}</td><td>${s.size}</td>
       <td class="num-cell muted">${won(s.price)}</td>
       <td class="num-cell" style="font-weight:700">${s.qty}</td>
       <td style="white-space:nowrap">${s.id!=null?`<button class="btn sm ghost" style="padding:4px 7px" title="바코드 라벨 출력" onclick="askLabel(${s.id})">🏷️</button> <button class="btn sm ghost" style="padding:4px 7px" title="재고 변동내역" onclick='openStockLog(${s.id},${JSON.stringify((s.name||"")+" "+(s.color||"")+" "+(s.size||""))})'>📜</button>`:''}</td>
@@ -2013,6 +2013,18 @@ async function saveProd(){const code=$('#mp_code').value.trim(),name=$('#mp_name
   const wasEditing=editing;PRODEDIT=null;closeModal();toast(wasEditing?('✅ 수정: '+name):('✅ 품목 등록: '+name));
   if(!wasEditing&&VIEW==='order')addLineByCode(code);else render();}
 async function delProd(){if(PRODEDIT==null)return;const s=STOCK.find(x=>x.id===PRODEDIT);if(!s){closeModal();return;}if(!confirm(`'${s.name}' 품목을 재고에서 완전히 삭제할까요?`))return;const i=STOCK.indexOf(s);if(i>=0)STOCK.splice(i,1);PRODEDIT=null;closeModal();toast('🗑️ 품목 삭제: '+s.name);render();await delStockDB(s);}
+/* 입고목록(STAGED) 항목 수정 — 저장 전 대기 항목을 팝업에서 고침(다 지우고 다시 안 써도 됨) */
+let STAGEEDIT=null;
+function openStageEdit(i){const x=STAGED[i];if(!x){toast('항목을 찾을 수 없어요');return;}STAGEEDIT=i;
+  $('#modalBox').innerHTML=`<h3>입고목록 항목 수정 <span style="font-size:12px;color:#64748b;font-weight:500">저장 전 대기 항목이라 자유롭게 고칠 수 있어요</span></h3>${prodFormHTML(x)}
+    <div class="modal-foot"><button class="btn red ghost" onclick="delStageEdit()">이 항목 삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveStageEdit()">수정 완료</button></div>`;
+  $('#modal').classList.remove('hide');}
+function saveStageEdit(){if(STAGEEDIT==null)return;const x=STAGED[STAGEEDIT];if(!x){closeModal();return;}
+  const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
+  if(!code||!name){toast('품목코드·품목명은 필수');return;}
+  Object.assign(x,{code,tag:$('#mp_tag').value.trim()||'-',vendor:$('#mp_vendor').value.trim()||null,name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',in_price:parseInt($('#mp_inprice').value)||0,price:parseInt($('#mp_price').value)||0,category:$('#mp_cat').value||null,subcategory:$('#mp_subcat').value||null,season:(CAT_HASSEASON($('#mp_cat').value)?$('#mp_season').value:'')||null,qty:parseInt($('#mp_qty').value)||0});
+  STAGEEDIT=null;closeModal();toast('✏️ 입고목록 수정: '+name);render();}
+function delStageEdit(){if(STAGEEDIT==null)return;STAGED.splice(STAGEEDIT,1);STAGEEDIT=null;closeModal();toast('🗑️ 입고목록에서 삭제');render();}
 
 /* ===== 사입처 ===== */
 function viewVendor(){
@@ -2138,7 +2150,7 @@ function renderBulk(){const b=BULK;const colors=String(b.colors||'').split(',').
   <div class="modal-row"><div><label>상품명 *</label><input value="${esc(b.name)}" oninput="BULK.name=this.value" placeholder="예: 데일리 루즈핏 니트"></div><div><label>상품번호 (6자리·자동)</label><input value="${esc(b.code)}" oninput="BULK.code=this.value" style="font-weight:700;color:#2563eb"></div></div>
   <div class="modal-row"><div><label>사입처</label><input list="bulkVendor" value="${esc(b.vendor)}" oninput="BULK.vendor=this.value" placeholder="예: eun"><datalist id="bulkVendor">${VENDORS.map(v=>`<option value="${esc(v.name)}">`).join('')}</datalist></div><div><label>카테고리 · 종류</label><div style="display:flex;gap:6px"><select onchange="bulkSet('cat',this.value)" style="flex:1"><option value="">-</option>${catOpt}</select><select onchange="BULK.subcat=this.value" style="flex:1"><option value="">종류</option>${subOpt}</select></div></div></div>
   <div class="modal-row"><div><label>입고단가(원가)</label><input type="number" value="${b.inprice}" oninput="BULK.inprice=this.value" placeholder="0"></div><div><label>출고단가(판매가)</label><input type="number" value="${b.price}" oninput="BULK.price=this.value" placeholder="0"></div></div>
-  <label>색상 <span class="muted" style="font-size:11px">쉼표로 구분</span></label><input value="${esc(b.colors)}" oninput="BULK.colors=this.value;clearTimeout(window._bt);window._bt=setTimeout(renderBulk,450)" placeholder="블랙, 화이트, 아이보리">
+  <label>색상 <span class="muted" style="font-size:11px">쉼표로 구분 · 다 쓰고 Enter 또는 다음 칸 클릭하면 수량표 생성</span></label><input value="${esc(b.colors)}" oninput="BULK.colors=this.value" onchange="renderBulk()" onkeydown="if(event.key==='Enter'){event.preventDefault();renderBulk();}" placeholder="블랙, 화이트, 아이보리">
   <label style="margin-top:10px;display:block">사이즈 <span class="muted" style="font-size:11px">F=프리(생략), 여러 개 선택 가능</span></label><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">${chips}</div>
   ${matrix}
   <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveBulk()">＋ 입고 목록에 추가</button></div>`;}
