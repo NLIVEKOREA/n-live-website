@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>N-LIVE · 방송 주문</title>
+<style>
+:root{--blue:#2563eb;--navy:#17213d;--ink:#111827;--muted:#667085;--line:#e7ebf1;--bg:#f3f5f9;--green:#16a34a;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font-family:Pretendard,"Malgun Gothic",-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;position:relative;box-shadow:0 0 0 1px var(--line)}
+.appbar{position:sticky;top:0;z-index:20;height:52px;display:flex;align-items:center;gap:10px;padding:0 15px;border-bottom:1px solid var(--line);font-weight:800;background:#fff}
+.appbar .back{font-size:22px;background:none;border:0;color:#111;cursor:pointer;padding:4px 6px;margin-left:-6px}
+.appbar .cart{margin-left:auto;background:#eef3ff;color:var(--blue);border:0;border-radius:9px;padding:8px 11px;font-weight:800;cursor:pointer;font-size:13px}
+.cover{height:190px;background:linear-gradient(135deg,#1b2a52,#2b58c9);position:relative;display:grid;place-items:center;color:#fff}
+.cover.img{background-size:cover;background-position:center}
+.live{position:absolute;left:13px;top:13px;background:#ef4444;color:#fff;border-radius:7px;padding:6px 9px;font-size:11px;font-weight:900}
+.sec{padding:15px}
+.seller{display:flex;gap:11px;align-items:center}
+.avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#84adff,#315bd8);display:grid;place-items:center;color:#fff;font-weight:900;flex:0 0 auto}
+.seller b{font-size:16px}.seller small{display:block;color:var(--muted);margin-top:3px}
+.notice{background:#fff8e8;border:1px solid #f5d898;border-radius:11px;padding:11px;font-size:12px;line-height:1.6;margin-top:13px;white-space:pre-wrap}
+.prodlist{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}
+.product{border:1px solid var(--line);border-radius:13px;overflow:hidden;text-align:left;background:#fff;cursor:pointer;padding:0;position:relative}
+.product.now{border:2px solid var(--blue)}
+.product.now:before{content:"지금 소개중";position:absolute;z-index:2;left:7px;top:7px;background:var(--blue);color:#fff;padding:4px 6px;border-radius:5px;font-size:9px;font-weight:900}
+.pimg{height:132px;background:#eef1f6 center/cover no-repeat;display:grid;place-items:center;color:#aab;font-size:12px}
+.ptxt{padding:10px}.ptxt b{display:block;font-size:12.5px;line-height:1.35}.price{font-weight:900;margin-top:7px;font-size:14px}
+.soldout{opacity:.5}.soldout-tag{position:absolute;inset:0;background:rgba(255,255,255,.55);display:grid;place-items:center;font-weight:900;color:#111;z-index:3}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
+.opt{border:1px solid #d9dee7;background:#fff;border-radius:8px;padding:8px 11px;font-size:12px;cursor:pointer}
+.opt.sel{border:2px solid var(--blue);background:#edf3ff;color:var(--blue);font-weight:800}
+.opt.off{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+.qtybox{display:inline-flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:9px;padding:7px 13px;font-weight:800}
+.qtybox button{border:0;background:none;font-size:19px;cursor:pointer;color:#111;width:22px}
+.cta{width:100%;border:0;background:var(--blue);color:#fff;border-radius:12px;padding:15px;font-weight:800;cursor:pointer;font-size:15px}
+.cta:disabled{background:#c3ccdb;cursor:not-allowed}
+.cta.green{background:var(--green)}.cta.ghost{background:#fff;color:#475467;border:1px solid var(--line)}
+.field label{display:block;font-size:12px;color:#475467;font-weight:750;margin:13px 0 6px}
+.field input,.field textarea{width:100%;border:1px solid #d9dee7;border-radius:10px;padding:12px 12px;background:#fff}
+.field input{height:46px}.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.agree{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#475467;line-height:1.5;margin:14px 0 4px}
+.agree input{width:19px;height:19px;margin-top:1px;flex:0 0 auto}
+.cartrow{display:flex;gap:11px;padding:13px 0;border-bottom:1px solid var(--line);align-items:center}
+.cthumb{width:64px;height:64px;border-radius:10px;background:#eef1f6 center/cover;flex:0 0 auto}
+.ci{flex:1;min-width:0}.ci b{font-size:13px}.ci small{display:block;color:var(--muted);font-size:11px;margin:3px 0}
+.rm{background:none;border:0;color:var(--muted);font-size:18px;cursor:pointer}
+.sum{margin:16px 0}.sum div{display:flex;justify-content:space-between;font-size:13px;color:#475467;padding:6px 0}
+.sum .total{font-size:17px;color:#111;font-weight:900;border-top:1px solid var(--line);margin-top:4px;padding-top:13px}
+.foot{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:12px 15px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+.success{text-align:center;padding:40px 20px}
+.check{width:74px;height:74px;background:#e9f8ee;color:var(--green);border-radius:50%;display:grid;place-items:center;margin:0 auto 18px;font-size:40px;font-weight:900}
+.success h3{margin:0 0 8px;font-size:20px}.success p{font-size:13px;color:var(--muted);line-height:1.65;margin:0}
+.orderbox{text-align:left;background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:14px;margin:20px 0;font-size:13px}
+.orderbox div{display:flex;justify-content:space-between;padding:6px 0}
+.paynote{text-align:left;background:#eef3ff;border:1px solid #cfe0ff;border-radius:12px;padding:14px;font-size:12.5px;line-height:1.7;color:#1e3a8a}
+.center{display:grid;place-items:center;min-height:70vh;padding:30px;text-align:center;color:var(--muted)}
+.spinner{width:34px;height:34px;border:3px solid #dde3ec;border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 16px;border-radius:10px;font-size:13px;z-index:60;opacity:0;transition:.2s;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.badge{display:inline-block;background:#e9f8ee;color:#15803d;border-radius:6px;padding:3px 7px;font-size:11px;font-weight:800;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="center"><div><div class="spinner"></div>방송을 불러오는 중...</div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPA_URL='https://qikvvqgxmquevzyykkcm.supabase.co';
+const SUPA_KEY='sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao';
+const SB=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+
+// ---- 상태 ----
+const SLUG=(location.pathname.match(/\/shop\/([^\/?#]+)/)||[])[1]||'';
+let SHOP=null;        // get_live_shop 결과
+let CART=[];          // {product_id,name,price,color,size,qty,image_url}
+let VIEW='home';      // home | product | cart | form | done
+let CURP=null;        // 현재 상세 상품
+let SEL={color:null,size:null,qty:1};
+let DONE=null;        // 주문완료 결과
+let CUST={receiver:'',nick:'',phone:'',addr:'',addr_detail:'',agree:false};
+
+const $=s=>document.querySelector(s);
+const won=n=>'₩'+Number(n||0).toLocaleString();
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+const cartCount=()=>CART.reduce((s,x)=>s+x.qty,0);
+const subtotal=()=>CART.reduce((s,x)=>s+x.price*x.qty,0);
+function shipFee(){const sess=SHOP&&SHOP.session;if(!sess)return 0;if(sess.free_ship_min>0&&subtotal()>=sess.free_ship_min)return 0;return sess.ship_fee||0;}
+
+async function load(){
+  if(!SLUG){renderClosed('잘못된 주소입니다.');return;}
+  try{
+    const {data,error}=await SB.rpc('get_live_shop',{p_slug:SLUG});
+    if(error){console.error(error);renderClosed('일시적인 오류입니다. 잠시 후 다시 시도해 주세요.');return;}
+    SHOP=data;
+    if(!SHOP||SHOP.status!=='open'){renderClosed();return;}
+    render();
+  }catch(e){console.error(e);renderClosed('연결에 실패했습니다. 인터넷을 확인해 주세요.');}
+}
+function renderClosed(msg){
+  $('#app').innerHTML=`<div class="appbar"><b>N-LIVE</b></div>
+   <div class="center"><div><div style="font-size:44px;margin-bottom:10px">🌙</div>
+   <b style="color:#111;font-size:16px">${esc(msg||'지금은 방송 준비중이에요')}</b>
+   <p style="margin-top:8px">방송이 시작되면 이 화면에서 바로 주문할 수 있어요.</p></div></div>`;
+}
+
+// ---- 옵션 헬퍼 ----
+function realOpts(p){return (p.options||[]).filter(o=>o.color||o.size);}
+function colorsOf(p){const s=[];realOpts(p).forEach(o=>{if(o.color&&!s.includes(o.color))s.push(o.color);});return s;}
+function sizesOf(p){const s=[];realOpts(p).forEach(o=>{if(o.size&&!s.includes(o.size))s.push(o.size);});return s;}
+function optAvail(p,color,size){const os=realOpts(p);if(!os.length)return true;const m=os.find(o=>(o.color||null)===(color||null)&&(o.size||null)===(size||null));return m?m.available:false;}
+function prodSoldOut(p){const os=realOpts(p);if(!os.length)return false;return os.every(o=>!o.available);}
+
+// ---- 렌더 ----
+function render(){
+  if(VIEW==='product')return renderProduct();
+  if(VIEW==='cart')return renderCart();
+  if(VIEW==='form')return renderForm();
+  if(VIEW==='done')return renderDone();
+  renderHome();
+}
+function appbar(title,back){
+  return `<div class="appbar">${back?`<button class="back" onclick="${back}">‹</button>`:''}<span>${esc(title)}</span>
+   <button class="cart" onclick="go('cart')">🛒 ${cartCount()}</button></div>`;
+}
+function renderHome(){
+  const s=SHOP.session,ps=SHOP.products||[];
+  const cover=`<div class="cover"><span class="live">● LIVE</span><div style="font-weight:900;font-size:19px">${esc(s.seller)} LIVE</div></div>`;
+  const notice=s.notice?`<div class="notice">📢 ${esc(s.notice)}</div>`:
+    `<div class="notice">🚚 배송비 ${won(s.ship_fee)}${s.free_ship_min>0?` · ${won(s.free_ship_min)} 이상 무료배송`:''}\n주문 후 직원이 계좌이체 안내 또는 페이히어 결제링크를 보내드립니다.</div>`;
+  const prods=ps.length?`<div class="prodlist">${ps.map(p=>{
+    const so=prodSoldOut(p);
+    const img=p.image_url?`style="background-image:url('${esc(p.image_url)}')"`:'';
+    return `<button class="product ${p.is_now?'now':''} ${so?'soldout':''}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
+      ${so?'<span class="soldout-tag">품절</span>':''}
+      <div class="pimg" ${img}>${p.image_url?'':'상품이미지'}</div>
+      <div class="ptxt"><b>${esc(p.name)}</b><div class="price">${won(p.live_price)}</div></div></button>`;
+  }).join('')}</div>`:`<div class="center" style="min-height:200px">등록된 상품이 곧 올라옵니다.</div>`;
+  $('#app').innerHTML=appbar(s.seller+' SHOP')+cover+
+    `<div class="sec"><div class="seller"><div class="avatar">${esc((s.seller||'N')[0])}</div>
+      <div><b>${esc(s.title||s.seller+' 라이브')}</b><small>상품 ${ps.length}개 · 방송 중</small></div></div>
+      ${notice}${prods}</div>
+     <div class="foot"><button class="cta" onclick="go('cart')" ${cartCount()?'':'disabled'}>
+       ${cartCount()?`장바구니 ${cartCount()}개 · ${won(subtotal()+shipFee())} 주문하기`:'상품을 담아주세요'}</button></div>`;
+}
+function openProduct(id){CURP=(SHOP.products||[]).find(p=>p.id===id);if(!CURP)return;
+  const cs=colorsOf(CURP),zs=sizesOf(CURP);
+  SEL={color:cs.length?null:'',size:zs.length?null:'',qty:1};go('product');}
+function renderProduct(){
+  const p=CURP,cs=colorsOf(p),zs=sizesOf(p);
+  const img=p.image_url?`style="background-image:url('${esc(p.image_url)}');min-height:230px"`:'style="min-height:230px"';
+  const colorBtns=cs.length?`<label>색상</label><div class="opts">${cs.map(c=>{
+    const anyAvail=zs.length?zs.some(z=>optAvail(p,c,z)):optAvail(p,c,'');
+    return `<button class="opt ${SEL.color===c?'sel':''} ${anyAvail?'':'off'}" ${anyAvail?`onclick="pickColor('${esc(c)}')"`:'disabled'}>${esc(c)}</button>`;}).join('')}</div>`:'';
+  const sizeBtns=zs.length?`<label>사이즈</label><div class="opts">${zs.map(z=>{
+    const av=optAvail(p,SEL.color,z)&&(cs.length?SEL.color!=null:true);
+    return `<button class="opt ${SEL.size===z?'sel':''} ${av?'':'off'}" ${av?`onclick="pickSize('${esc(z)}')"`:'disabled'}>${esc(z)}</button>`;}).join('')}</div>`:'';
+  const ready=(!cs.length||SEL.color!=null)&&(!zs.length||SEL.size!=null);
+  $('#app').innerHTML=appbar('상품 선택',"go('home')")+
+    `<div class="pimg" ${img}>${p.image_url?'':'상품이미지'}</div>
+     <div class="sec"><b style="font-size:17px">${esc(p.name)}</b>
+       <div class="price" style="font-size:20px;margin:8px 0 4px">${won(p.live_price)}</div>
+       ${colorBtns}${sizeBtns}
+       <label style="display:block;font-size:12px;color:#475467;font-weight:750;margin:14px 0 6px">수량</label>
+       <div class="qtybox"><button onclick="qc(-1)">−</button><span id="qn">${SEL.qty}</span><button onclick="qc(1)">＋</button></div>
+     </div>
+     <div class="foot"><button class="cta" id="addBtn" ${ready?'':'disabled'} onclick="addCart()">
+       ${ready?`장바구니 담기 · ${won(p.live_price*SEL.qty)}`:'옵션을 선택해 주세요'}</button></div>`;
+}
+function pickColor(c){SEL.color=c;const zs=sizesOf(CURP);if(zs.length)SEL.size=null;render();}
+function pickSize(z){SEL.size=z;render();}
+function qc(d){const p=CURP;let q=SEL.qty+d;if(q<1)q=1;if(p.max_qty>0&&q>p.max_qty){q=p.max_qty;toast('최대 '+p.max_qty+'개까지 구매 가능합니다.');}SEL.qty=q;
+  const el=$('#qn');if(el)el.textContent=q;const b=$('#addBtn');if(b&&!b.disabled)b.textContent='장바구니 담기 · '+won(p.live_price*q);}
+function addCart(){const p=CURP;
+  if(!optAvail(p,SEL.color,SEL.size)){toast('선택하신 옵션은 품절입니다.');return;}
+  const ex=CART.find(x=>x.product_id===p.id&&x.color===(SEL.color||'')&&x.size===(SEL.size||''));
+  if(ex)ex.qty+=SEL.qty;else CART.push({product_id:p.id,name:p.name,price:p.live_price,color:SEL.color||'',size:SEL.size||'',qty:SEL.qty,image_url:p.image_url||''});
+  toast('장바구니에 담았어요');go('home');}
+function renderCart(){
+  if(!CART.length){$('#app').innerHTML=appbar('장바구니',"go('home')")+`<div class="center">🛒 장바구니가 비어있어요<br><br><button class="cta ghost" style="width:auto;padding:12px 20px" onclick="go('home')">상품 보러가기</button></div>`;return;}
+  const rows=CART.map((x,i)=>{const img=x.image_url?`style="background-image:url('${esc(x.image_url)}')"`:'';
+    return `<div class="cartrow"><div class="cthumb" ${img}></div>
+      <div class="ci"><b>${esc(x.name)}</b><small>${esc([x.color,x.size].filter(Boolean).join(' / ')||'옵션없음')}</small>
+        <div class="qtybox" style="padding:5px 11px;font-size:13px"><button onclick="cqc(${i},-1)">−</button><span>${x.qty}</span><button onclick="cqc(${i},1)">＋</button></div></div>
+      <div style="text-align:right"><b>${won(x.price*x.qty)}</b><br><button class="rm" onclick="rmCart(${i})">✕</button></div></div>`;}).join('');
+  const sf=shipFee();
+  $('#app').innerHTML=appbar('장바구니',"go('home')")+
+    `<div class="sec">${rows}
+      <div class="sum"><div><span>상품금액</span><b>${won(subtotal())}</b></div>
+        <div><span>배송비</span><b>${sf?won(sf):'무료'}</b></div>
+        <div class="total"><span>결제예정금액</span><span>${won(subtotal()+sf)}</span></div></div></div>
+     <div class="foot"><button class="cta" onclick="go('form')">주문 정보 입력</button></div>`;
+}
+function cqc(i,d){CART[i].qty+=d;if(CART[i].qty<1)CART[i].qty=1;render();}
+function rmCart(i){CART.splice(i,1);render();}
+function renderForm(){
+  const sf=shipFee();
+  $('#app').innerHTML=appbar('주문 정보',"go('cart')")+
+    `<div class="sec field">
+      <label>카카오톡 닉네임 (선택)</label><input id="f_nick" value="${esc(CUST.nick)}" placeholder="방송 채팅 닉네임">
+      <div class="row2"><div><label>받는 분 *</label><input id="f_recv" value="${esc(CUST.receiver)}" placeholder="성함"></div>
+        <div><label>휴대폰번호 *</label><input id="f_phone" value="${esc(CUST.phone)}" inputmode="numeric" placeholder="010-0000-0000"></div></div>
+      <label>배송지 *</label><input id="f_addr" value="${esc(CUST.addr)}" placeholder="도로명/지번 주소">
+      <label>상세주소</label><input id="f_addr2" value="${esc(CUST.addr_detail)}" placeholder="동/호수 등">
+      <label class="agree"><input type="checkbox" id="f_agree" ${CUST.agree?'checked':''}>
+        <span>주문 처리 및 배송을 위한 개인정보 수집·이용, 교환·반품 정책에 동의합니다. (필수)</span></label>
+      <div class="sum" style="margin-top:6px"><div><span>상품금액</span><b>${won(subtotal())}</b></div>
+        <div><span>배송비</span><b>${sf?won(sf):'무료'}</b></div>
+        <div class="total"><span>주문금액</span><span>${won(subtotal()+sf)}</span></div></div>
+      <p style="font-size:12px;color:#98a2b3;line-height:1.6">주문 후 담당 직원이 계좌이체 안내 또는 페이히어 결제링크를 보내드립니다. 입금이 확인되면 상품이 준비·발송됩니다.</p>
+     </div>
+     <div class="foot"><button class="cta green" id="orderBtn" onclick="submitOrder()">주문하기</button></div>`;
+}
+function grabForm(){CUST.nick=$('#f_nick').value.trim();CUST.receiver=$('#f_recv').value.trim();CUST.phone=$('#f_phone').value.trim();
+  CUST.addr=$('#f_addr').value.trim();CUST.addr_detail=$('#f_addr2').value.trim();CUST.agree=$('#f_agree').checked;}
+async function submitOrder(){
+  grabForm();
+  if(!CUST.receiver){toast('받는 분 성함을 입력해 주세요.');return;}
+  if(CUST.phone.replace(/[^0-9]/g,'').length<9){toast('휴대폰번호를 정확히 입력해 주세요.');return;}
+  if(!CUST.addr){toast('배송지를 입력해 주세요.');return;}
+  if(!CUST.agree){toast('개인정보 수집·구매 동의가 필요합니다.');return;}
+  const btn=$('#orderBtn');btn.disabled=true;btn.textContent='주문 처리 중...';
+  try{
+    const items=CART.map(x=>({product_id:x.product_id,color:x.color,size:x.size,qty:x.qty}));
+    const {data,error}=await SB.rpc('create_live_order',{p_slug:SLUG,
+      p_customer:{receiver:CUST.receiver,nick:CUST.nick,phone:CUST.phone,addr:CUST.addr,addr_detail:CUST.addr_detail,agree:true},
+      p_items:items});
+    if(error){console.error(error);toast('주문 저장에 실패했습니다. 다시 시도해 주세요.');btn.disabled=false;btn.textContent='주문하기';return;}
+    if(!data||!data.ok){toast((data&&data.msg)||'주문을 완료할 수 없습니다.');btn.disabled=false;btn.textContent='주문하기';
+      if(data&&(data.reason==='soldout'||data.reason==='bad_option'||data.reason==='bad_item'))await load();return;}
+    DONE=data;CART=[];go('done');
+  }catch(e){console.error(e);toast('연결 오류입니다. 인터넷을 확인해 주세요.');btn.disabled=false;btn.textContent='주문하기';}
+}
+function renderDone(){
+  const d=DONE;
+  $('#app').innerHTML=appbar((SHOP.session.seller||'N')+' SHOP')+
+    `<div class="success"><div class="check">✓</div><h3>주문이 접수됐어요</h3>
+      <p>담당 직원이 확인 후<br>계좌이체 안내 또는 결제링크를 보내드립니다.</p>
+      <div class="orderbox">
+        <div><span>주문번호</span><b>${esc(d.order_group_id)}</b></div>
+        <div><span>상품금액</span><b>${won(d.subtotal)}</b></div>
+        <div><span>배송비</span><b>${d.ship_fee?won(d.ship_fee):'무료'}</b></div>
+        <div style="border-top:1px solid var(--line);margin-top:4px;padding-top:9px"><span style="font-weight:800">주문금액</span><b style="font-size:16px">${won(d.total)}</b></div>
+      </div>
+      <div class="paynote">💳 <b>다음 안내</b><br>
+        · 방송 채팅/카톡으로 계좌번호 또는 페이히어 링크를 받으세요.<br>
+        · 입금이 확인되면 상품 준비·발송이 시작됩니다.<br>
+        · 재고는 약 ${d.reserve_min||30}분간 예약됩니다. 빠른 입금 부탁드려요!</div>
+      <button class="cta ghost" style="margin-top:20px" onclick="CART=[];DONE=null;go('home')">쇼핑 계속하기</button>
+     </div>`;
+}
+function go(v){VIEW=v;window.scrollTo(0,0);render();}
+window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSize;window.qc=qc;window.addCart=addCart;
+window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;
+load();
+</script>
+</body>
+</html>

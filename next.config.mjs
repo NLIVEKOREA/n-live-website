@@ -10,6 +10,9 @@ const nextConfig = {
       { source: "/matching-pool/", destination: "/matching-pool.html" },
       { source: "/erp-2a453c", destination: "/erp-2a453c/index.html" },
       { source: "/erp-2a453c/", destination: "/erp-2a453c/index.html" },
+      // 셀러별 고정 주문페이지 — URL은 그대로 두고 정적 shop.html이 slug를 읽어 방송을 표시
+      { source: "/shop/:seller", destination: "/shop.html" },
+      { source: "/shop/:seller/", destination: "/shop.html" },
     ];
   },
   // ERP는 단일 HTML — 배포 즉시 최신이 오도록 매번 재검증(캐시된 옛 버전 방지)
@@ -18,6 +21,8 @@ const nextConfig = {
       { source: "/erp-2a453c", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
       { source: "/erp-2a453c/", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
       { source: "/erp-2a453c/:path*", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
+      { source: "/shop.html", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
+      { source: "/shop/:seller*", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
     ];
   },
 };
