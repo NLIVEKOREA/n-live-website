@@ -1710,17 +1710,50 @@ function viewRx(){const all=mine(ORD).filter(o=>o.rxtype);const active=all.filte
   return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}${sellerTabs()}
   <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='done';render()">완료 ${done.length}</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
   ${RXVIEWTAB==='fault'?rxFaultBoard(all):(cur.length?cur.map(rxCard).join(''):`<div class="card"><div class="muted" style="padding:16px">${RXVIEWTAB==='active'?'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)':'완료된 건이 없습니다'}</div></div>`)}`;}
+/* ===== 판매현황 상태 분류 — 판매관리·출고장과 동일한 ORD 필드에서 실시간 판정 ===== */
+const SHP_STATES=[{k:'all',l:'전체'},{k:'unpack',l:'미포장'},{k:'pack',l:'포장(출고전)'},{k:'done',l:'출고완료'},{k:'back',l:'미송'},{k:'bundle',l:'합배'},{k:'exch',l:'교환중'},{k:'refund',l:'환불중'}];
+const SHP_STATE_PILL={unpack:['p-gray','미포장'],pack:['p-req','포장'],done:['p-done','출고완료'],back:['p-low','미송'],bundle:['p-purple','합배'],exch:['p-req','교환중'],refund:['p-low','환불중']};
+function saleStatus(o){
+  if(o.pay!=='paid')return null;
+  if(o.rxtype&&o.rxstat!=='done')return o.rxtype==='exchange'?'exch':'refund';
+  if(o.ship==='done'&&o.track)return 'done';
+  if(o.req==='미송'||o.back)return 'back';
+  if(o.req==='합배요청')return 'bundle';
+  return progOf(o)==='포장'?'pack':'unpack';
+}
+function statusBaseRows(){
+  if(SHPFROM===undefined){const ym=dataLastYM();SHPFROM=ym+'-01';SHPTO=ym+'-31';}
+  let rows=mine(ORD).filter(o=>o.pay==='paid').filter(o=>{const d=(o.date||'').replace(/\//g,'-');return (!SHPFROM||d>=SHPFROM)&&(!SHPTO||d<=SHPTO);});
+  if(SHPQ){if(SHPFIELD==='상품번호')rows=rows.filter(o=>inc(o.code,SHPQ)||inc(skuFullCode(o.code,o.color,o.size),SHPQ)||inc(itemLabel(o),SHPQ));else if(SHPFIELD==='번호표')rows=rows.filter(o=>inc(tagShow(o),SHPQ));else if(SHPFIELD==='송장')rows=rows.filter(o=>inc(o.track,SHPQ));else rows=rows.filter(o=>inc(o.cust,SHPQ));}
+  return rows;
+}
+function statusCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='ss:'+g.date+g.cust;
+  return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.cust}<span class="muted" style="font-size:12px;font-weight:400">${g.phone||''} · ${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
+    <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>상태</th><th>송장·CS</th></tr></thead><tbody>
+    ${g.items.map(o=>{const st=saleStatus(o),pill=SHP_STATE_PILL[st]||['p-gray',st||'-'];return `<tr>
+      <td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td>
+      <td><span class="pill ${pill[0]}">${pill[1]}</span></td>
+      <td>${o.ship==='done'&&o.track?`<span class="barcode muted">${esc(o.track)}</span> ${o.rxtype?`<span class="pill ${o.rxstat==='done'?'':'p-req'}">${RX_TYPES[o.rxtype].l}${o.rxstat==='done'?' 완료':' 진행'}</span>`:`<button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'refund')">반품</button>`}`:(o.rxtype&&o.rxstat!=='done'?`<span class="pill p-req">${RX_TYPES[o.rxtype].l} 진행</span>`:'<span class="muted">-</span>')}</td>
+    </tr>`;}).join('')}
+    </tbody></table></div>`;
+}
 function viewShipped(){
   if(SHPFROM===undefined){const ym=dataLastYM();SHPFROM=ym+'-01';SHPTO=ym+'-31';}
-  const rows=shippedRows(),groups=grpDC(rows),shown=groups.slice(0,120),total=rows.reduce((a,o)=>a+amtOf(o),0);
+  const base=statusBaseRows();
+  const counts={all:base.length};SHP_STATES.forEach(s=>{if(s.k!=='all')counts[s.k]=0;});
+  base.forEach(o=>{const st=saleStatus(o);if(st&&counts[st]!=null)counts[st]++;});
+  const rows=SHPSTATUS==='all'?base:base.filter(o=>saleStatus(o)===SHPSTATUS);
+  const groups=grpDC(rows),shown=groups.slice(0,120),total=rows.reduce((a,o)=>a+amtOf(o),0);
   const byDate={};shown.forEach(g=>{(byDate[g.date]=byDate[g.date]||[]).push(g);});
   let cards=Object.keys(byDate).sort((a,b)=>String(b).localeCompare(String(a))).map(d=>`
     <div class="date-div"><i class="ti ti-calendar" aria-hidden="true"></i> ${d||'-'} <span class="muted" style="font-weight:400">· ${byDate[d].length}명</span></div>
-    <div class="sg-grid">${byDate[d].map(g=>shippedCard(g)).join('')}</div>`).join('');
+    <div class="sg-grid">${byDate[d].map(g=>statusCard(g)).join('')}</div>`).join('');
   if(groups.length>shown.length)cards+=`<div class="muted" style="padding:12px">… 외 ${groups.length-shown.length}그룹 더</div>`;
-  if(!shown.length)cards='<div class="card"><div class="muted" style="padding:16px">해당 기간 출고 내역 없음 (출고장에서 송장 입력·출고완료하면 여기에 쌓여요)</div></div>';
+  if(!shown.length)cards='<div class="card"><div class="muted" style="padding:16px">해당 기간·상태에 해당하는 주문이 없습니다.</div></div>';
+  const statusTabs=`<div class="tabs" style="flex-wrap:wrap">${SHP_STATES.map(s=>`<button class="${SHPSTATUS===s.k?'on':''}" onclick="SHPSTATUS='${s.k}';render()">${s.l} ${counts[s.k]||0}</button>`).join('')}</div>`;
   return `
-  <div class="head"><h1>판매현황 <span class="badge">누적</span></h1><p>출고완료된 전체 판매내역 · 당월 기본 · 기간·고객·상품 검색</p></div>
+  <div class="head"><h1>판매현황 <span class="badge">상태별</span></h1><p>결제완료 주문을 상태별로 조회 · 판매관리·출고장과 실시간 연동 · 당월 기본</p></div>
   ${sellerTabs()}
   ${lockBanner()}
   <div class="card">
@@ -1739,7 +1772,8 @@ function viewShipped(){
       <input id="shpSearch" placeholder="${SHPFIELD} 입력 후 Enter" value="${SHPQ}" onkeydown="if(event.key==='Enter'){SHPQ=this.value.trim();render();}" style="width:200px">
       <button class="btn sm" onclick="SHPQ=document.getElementById('shpSearch').value.trim();render()">검색</button>${SHPQ?`<button class="btn sm gray" onclick="SHPQ='';render()">초기화</button>`:''}
     </div>
-    <div class="note">${SHPFROM||'처음'} ~ ${SHPTO||'끝'} · <b>${rows.length.toLocaleString()}건</b> · 출고액 <b>${won(total)}</b></div>
+    ${statusTabs}
+    <div class="note">${SHPFROM||'처음'} ~ ${SHPTO||'끝'} · <b>${(SHP_STATES.find(s=>s.k===SHPSTATUS)||{}).l}</b> <b>${rows.length.toLocaleString()}건</b> · 금액 <b>${won(total)}</b></div>
   </div>${cards}`;
 }
 
@@ -2377,7 +2411,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',SHPSTATUS='all',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,ship:viewShip,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao};
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}}
