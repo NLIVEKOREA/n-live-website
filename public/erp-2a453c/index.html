@@ -131,6 +131,7 @@
   .btn.ghost{background:#fff;color:var(--blue);border:1.5px solid #bdd3ff}
   .btn.gray{background:#fff;color:var(--gray);border:1.5px solid var(--line)}
   .btn.red{background:#fff;color:var(--red);border:1.5px solid #f3b4b4}
+  .btn.green{background:#059669;color:#fff;border:0}.btn.green:hover{background:#047857}
   .btn.sm{min-height:var(--control-sm-h);padding:5px 11px;font-size:12px;border-radius:7px}
   .grow{flex:1}
   .tabs{display:flex;gap:6px;margin-bottom:16px}
@@ -1468,8 +1469,8 @@ async function commitOrder(){
 /* ===== 판매관리 ===== */
 function viewSales(){
   return `
-  <div class="head"><h1>판매관리 <span class="badge">결제완료</span></h1>
-    <p><b>출고 대기</b>: 아직 안 나간 주문(기간·검색) → <b>출고 작업·완료</b>: 당일 송장입력·출고 처리 · 전체 누적은 판매현황 메뉴</p></div>
+  <div class="head"><h1>판매관리 <span class="badge">출고 처리</span></h1>
+    <p>💼 <b>여기서 하는 일</b>: 결제완료 주문을 <b>출고 요청·작업</b> · <b>출고 대기</b>(안 나간 주문) → <b>출고 작업·완료</b>(송장입력·출고) · <span class="muted">조회·취소·환불은 <b>판매현황</b> 메뉴에서</span></p></div>
   ${sellerTabs()}
   ${lockBanner()}
   ${SALETAB==='order'?saleToolbar():''}
@@ -1605,7 +1606,7 @@ function waitCard(list){
     ${c.lines.map(o=>`<div class="sg-row"><span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}</span><span class="sg-qty">${o.qty}개</span>
       <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span></div>`).join('')}
     </div>
-    <div class="sg-foot"><input id="trk_wait_${i}" placeholder="송장번호 입력"><button class="btn" onclick="shipWait(${i})">✅ 출고완료</button></div>
+    <div class="sg-foot"><input id="trk_wait_${i}" placeholder="송장번호 입력"><button class="btn green" onclick="shipWait(${i})">✅ 출고완료</button></div>
   </div>`).join('')+'</div></div>';
 }
 function manageCards(list,cat){
@@ -1629,7 +1630,7 @@ function manageCards(list,cat){
         ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
       </div>`}).join('')}
     </div>
-    <div class="sg-foot"><input id="trk_${cat}_${i}" placeholder="송장번호 입력"><button class="btn" onclick="shipChecked('${cat}',${i})">✅ 출고완료</button></div>
+    <div class="sg-foot"><input id="trk_${cat}_${i}" placeholder="송장번호 입력"><button class="btn green" onclick="shipChecked('${cat}',${i})">✅ 출고완료</button></div>
   </div>`).join('')+'</div></div>';
 }
 function shipToggle(id){if(SHIPCHK.has(id))SHIPCHK.delete(id);else SHIPCHK.add(id);render();}
@@ -1678,7 +1679,7 @@ function custPopBody(){
         ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
       </div>`}).join('')}
     </div>
-    <div class="sg-foot"><input id="ptrk" placeholder="송장번호 입력"><button class="btn" onclick="shipPopAction()">✅ 출고완료</button></div>`;
+    <div class="sg-foot"><input id="ptrk" placeholder="송장번호 입력"><button class="btn green" onclick="shipPopAction()">✅ 출고완료</button></div>`;
 }
 async function shipPopAction(){
   const cat=CUSTPOP.cat,c=openCustomers().filter(x=>x.cat===cat)[CUSTPOP.i];if(!c)return;
@@ -1999,7 +2000,7 @@ function viewStock(){
   const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
   const flist=stockFilterSort();const stotal=flist.length;const spages=Math.max(1,Math.ceil(stotal/STOCK_PGSIZE));const spg=Math.min(STOCKPAGE,spages);const sfrom=(spg-1)*STOCK_PGSIZE;const rows=flist.slice(sfrom,sfrom+STOCK_PGSIZE);
   const selN=STAGED.filter(x=>x.chk).length;
-  const searchBox=`<select onchange="STOCKFIELD=this.value;render()" style="padding:9px 12px;border-radius:9px;font-size:13px;font-weight:700">${['전체','번호표','품목코드','품목명'].map(f=>`<option ${STOCKFIELD===f?'selected':''}>${f}</option>`).join('')}</select><input id="stockSearch" placeholder="🔍 ${STOCKFIELD==='전체'?'번호표·품목코드·품목명':STOCKFIELD} 입력 후 Enter" onkeydown="if(event.key==='Enter')render()" value="${q}" style="width:320px;font-size:14px">`;
+  const searchBox=`<select onchange="STOCKFIELD=this.value;render()" style="padding:9px 12px;border-radius:9px;font-size:13px;font-weight:700">${['전체','번호표','품목코드','품목명'].map(f=>`<option ${STOCKFIELD===f?'selected':''}>${f}</option>`).join('')}</select><input id="stockSearch" placeholder="🔍 ${STOCKFIELD==='전체'?'번호표·품목코드·품목명':STOCKFIELD} 입력 후 Enter" onkeydown="if(event.key==='Enter'){STOCKPAGE=1;render()}" value="${q}" style="width:min(320px,100%);font-size:14px"><button class="btn sm" onclick="STOCKPAGE=1;render()"><i class="ti ti-search"></i> 검색</button>${q?`<button class="btn sm gray" onclick="document.getElementById('stockSearch').value='';STOCKPAGE=1;render()">초기화</button>`:''}`;
   return `
   <div class="head"><h1>재고관리 <span class="badge">핵심</span></h1>
     <p>대량 입고는 아래 <b>품목 등록</b>에서 작업 · 빠른 수정은 재고현황의 품목 클릭(팝업) · 바코드 스캔 입출고</p></div>
