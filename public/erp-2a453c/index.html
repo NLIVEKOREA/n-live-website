@@ -1752,9 +1752,11 @@ function rxTypeLabel(o){return o.rxtype==='refund'?((o.ship==='done'&&o.track)?'
 let CANCELDRAFT=null;
 function cancelSale(id,kind){const o=ORD.find(x=>x.id===id);if(!o)return;CANCELDRAFT={id,kind:kind||'취소',amount:amtOf(o),toPoints:false};renderCancelModal(o);}
 function renderCancelModal(o){const d=CANCELDRAFT;const bal=custPoints(o.cust);
+  const ptl=ORD.find(x=>x.cust===o.cust&&x.date===o.date&&x.code==='적립금');const usedPt=ptl?Math.abs(ptl.price||0):0;
   $('#modalBox').className='modal-box';
   $('#modalBox').innerHTML=`<h3>${d.kind} 처리</h3>
     <div class="note" style="margin-bottom:12px"><b>${esc(o.cust)}</b> · ${itemLabel(o)} ×${o.qty} · ${won(amtOf(o))}</div>
+    ${usedPt>0?`<div class="note" style="background:#f0fdf4;border:1px solid #b9e6c9;color:#059669;margin-bottom:12px">💰 이 주문에 사용한 적립금 <b>${won(usedPt)}</b>은 ${d.kind} 시 <b>자동으로 고객에게 환원</b>됩니다</div>`:''}
     <label>환불 금액</label><input id="cxAmt" type="number" value="${d.amount}" oninput="CANCELDRAFT.amount=parseInt(this.value)||0" style="font-size:15px;font-weight:700">
     <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;font-weight:700"><input type="checkbox" ${d.toPoints?'checked':''} onchange="CANCELDRAFT.toPoints=this.checked;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))"> 💰 현금 환불 대신 <b style="color:#059669">적립금으로 적립</b></label>
     <div class="note" style="margin-top:10px">${d.toPoints?`💰 <b>${esc(o.cust)}</b> 적립금 <b style="color:#059669">+${won(d.amount)}</b> (현재 ${won(bal)} → <b>${won(bal+d.amount)}</b>)`:'💵 현금/계좌 환불은 사장님이 직접 처리하세요. 차감됐던 재고는 복원됩니다.'}</div>
@@ -1766,13 +1768,16 @@ async function cancelSaleCommit(){const d=CANCELDRAFT;if(!d)return;const o=ORD.f
   closeModal();CANCELDRAFT=null;
   toast('🗑️ '+kind+' 처리 → 재고 복원'+(toP?' · 적립금 +'+won(amt):''));render();
   await delOrd(o);if(s)await adjustStockDB(s,o.qty,kind,cust);
+  // 이 주문에 사용한 적립금이 있으면 자동 환원(1회) + 적립금 라인 제거
+  const ptLine=ORD.find(x=>x.cust===cust&&x.date===o.date&&x.code==='적립금');
+  if(ptLine){const used=Math.abs(ptLine.price||0);const pi=ORD.indexOf(ptLine);if(pi>=0)ORD.splice(pi,1);await delOrd(ptLine);if(used>0){await addPoints(cust,used,'적립복원',{item:kind+' 환원',amount:used});toast('💰 사용한 적립금 '+won(used)+' 자동 환원');render();}}
   if(toP)await addPoints(cust,amt,kind,{item,amount:amt,reason:'적립금 적립'});
   else await logCust(cust,kind,{item,amount:amt,reason:'현금/계좌 환불'});
 }
 /* 판매현황 상태별 액션 버튼 — 출고완료: 교환/반품 · 미출고: 환불/취소 */
 function csActionCell(o){const B='btn sm ghost',ST='padding:3px 7px;font-size:11px';
   if(o.rxtype)return `<span class="pill ${o.rxstat==='done'?'':'p-req'}">${rxTypeLabel(o)}${o.rxstat==='done'?' 완료':' 진행'}</span>`;
-  if(o.code==='배송비'||o.code==='낱장')return (o.ship==='done'&&o.track)?`<span class="barcode muted">${esc(o.track)}</span>`:'<span class="muted">-</span>';
+  if(o.code==='배송비'||o.code==='낱장'||o.code==='적립금')return (o.ship==='done'&&o.track)?`<span class="barcode muted">${esc(o.track)}</span>`:'<span class="muted">-</span>';
   if(o.ship==='done'&&o.track)return `<span class="barcode muted">${esc(o.track)}</span> <button class="${B}" style="${ST}" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="${B}" style="${ST}" onclick="rxOpen(${o.id},'refund')">반품</button>`;
   return `<button class="${B}" style="${ST}" onclick="cancelSale(${o.id},'환불')">환불</button><button class="btn sm red ghost" style="${ST}" onclick="cancelSale(${o.id},'취소')">취소</button>`;
 }
