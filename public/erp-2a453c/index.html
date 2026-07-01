@@ -477,7 +477,9 @@ const ORD2DB=o=>{const r={order_date:_toDate(o.date),staff:o.staff,cust:o.cust,p
 async function dbFetchAll(table,col,asc){let all=[],f=0;const sz=1000;while(true){const {data,error}=await SB.from(table).select('*').order(col,{ascending:asc!==false}).range(f,f+sz-1);if(error){console.error(table,error);break;}all=all.concat(data||[]);if(!data||data.length<sz)break;f+=sz;}return all;}
 let SHIPPING=[];
 let SCHED=[];
-let LIVE_SESS=[],SESS_PROD=[];/* 라이브 판매: 방송 세션 + 방송 상품 */
+let LIVE_SESS=[],SESS_PROD=[],PIMG={};/* 라이브 판매: 방송 세션 + 방송 상품 + 품번별 상품사진 */
+const baseCode=c=>String(c||'').split('-')[0];/* 품번 base(색상/사이즈 접미사 제거) */
+const baseName=(nm,color,size)=>{let s=String(nm||'');if(color)s=s.split(color).join('');if(size)s=s.replace(new RegExp('\\\\b'+size+'\\\\b'),'');return s.replace(/\\s+/g,' ').trim()||nm;};
 /* 사용자 개인설정 — 위젯배치/목록·SNS·목표·무료배송기준을 계정별로 DB(user_prefs)에 영구저장.
    어느 기기에서 로그인해도 본인 설정 유지. ME.auth_id 없으면 localStorage 폴백. */
 let PREFS={},_savePrefsT=null;
@@ -512,7 +514,8 @@ async function dbLoadAll(){
     EMPLOYEES.length=0;(em.data||[]).forEach(r=>EMPLOYEES.push(r));
     SCHED=(bs&&bs.data)||[];
     try{const ls=await SB.from('live_sessions').select('*').order('id',{ascending:false});LIVE_SESS=(ls&&ls.data)||[];
-        const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];}catch(e){console.warn('live load',e);LIVE_SESS=LIVE_SESS||[];SESS_PROD=SESS_PROD||[];}
+        const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];
+        const pi=await SB.from('product_images').select('*');PIMG={};((pi&&pi.data)||[]).forEach(r=>{PIMG[r.code]=r.url;});}catch(e){console.warn('live load',e);LIVE_SESS=LIVE_SESS||[];SESS_PROD=SESS_PROD||[];PIMG=PIMG||{};}
     if(window.ME&&(ME.scope==='all'||ME.scope==='logi')){try{const sc=await SB.from('stock_cost').select('*');if(sc&&sc.data){const cm={};sc.data.forEach(r=>cm[r.stock_id]=r.in_price);STOCK.forEach(s=>{s.in_price=cm[s.id]!=null?cm[s.id]:0;});}}catch(e){console.error('cost',e);}}else{STOCK.forEach(s=>{s.in_price=0;});}
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
 }
@@ -1227,7 +1230,7 @@ function orderStatusCards(pay){
         ${g.phone?`<div class="oc-sub">📞 ${g.phone}</div>`:''}
         <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}</span><span class="muted">${o.qty}개</span><span class="oc-amt">${won(amtOf(o))}</span></div>`).join('')}</div>
         ${pay==='unpaid'
-          ?`<div class="oc-btns"><button class="btn sm ghost" onclick="openOrderSheet(${idx})">주문서</button><button class="btn sm ghost" onclick="editOrderGroup(${idx})">✏️수정</button><select id="pw${idx}" class="oc-pw"><option>현금</option><option>카드</option></select></div><div class="oc-btns" style="border-top:0;padding-top:6px"><button class="btn sm" onclick="payGroup(${idx})">입금확인</button><button class="btn sm red" onclick="cancelGroupBtn(${idx})">취소</button>${g.items.some(o=>o.source==='shop')?`<button class="btn sm ghost" onclick="liveExtendGroup(${idx})" title="가예약 시간 연장">⏰ 예약연장</button>`:''}</div>`
+          ?`<div class="oc-btns"><button class="btn sm ghost" onclick="openOrderSheet(${idx})">주문서</button><button class="btn sm ghost" onclick="editOrderGroup(${idx})">✏️수정</button><select id="pw${idx}" class="oc-pw"><option>현금</option><option>카드</option></select></div><div class="oc-btns" style="border-top:0;padding-top:6px"><button class="btn sm" onclick="payGroup(${idx})">입금확인</button><button class="btn sm red" onclick="cancelGroupBtn(${idx})">취소</button></div>`
           :`<div class="oc-btns"><span class="muted" style="align-self:center;font-size:12px">💳 ${g.items[0].payway||'-'}</span><button class="btn sm gray" style="margin-left:auto;flex:0 0 auto" onclick="unpayGroup(${idx})">↩ 입금확인 취소</button></div>`}
       </div>`}).join('')}
     </div>`).join('');
@@ -2839,7 +2842,7 @@ function liveStatusPill(st){return st==='open'?'<span class="pill p-done">● LI
 function liveUrl(slug){return LIVE_BASE+'/shop/'+slug;}
 function liveProdsOf(id){return (SESS_PROD||[]).filter(p=>p.session_id===id).sort((a,b)=>(a.sort-b.sort)||(a.id-b.id));}
 async function liveReload(){try{const ls=await SB.from('live_sessions').select('*').order('id',{ascending:false});LIVE_SESS=(ls&&ls.data)||[];const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];}catch(e){console.error('liveReload',e);}render();}
-function shopBadge(g){if(!g||!g.items)return '';const shop=g.items.some(o=>o.source==='shop');if(!shop)return '';const now=Date.now();const expired=g.items.some(o=>o.source==='shop'&&o.pay==='unpaid'&&o.reservation_expires_at&&new Date(o.reservation_expires_at).getTime()<now);return '<span class="pill" style="background:#eef3ff;color:#1d4ed8">🔗 링크주문</span>'+(expired?'<span class="pill" style="background:#fde8e8;color:#b91c1c">⏰ 예약만료</span>':'');}
+function shopBadge(g){if(!g||!g.items)return '';const shop=g.items.some(o=>o.source==='shop');if(!shop)return '';return '<span class="pill" style="background:#eef3ff;color:#1d4ed8">🔗 링크주문</span>';}
 
 function viewLive(){
   if(LIVEEDIT!=null){const s=(LIVE_SESS||[]).find(x=>x.id===LIVEEDIT);if(s)return liveDetail(s);LIVEEDIT=null;}
@@ -2874,7 +2877,6 @@ function liveNew(){
       <label>공지 / 배송·교환 안내</label><textarea id="lv_notice" rows="2" placeholder="교환·반품 정책 등"></textarea>
       <div class="row2"><div><label>기본 배송비(원)</label><input id="lv_ship" type="number" value="4000"></div>
         <div><label>무료배송 기준(원, 0=없음)</label><input id="lv_free" type="number" value="0"></div></div>
-      <label>재고 가예약 시간(분)</label><input id="lv_resv" type="number" value="30">
     </div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="liveSaveNew()">만들기</button></div>`;
   $('#modal').classList.remove('hide');
@@ -2885,7 +2887,7 @@ async function liveSaveNew(){
   if(!seller){toast('담당 셀러를 입력하세요');return;}
   if(!slug){toast('고정 주소(slug)를 입력하세요');return;}
   const row={seller,slug,title:title||seller+' 라이브',notice:$('#lv_notice').value.trim()||null,status:'draft',
-    ship_fee:+$('#lv_ship').value||0,free_ship_min:+$('#lv_free').value||0,reserve_min:+$('#lv_resv').value||30};
+    ship_fee:+$('#lv_ship').value||0,free_ship_min:+$('#lv_free').value||0,reserve_min:30};
   try{const {data,error}=await SB.from('live_sessions').insert(row).select().single();
     if(error){console.error(error);toast('⚠️ 생성 실패: '+(error.message||''));return;}
     closeModal();LIVEEDIT=data.id;await liveReload();toast('✅ 방송 생성 — 상품을 추가하세요');
@@ -2919,8 +2921,7 @@ function liveDetail(s){
       <label class="lbl">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
       <div class="row2" style="margin-top:8px"><div><label class="lbl">배송비</label><input id="ld_ship" type="number" value="${s.ship_fee}"></div>
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
-      <div class="row2" style="margin-top:8px"><div><label class="lbl">가예약 시간(분)</label><input id="ld_resv" type="number" value="${s.reserve_min}"></div><div></div></div>
-      <div style="margin-top:10px"><button class="btn sm" onclick="liveSaveSettings(${s.id})">설정 저장</button></div>
+      <div style="margin-top:12px"><button class="btn sm" onclick="liveSaveSettings(${s.id})">설정 저장</button></div>
     </div>
     <div class="card2">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📦 방송 상품 <span class="muted" style="font-weight:400;font-size:12px">${prods.length}개</span></h3>
@@ -2930,24 +2931,24 @@ function liveDetail(s){
       ${prods.length?`<div class="muted" style="font-size:12px;margin-bottom:8px">💡 <b>노출</b>이 <b>☑ 노출중</b>(초록)이어야 고객 URL에 보입니다. <b>☐ 숨김</b>은 안 보여요. 상품은 담으면 기본 노출중입니다.</div><div style="overflow:auto"><table class="tbl"><thead><tr><th>순서</th><th>상품</th><th>옵션</th><th class="num-cell">방송가</th><th>소개중</th><th>고객 노출</th><th></th></tr></thead><tbody>
         ${prods.map((p,i)=>{const opts=liveOptText(p);return `<tr>
           <td style="white-space:nowrap"><button class="ico-btn" onclick="liveMove(${p.id},-1)" ${i===0?'disabled':''}>▲</button><button class="ico-btn" onclick="liveMove(${p.id},1)" ${i===prods.length-1?'disabled':''}>▼</button></td>
-          <td><b>${esc(p.name)}</b>${p.stock_code?`<br><span class="muted" style="font-size:11px">품번 ${esc(p.stock_code)}</span>`:'<br><span class="pill p-req" style="font-size:10px">캡처</span>'}</td>
+          <td><div style="display:flex;gap:8px;align-items:center">${p.image_url?`<img src="${esc(p.image_url)}" alt="" style="width:38px;height:38px;object-fit:cover;border-radius:7px;flex:0 0 auto">`:''}<div>${p.stock_code?`<span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:10px;font-weight:800">${esc(baseCode(p.stock_code))}</span> `:'<span class="pill p-req" style="font-size:10px">캡처</span> '}<b>${esc(p.name)}</b></div></div></td>
           <td class="muted" style="font-size:12px;max-width:180px">${esc(opts)}</td>
           <td class="num-cell"><input type="number" value="${p.live_price}" style="width:92px" onchange="liveSetPrice(${p.id},this.value)"></td>
           <td><button class="btn sm ${p.is_now?'':'gray'}" onclick="liveToggleNow(${p.id})" title="지금 방송에서 소개 중인 상품(고객화면 상단 강조)">${p.is_now?'★ 소개중':'☆ 지정'}</button></td>
           <td><button class="btn sm ${p.active?'green':'gray'}" onclick="liveToggleActive(${p.id})" title="체크되면 고객 URL에 노출됩니다 (누르면 켜기/끄기)">${p.active?'☑ 노출중':'☐ 숨김'}</button></td>
-          <td><button class="btn sm red ghost" onclick="liveDelProduct(${p.id})">삭제</button></td>
+          <td style="white-space:nowrap">${p.stock_code?`<button class="btn sm ghost" onclick="livePhotoModal('${escAttr(baseCode(p.stock_code))}')" title="상품사진 등록/변경">📷</button> `:''}<button class="btn sm red ghost" onclick="liveDelProduct(${p.id})">삭제</button></td>
         </tr>`;}).join('')}
       </tbody></table></div>`:`<div class="muted" style="padding:16px">상품을 추가하세요. [ERP 상품 연결]은 재고·옵션이 자동 연동되고, [캡처 이미지 상품]은 사진을 올려 판매합니다.</div>`}
     </div>`;
 }
 function liveOptText(p){
-  if(p.stock_code){const rows=STOCK.filter(x=>x.code===p.stock_code);const cols=[...new Set(rows.map(r=>r.color).filter(Boolean))],szs=[...new Set(rows.map(r=>r.size).filter(Boolean))];
+  if(p.stock_code){const b=baseCode(p.stock_code);const rows=STOCK.filter(x=>baseCode(x.code)===b);const cols=[...new Set(rows.map(r=>r.color).filter(Boolean))],szs=[...new Set(rows.map(r=>r.size).filter(Boolean))];
     return (cols.join(',')||'-')+' / '+(szs.join(',')||'-')+' · 재고연동';}
   return [(p.colors||'-'),(p.sizes||'-')].join(' / ');
 }
 async function liveSaveSettings(id){
   const row={title:$('#ld_title').value.trim(),seller:$('#ld_seller').value.trim(),notice:$('#ld_notice').value.trim()||null,
-    ship_fee:+$('#ld_ship').value||0,free_ship_min:+$('#ld_free').value||0,reserve_min:+$('#ld_resv').value||30};
+    ship_fee:+$('#ld_ship').value||0,free_ship_min:+$('#ld_free').value||0};
   try{const {error}=await SB.from('live_sessions').update(row).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패: '+(error.message||''));return;}
     toast('✅ 설정 저장');await liveReload();}catch(e){console.error(e);toast('⚠️ 저장 오류');}
 }
@@ -2991,23 +2992,67 @@ function liveAddSearch(sid){
 function liveFinishAdd(){closeModal();render();}
 function liveSearchRun(){
   const q=($('#lv_q').value||'').trim();const el=$('#lv_res');if(!el)return;
-  const added=new Set(liveProdsOf(window._liveAddSid).map(p=>p.stock_code).filter(Boolean));
+  const addedBases=new Set(liveProdsOf(window._liveAddSid).map(p=>baseCode(p.stock_code)).filter(Boolean));
   const seen={};const groups=[];
-  STOCK.forEach(s=>{if(q&&!inc(s.code,q)&&!inc(s.name,q))return;if(seen[s.code]!=null)return;seen[s.code]=1;
-    const rows=STOCK.filter(x=>x.code===s.code);const qty=rows.reduce((a,r)=>a+(r.qty||0),0);
-    groups.push({code:s.code,name:s.name,price:s.price,qty});});
-  el.innerHTML=groups.length?groups.slice(0,60).map(g=>{const on=added.has(g.code);return `
-    <button class="lv-pick" ${on?'disabled':''} onclick="liveAddStock('${escAttr(g.code)}')" style="display:flex;width:100%;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);border-radius:10px;padding:11px;margin-bottom:7px;background:${on?'#eef7ee':'#fff'};cursor:${on?'default':'pointer'}">
-      <span style="flex:1;min-width:0"><b>${esc(g.name)}</b><br><span class="muted" style="font-size:11px">품번 ${esc(g.code)} · 재고 ${g.qty} · ${won(g.price||0)}</span></span>
-      <span class="btn sm ${on?'gray':'green'}" style="pointer-events:none;flex:0 0 auto">${on?'✓ 담김':'+ 담기'}</span>
-    </button>`;}).join(''):`<div class="muted" style="padding:12px">${q?'검색 결과 없음':'등록된 재고가 없습니다.'}</div>`;
+  STOCK.forEach(s=>{const b=baseCode(s.code);if(!b)return;
+    if(q&&!inc(s.code,q)&&!inc(s.name,q))return;
+    if(seen[b]!=null)return;seen[b]=1;
+    const rows=STOCK.filter(x=>baseCode(x.code)===b);
+    const colors=[...new Set(rows.map(r=>r.color).filter(Boolean))];
+    const sizes=[...new Set(rows.map(r=>r.size).filter(Boolean))];
+    const qty=rows.reduce((a,r)=>a+(r.qty||0),0);
+    groups.push({base:b,name:baseName(s.name,s.color,s.size),price:s.price,qty,colors,sizes,img:PIMG[b]||''});});
+  el.innerHTML=groups.length?groups.slice(0,80).map(g=>{const on=addedBases.has(g.base);return `
+    <div style="display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px;margin-bottom:7px;background:${on?'#eef7ee':'#fff'}">
+      <button onclick="livePhotoModal('${escAttr(g.base)}')" title="상품사진 등록/변경 (품번 연동)" style="border:0;background:none;padding:0;cursor:pointer;flex:0 0 auto">${g.img?`<img src="${esc(g.img)}" alt="" style="width:46px;height:46px;object-fit:cover;border-radius:8px;display:block">`:'<span style="width:46px;height:46px;border-radius:8px;background:#eef1f6;display:grid;place-items:center;font-size:16px;color:#9aa">📷</span>'}</button>
+      <button ${on?'disabled':''} onclick="liveAddStock('${escAttr(g.base)}')" style="flex:1;min-width:0;text-align:left;border:0;background:none;cursor:${on?'default':'pointer'};padding:0">
+        <span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:11px;font-weight:800">${esc(g.base)}</span> <b>${esc(g.name)}</b><br>
+        <span class="muted" style="font-size:11px">${g.colors.length?'색상 '+g.colors.length+'개('+g.colors.join('/')+')':'옵션없음'}${g.sizes.length?' · 사이즈 '+g.sizes.join('/'):''} · 재고 ${g.qty} · ${won(g.price||0)}</span>
+      </button>
+      <button class="btn sm ${on?'gray':'green'}" ${on?'disabled':''} onclick="liveAddStock('${escAttr(g.base)}')" style="flex:0 0 auto">${on?'✓ 담김':'+ 담기'}</button>
+    </div>`;}).join(''):`<div class="muted" style="padding:12px">${q?'검색 결과 없음':'등록된 재고가 없습니다.'}</div>`;
 }
-async function liveAddStock(code){
-  const sid=window._liveAddSid;const st=STOCK.find(x=>x.code===code);if(!st)return;
+/* 품번별 상품사진 등록(물류팀 입고사진 · 영구보관 · 방송연결 시 자동 사용) */
+function livePhotoModal(base){
+  window._photoBase=base;const cur=PIMG[base]||'';
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📷 상품사진 · 품번 ${esc(base)}</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+    <div class="muted" style="font-size:12px;margin-bottom:10px">한 번 등록하면 이 품번(${esc(base)})의 모든 방송에서 자동으로 사용됩니다. (입고 때 미리 등록해두면 편해요)</div>
+    <div id="pm_paste" tabindex="0" style="border:2px dashed #cbd5e1;border-radius:10px;padding:18px;text-align:center;color:#667085;font-size:13px;cursor:text;outline:none">📋 여기를 클릭 후 <b>Ctrl+V</b>로 사진 붙여넣기<br><span style="font-size:11px">또는 아래에서 파일 선택</span></div>
+    <div style="font-size:12px;color:#98a2b3;margin-top:8px">파일: <input id="pm_img" type="file" accept="image/*"></div>
+    <img id="pm_prev" alt="" src="${esc(cur)}" style="display:${cur?'block':'none'};max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--line);margin-top:8px">
+    <div class="modal-foot">${cur?`<button class="btn red ghost" onclick="livePhotoDelete('${escAttr(base)}')">사진 삭제</button>`:''}<span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="pm_save" onclick="livePhotoSave()">저장</button></div>`;
+  $('#modal').classList.remove('hide');liveBindPaste('pm_paste','pm_prev','_photoBlob');
+}
+async function livePhotoSave(){
+  const base=window._photoBase;const f=$('#pm_img').files[0];const src=window._photoBlob||f;
+  if(!src){toast('사진을 붙여넣거나 파일을 선택하세요');return;}
+  const btn=$('#pm_save');btn.disabled=true;btn.textContent='업로드 중...';
+  try{const blob=await liveCompress(src);const path='products/'+base+'_'+Date.now()+'.jpg';
+    const {error:ue}=await SB.storage.from('live').upload(path,blob,{contentType:'image/jpeg',upsert:true});
+    if(ue){console.error(ue);toast('⚠️ 업로드 실패');btn.disabled=false;btn.textContent='저장';return;}
+    const {data:pub}=SB.storage.from('live').getPublicUrl(path);const url=pub&&pub.publicUrl;
+    const {error}=await SB.from('product_images').upsert({code:base,url,updated_at:new Date().toISOString()});
+    if(error){console.error(error);toast('⚠️ 저장 실패: '+(error.message||''));btn.disabled=false;btn.textContent='저장';return;}
+    PIMG[base]=url;
+    /* 이 품번을 이미 담은 방송상품들 이미지도 갱신 */
+    try{await SB.from('session_products').update({image_url:url}).eq('stock_code',base);SESS_PROD.forEach(p=>{if(p.stock_code===base)p.image_url=url;});}catch(e){console.error(e);}
+    closeModal();toast('✅ 상품사진 등록: 품번 '+base);if($('#lv_res'))liveSearchRun();render();
+  }catch(e){console.error(e);toast('⚠️ 오류');btn.disabled=false;btn.textContent='저장';}
+}
+async function livePhotoDelete(base){
+  if(!confirm('품번 '+base+' 상품사진을 삭제할까요?'))return;
+  try{await SB.from('product_images').delete().eq('code',base);delete PIMG[base];
+    await SB.from('session_products').update({image_url:null}).eq('stock_code',base);SESS_PROD.forEach(p=>{if(p.stock_code===base)p.image_url=null;});
+    closeModal();toast('사진 삭제됨');if($('#lv_res'))liveSearchRun();render();}catch(e){console.error(e);toast('⚠️ 오류');}
+}
+async function liveAddStock(base){
+  const sid=window._liveAddSid;
+  const rows=STOCK.filter(x=>baseCode(x.code)===base);if(!rows.length)return;
+  const st=rows[0];const nm=baseName(st.name,st.color,st.size);
   const sort=(liveProdsOf(sid).reduce((m,p)=>Math.max(m,p.sort),0))+1;
-  try{const {error}=await SB.from('session_products').insert({session_id:sid,stock_code:code,name:st.name,live_price:st.price||0,sort,active:true});
+  try{const {error}=await SB.from('session_products').insert({session_id:sid,stock_code:base,name:nm,live_price:st.price||0,image_url:PIMG[base]||null,sort,active:true});
     if(error){console.error(error);toast('⚠️ 추가 실패: '+(error.message||''));return;}
-    toast('✅ 담김: '+st.name);
+    toast('✅ 담김: '+nm+' (옵션 '+[...new Set(rows.map(r=>r.color).filter(Boolean))].length+'색)');
     try{const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];}catch(e){console.error(e);}
     liveSearchRun();const c=$('#lv_cnt');if(c)c.textContent='담은 상품 '+liveProdsOf(sid).length+'개';
   }catch(e){console.error(e);toast('⚠️ 오류');}
@@ -3022,11 +3067,18 @@ function liveAddCapture(sid){
         <div><label>최대수량(0=제한없음)</label><input id="lc_max" type="number" value="0"></div></div>
       <label>색상 (쉼표로 구분)</label><input id="lc_colors" placeholder="크림,블랙">
       <label>사이즈 (쉼표로 구분)</label><input id="lc_sizes" placeholder="F 또는 S,M,L">
-      <label>상품 이미지 (방송 캡처)</label><input id="lc_img" type="file" accept="image/*">
-      <div id="lc_prev" class="muted" style="font-size:12px;margin-top:6px">이미지를 선택하면 자동 압축 후 업로드됩니다.</div>
+      <label>상품 이미지</label>
+      <div id="lc_paste" tabindex="0" style="border:2px dashed #cbd5e1;border-radius:10px;padding:16px;text-align:center;color:#667085;font-size:13px;cursor:text;outline:none">📋 여기를 <b>클릭</b>한 뒤 <b>Ctrl+V</b>로 방송화면 캡처를 붙여넣으세요<br><span style="font-size:11px">(캡처: Win+Shift+S 로 화면 영역 복사 후 여기서 붙여넣기)</span></div>
+      <div style="font-size:11px;color:#98a2b3;margin-top:6px">또는 파일 선택: <input id="lc_img" type="file" accept="image/*" style="display:inline-block"></div>
+      <img id="lc_previmg" alt="" style="display:none;max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--line);margin-top:8px">
     </div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="lc_save" onclick="liveSaveCapture()">추가</button></div>`;
-  $('#modal').classList.remove('hide');
+  $('#modal').classList.remove('hide');liveBindPaste('lc_paste','lc_previmg','_lcPasteBlob');
+}
+function liveBindPaste(zoneId,prevId,slot){
+  window[slot]=null;const zone=$('#'+zoneId);if(!zone)return;
+  zone.addEventListener('paste',e=>{const items=(e.clipboardData||{}).items||[];for(const it of items){if(it.type&&it.type.indexOf('image')===0){const f=it.getAsFile();if(f){window[slot]=f;const pv=$('#'+prevId);if(pv){pv.src=URL.createObjectURL(f);pv.style.display='block';}zone.innerHTML='✅ 붙여넣기 완료 — 다시 붙여넣으면 교체됩니다';toast('📋 이미지 붙여넣기 완료');}e.preventDefault();return;}}});
+  const fi=$('#lc_img');if(fi)fi.addEventListener('change',()=>{const f=fi.files[0];if(f){window[slot]=null;const pv=$('#'+prevId);if(pv){pv.src=URL.createObjectURL(f);pv.style.display='block';}}});
 }
 function liveCompress(file){return new Promise((res,rej)=>{const img=new Image();const fr=new FileReader();
   fr.onload=()=>{img.onload=()=>{const max=1080;let w=img.width,h=img.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;}}
@@ -3036,9 +3088,10 @@ async function liveSaveCapture(){
   const sid=window._liveAddSid;const name=$('#lc_name').value.trim();const price=+$('#lc_price').value||0;
   if(!name){toast('상품명을 입력하세요');return;}if(price<=0){toast('방송가를 입력하세요');return;}
   const btn=$('#lc_save');btn.disabled=true;btn.textContent='업로드 중...';
-  let image_url=null;const f=$('#lc_img').files[0];
+  let image_url=null;const f=$('#lc_img').files[0];const pasted=window._lcPasteBlob;
   try{
-    if(f){const blob=await liveCompress(f);const path=liveSlugify((LIVE_SESS.find(x=>x.id===sid)||{}).seller||'s')+'/'+sid+'/'+Date.now()+'.jpg';
+    const srcBlob=pasted||f;
+    if(srcBlob){const blob=await liveCompress(srcBlob);const path=liveSlugify((LIVE_SESS.find(x=>x.id===sid)||{}).seller||'s')+'/'+sid+'/'+Date.now()+'.jpg';
       const {error:ue}=await SB.storage.from('live').upload(path,blob,{contentType:'image/jpeg',upsert:true});
       if(ue){console.error('upload',ue);toast('⚠️ 이미지 업로드 실패 — 이미지 없이 등록합니다');}
       else{const {data:pub}=SB.storage.from('live').getPublicUrl(path);image_url=pub&&pub.publicUrl||null;}}

@@ -61,6 +61,9 @@ button,input,select,textarea{font:inherit}
 .toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 16px;border-radius:10px;font-size:13px;z-index:60;opacity:0;transition:.2s;pointer-events:none;max-width:90%;text-align:center}
 .toast.show{opacity:1}
 .badge{display:inline-block;background:#e9f8ee;color:#15803d;border-radius:6px;padding:3px 7px;font-size:11px;font-weight:800;margin-left:6px}
+.numtag{display:inline-block;background:#e8efff;color:#1d4ed8;border-radius:5px;padding:2px 6px;font-size:11px;font-weight:900;vertical-align:middle}
+.remembered{background:#eef7ee;border:1px solid #cde8cd;border-radius:10px;padding:10px 12px;font-size:12px;color:#256029;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.remembered a{color:#1d4ed8;cursor:pointer;text-decoration:underline;margin-left:auto;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -140,7 +143,7 @@ function renderHome(){
     return `<button class="product ${p.is_now?'now':''} ${so?'soldout':''}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
       ${so?'<span class="soldout-tag">품절</span>':''}
       <div class="pimg" ${img}>${p.image_url?'':'상품이미지'}</div>
-      <div class="ptxt"><b>${esc(p.name)}</b><div class="price">${won(p.live_price)}</div></div></button>`;
+      <div class="ptxt">${p.code?`<span class="numtag">${esc(p.code)}번</span> `:''}<b>${esc(p.name)}</b><div class="price">${won(p.live_price)}</div></div></button>`;
   }).join('')}</div>`:`<div class="center" style="min-height:200px">등록된 상품이 곧 올라옵니다.</div>`;
   $('#app').innerHTML=appbar(s.seller+' SHOP')+cover+
     `<div class="sec"><div class="seller"><div class="avatar">${esc((s.seller||'N')[0])}</div>
@@ -164,7 +167,7 @@ function renderProduct(){
   const ready=(!cs.length||SEL.color!=null)&&(!zs.length||SEL.size!=null);
   $('#app').innerHTML=appbar('상품 선택',"go('home')")+
     `<div class="pimg" ${img}>${p.image_url?'':'상품이미지'}</div>
-     <div class="sec"><b style="font-size:17px">${esc(p.name)}</b>
+     <div class="sec">${p.code?`<span class="numtag">${esc(p.code)}번</span> `:''}<b style="font-size:17px">${esc(p.name)}</b>
        <div class="price" style="font-size:20px;margin:8px 0 4px">${won(p.live_price)}</div>
        ${colorBtns}${sizeBtns}
        <label style="display:block;font-size:12px;color:#475467;font-weight:750;margin:14px 0 6px">수량</label>
@@ -201,8 +204,10 @@ function cqc(i,d){CART[i].qty+=d;if(CART[i].qty<1)CART[i].qty=1;render();}
 function rmCart(i){CART.splice(i,1);render();}
 function renderForm(){
   const sf=shipFee();
+  const remembered=CUST.phone&&CUST.receiver?`<div class="remembered">👋 <b>${esc(CUST.receiver)}</b>님, 저장된 정보로 채웠어요.<a onclick="clearRemembered()">다른 사람으로 주문</a></div>`:'';
   $('#app').innerHTML=appbar('주문 정보',"go('cart')")+
     `<div class="sec field">
+      ${remembered}
       <label>카카오톡 닉네임 (선택)</label><input id="f_nick" value="${esc(CUST.nick)}" placeholder="방송 채팅 닉네임">
       <div class="row2"><div><label>받는 분 *</label><input id="f_recv" value="${esc(CUST.receiver)}" placeholder="성함"></div>
         <div><label>휴대폰번호 *</label><input id="f_phone" value="${esc(CUST.phone)}" inputmode="numeric" placeholder="010-0000-0000"></div></div>
@@ -234,9 +239,11 @@ async function submitOrder(){
     if(error){console.error(error);toast('주문 저장에 실패했습니다. 다시 시도해 주세요.');btn.disabled=false;btn.textContent='주문하기';return;}
     if(!data||!data.ok){toast((data&&data.msg)||'주문을 완료할 수 없습니다.');btn.disabled=false;btn.textContent='주문하기';
       if(data&&(data.reason==='soldout'||data.reason==='bad_option'||data.reason==='bad_item'))await load();return;}
+    try{localStorage.setItem('nlive_cust',JSON.stringify({receiver:CUST.receiver,nick:CUST.nick,phone:CUST.phone,addr:CUST.addr,addr_detail:CUST.addr_detail}));}catch(e){}
     DONE=data;CART=[];go('done');
   }catch(e){console.error(e);toast('연결 오류입니다. 인터넷을 확인해 주세요.');btn.disabled=false;btn.textContent='주문하기';}
 }
+function clearRemembered(){try{localStorage.removeItem('nlive_cust');}catch(e){}CUST={receiver:'',nick:'',phone:'',addr:'',addr_detail:'',agree:false};render();toast('저장된 정보를 지웠어요');}
 function renderDone(){
   const d=DONE;
   $('#app').innerHTML=appbar((SHOP.session.seller||'N')+' SHOP')+
@@ -250,14 +257,15 @@ function renderDone(){
       </div>
       <div class="paynote">💳 <b>다음 안내</b><br>
         · 방송 채팅/카톡으로 계좌번호 또는 페이히어 링크를 받으세요.<br>
-        · 입금이 확인되면 상품 준비·발송이 시작됩니다.<br>
-        · 재고는 약 ${d.reserve_min||30}분간 예약됩니다. 빠른 입금 부탁드려요!</div>
+        · <b>입금이 확인된 순서대로</b> 재고가 배정됩니다. 빠른 입금 부탁드려요!<br>
+        · 입금 확인 후 상품 준비·발송이 시작됩니다.</div>
       <button class="cta ghost" style="margin-top:20px" onclick="CART=[];DONE=null;go('home')">쇼핑 계속하기</button>
      </div>`;
 }
 function go(v){VIEW=v;window.scrollTo(0,0);render();}
 window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSize;window.qc=qc;window.addCart=addCart;
-window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;
+window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;
+try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 load();
 </script>
 </body>
