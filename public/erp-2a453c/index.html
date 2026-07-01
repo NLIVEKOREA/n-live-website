@@ -2879,6 +2879,7 @@ function liveMine(){const arr=(LIVE_SESS||[]).slice();return isSeller()?arr.filt
 function liveSellers(){const set=new Set();(LIVE_SESS||[]).forEach(s=>{if(s.seller)set.add(s.seller);});(SCHED||[]).forEach(s=>{if(s.seller)set.add(s.seller);});if(ME.owner)set.add(ME.owner);set.add(ME.name);return [...set];}
 function liveSlugify(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);}
 function liveStatusPill(st){return st==='open'?'<span class="pill p-done">● LIVE 판매중</span>':st==='closed'?'<span class="pill p-low">마감</span>':'<span class="pill p-miss">초안</span>';}
+function bTypeBadge(s){if(!s||!s.broadcast_type)return '';const f=s.broadcast_type==='원정';return `<span class="pill" style="background:${f?'#fff4e5':'#eef2ff'};color:${f?'#b45309':'#4338ca'};font-size:11px">${f?'🚚 원정':'🏢 사무실'}</span>`;}
 function liveUrl(slug){return LIVE_BASE+'/shop/'+slug;}
 function liveProdsOf(id){return (SESS_PROD||[]).filter(p=>p.session_id===id).sort((a,b)=>(a.sort-b.sort)||(a.id-b.id));}
 async function liveReload(){try{const ls=await SB.from('live_sessions').select('*').order('id',{ascending:false});LIVE_SESS=(ls&&ls.data)||[];const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];}catch(e){console.error('liveReload',e);}render();}
@@ -2893,7 +2894,7 @@ function viewLive(){
     <div style="margin:8px 0 16px"><button class="btn" onclick="liveNew()"><i class="ti ti-plus"></i> 새 방송 만들기</button></div>
     ${list.length?`<div class="ord-cards">${list.map(s=>{const pc=liveProdsOf(s.id).length;return `
       <div class="ord-card">
-        <div class="oc-head"><b>${esc(s.title||'(제목없음)')}</b> ${liveStatusPill(s.status)}<span class="grow"></span><span class="muted" style="font-size:12px">${esc(s.seller)}</span></div>
+        <div class="oc-head"><b>${esc(s.title||'(제목없음)')}</b> ${liveStatusPill(s.status)}${bTypeBadge(s)}<span class="grow"></span><span class="muted" style="font-size:12px">${esc(s.seller)}</span></div>
         <div class="oc-sub">🔗 <b>${esc(liveUrl(s.slug))}</b> · 상품 ${pc}개 · 배송비 ${won(s.ship_fee)}${s.free_ship_min>0?' · '+won(s.free_ship_min)+'↑무료':''}</div>
         <div class="oc-btns" style="flex-wrap:wrap">
           <button class="btn sm" onclick="liveManage(${s.id})">📦 상품·설정 관리</button>
@@ -2910,6 +2911,11 @@ function liveNew(){
   const lastSlug=(LIVE_SESS.find(s=>s.seller===defSeller)||{}).slug||'';
   $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">🎥 새 방송 만들기</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
     <div class="form2">
+      <label>방송 유형</label>
+      <div class="paysel" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
+        <button type="button" id="bt_office" class="btn sm" onclick="liveSetBType('사무실')">🏢 사무실 방송</button>
+        <button type="button" id="bt_field" class="btn sm gray" onclick="liveSetBType('원정')">🚚 원정 방송</button></div>
+      <div class="muted" style="font-size:11px;margin-bottom:6px">원정 방송은 보통 [개별상품(미재고)]으로 등록합니다. (기능은 동일, 구분용)</div>
       <label>방송 제목</label><input id="lv_title" placeholder="예: 여름 코디 특가 LIVE">
       <label>담당 셀러</label>${isSeller()?`<input id="lv_seller" value="${escAttr(defSeller)}" readonly>`:`<input id="lv_seller" list="lv_sellers" value="${escAttr(defSeller)}"><datalist id="lv_sellers">${sellers.map(s=>`<option value="${escAttr(s)}">`).join('')}</datalist>`}
       <label>고정 주소(slug) — 카카오 채널에 걸 URL</label><input id="lv_slug" value="${escAttr(lastSlug)}" placeholder="park-siyeon" oninput="this.value=liveSlugify(this.value)">
@@ -2920,16 +2926,17 @@ function liveNew(){
       <label>💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="lv_payinfo" value="${escAttr((typeof ACCOUNTS!=='undefined'&&(ACCOUNTS[defSeller]||ACCOUNTS._default))||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
     </div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="liveSaveNew()">만들기</button></div>`;
-  $('#modal').classList.remove('hide');
+  $('#modal').classList.remove('hide');window._bType='사무실';
   const sl=$('#lv_slug');if(sl)sl.addEventListener('input',()=>{const p=$('#lv_slugp');if(p)p.textContent=sl.value||'...';});
 }
+function liveSetBType(t){window._bType=t;const o=$('#bt_office'),f=$('#bt_field');if(o&&f){o.className='btn sm'+(t==='사무실'?'':' gray');f.className='btn sm'+(t==='원정'?'':' gray');}}
 async function liveSaveNew(){
   const title=$('#lv_title').value.trim(),seller=$('#lv_seller').value.trim(),slug=liveSlugify($('#lv_slug').value);
   if(!seller){toast('담당 셀러를 입력하세요');return;}
   if(!slug){toast('고정 주소(slug)를 입력하세요');return;}
   const row={seller,slug,title:title||seller+' 라이브',notice:$('#lv_notice').value.trim()||null,status:'draft',
     ship_fee:+$('#lv_ship').value||0,free_ship_min:+$('#lv_free').value||0,reserve_min:30,
-    pay_info:($('#lv_payinfo')&&$('#lv_payinfo').value.trim())||null};
+    pay_info:($('#lv_payinfo')&&$('#lv_payinfo').value.trim())||null,broadcast_type:window._bType||'사무실'};
   try{const {data,error}=await SB.from('live_sessions').insert(row).select().single();
     if(error){console.error(error);toast('⚠️ 생성 실패: '+(error.message||''));return;}
     closeModal();LIVEEDIT=data.id;await liveReload();toast('✅ 방송 생성 — 상품을 추가하세요');
@@ -2943,7 +2950,7 @@ function liveDetail(s){
   const url=liveUrl(s.slug);
   return `<div class="head" style="display:flex;align-items:center;gap:10px">
       <button class="btn gray sm" onclick="liveBack()">‹ 목록</button>
-      <h1 style="margin:0">${esc(s.title||'방송')} ${liveStatusPill(s.status)}</h1></div>
+      <h1 style="margin:0">${esc(s.title||'방송')} ${liveStatusPill(s.status)}${bTypeBadge(s)}</h1></div>
     <div class="card2" style="margin-bottom:14px">
       <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
         <img alt="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}" style="width:120px;height:120px;border:1px solid var(--line);border-radius:10px;background:#fff">
@@ -2967,14 +2974,16 @@ function liveDetail(s){
       <div style="margin-top:12px"><button class="btn sm" onclick="liveSaveSettings(${s.id})">설정 저장</button></div>
     </div>
     <div class="card2">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📦 방송 상품 <span class="muted" style="font-weight:400;font-size:12px">${prods.length}개</span></h3>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap"><h3 style="margin:0">📦 방송 상품 <span class="muted" style="font-weight:400;font-size:12px">${prods.length}개</span></h3>
         <span style="flex:1"></span>
         <button class="btn sm" onclick="liveAddSearch(${s.id})"><i class="ti ti-search"></i> ERP 상품 연결</button>
+        <button class="btn sm ghost" onclick="liveAddManual(${s.id})"><i class="ti ti-square-plus"></i> 개별상품(미재고)</button>
         <button class="btn sm ghost" onclick="liveAddCapture(${s.id})"><i class="ti ti-photo"></i> 캡처 이미지 상품</button></div>
-      ${prods.length?`<div class="muted" style="font-size:12px;margin-bottom:8px">💡 <b>노출</b>이 <b>☑ 노출중</b>(초록)이어야 고객 URL에 보입니다. <b>☐ 숨김</b>은 안 보여요. 상품은 담으면 기본 노출중입니다.</div><div style="overflow:auto"><table class="tbl"><thead><tr><th>순서</th><th>상품</th><th>옵션</th><th class="num-cell">방송가</th><th>소개중</th><th>고객 노출</th><th></th></tr></thead><tbody>
-        ${prods.map((p,i)=>{const opts=liveOptText(p);return `<tr>
+      ${prods.length>0?`<input id="lp_q" placeholder="🔍 등록 상품 검색 (품번·상품명) — 소개중 지정할 상품 빨리 찾기" oninput="liveProdFilter()" style="width:100%;height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;margin-bottom:10px">`:''}
+      ${prods.length?`<div class="muted" style="font-size:12px;margin-bottom:8px">💡 <b>노출</b>이 <b>☑ 노출중</b>(초록)이어야 고객 URL에 보입니다. <b>☐ 숨김</b>은 안 보여요. 상품은 담으면 기본 노출중입니다.</div><div style="overflow:auto"><table class="tbl" id="lp_table"><thead><tr><th>순서</th><th>상품</th><th>옵션</th><th class="num-cell">방송가</th><th>소개중</th><th>고객 노출</th><th></th></tr></thead><tbody>
+        ${prods.map((p,i)=>{const opts=liveOptText(p);const numtag=p.stock_code?baseCode(p.stock_code):(p.manual_code||'');const kind=p.stock_code?'재고':(p.manual_code?'개별':'캡처');return `<tr data-s="${escAttr(((numtag||'')+' '+(p.name||'')).toLowerCase())}">
           <td style="white-space:nowrap"><button class="ico-btn" onclick="liveMove(${p.id},-1)" ${i===0?'disabled':''}>▲</button><button class="ico-btn" onclick="liveMove(${p.id},1)" ${i===prods.length-1?'disabled':''}>▼</button></td>
-          <td><div style="display:flex;gap:8px;align-items:center">${p.image_url?`<img src="${esc(p.image_url)}" alt="" style="width:38px;height:38px;object-fit:cover;border-radius:7px;flex:0 0 auto">`:''}<div>${p.stock_code?`<span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:10px;font-weight:800">${esc(baseCode(p.stock_code))}</span> `:'<span class="pill p-req" style="font-size:10px">캡처</span> '}<b>${esc(p.name)}</b></div></div></td>
+          <td><div style="display:flex;gap:8px;align-items:center">${p.image_url?`<img src="${esc(p.image_url)}" alt="" style="width:38px;height:38px;object-fit:cover;border-radius:7px;flex:0 0 auto">`:''}<div>${numtag?`<span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:10px;font-weight:800">${esc(numtag)}</span> `:`<span class="pill p-req" style="font-size:10px">${kind}</span> `}<b>${esc(p.name)}</b></div></div></td>
           <td class="muted" style="font-size:12px;max-width:180px">${esc(opts)}</td>
           <td class="num-cell"><input type="number" value="${p.live_price}" style="width:92px" onchange="liveSetPrice(${p.id},this.value)"></td>
           <td><button class="btn sm ${p.is_now?'':'gray'}" onclick="liveToggleNow(${p.id})" title="지금 방송에서 소개 중인 상품(고객화면 상단 강조)">${p.is_now?'★ 소개중':'☆ 지정'}</button></td>
@@ -3143,6 +3152,43 @@ async function liveSaveCapture(){
       colors:$('#lc_colors').value.trim()||null,sizes:$('#lc_sizes').value.trim()||null,max_qty:+$('#lc_max').value||0,image_url,sort,active:true});
     if(error){console.error(error);toast('⚠️ 추가 실패');btn.disabled=false;btn.textContent='추가';return;}
     closeModal();toast('✅ 캡처 상품 추가');await liveReload();
+  }catch(e){console.error(e);toast('⚠️ 오류');btn.disabled=false;btn.textContent='추가';}
+}
+/* 등록 상품 검색(품번·이름) — 표에서 안 맞는 행 숨김(리렌더 없이 포커스 유지) */
+function liveProdFilter(){const q=(($('#lp_q')&&$('#lp_q').value)||'').trim().toLowerCase();const tb=$('#lp_table');if(!tb)return;
+  tb.querySelectorAll('tbody tr').forEach(tr=>{const s=tr.getAttribute('data-s')||'';tr.style.display=(!q||s.includes(q))?'':'none';});}
+/* 개별상품(미재고) — 재고 연동 없이 품번·이름·가격·수량만. 사진 붙여넣기 선택 */
+function liveAddManual(sid){
+  window._liveAddSid=sid;
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">➕ 개별상품 (미재고)</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+    <div class="muted" style="font-size:12px;margin-bottom:10px">재고관리에 없는 상품(낱장·원정 등)을 직접 등록합니다. 재고 연동 없이 판매돼요. 사진은 없어도 됩니다.</div>
+    <div class="form2">
+      <div class="row2"><div><label>품목번호</label><input id="lm_code" placeholder="예: 낱장01"></div>
+        <div><label>방송가(원)</label><input id="lm_price" type="number" placeholder="10000"></div></div>
+      <label>품목명</label><input id="lm_name" placeholder="예: 벨벳 헤어핀">
+      <div class="row2"><div><label>수량(판매가능)</label><input id="lm_qty" type="number" value="1"></div>
+        <div><label>색상(선택, 쉼표)</label><input id="lm_colors" placeholder="비우면 옵션없음"></div></div>
+      <label>상품 이미지(선택)</label>
+      <div id="lm_paste" tabindex="0" style="border:2px dashed #cbd5e1;border-radius:10px;padding:14px;text-align:center;color:#667085;font-size:13px;cursor:text;outline:none">📋 클릭 후 <b>Ctrl+V</b>로 붙여넣기 (없어도 됨)</div>
+      <div style="font-size:11px;color:#98a2b3;margin-top:6px">파일: <input id="lm_img" type="file" accept="image/*"></div>
+      <img id="lm_prev" alt="" style="display:none;max-width:100%;max-height:170px;border-radius:8px;border:1px solid var(--line);margin-top:8px">
+    </div>
+    <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="lm_save" onclick="liveSaveManual()">추가</button></div>`;
+  $('#modal').classList.remove('hide');liveBindPaste('lm_paste','lm_prev','_manualBlob');
+}
+async function liveSaveManual(){
+  const sid=window._liveAddSid;const code=($('#lm_code').value||'').trim();const name=($('#lm_name').value||'').trim();const price=+$('#lm_price').value||0;const qty=Math.max(1,+$('#lm_qty').value||1);
+  if(!code){toast('품목번호를 입력하세요');return;}if(!name){toast('품목명을 입력하세요');return;}if(price<=0){toast('방송가를 입력하세요');return;}
+  const btn=$('#lm_save');btn.disabled=true;btn.textContent='저장 중...';
+  let image_url=null;const src=window._manualBlob||$('#lm_img').files[0];
+  try{
+    if(src){const blob=await liveCompress(src);const path=liveSlugify((LIVE_SESS.find(x=>x.id===sid)||{}).seller||'s')+'/'+sid+'/m'+Date.now()+'.jpg';
+      const {error:ue}=await SB.storage.from('live').upload(path,blob,{contentType:'image/jpeg',upsert:true});
+      if(!ue){const {data:pub}=SB.storage.from('live').getPublicUrl(path);image_url=pub&&pub.publicUrl||null;}}
+    const sort=(liveProdsOf(sid).reduce((m,p)=>Math.max(m,p.sort),0))+1;
+    const {error}=await SB.from('session_products').insert({session_id:sid,stock_code:null,manual_code:code,name,live_price:price,max_qty:qty,colors:($('#lm_colors').value||'').trim()||null,image_url,sort,active:true});
+    if(error){console.error(error);toast('⚠️ 추가 실패: '+(error.message||''));btn.disabled=false;btn.textContent='추가';return;}
+    closeModal();toast('✅ 개별상품 추가: '+name);await liveReload();
   }catch(e){console.error(e);toast('⚠️ 오류');btn.disabled=false;btn.textContent='추가';}
 }
 async function liveSetPrice(id,v){const price=+v||0;try{const {error}=await SB.from('session_products').update({live_price:price}).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패');return;}const p=SESS_PROD.find(x=>x.id===id);if(p)p.live_price=price;toast('방송가 저장');}catch(e){console.error(e);}}

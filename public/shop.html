@@ -149,7 +149,7 @@ function renderHome(){
     return `<button class="product ${p.is_now?'now':''} ${so?'soldout':''}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
       ${so?'<span class="soldout-tag">품절</span>':''}
       <div class="pimg" ${img}>${p.image_url?'':'상품이미지'}</div>
-      <div class="ptxt">${p.code?`<span class="numtag">${esc(p.code)}번</span> `:''}<b>${esc(p.name)}</b><div class="price">${won(p.live_price)}</div></div></button>`;
+      <div class="ptxt">${p.code?`<span class="numtag">${esc(/^\d+$/.test(p.code)?p.code+'번':p.code)}</span> `:''}<b>${esc(p.name)}</b><div class="price">${won(p.live_price)}</div></div></button>`;
   }).join('')}</div>`:`<div class="center" style="min-height:200px">등록된 상품이 곧 올라옵니다.</div>`;
   $('#app').innerHTML=appbar(s.seller+' SHOP')+cover+
     `<div class="sec"><div class="seller"><div class="avatar">${esc((s.seller||'N')[0])}</div>
@@ -173,7 +173,7 @@ function renderProduct(){
   const ready=(!cs.length||SEL.color!=null)&&(!zs.length||SEL.size!=null);
   $('#app').innerHTML=appbar('상품 선택',"go('home')")+
     `<div class="pimg" ${img}>${p.image_url?'':'상품이미지'}</div>
-     <div class="sec">${p.code?`<span class="numtag">${esc(p.code)}번</span> `:''}<b style="font-size:17px">${esc(p.name)}</b>
+     <div class="sec">${p.code?`<span class="numtag">${esc(/^\d+$/.test(p.code)?p.code+'번':p.code)}</span> `:''}<b style="font-size:17px">${esc(p.name)}</b>
        <div class="price" style="font-size:20px;margin:8px 0 4px">${won(p.live_price)}</div>
        ${colorBtns}${sizeBtns}
        <label style="display:block;font-size:12px;color:#475467;font-weight:750;margin:14px 0 6px">수량</label>
