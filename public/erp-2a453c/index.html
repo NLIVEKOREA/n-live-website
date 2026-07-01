@@ -1405,7 +1405,10 @@ function renderSalePop(){const g=curGroups()[SALEPOP.gi];if(!g)return;$('#modalB
   $('#modal').classList.remove('hide');}
 const SHIPCHK=new Set();
 function progOf(o){return o.prog||(o.back?'미송':'미포장');}
-async function setProg(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev={prog:o.prog,back:o.back,req:o.req};o.prog=v;if(v==='미송'){o.back=true;o.req='미송';}else{if(o.back)o.back=false;if(o.req==='미송')o.req='출고요청';}
+async function setProg(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev={prog:o.prog,back:o.back,req:o.req};o.prog=v;
+  if(v==='미송'){o.back=true;o.req='미송';}
+  else if(o.req==='미송'){o.back=(v!=='포장');/* 한번 미송이면 미송관리에 머무름 — 포장 시 그 탭에서 송장 입력·출고완료 */}
+  else{if(o.back)o.back=false;}
   if(await saveOrd(o)===false){Object.assign(o,prev);toast('⚠️ 저장 실패 — 다시 시도하세요');}render();}
 function shipChk(id,c){if(c)SHIPCHK.add(id);else SHIPCHK.delete(id);}
 function openCustomers(){
@@ -1445,6 +1448,7 @@ function manageCards(list,cat){
         <span class="sg-qty">${o.qty}개</span>
         <span class="sg-stk ${(q!=null&&q<=0)?'low':''}">재고 ${q==null?'-':q}</span>
         <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span>
+        ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
       </div>`}).join('')}
     </div>
     <div class="sg-foot"><input id="trk_${cat}_${i}" placeholder="송장번호 입력"><button class="btn" onclick="shipChecked('${cat}',${i})">✅ 출고완료</button></div>
@@ -1491,6 +1495,7 @@ function custPopBody(){
         <span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}</span><span class="sg-qty">${o.qty}개</span>
         ${isWait?'':`<span class="sg-stk ${(q!=null&&q<=0)?'low':''}">재고 ${q==null?'-':q}</span>`}
         <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span>
+        ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
       </div>`}).join('')}
     </div>
     <div class="sg-foot"><input id="ptrk" placeholder="송장번호 입력"><button class="btn" onclick="shipPopAction()">✅ 출고완료</button></div>`;
@@ -2152,9 +2157,13 @@ function viewUsers(){
 
 /* ===== 동작 ===== */
 function payConfirm(id){const o=ORD.find(x=>x.id===id);o.pay='paid';toast('💳 입금확인 → 결제완료! 판매관리로 이동: '+o.cust);render();}
-async function cancelOrder(id){const i=ORD.findIndex(x=>x.id===id);if(i<0)return;const o=ORD[i],s=skuOf(o.code,o.color,o.size);ORD.splice(i,1);
+async function cancelOrder(id,reason){const i=ORD.findIndex(x=>x.id===id);if(i<0)return;const o=ORD[i],s=skuOf(o.code,o.color,o.size);ORD.splice(i,1);
   toast('🗑️ 주문 취소 → 재고 '+o.qty+'개 복원 ('+prodName(o.code)+' '+o.color+')');render();
-  await delOrd(o);if(s)await adjustStockDB(s,o.qty,'주문취소',o.cust);}
+  await delOrd(o);if(s)await adjustStockDB(s,o.qty,reason||'주문취소',o.cust);}
+/* 미송 상품 취소 — 배송지연 등으로 고객이 취소 요청 시. 차감됐던(마이너스) 재고 복원 */
+async function cancelBackOrder(id){const o=ORD.find(x=>x.id===id);if(!o)return;
+  if(!confirm('[미송 취소]\n'+o.cust+' · '+itemLabel(o)+' '+o.qty+'개\n\n이 미송 주문을 취소할까요?\n(배송지연 등 · 차감됐던 재고가 복원됩니다)'))return;
+  await cancelOrder(id,'미송취소');}
 function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o.cust+' → '+({req:'출고요청',done:'출고완료'})[st]);render();}
 function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
 /* 상품 일괄등록 — 6자리 자동번호 + 색상·사이즈 매트릭스 → SKU 자동생성 */
