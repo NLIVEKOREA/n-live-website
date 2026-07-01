@@ -26,6 +26,7 @@ button,input,select,textarea{font:inherit}
 .product.now{border:2px solid var(--blue)}
 .product.now:before{content:"지금 소개중";position:absolute;z-index:2;left:7px;top:7px;background:var(--blue);color:#fff;padding:4px 6px;border-radius:5px;font-size:9px;font-weight:900}
 .pimg{height:132px;background:#eef1f6 center/cover no-repeat;display:grid;place-items:center;color:#aab;font-size:12px}
+.pimg[onclick]{cursor:zoom-in}
 .ptxt{padding:10px}.ptxt b{display:block;font-size:12.5px;line-height:1.35}.price{font-weight:900;margin-top:7px;font-size:14px}
 .soldout{opacity:.5}.soldout-tag{position:absolute;inset:0;background:rgba(255,255,255,.55);display:grid;place-items:center;font-weight:900;color:#111;z-index:3}
 .opts{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
@@ -148,7 +149,7 @@ function renderHome(){
     const img=p.image_url?`style="background-image:url('${esc(p.image_url)}')"`:'';
     return `<button class="product ${p.is_now?'now':''} ${so?'soldout':''}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
       ${so?'<span class="soldout-tag">품절</span>':''}
-      <div class="pimg" ${img}>${p.image_url?'':'상품이미지'}</div>
+      <div class="pimg" ${img} ${p.image_url?`onclick="shopZoom('${esc(p.image_url)}')" title="크게 보기"`:''}>${p.image_url?'':'상품이미지'}</div>
       <div class="ptxt">${p.code?`<span class="numtag">${esc(/^\d+$/.test(p.code)?p.code+'번':p.code)}</span> `:''}<b>${esc(p.name)}</b><div class="price">${won(p.live_price)}</div></div></button>`;
   }).join('')}</div>`:`<div class="center" style="min-height:200px">등록된 상품이 곧 올라옵니다.</div>`;
   $('#app').innerHTML=appbar(s.seller+' SHOP')+cover+
@@ -277,9 +278,10 @@ function renderDone(){
       <button class="cta ghost" style="margin-top:20px" onclick="CART=[];DONE=null;go('home')">쇼핑 계속하기</button>
      </div>`;
 }
+function shopZoom(url){if(!url)return;let o=document.getElementById('zoomOv');if(!o){o=document.createElement('div');o.id='zoomOv';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);display:grid;place-items:center;z-index:9999;cursor:zoom-out;padding:12px';o.onclick=function(){o.style.display='none';};o.innerHTML='<img style="max-width:96vw;max-height:96vh;border-radius:8px">';document.body.appendChild(o);}o.querySelector('img').src=url;o.style.display='grid';}
 function go(v){VIEW=v;window.scrollTo(0,0);render();}
 window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSize;window.qc=qc;window.addCart=addCart;
-window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;
+window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;window.shopZoom=shopZoom;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 load();
 </script>
