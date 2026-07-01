@@ -2548,12 +2548,14 @@ rebuildSwitcher();buildNav();render();
       const {data:emp}=await SB.from('employees').select('*').eq('login_id',id).maybeSingle();
       if(!emp||emp.active===false)return;
       ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id};
-      await loadPrefs();
-      await dbLoadAll();
-      $('#login').style.display='none';
+      $('#login').style.display='none';   // 세션 확인 즉시 숨김 — 데이터 로딩 동안 로그인 화면 깜빡임/튕김 방지
       {const _h=location.hash.slice(1);if(_h&&VIEWS[_h]&&menuAllowed(_h))VIEW=_h;}
       if(!menuAllowed(VIEW))VIEW='dash';
-      rebuildSwitcher();buildNav();render();startRealtime();
+      rebuildSwitcher();buildNav();
+      const _mn=$('#main');if(_mn)_mn.innerHTML='<div style="padding:64px 20px;text-align:center;color:#94a3b8;font-size:15px">📥 '+esc(emp.name)+'님 데이터 불러오는 중…</div>';
+      await loadPrefs();
+      await dbLoadAll();
+      render();startRealtime();
     }
   }catch(e){console.error('session',e);}
 })();
