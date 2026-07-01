@@ -327,7 +327,7 @@
       <div class="tb-icons">
         <span class="tb-ic" onclick="openAlerts()" style="cursor:pointer" title="알림 — 지금 할 일"><i class="ti ti-bell"></i><span class="bdg" id="alertBdg">0</span></span>
         <span class="tb-ic" onclick="openMessages()" style="cursor:pointer" title="메시지 — 내부 소통"><i class="ti ti-mail"></i><span class="bdg" id="msgBdg" style="background:#94a3b8;display:none">0</span></span>
-        <span class="tb-ic"><i class="ti ti-help-circle"></i></span>
+        <span class="tb-ic" onclick="openHelp()" style="cursor:pointer" title="도움말 — 사용 안내"><i class="ti ti-help-circle"></i></span>
         <div class="tb-user">
           <div style="text-align:right"><div class="nm" id="tbName">나영식</div><div class="rl" id="tbRole">운영팀 · 관리자</div></div>
           <div class="av" id="tbAv">나</div>
@@ -456,6 +456,18 @@ function openAlerts(){const a=getAlerts();$('#modalBox').innerHTML=`<h3>🔔 알
   <div class="modal-foot"><button class="btn" onclick="closeModal()">닫기</button></div>`;$('#modal').classList.remove('hide');}
 function openMessages(){$('#modalBox').innerHTML=`<h3>✉ 메시지</h3><div class="ms">운영팀 ↔ 셀러 <b>내부 소통</b> 공간입니다 (고객 CS 아님).</div>
   <div class="muted" style="padding:24px 10px;text-align:center"><i class="ti ti-message-2" style="font-size:32px;color:#cbd5e1"></i><div style="margin-top:10px;line-height:1.6">내부 메시지 기능은 준비 중입니다.<br>지금 급한 공유는 카카오/전화로 해주세요.<br><span style="font-size:12px">(고객 알림은 <b onclick="closeModal();go('kakao')" style="color:#2563eb;cursor:pointer">카카오 연동</b> 메뉴에서)</span></div></div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">닫기</button></div>`;$('#modal').classList.remove('hide');}
+function openHelp(){$('#modalBox').className='modal-box';$('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">❓ 사용 안내</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+  <div class="ms">주요 업무 흐름과 메뉴 안내입니다.</div>
+  <div style="line-height:1.9;font-size:13.5px">
+    <b>📋 기본 흐름</b><br>주문서입력(결제 전) → 입금확인 → 판매관리(출고대기) → 출고장(송장·출고완료) → 판매현황(상태별 조회)<br><br>
+    <b>🔗 합배</b> — 같은 고객의 미출고 주문은 자동으로 합쳐져 한 송장으로 나갑니다.<br>
+    <b>📦 미송</b> — 재고보다 많이 주문되면 자동 미송 처리, 재입고 후 출고장 미송관리에서 발송.<br>
+    <b>↩️ 취소/환불</b> — 판매현황에서 상태별 버튼(출고완료=교환/반품, 미출고=환불/취소). 사용한 적립금은 자동 환원.<br>
+    <b>💰 적립금</b> — 취소/환불 시 적립 선택 가능, 주문관리에서 배송비처럼 사용. 고객관리 [상세]에서 이력 확인.<br>
+    <b>🏷️ 재고</b> — 재고관리에서 입고/일괄등록/영수증 자동입고, 바코드 라벨·출고 검수.<br><br>
+    <span class="muted">문제가 있으면 사장님께 문의하세요. 데이터는 모두 클라우드에 저장되어 어느 기기에서든 동일하게 보입니다.</span>
+  </div>
   <div class="modal-foot"><button class="btn" onclick="closeModal()">닫기</button></div>`;$('#modal').classList.remove('hide');}
 function periodRange(key){const d=new Date();const today=ymd(d);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:ymd(mon),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
 function periodTabs(cur,fn){return ['today','week','month','all'].map(k=>`<button class="${cur===k?'on':''}" onclick="${fn}('${k}')">${({today:'오늘',week:'이번 주',month:'이번 달',all:'누적'})[k]}</button>`).join('');}
@@ -1907,7 +1919,7 @@ function viewStock(){
 
 /* ===== 고객관리 ===== */
 let CUSTSEARCH='',CUSTTAB='all';
-function custStats(){const m={};ORD.forEach(o=>{if(!o.cust)return;const x=m[o.cust]||(m[o.cust]={cnt:0,amt:0,last:''});x.cnt++;x.amt+=amtOf(o);if((o.date||'')>x.last)x.last=o.date||'';});return m;}
+function custStats(){const m={};ORD.forEach(o=>{if(!o.cust)return;if(o.code==='배송비'||o.code==='적립금')return;/* 서비스라인 제외 — 실제 구매 상품만 집계 */const x=m[o.cust]||(m[o.cust]={cnt:0,amt:0,last:'',_dates:new Set()});x.cnt++;x.amt+=amtOf(o);x._dates.add(o.date);if((o.date||'')>x.last)x.last=o.date||'';});Object.values(m).forEach(x=>{x.orders=x._dates.size;});return m;}
 /* ===== 고객별 원장(적립금·취소·환불 이력) ===== */
 function custPoints(name){const c=CUSTOMERS.find(x=>x.name===name);return (c&&c.points)||0;}
 async function logCust(custName,type,opt){opt=opt||{};const c=CUSTOMERS.find(x=>x.name===custName);const owner=(c&&c.owner)||((typeof ME!=='undefined'&&ME&&(ME.owner||ME.name)))||null;
