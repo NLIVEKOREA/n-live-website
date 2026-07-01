@@ -1012,6 +1012,8 @@ function viewOrder(){
       <button class="btn sm" style="background:var(--blue-s);color:var(--blue);border:1px solid #bcd3ff" onclick="addShip(4000,'배송비')">배송비 +4,000</button>
       <button class="btn sm" style="background:var(--green-s);color:var(--green);border:1px solid #b9e6c9" onclick="addShip(0,'무료배송')">무료배송 +0</button>
       ${OE.shipManual?`<button class="btn sm gray" onclick="OE.shipManual=false;render()">↻ 자동복구</button>`:''}
+      <span class="muted" style="margin:0 2px">|</span>
+      <button class="btn sm" style="background:#f0fdf4;color:#059669;border:1px solid #b9e6c9" onclick="usePoints()" ${OE.cust&&custPoints(OE.cust)>0?'':'disabled title="적립금 보유 고객만"'}>💰 적립금 사용${OE.cust?' <b>(보유 '+won(custPoints(OE.cust))+')</b>':''}</button>
       <span class="muted" style="margin-left:auto;font-size:12.5px;display:flex;align-items:center;gap:5px;white-space:nowrap">🆓 무료배송 기준 <input type="number" value="${freeThresh()}" onchange="setFreeThresh(this.value)" style="width:96px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:13px"> 원 이상</span>
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
@@ -1155,6 +1157,7 @@ function renderOrderSheet(){
 function copyOrderSheet(){const ta=$('#osText');if(!ta)return;ta.select();try{document.execCommand('copy');}catch(e){}if(navigator.clipboard)navigator.clipboard.writeText(ta.value);toast('📋 주문서 복사됨 — 고객에게 붙여넣기 하세요');}
 function lineRow(l,i){
   if(l.kind==='ship')return `<tr><td class="muted">${i+1}</td><td><span class="pill p-req">배송비</span></td><td class="muted">-</td><td style="text-align:left"><b>${esc(l.name)}</b></td><td class="muted">-</td><td class="muted">-</td><td class="num-cell">1</td><td class="num-cell muted">-</td><td class="num-cell muted">${won(l.price)}</td><td class="num-cell">${won(l.price)}</td><td></td><td><button class="btn sm red" onclick="removeLine(${i})">✕</button></td></tr>`;
+  if(l.kind==='point')return `<tr style="background:#f0fdf4"><td class="muted">${i+1}</td><td><span class="pill p-done">적립금</span></td><td class="muted">-</td><td style="text-align:left"><b>${esc(l.name)}</b></td><td class="muted">-</td><td class="muted">-</td><td class="num-cell">1</td><td class="num-cell muted">-</td><td class="num-cell" style="color:#059669;font-weight:700">${won(l.price)}</td><td class="num-cell" style="color:#059669;font-weight:700">${won(l.price)}</td><td></td><td><button class="btn sm red" onclick="removeLine(${i})">✕</button></td></tr>`;
   if(l.kind==='natjang')return `<tr>
     <td class="muted">${i+1}</td>
     <td><input style="width:60px;text-align:center" value="${esc(l.tag||'')}" placeholder="번호표" onchange="lineField(${i},'tag',this.value)"></td>
@@ -1235,6 +1238,21 @@ function removeLine(i){OE.lines.splice(i,1);render();}
 function lineField(i,f,v){if(!OE.lines[i])return;OE.lines[i][f]=(f==='qty'||f==='price')?Math.max(0,parseInt(v)||0):v;render();}
 function addNatjang(){OE.lines.push({kind:'natjang',tag:'',name:'',code:'낱장',color:'',size:'',qty:1,price:0});toast('📝 낱장 행 추가 — 번호표·색상·수량·단가 직접 입력');render();}
 function addShip(price,label){OE.lines=OE.lines.filter(l=>l.kind!=='ship');OE.lines.push({kind:'ship',name:label,code:'배송비',color:'',size:'',qty:1,price});OE.shipManual=true;toast('🚚 '+label+' 수동지정 (자동계산 해제 · [자동복구]로 되돌림)');render();}
+/* 적립금 사용 — 배송비처럼 주문에 마이너스 라인으로 붙음(상품금액 한도·보유 한도) */
+function usePoints(){
+  if(!OE.cust){toast('고객을 먼저 선택하세요');return;}
+  const bal=custPoints(OE.cust);if(bal<=0){toast('이 고객은 적립금이 없습니다');return;}
+  const prod=OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);
+  const maxUse=Math.max(0,Math.min(bal,prod));
+  if(maxUse<=0){toast('상품을 먼저 담아주세요');return;}
+  const raw=prompt('적립금 사용 (보유 '+won(bal)+' · 최대 '+won(maxUse)+')',String(maxUse));
+  if(raw==null)return;let amt=parseInt(String(raw).replace(/[^\d]/g,''))||0;
+  if(amt<=0){OE.lines=OE.lines.filter(l=>l.kind!=='point');render();return;}
+  if(amt>maxUse){amt=maxUse;toast('최대 '+won(maxUse)+'까지 — 조정했습니다');}
+  OE.lines=OE.lines.filter(l=>l.kind!=='point');
+  OE.lines.push({kind:'point',name:'적립금 사용',code:'적립금',color:'',size:'',qty:1,price:-amt});
+  toast('💰 적립금 '+won(amt)+' 사용 (저장 시 차감)');render();
+}
 /* 도서산간 우편번호 [from,to,지역,택배사추가비] */
 const ISLAND_ZIP=[[15654,15654,'경기 안산 풍도/육도',5000],[23008,23010,'인천 강화 섬지역',4500],[23100,23116,'인천 옹진 섬지역',6000],[23124,23136,'인천 옹진 섬지역',6000],[32133,32133,'충남 태안 섬지역',5000],[40200,40240,'경북 울릉도',4000],[46769,46770,'부산 강서구 섬지역',4000],[52571,52571,'경남 사천 섬지역',4000],[53031,53033,'경남 통영 섬지역',4000],[53088,53088,'경남 통영 산양읍 곤리',4000],[53089,53104,'경남 통영 섬지역',4000],[56347,56349,'전북 부안 섬지역',5000],[57068,57069,'전남 영광 섬지역',4000],[58760,58762,'전남 목포 섬지역',6000],[58804,58804,'전남 신안 섬지역',7000],[58809,58809,'전남 신안 섬지역',7000],[58816,58818,'전남 신안 섬지역',7000],[58826,58826,'전남 신안 섬지역',7000],[58832,58832,'전남 신안 섬지역',7000],[58843,58866,'전남 신안 섬지역',7000],[58953,58958,'전남 진도 섬지역',7000],[59127,59127,'전남 완도 섬지역',5000],[59137,59146,'전남 완도 섬지역',5000],[59149,59166,'전남 완도 섬지역',5000],[59167,59170,'전남 완도 도서',5000],[59421,59421,'전남 보성 섬지역',4000],[59563,59563,'전남 고흥 섬지역',5000],[59568,59568,'전남 고흥 섬지역',5000],[59650,59650,'전남 여수 섬지역',8000],[59766,59766,'전남 여수 섬지역',8000],[59783,59783,'전남 여수 섬지역',8000],[59785,59790,'전남 여수 섬지역',8000],[63000,63001,'제주 추자면',7000],[63002,63364,'제주 전지역',3000],[63365,63365,'제주 우도',6000],[63366,63644,'제주 전지역',3000]];
 function islandInfo(zip){const z=parseInt(String(zip||'').replace(/\D/g,''),10);if(!z)return null;for(const r of ISLAND_ZIP){if(z>=r[0]&&z<=r[1])return {region:r[2],extra:r[3]};}return null;}
@@ -1246,7 +1264,7 @@ function islandOf(){return islandInfo(OE.zip)||islandByAddr(OE.addr||'');}
 function freeThresh(){return (PREFS.freeship!=null)?PREFS.freeship:100000;}
 function setFreeThresh(v){const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.freeship=n;savePrefs();toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료');render();}
 /* 배송비 자동계산 — 상품합계·주소·무료기준에 따라 배송비 라인 자동 세팅 (수동지정 시 건너뜀) */
-function shipBase(){return OE.lines.filter(l=>l.kind!=='ship').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);}
+function shipBase(){return OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);}
 function recalcShip(){
   if(OE.shipManual)return;
   OE.lines=OE.lines.filter(l=>!(l.kind==='ship'&&l.auto));
@@ -1276,12 +1294,13 @@ async function commitOrder(){
   const today=(OE.date||todayStr()).replace(/-/g,'/');
   OE.lines.forEach(l=>{
     if(l.kind==='ship'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'배송비',disp:l.name,tag:'배송비',color:'',size:'',qty:1,price:l.price,back:false,pay:'unpaid',ship:'miss'};ORD.unshift(o);created.push({o,s:null});return;}
+    if(l.kind==='point'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'적립금',disp:'적립금 사용',tag:'적립금',color:'',size:'',qty:1,price:l.price,back:false,pay:'unpaid',ship:'miss'};ORD.unshift(o);created.push({o,s:null,points:l.price});return;}
     if(l.kind==='natjang'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'낱장',disp:((l.name||'낱장')+' '+(l.color||'')+' '+(l.size||'')).replace(/ +/g,' ').trim(),tag:l.tag||'낱장',color:l.color||'',size:l.size||'',qty:l.qty,price:l.price,back:false,pay:'unpaid',ship:'miss'};ORD.unshift(o);created.push({o,s:null});return;}
     const s=skuOf(l.code,l.color,l.size);if(l.back)back++;
     const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:l.code,disp:`${l.name} ${l.color} ${l.size}`,tag:tagOf(l.code),color:l.color,size:l.size,qty:l.qty,price:l.price,back:!!l.back,pay:'unpaid',ship:'miss'};
     ORD.unshift(o);created.push({o,s,dq:l.qty});});
   const _cnt=created.length;
-  for(const {o,s,dq} of created){await saveOrd(o);if(s)await adjustStockDB(s,-dq,'판매',o.cust);}
+  for(const {o,s,dq,points} of created){await saveOrd(o);if(s)await adjustStockDB(s,-dq,'판매',o.cust);if(points)await addPoints(o.cust,points,'적립사용',{item:'주문 사용',amount:Math.abs(points)});}
   toast('✅ 주문서 저장 ('+_cnt+'건)'+(back?' · 미송 '+back+'건 포함':''));
   OE={cust:null,phone:'',addr:'',staff:null,lines:[],date:OE.date};render();
   _committing=false;
