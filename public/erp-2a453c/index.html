@@ -302,6 +302,10 @@
   .main .table-wrap>table:not(.ogrid){min-width:640px}
   .modal-box .table-wrap>table{min-width:600px}
   .table-wrap th,.table-wrap td{white-space:nowrap}
+  .pagebar{display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap}
+  .pagebar .btn{min-width:32px;padding:5px 9px}
+  .sort-th{cursor:pointer;user-select:none;white-space:nowrap}
+  .sort-th:hover{color:var(--blue)}.sort-th.on{color:var(--blue)}
   .table-wrap td.wrap-cell{white-space:normal;min-width:180px;max-width:320px}
   .truncate{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .toolbar{width:100%}
@@ -2051,7 +2055,18 @@ function viewStock(){
 }
 
 /* ===== 고객관리 ===== */
-let CUSTSEARCH='',CUSTTAB='all';
+let CUSTSEARCH='',CUSTTAB='all',CUSTSORT={f:'amt',d:-1},CUSTPAGE=1;const CUST_PGSIZE=100;
+/* 공통 CSV 다운로드 (엑셀 한글 깨짐 방지 BOM) */
+function downloadCSV(rows,name){const csv='﻿'+rows.map(r=>r.map(v=>{v=String(v==null?'':v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name+'_'+todayStr()+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1200);toast('📥 CSV 다운로드');}
+/* 정렬 가능한 헤더 */
+function sortTh(label,field,cur,fn,cls){const on=cur.f===field;const ar=on?(cur.d<0?' ▼':' ▲'):'';return `<th class="${cls||''} sort-th${on?' on':''}" onclick="${fn}('${field}')" title="정렬">${label}${ar}</th>`;}
+function custSort(f){if(CUSTSORT.f===f)CUSTSORT.d*=-1;else{CUSTSORT.f=f;CUSTSORT.d=(f==='name'?1:-1);}CUSTPAGE=1;render();}
+function custPage(p){CUSTPAGE=Math.max(1,p);render();}
+function custFilterSort(){const stats=custStats();let list=CUSTOMERS.slice();if(!isSeller()&&typeof SELLERVIEW!=='undefined'&&SELLERVIEW)list=list.filter(c=>c.owner===SELLERVIEW);const q=(CUSTSEARCH||'').trim(),qn=custPhoneNorm(q),ql=q.toLowerCase();if(q)list=list.filter(c=>(c.name||'').toLowerCase().includes(ql)||(qn&&custPhoneNorm(c.phone).includes(qn))||(c.addr||'').toLowerCase().includes(ql));
+  const sv=c=>{const s=stats[c.name]||{};return CUSTSORT.f==='name'?(c.name||''):CUSTSORT.f==='cnt'?(s.cnt||0):CUSTSORT.f==='points'?(c.points||0):CUSTSORT.f==='last'?(s.last||''):(s.amt||0);};
+  list.sort((a,b)=>{const va=sv(a),vb=sv(b);return typeof va==='string'?CUSTSORT.d*String(va).localeCompare(String(vb)):CUSTSORT.d*(va-vb);});
+  return {list,stats};}
+function custCSV(){const {list,stats}=custFilterSort();const rows=[['이름','연락처','주소','구매건','구매액','적립금','최근구매','비고']];list.forEach(c=>{const s=stats[c.name]||{};rows.push([c.name||'',formatPhone(c.phone)||'',c.addr||'',s.cnt||0,s.amt||0,c.points||0,s.last||'',c.flag||'']);});downloadCSV(rows,'고객목록');}
 function custStats(){const m={};ORD.forEach(o=>{if(!o.cust)return;if(o.code==='배송비'||o.code==='적립금')return;/* 서비스라인 제외 — 실제 구매 상품만 집계 */const x=m[o.cust]||(m[o.cust]={cnt:0,amt:0,last:'',_dates:new Set()});x.cnt++;x.amt+=amtOf(o);x._dates.add(o.date);if((o.date||'')>x.last)x.last=o.date||'';});Object.values(m).forEach(x=>{x.orders=x._dates.size;});return m;}
 /* ===== 고객별 원장(적립금·취소·환불 이력) ===== */
 function custPoints(name){const c=CUSTOMERS.find(x=>x.name===name);return (c&&c.points)||0;}
@@ -2118,30 +2133,40 @@ function custDupView(dup,stats){
       <td>${custActBtns(c)}</td></tr>`}).join('')}</tbody></table>
     <div class="note" style="margin-top:8px">💡 같은 사람이면 닉네임 하나로 통합하고 나머지는 삭제하세요. 과거 주문은 닉네임 기준이라 유지됩니다.</div></div>`).join('');
 }
+function pageBar(pg,pages,fn){if(pages<=1)return '';let s='<div class="pagebar">';s+=`<button class="btn sm gray" ${pg<=1?'disabled':''} onclick="${fn}(${pg-1})" aria-label="이전">‹</button>`;
+  let a=Math.max(1,pg-3),b=Math.min(pages,a+6);a=Math.max(1,b-6);
+  if(a>1){s+=`<button class="btn sm ghost" onclick="${fn}(1)">1</button>`+(a>2?'<span class="muted">…</span>':'');}
+  for(let i=a;i<=b;i++)s+=`<button class="btn sm ${i===pg?'':'ghost'}" onclick="${fn}(${i})">${i}</button>`;
+  if(b<pages)s+=(b<pages-1?'<span class="muted">…</span>':'')+`<button class="btn sm ghost" onclick="${fn}(${pages})">${pages}</button>`;
+  s+=`<button class="btn sm gray" ${pg>=pages?'disabled':''} onclick="${fn}(${pg+1})" aria-label="다음">›</button></div>`;return s;}
 function viewCustomers(){
-  const stats=custStats(),q=(CUSTSEARCH||'').trim(),qn=custPhoneNorm(q),ql=q.toLowerCase();
+  const {list,stats}=custFilterSort();
   const dup=phoneDupGroups(),dupN=dup.reduce((a,g)=>a+g.length,0);
-  let list=CUSTOMERS;
-  if(!isSeller()&&SELLERVIEW)list=list.filter(c=>c.owner===SELLERVIEW);
-  if(q)list=list.filter(c=>(c.name||'').toLowerCase().includes(ql)||(qn&&custPhoneNorm(c.phone).includes(qn))||(c.addr||'').toLowerCase().includes(ql));
-  list=[...list].sort((a,b)=>((stats[b.name]||{}).amt||0)-((stats[a.name]||{}).amt||0));
-  const shown=list.slice(0,300);
+  const total=list.length,pages=Math.max(1,Math.ceil(total/CUST_PGSIZE)),pg=Math.min(CUSTPAGE,pages),from=(pg-1)*CUST_PGSIZE,shown=list.slice(from,from+CUST_PGSIZE);
   return `
-  <div class="head"><h1>고객관리 <span class="badge">${CUSTOMERS.length.toLocaleString()}명</span></h1><p>구매액 순 정렬 · 검색 · 행에서 바로 수정·삭제 · 같은 번호 중복 분류</p></div>
+  <div class="head"><h1>고객관리 <span class="badge">${CUSTOMERS.length.toLocaleString()}명</span></h1><p>헤더 클릭 정렬 · 검색 · 페이지 이동 · CSV · 행에서 바로 수정/삭제</p></div>
   ${sellerTabs()}
   <div class="card" style="margin-bottom:14px"><div class="toolbar">
-    <input id="custSearch" placeholder="🔍 이름·연락처·주소 입력 후 Enter" value="${esc(CUSTSEARCH)}" onkeydown="if(event.key==='Enter'){CUSTSEARCH=this.value;render()}" style="width:320px;font-size:14px">
+    <input id="custSearch" placeholder="🔍 이름·연락처·주소 입력 후 Enter" value="${esc(CUSTSEARCH)}" onkeydown="if(event.key==='Enter'){CUSTSEARCH=this.value;CUSTPAGE=1;render()}" style="width:min(320px,100%);font-size:14px">
+    ${CUSTSEARCH?`<button class="btn sm gray" onclick="CUSTSEARCH='';CUSTPAGE=1;render()">초기화</button>`:''}
     <span class="grow"></span>
+    <button class="btn sm ghost" onclick="custCSV()"><i class="ti ti-download"></i> CSV</button>
     <button class="btn" onclick="openCustModal('')">＋ 고객 등록</button>
   </div></div>
   <div class="tabs">
-    <button class="${CUSTTAB==='all'?'on':''}" onclick="CUSTTAB='all';render()">전체 ${list.length.toLocaleString()}</button>
+    <button class="${CUSTTAB==='all'?'on':''}" onclick="CUSTTAB='all';render()">전체 ${CUSTOMERS.length.toLocaleString()}</button>
     <button class="${CUSTTAB==='dup'?'on':''}" onclick="CUSTTAB='dup';render()">⚠️ 번호중복 ${dup.length}그룹·${dupN}명</button>
   </div>
   ${CUSTTAB==='dup'?custDupView(dup,stats):`
-  <div class="card"><table><thead><tr><th>고객</th><th>연락처</th><th class="num-cell">구매</th><th class="num-cell">구매액</th><th class="num-cell">적립금</th><th>최근</th><th style="width:150px"></th></tr></thead><tbody>
+  <div class="card">
+    <div class="note" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span>전체 <b>${total.toLocaleString()}</b>명 중 <b>${total?from+1:0}–${Math.min(from+CUST_PGSIZE,total)}</b></span><span class="grow"></span>${pageBar(pg,pages,'custPage')}</div>
+    <div class="table-wrap"><table><thead><tr>
+      ${sortTh('고객','name',CUSTSORT,'custSort')}<th>연락처</th>${sortTh('구매','cnt',CUSTSORT,'custSort','num-cell')}${sortTh('구매액','amt',CUSTSORT,'custSort','num-cell')}${sortTh('적립금','points',CUSTSORT,'custSort','num-cell')}${sortTh('최근','last',CUSTSORT,'custSort')}<th style="width:150px"></th>
+    </tr></thead><tbody>
     ${shown.map(c=>custRow(c,stats)).join('')||`<tr><td colspan="7" class="muted" style="padding:16px">검색 결과 없음</td></tr>`}
-  </tbody></table>${list.length>shown.length?`<div class="muted" style="padding:10px 14px">… 외 ${(list.length-shown.length).toLocaleString()}명 · 검색으로 좁혀보세요</div>`:''}</div>`}`;
+    </tbody></table></div>
+    ${pages>1?`<div style="text-align:center;padding:10px 0 2px">${pageBar(pg,pages,'custPage')}</div>`:''}
+  </div>`}`;
 }
 function viewProducts(){
   const tab=PRODTAB;
