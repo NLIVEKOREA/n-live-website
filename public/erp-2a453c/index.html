@@ -837,9 +837,17 @@ const POS_DEFAULT={
   '운영':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','ship_fee','by_staff','vip','topprod','taste','bcast','quick'],
   '관리자':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','ship_fee','by_staff','vip','topprod','taste','bcast','quick']
 };
-function getUserWidgets(){const w=PREFS.widgets;if(Array.isArray(w)&&w.length)return w.slice();return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice();}
+/* 역할별 '추가 가능한 위젯' 화이트리스트 — 위젯편집에서 권한 밖/물류/준비중 위젯을 못 켜게 잠금. null=전체허용 */
+const WIDGET_ROLE={
+  '셀러':['sns','sales_today','sales_week','sales_month','sales_avg','settle','repurchase','vip','taste','topprod','bcast','schedule','goal','new_cust','alerts','quick'],
+  '보조':['unpaid','toship','rx','misong','alerts','new_cust','quick'],
+  '물류':['toship','done_today','misong','ship_fee','alerts','quick'],
+  '운영':null,'관리자':null
+};
+function allowedWidgets(){const r=WIDGET_ROLE[ME.role];return r?r.slice():Object.keys(WIDGET_META);}
+function getUserWidgets(){const al=allowedWidgets();const w=PREFS.widgets;if(Array.isArray(w)&&w.length)return w.filter(id=>al.includes(id));return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).filter(id=>al.includes(id));}
 function saveUserWidgets(arr){PREFS.widgets=arr;savePrefs();}
-function wgToggle(id){let a=getUserWidgets();const rm=a.includes(id);if(rm)a=a.filter(x=>x!==id);else a.push(id);saveUserWidgets(a);render();renderWidgetEdit();if(rm&&VIEW==='dash')setTimeout(function(){try{if(_grid){_grid.compact();saveLayout(_grid.save(false));}}catch(e){}},130);}
+function wgToggle(id){let a=getUserWidgets();const rm=a.includes(id);if(rm)a=a.filter(x=>x!==id);else{if(!allowedWidgets().includes(id)){toast('⚠️ 권한상 추가할 수 없는 위젯입니다');return;}a.push(id);}saveUserWidgets(a);render();renderWidgetEdit();if(rm&&VIEW==='dash')setTimeout(function(){try{if(_grid){_grid.compact();saveLayout(_grid.save(false));}}catch(e){}},130);}
 function wgMove(id,dir){let a=getUserWidgets();const i=a.indexOf(id);if(i<0)return;const j=i+dir;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;saveUserWidgets(a);render();renderWidgetEdit();}
 function wgReset(){saveUserWidgets((POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).slice());render();renderWidgetEdit();}
 function openWidgetEdit(){renderWidgetEdit();$('#modal').classList.remove('hide');}
@@ -851,7 +859,7 @@ function renderWidgetEdit(){const a=getUserWidgets();$('#modalBox').className='m
     </div>
     <div style="font-weight:700;margin:6px 0 4px">추가 가능</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px">
-    ${Object.keys(WIDGET_META).filter(id=>!a.includes(id)).map(id=>`<button class="btn sm ghost" onclick="wgToggle('${id}')">＋ ${WIDGET_META[id]}</button>`).join('')||'<span class="muted">모든 위젯이 표시 중</span>'}
+    ${Object.keys(WIDGET_META).filter(id=>!a.includes(id)&&allowedWidgets().includes(id)).map(id=>`<button class="btn sm ghost" onclick="wgToggle('${id}')">＋ ${WIDGET_META[id]}</button>`).join('')||'<span class="muted">추가할 수 있는 위젯이 없어요</span>'}
     </div>
     <div class="modal-foot"><button class="btn gray" onclick="wgReset()">기본값 복원</button><button class="btn" onclick="closeModal()">완료</button></div>`;
 }
