@@ -374,6 +374,8 @@ async function dbLoadAll(){
     const sh=await SB.from('shipping').select('*').order('month');
     const em=await SB.from('employees').select('*').order('id');
     const bs=await SB.from('broadcast_schedule').select('*').order('date');
+    const vn=await SB.from('vendors').select('*').order('name');
+    if(vn&&vn.data){VENDORS.length=0;vn.data.forEach(r=>VENDORS.push(r));}
     STOCK.length=0;st.forEach(r=>STOCK.push(r));
     CUSTOMERS.length=0;cu.forEach(r=>CUSTOMERS.push(r));
     ORD.length=0;or.forEach(r=>ORD.push(DB2ORD(r)));
@@ -2368,8 +2370,10 @@ function addStock(){const code=$('#n_code').value.trim(),name=$('#n_name').value
   if(!code||!name){toast('품목코드·품목명은 필수');return;}
   STOCK.push({code,tag:$('#n_tag').value.trim()||'-',name,color:$('#n_color').value.trim()||'-',size:$('#n_size').value.trim()||'F',qty:parseInt($('#n_qty').value)||0,price:parseInt($('#n_price').value)||0});
   toast('✅ 신규 품목 등록: ['+($('#n_tag').value.trim()||'-')+'] '+name);render();}
-function addVendor(){const name=$('#v_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}
-  VENDORS.push({name,type:$('#v_type').value,memo:$('#v_memo').value.trim()||'-'});$('#v_name').value='';$('#v_memo').value='';toast('✅ 사입처 등록: '+name);render();}
+async function addVendor(){const name=$('#v_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}
+  const row={name,type:$('#v_type').value,memo:$('#v_memo').value.trim()||'-'};
+  VENDORS.push(row);$('#v_name').value='';$('#v_memo').value='';toast('✅ 사입처 등록: '+name);render();
+  try{const {data,error}=await SB.from('vendors').insert({name:row.name,type:row.type,memo:row.memo}).select('id').single();if(error){console.error('addVendor',error);toast('⚠️ 사입처 저장 실패 — 다시 시도하세요');}else if(data)row.id=data.id;}catch(e){console.error(e);toast('⚠️ 사입처 저장 오류');}}
 function editVendor(i){const v=VENDORS[i];if(!v)return;
   $('#modalBox').innerHTML=`<h3>사입처 수정</h3>
     <label>사입처명</label><input id="ve_name" value="${esc(v.name)}">
@@ -2377,8 +2381,10 @@ function editVendor(i){const v=VENDORS[i];if(!v)return;
     <label>메모</label><input id="ve_memo" value="${esc(v.memo||'')}">
     <div class="modal-foot"><button class="btn red ghost" onclick="delVendor(${i})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveVendorEdit(${i})">저장</button></div>`;
   $('#modal').classList.remove('hide');}
-function saveVendorEdit(i){const v=VENDORS[i];if(!v)return;const name=$('#ve_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}v.name=name;v.type=$('#ve_type').value;v.memo=$('#ve_memo').value.trim()||'-';closeModal();toast('✅ 수정: '+name);render();}
-function delVendor(i){const v=VENDORS[i];if(!v)return;if(!confirm(`'${v.name}' 사입처를 삭제할까요?`))return;VENDORS.splice(i,1);closeModal();toast('🗑️ 삭제: '+v.name);render();}
+async function saveVendorEdit(i){const v=VENDORS[i];if(!v)return;const name=$('#ve_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}v.name=name;v.type=$('#ve_type').value;v.memo=$('#ve_memo').value.trim()||'-';closeModal();toast('✅ 수정: '+name);render();
+  try{if(v.id){const {error}=await SB.from('vendors').update({name:v.name,type:v.type,memo:v.memo}).eq('id',v.id);if(error){console.error('saveVendor',error);toast('⚠️ 저장 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 저장 오류');}}
+async function delVendor(i){const v=VENDORS[i];if(!v)return;if(!confirm(`'${v.name}' 사입처를 삭제할까요?`))return;VENDORS.splice(i,1);closeModal();toast('🗑️ 삭제: '+v.name);render();
+  try{if(v.id){const {error}=await SB.from('vendors').delete().eq('id',v.id);if(error){console.error('delVendor',error);toast('⚠️ 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
 function toggleEmpForm(){$('#empForm').classList.toggle('hide');}
 async function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value.trim(),pw=$('#f_pw').value.trim();
   if(!name||!id||!pw){toast('이름·아이디·비밀번호를 입력하세요');return;}
