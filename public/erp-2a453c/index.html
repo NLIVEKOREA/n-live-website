@@ -376,6 +376,8 @@ async function dbLoadAll(){
     const bs=await SB.from('broadcast_schedule').select('*').order('date');
     const vn=await SB.from('vendors').select('*').order('name');
     if(vn&&vn.data){VENDORS.length=0;vn.data.forEach(r=>VENDORS.push(r));}
+    const cl=await SB.from('cust_log').select('*').order('at',{ascending:false}).limit(3000);
+    CUSTLOG=(cl&&cl.data)||[];
     STOCK.length=0;st.forEach(r=>STOCK.push(r));
     CUSTOMERS.length=0;cu.forEach(r=>CUSTOMERS.push(r));
     ORD.length=0;or.forEach(r=>ORD.push(DB2ORD(r)));
@@ -557,6 +559,7 @@ let VENDORS=[
   {name:'동대문 청바지나라',memo:'국내 데님 사입',type:'국내'},
   {name:'남대문 악세사리',memo:'잡화·악세 사입',type:'국내'},
 ];
+let CUSTLOG=[];/* 고객 원장(취소·환불·적립) 전역 — 매출현황 환불 KPI 등 집계용 */
 const STAFF=[
   {name:'나영식',role:'운영팀·관리자',base:0,sales:0},
   {name:'이계수',role:'운영팀',base:2600000,sales:0},
@@ -656,13 +659,13 @@ function salesChart(){
 /* ===== 대시보드 위젯 시스템 (#1 포지션별 + #2 커스터마이징) ===== */
 function _inRange(o,key){if(key==='all')return true;const r=periodRange(key),d=(o.date||'').replace(/\//g,'-');return d>=r.from&&d<=r.to;}
 function _salesP(key){return mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,key)).reduce((a,o)=>a+amtOf(o),0);}
-function _cntP(key){return mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,key)).length;}
+function _cntP(key){const s=new Set();mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,key)&&_isGoods(o)).forEach(o=>s.add((o.date||'')+'|'+(o.cust||'')));return s.size;}/* 실제 주문 수 = 날짜+고객 그룹(서비스라인 제외) */
 function _shipFeeMonth(){const r=periodRange('month');return mine(ORD).filter(o=>o.code==='배송비'&&_inRange(o,'month')).reduce((a,o)=>a+amtOf(o),0)+SHIPPING.filter(s=>s.month===r.from.slice(0,7)).reduce((a,s)=>a+(s.amount||0),0);}
 function _byStaffRows(){const m={};mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,'month')).forEach(o=>m[o.staff]=(m[o.staff]||0)+amtOf(o));return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>[k,won(v)]);}
 function _byProdRows(){const m={};mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,'month')&&!/낱장|배송비/.test((o.disp||'')+o.code)).forEach(o=>{const k=o.disp||o.code;m[k]=(m[k]||0)+(o.qty||0);});return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>[k,v+'개']);}
 /* ===== 대시보드 분석 통계 (전부 실데이터: 주문/고객/재고에서 계산) ===== */
 function prodCat(code,disp){const s=STOCK.find(x=>x.code===code);if(s&&s.subcategory)return s.subcategory;if(s&&s.category)return s.category;const t=(disp||'')+((s&&s.name)||'');const KW=[['원피스','원피스'],['니트','니트'],['가디건','니트'],['팬츠','팬츠'],['바지','팬츠'],['슬랙스','팬츠'],['데님','팬츠'],['청바지','팬츠'],['레깅스','팬츠'],['자켓','아우터'],['코트','아우터'],['점퍼','아우터'],['패딩','아우터'],['아우터','아우터'],['블라우스','블라우스'],['셔츠','블라우스'],['티셔츠','티셔츠'],['반팔','티셔츠'],['나시','티셔츠'],['스커트','스커트'],['치마','스커트'],['셋업','셋업'],['후드','맨투맨'],['맨투맨','맨투맨']];for(const kw of KW)if(t.indexOf(kw[0])>=0)return kw[1];return '기타';}
-function _isGoods(o){return o.code!=='배송비'&&o.code!=='낱장'&&!/배송비|낱장/.test(o.disp||'');}
+function _isGoods(o){return o.code!=='배송비'&&o.code!=='낱장'&&o.code!=='적립금'&&!/배송비|낱장|적립금/.test(o.disp||'');}
 function _orderCount(key){const s=new Set();mine(ORD).filter(o=>o.pay==='paid'&&_inRange(o,key)).forEach(o=>s.add((o.date||'')+'|'+(o.cust||'')));return s.size;}
 function _avgOrder(key){const c=_orderCount(key);return c?Math.round(_salesP(key)/c):0;}
 function _custAgg(){const m={};mine(ORD).filter(o=>o.pay==='paid').forEach(o=>{const c=(o.cust||'').trim();if(!c)return;if(!m[c])m[c]={cust:c,groups:new Set(),amt:0,last:'',cats:{}};m[c].groups.add((o.date||'')+'|'+c);m[c].amt+=amtOf(o);const d=(o.date||'').replace(/\//g,'-');if(d>m[c].last)m[c].last=d;if(_isGoods(o)){const cat=prodCat(o.code,o.disp);m[c].cats[cat]=(m[c].cats[cat]||0)+(o.qty||0);}});return Object.values(m).map(x=>{const ent=Object.entries(x.cats).sort((a,b)=>b[1]-a[1]);const tc=ent.filter(e=>e[0]!=='기타')[0]||ent[0];return {cust:x.cust,cnt:x.groups.size,amt:x.amt,last:x.last,topcat:tc?tc[0]:'-'};});}
@@ -2235,7 +2238,11 @@ function viewRevenue(){
   let paid=mine(ORD).filter(o=>o.pay==='paid');
   if(REVPERIOD!=='all')paid=paid.filter(o=>{const d=(o.date||'').replace(/\//g,'-');return d>=rp.from&&d<=rp.to;});
   const total=paid.reduce((a,o)=>a+amtOf(o),0);
-  const retSum=mine(RET).reduce((a,r)=>a+r.amt,0),byStaff={};paid.forEach(o=>byStaff[o.staff]=(byStaff[o.staff]||0)+amtOf(o));
+  const orderCnt=new Set(paid.filter(_isGoods).map(o=>(o.date||'')+'|'+(o.cust||''))).size;
+  // 실제 취소·환불액 = cust_log(취소/환불) 해당 기간 합 (셀러는 RLS로 본인 고객만)
+  const inRP=d=>{d=String(d||'').slice(0,10);return REVPERIOD==='all'||(d>=rp.from&&d<=rp.to);};
+  const retSum=CUSTLOG.filter(l=>(l.type==='취소'||l.type==='환불')&&inRP(l.at)).reduce((a,l)=>a+(l.amount||0),0);
+  const byStaff={};paid.forEach(o=>byStaff[o.staff]=(byStaff[o.staff]||0)+amtOf(o));
   const m=isSeller()?'내 ':'';
   return `
   <div class="head"><h1>${isSeller()?'내 실적':'매출현황'}</h1>
@@ -2244,9 +2251,9 @@ function viewRevenue(){
   ${lockBanner()}
   <div class="tabs" style="margin-bottom:14px">${periodTabs(REVPERIOD,'setRevPeriod')}</div>
   <div class="kpis">
-    <div class="kpi"><div><div class="lab">${m}총 매출</div><div class="num">${won(total)}</div><div class="sub up">판매 ${paid.length}건</div></div><div class="ic ic-b"><i class="ti ti-cash"></i></div></div>
-    <div class="kpi"><div><div class="lab">평균 단가</div><div class="num">${won(paid.length?Math.round(total/paid.length):0)}</div></div><div class="ic ic-p"><i class="ti ti-chart-bar"></i></div></div>
-    <div class="kpi"><div><div class="lab">반품/환불</div><div class="num down">${won(retSum)}</div></div><div class="ic ic-r"><i class="ti ti-refresh"></i></div></div>
+    <div class="kpi"><div><div class="lab">${m}총 매출</div><div class="num">${won(total)}</div><div class="sub up">주문 ${orderCnt}건</div></div><div class="ic ic-b"><i class="ti ti-cash"></i></div></div>
+    <div class="kpi"><div><div class="lab">평균 객단가</div><div class="num">${won(orderCnt?Math.round(total/orderCnt):0)}</div><div class="sub" style="color:#94a3b8;font-weight:500">주문당</div></div><div class="ic ic-p"><i class="ti ti-chart-bar"></i></div></div>
+    <div class="kpi"><div><div class="lab">취소/환불</div><div class="num down">${won(retSum)}</div><div class="sub" style="color:#94a3b8;font-weight:500">${rp.label}</div></div><div class="ic ic-r"><i class="ti ti-refresh"></i></div></div>
     ${isSeller()?(function(){const me=EMPLOYEES.find(x=>x.name===ME.name)||{role:ME.role,name:ME.name};const p=empPay(me);return `<div class="kpi"><div><div class="lab">예상 수당 (기본급+매출 ${p.rate}%)</div><div class="num up">${won(p.total)}</div><div class="sub" style="color:#94a3b8;font-weight:500;margin-top:6px">기본 ${won(p.base)} + 수당 ${won(p.comm)}</div></div><div class="ic ic-g"><i class="ti ti-wallet"></i></div></div>`;})():`<div class="kpi"><div><div class="lab">순매출</div><div class="num">${won(total-retSum)}</div></div><div class="ic ic-g"><i class="ti ti-circle-check"></i></div></div>`}
   </div>
   <div class="card"><div class="card-h"><h2>${isSeller()?'내 판매 내역':'셀러별 매출'}</h2></div>
