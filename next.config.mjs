@@ -17,12 +17,19 @@ const nextConfig = {
   },
   // ERP는 단일 HTML — 배포 즉시 최신이 오도록 매번 재검증(캐시된 옛 버전 방지)
   async headers() {
+    // 간단하고 안전한 보안 헤더: 클릭재킹·MIME스니핑·리퍼러(주소)유출 방지
+    const sec = [
+      { key: "X-Frame-Options", value: "SAMEORIGIN" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "no-referrer" },
+    ];
+    const noCache = { key: "Cache-Control", value: "no-cache, must-revalidate" };
     return [
-      { source: "/erp-2a453c", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
-      { source: "/erp-2a453c/", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
-      { source: "/erp-2a453c/:path*", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
-      { source: "/shop.html", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
-      { source: "/shop/:seller*", headers: [{ key: "Cache-Control", value: "no-cache, must-revalidate" }] },
+      { source: "/erp-2a453c", headers: [noCache, ...sec] },
+      { source: "/erp-2a453c/", headers: [noCache, ...sec] },
+      { source: "/erp-2a453c/:path*", headers: [noCache, ...sec] },
+      { source: "/shop.html", headers: [noCache, ...sec] },
+      { source: "/shop/:seller*", headers: [noCache, ...sec] },
     ];
   },
 };

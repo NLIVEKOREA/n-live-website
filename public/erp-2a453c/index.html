@@ -487,7 +487,9 @@ const SB = window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.c
 const SB_DOMAIN='@n-live.co.kr';
 function _authClient(){return window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao',{auth:{persistSession:false,autoRefreshToken:false,storageKey:'erp_tmp_signup'}});}
 const _toDate=d=>{if(!d)return null;const m=String(d).match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);return m?`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`:null;};
-const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:r.cust,phone:r.phone,addr:r.addr,code:r.code,disp:r.item_name,tag:r.tag,color:r.color,size:r.size,qty:r.qty,price:r.price,pay:r.pay,payway:r.payway,ship:r.ship,req:r.req,prog:r.prog,back:r.back,track:r.track,reason:r.reason,shipped_date:r.shipped_date,rxtype:r.rxtype,rxstat:r.rxstat,rxreason:r.rxreason,fault:r.fault,rxdate:r.rxdate,rxdone:r.rxdone,rxnew:r.rxnew,created_by:r.created_by,source:r.source,session_id:r.session_id,order_group_id:r.order_group_id,reservation_expires_at:r.reservation_expires_at,meta:r.meta,bo_status:r.bo_status});
+/* 보안: 고객 입력 자유텍스트에서 <> 제거(저장 XSS 차단). 이름·주소·전화엔 꺾쇠가 쓰일 일 없음 */
+const safeText=s=>s==null?s:String(s).replace(/[<>]/g,'');
+const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:safeText(r.cust),phone:safeText(r.phone),addr:safeText(r.addr),code:r.code,disp:safeText(r.item_name),tag:r.tag,color:r.color,size:r.size,qty:r.qty,price:r.price,pay:r.pay,payway:r.payway,ship:r.ship,req:r.req,prog:r.prog,back:r.back,track:r.track,reason:safeText(r.reason),shipped_date:r.shipped_date,rxtype:r.rxtype,rxstat:r.rxstat,rxreason:safeText(r.rxreason),fault:r.fault,rxdate:r.rxdate,rxdone:r.rxdone,rxnew:r.rxnew,created_by:r.created_by,source:r.source,session_id:r.session_id,order_group_id:r.order_group_id,reservation_expires_at:r.reservation_expires_at,meta:r.meta,bo_status:r.bo_status});
 const ORD2DB=o=>{const r={order_date:_toDate(o.date),staff:o.staff,cust:o.cust,phone:o.phone,addr:o.addr,code:o.code,item_name:o.disp,tag:o.tag,color:o.color,size:o.size,qty:o.qty,price:o.price,pay:o.pay,payway:o.payway||null,ship:o.ship,req:o.req||null,prog:o.prog||null,back:!!o.back,track:o.track||null,reason:o.reason||null,shipped_date:o.shipped_date||null};r.rxtype=o.rxtype||null;r.rxstat=o.rxstat||null;r.rxreason=o.rxreason||null;r.fault=o.fault||null;r.rxdate=o.rxdate||null;r.rxdone=o.rxdone||null;r.rxnew=o.rxnew||null;r.created_by=o.created_by||null;
   /* 링크(라이브)주문 식별 필드 보존 — 수정 저장 시 source/세션/그룹/차감마커가 사라지지 않게 */
   if(o.source!==undefined)r.source=o.source||null;
@@ -531,7 +533,7 @@ async function dbLoadAll(){
     const cl=await SB.from('cust_log').select('*').order('at',{ascending:false}).limit(3000);
     CUSTLOG=(cl&&cl.data)||[];
     STOCK.length=0;st.forEach(r=>STOCK.push(r));
-    CUSTOMERS.length=0;cu.forEach(r=>CUSTOMERS.push(r));
+    CUSTOMERS.length=0;cu.forEach(r=>{r.name=safeText(r.name);r.phone=safeText(r.phone);r.addr=safeText(r.addr);r.memo=safeText(r.memo);CUSTOMERS.push(r);});
     ORD.length=0;or.forEach(r=>ORD.push(DB2ORD(r)));
     SHIPPING=sh.data||[];
     EMPLOYEES.length=0;(em.data||[]).forEach(r=>EMPLOYEES.push(r));
