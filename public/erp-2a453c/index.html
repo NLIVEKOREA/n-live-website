@@ -470,7 +470,7 @@
         <span class="tb-ic" onclick="openMessages()" style="cursor:pointer" title="메시지 — 내부 소통"><i class="ti ti-mail"></i><span class="bdg" id="msgBdg" style="background:#94a3b8;display:none">0</span></span>
         <span class="tb-ic" onclick="openHelp()" style="cursor:pointer" title="도움말 — 사용 안내"><i class="ti ti-help-circle"></i></span>
         <div class="tb-user">
-          <div style="text-align:right"><div class="nm" id="tbName">나영식</div><div class="rl" id="tbRole">운영팀 · 관리자</div></div>
+          <div style="text-align:right"><div class="nm" id="tbName"></div><div class="rl" id="tbRole"></div></div>
           <div class="av" id="tbAv">나</div>
         </div>
       </div>
@@ -717,25 +717,18 @@ let VENDORS=[
   {name:'남대문 악세사리',memo:'잡화·악세 사입',type:'국내'},
 ];
 let CUSTLOG=[];/* 고객 원장(취소·환불·적립) 전역 — 매출현황 환불 KPI 등 집계용 */
-const STAFF=[
-  {name:'나영식',role:'운영팀·관리자',base:0,sales:0},
-  {name:'이계수',role:'운영팀',base:2600000,sales:0},
-  {name:'윤진영',role:'물류팀',base:2300000,sales:0},
-  {name:'박시연',role:'셀러팀·셀러',base:2200000,sales:18400000},
-  {name:'김예지',role:'셀러팀·보조',base:2000000,sales:0},
-];
 const COMM_RATE=0.015;
 const MONTHS=['7','8','9','10','11','12','1','2','3','4','5','6'];
 const MSALES=[2100,2450,2250,2100,2400,2600,2550,2350,2500,2480,2620,2750];
 const MPROFIT=[480,620,520,480,640,720,600,580,660,630,700,740];
 
 /* ===== 사용자·권한 ===== */
+/* 로그인 전 임시 기본 신원 홀더 — 실제 로그인은 Supabase 인증(doLogin)이 EMPLOYEES에서 덮어씀. 비번은 여기 없음(서버 보관) */
 let USERS=[
-  {name:'나영식',id:'admin',pw:'1234',team:'운영팀',role:'관리자',scope:'all'},
-  {name:'이계수',id:'kyesoo',pw:'1234',team:'운영팀',role:'운영',scope:'all'},
-  {name:'윤진영',id:'logi',pw:'1234',team:'물류팀',role:'물류',scope:'logi'},
-  {name:'박시연',id:'siyeon',pw:'1234',team:'셀러팀',role:'셀러',scope:'self',owner:'박시연'},
-  {name:'김예지',id:'yeji',pw:'1234',team:'셀러팀',role:'보조',scope:'self',owner:'박시연'},
+  {name:'관리자',id:'admin',team:'운영팀',role:'관리자',scope:'all'},
+  {name:'운영',id:'op',team:'운영팀',role:'운영',scope:'all'},
+  {name:'물류',id:'logi',team:'물류팀',role:'물류',scope:'logi'},
+  {name:'셀러',id:'seller',team:'셀러팀',role:'셀러',scope:'self',owner:''},
 ];
 let ME=USERS[0];
 let EMPLOYEES=[];
