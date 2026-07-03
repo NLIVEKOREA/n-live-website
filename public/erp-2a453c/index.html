@@ -268,9 +268,10 @@
   .orderwrap2{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
   .ow-left{display:flex;flex-direction:column;gap:16px}
   .oe-actbar{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}
-  .oe-actbar .oe-sum{margin-left:auto;font-size:15px;color:var(--gray)}
+  .oe-actbar .oe-sum{font-size:15px;color:var(--gray)}
   .oe-actbar .oe-sum b{font-size:20px;color:var(--ink)}
-  .oe-actbar .oe-btns{display:flex;gap:8px;order:-1}
+  /* 마무리 버튼(저장/다시작성)은 우하단 — 합계는 좌측, 버튼은 오른쪽 끝 */
+  .oe-actbar .oe-btns{display:flex;gap:8px;margin-left:auto;order:0}
   @media(max-width:767px){
     .oe-actbar{position:sticky;bottom:0;z-index:5;flex-direction:column;align-items:stretch;gap:10px;margin:14px -12px 0;padding:12px 12px calc(12px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line)}
     .oe-actbar .oe-sum{margin-left:0;text-align:center;font-size:16px}
