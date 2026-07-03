@@ -2109,8 +2109,28 @@ const rxWhen=o=>((o.rxdate||o.rxdone||o.date||'')+'').replace(/\//g,'-');
 const rxSort=arr=>arr.slice().sort((a,b)=>{const c=String(rxWhen(b)).localeCompare(String(rxWhen(a)));return c!==0?c:(b.id||0)-(a.id||0);});/* 최신 등록이 위로 */
 function viewRx(){const all=mine(ORD).filter(o=>o.rxtype);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=rxSort(RXVIEWTAB==='active'?active:done);
   return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}${sellerTabs()}
-  <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='done';render()">완료 ${done.length}</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
-  ${RXVIEWTAB==='fault'?rxFaultBoard(all):(cur.length?`<div class="rx-grid">${cur.map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">${RXVIEWTAB==='active'?'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)':'완료된 건이 없습니다'}</div></div>`)}`;}
+  <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='done';render()">처리 ${done.length}</button><button class="${RXVIEWTAB==='archive'?'on':''}" onclick="RXVIEWTAB='archive';render()">✅ 완료(정리)</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
+  ${RXVIEWTAB==='fault'?rxFaultBoard(all):RXVIEWTAB==='archive'?rxArchiveView(done):(cur.length?`<div class="rx-grid">${cur.map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">${RXVIEWTAB==='active'?'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)':'처리(완료)된 건이 없습니다'}</div></div>`)}`;}
+/* 완료(정리) — 진짜 마무리된 CS를 고객별로 묶어 단계별 날짜와 함께 정리 */
+function rxArchiveView(done){
+  if(!done.length)return '<div class="card"><div class="muted" style="padding:16px">완료된 CS가 없습니다</div></div>';
+  const byCust={};done.forEach(o=>{(byCust[o.cust]=byCust[o.cust]||[]).push(o);});
+  const dk=o=>String(rxStepDate(o,'done')||o.rxdone||o.rxdate||'').replace(/\D/g,'');
+  const custs=Object.keys(byCust).sort((a,b)=>Math.max(...byCust[b].map(dk).map(Number))-Math.max(...byCust[a].map(dk).map(Number)));
+  const dc=(o,s)=>{const d=rxStepDate(o,s);return d?`<span style="white-space:nowrap">${String(d).slice(5)}</span>`:'<span class="muted">-</span>';};
+  const totItems=done.length,totRefund=done.filter(o=>o.rxtype==='refund').length,totExch=done.filter(o=>o.rxtype==='exchange').length;
+  return `<div class="note" style="margin-bottom:12px">✅ <b>완료 정리</b> — 마무리된 CS ${totItems}건(반품·환불 ${totRefund} · 교환 ${totExch})을 <b>고객별</b>로 묶어 단계별 날짜와 함께 정리했습니다.</div>`+
+  custs.map(cust=>{const items=byCust[cust].slice().sort((a,b)=>Number(dk(b))-Number(dk(a)));
+    return `<div class="card"><div class="card-h"><h2 style="margin:0">${esc(cust)} <span class="muted" style="font-size:12px;font-weight:400">CS ${items.length}건 완료</span></h2></div>
+    <div style="overflow:auto"><table style="min-width:760px"><thead><tr><th>유형</th><th>상품</th><th>사유</th><th>접수</th><th>회수신청</th><th>회수입고</th><th>환불·재발송</th><th>완료</th><th class="num-cell">정산</th></tr></thead><tbody>
+    ${items.map(o=>{const st=o.meta&&o.meta.settle,proc=o.rxtype==='exchange'?'reship':'refunded';return `<tr>
+      <td style="white-space:nowrap">${(RX_TYPES[o.rxtype]||{}).ic||''} ${rxTypeLabel(o)}</td>
+      <td>${esc(itemLabel(o))}${o.rxtype==='exchange'&&o.rxnew?` <span class="muted">→ ${esc((o.rxnew.tag?'['+o.rxnew.tag+'] ':'')+(o.rxnew.name||o.rxnew.code||''))} ${esc((o.rxnew.color||'')+' '+(o.rxnew.size||''))}</span>`:''}</td>
+      <td class="muted">${esc(o.rxreason||'-')}</td>
+      <td class="muted" style="font-size:11px">${dc(o,'req')}</td><td class="muted" style="font-size:11px">${dc(o,'recall')}</td><td class="muted" style="font-size:11px">${dc(o,'gotback')}</td><td class="muted" style="font-size:11px">${dc(o,proc)}</td><td class="muted" style="font-size:11px">${dc(o,'done')}</td>
+      <td class="num-cell" style="font-size:11.5px">${st?(st.method==='적립금'?'💰적립 ':'')+won(st.net):(o.rxtype==='refund'?'<span style="color:#dc2626">정산前</span>':'-')}</td>
+    </tr>`;}).join('')}
+    </tbody></table></div></div>`;}).join('');}
 /* ===== 판매현황 상태 분류 — 판매관리·출고장과 동일한 ORD 필드에서 실시간 판정 ===== */
 const SHP_STATES=[{k:'all',l:'전체'},{k:'unpack',l:'미포장'},{k:'pack',l:'포장(출고전)'},{k:'done',l:'출고완료'},{k:'back',l:'미송'},{k:'bundle',l:'합배'},{k:'exch',l:'교환중'},{k:'refund',l:'환불중'}];
 const SHP_STATE_PILL={unpack:['p-gray','미포장'],pack:['p-req','포장'],done:['p-done','출고완료'],back:['p-low','미송'],bundle:['p-purple','합배'],exch:['p-req','교환중'],refund:['p-low','환불중']};
