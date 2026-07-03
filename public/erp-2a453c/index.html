@@ -2304,10 +2304,11 @@ function viewStock(){
     </div>
     ${STAGED.length?`
     <div class="card-h" style="margin-top:18px"><h2>오늘 등록 작업 (${STAGED.length}건) <span class="muted" style="font-size:12px;font-weight:400">체크한 항목만 재고현황에 저장됩니다</span></h2></div>
-    <table><thead><tr><th style="width:34px"><input type="checkbox" ${STAGED.length&&STAGED.every(x=>x.chk)?'checked':''} onclick="stagedAllToggle(this.checked)"></th><th>번호표</th><th>품목코드</th><th>품목명</th><th>색상</th><th>사이즈</th><th>구매처</th><th>카테고리</th><th class="num-cell">입고가</th><th class="num-cell">출고가</th><th class="num-cell">수량</th><th style="width:34px"></th></tr></thead><tbody>
-      ${STAGED.map((x,i)=>`<tr>
+    <table><thead><tr><th style="width:34px"><input type="checkbox" ${STAGED.length&&STAGED.every(x=>x.chk)?'checked':''} onclick="stagedAllToggle(this.checked)"></th><th>번호표</th><th>품목코드</th><th>품목명</th><th>색상</th><th>사이즈</th><th>구매처</th><th>카테고리</th><th class="num-cell">입고가</th><th class="num-cell">출고가</th><th class="num-cell">수량</th><th style="width:46px">샘플</th><th style="width:34px"></th></tr></thead><tbody>
+      ${STAGED.map((x,i)=>`<tr${x.sample?' style="background:#fff7ed"':''}>
         <td><input type="checkbox" ${x.chk?'checked':''} onclick="stagedToggle(${i})"></td>
         <td><span class="tagbox">${esc(x.tag)}</span></td><td class="barcode muted prod-link" title="클릭하여 수정" onclick="openStageEdit(${i})">${esc(skuFullCode(x.code,x.color,x.size,STOCK.concat(STAGED)))}</td><td class="prod-link" title="클릭하여 수정" onclick="openStageEdit(${i})">${esc(x.name)}</td><td>${esc(x.color)}</td><td>${esc(x.size)}</td><td class="muted">${esc(x.vendor||'-')}</td><td class="muted">${esc(x.category||'-')}${x.subcategory?'·'+esc(x.subcategory):''}${x.season?'·'+esc(x.season):''}</td><td class="num-cell muted">${won(x.in_price)}</td><td class="num-cell">${won(x.price)}</td><td class="num-cell">${x.qty}</td>
+        <td style="text-align:center"><input type="checkbox" ${x.sample?'checked':''} onclick="stagedSampleToggle(${i})" title="샘플(반납 대상) — 주문 시 자동 미송·사입"></td>
         <td><button class="ico-btn" title="삭제" onclick="stagedDel(${i})"><i class="ti ti-x"></i></button></td>
       </tr>`).join('')}
     </tbody></table>
@@ -2869,21 +2870,28 @@ function saveBulk(){const b=BULK;if(!String(b.name).trim()){toast('상품명을 
   const colors=String(b.colors||'').split(',').map(c=>c.trim()).filter(Boolean);const sizes=(b.sizes||[]).slice().sort((a,x)=>sizeRank(a)-sizeRank(x));
   if(!colors.length){toast('색상을 하나 이상 입력하세요');return;}if(!sizes.length){toast('사이즈를 선택하세요');return;}
   const bulkTag=String(b.tag||'').trim()||'-';
-  let n=0;colors.forEach(c=>{sizes.forEach(sz=>{const q=b.qty[c+'|'+sz]||0;if(q<=0)return;STAGED.unshift({chk:true,tag:bulkTag,code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q});n++;});});
-  if(!n){toast('수량을 입력한 칸이 없어요');return;}
+  const anyQty=colors.some(c=>sizes.some(sz=>(b.qty[c+'|'+sz]||0)>0));
+  let sample=false;
+  if(!anyQty){sample=confirm(SAMPLE_CONFIRM);}/* 수량 하나도 없이 등록 = 재고 0 등록 → 샘플 확인 후 색상×사이즈 전조합 0으로 등록 */
+  let n=0;colors.forEach(c=>{sizes.forEach(sz=>{const q=b.qty[c+'|'+sz]||0;if(anyQty&&q<=0)return;STAGED.unshift({chk:true,tag:bulkTag,code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q,sample});n++;});});
+  if(!n){toast('색상·사이즈를 선택하세요');return;}
   closeModal();toast('✅ '+n+'개 SKU가 입고 목록에 추가됨 — 확인 후 [저장]하세요');render();}
+const SAMPLE_CONFIRM='재고 0으로 등록됩니다.\n\n이 상품이 샘플(반납 대상)인가요?\n\n[확인] = 샘플로 체크해서 등록 (주문 시 자동 미송·사입 처리)\n[취소] = 일반 상품(0재고)으로 등록';
 function stagedAdd(){
   if(!SFORM.code.trim()||!SFORM.name.trim()){toast('품목코드·품목명은 필수');return;}
-  STAGED.unshift({chk:true,tag:SFORM.tag.trim()||'-',code:SFORM.code.trim(),vendor:SFORM.vendor.trim()||null,name:SFORM.name.trim(),color:SFORM.color.trim()||'-',size:SFORM.size.trim()||'F',in_price:parseInt(SFORM.inprice)||0,price:parseInt(SFORM.price)||0,category:SFORM.cat||null,subcategory:SFORM.subcat||null,season:(CAT_HASSEASON(SFORM.cat)?SFORM.season:'')||null,qty:parseInt(SFORM.qty)||0});
+  const q=parseInt(SFORM.qty)||0;let sample=false;
+  if(q<=0){sample=confirm(SAMPLE_CONFIRM);}/* 재고 0 등록 → 샘플 확인 */
+  STAGED.unshift({chk:true,tag:SFORM.tag.trim()||'-',code:SFORM.code.trim(),vendor:SFORM.vendor.trim()||null,name:SFORM.name.trim(),color:SFORM.color.trim()||'-',size:SFORM.size.trim()||'F',in_price:parseInt(SFORM.inprice)||0,price:parseInt(SFORM.price)||0,category:SFORM.cat||null,subcategory:SFORM.subcat||null,season:(CAT_HASSEASON(SFORM.cat)?SFORM.season:'')||null,qty:q,sample});
   SFORM.code='';SFORM.name='';SFORM.color='';SFORM.size='';SFORM.inprice='';SFORM.price='';SFORM.qty='';
-  toast('목록에 추가 ('+STAGED.length+'건 대기)');render();setTimeout(()=>$('#sf_code')?.focus(),40);
+  toast('목록에 추가 ('+STAGED.length+'건 대기)'+(sample?' · 🔖샘플':''));render();setTimeout(()=>$('#sf_code')?.focus(),40);
 }
+function stagedSampleToggle(i){if(STAGED[i]){STAGED[i].sample=!STAGED[i].sample;render();}}
 function stagedToggle(i){if(STAGED[i])STAGED[i].chk=!STAGED[i].chk;render();}
 function stagedAllToggle(c){STAGED.forEach(x=>x.chk=c);render();}
 function stagedDel(i){STAGED.splice(i,1);render();}
 async function stagedSave(){
   const sel=STAGED.filter(x=>x.chk);if(!sel.length){toast('저장할 항목을 체크하세요');return;}
-  for(const x of sel){const s={tag:x.tag,code:x.code,vendor:x.vendor,name:x.name,color:x.color,size:x.size,in_price:x.in_price,price:x.price,category:x.category,subcategory:x.subcategory,season:x.season,qty:x.qty};STOCK.unshift(s);await saveStockRow(s);}
+  for(const x of sel){const s={tag:x.tag,code:x.code,vendor:x.vendor,name:x.name,color:x.color,size:x.size,in_price:x.in_price,price:x.price,category:x.category,subcategory:x.subcategory,season:x.season,qty:x.qty,sample:!!x.sample};STOCK.unshift(s);await saveStockRow(s);}
   STAGED=STAGED.filter(x=>!x.chk);
   toast('✅ '+sel.length+'건 재고현황에 등록 완료');render();
 }
