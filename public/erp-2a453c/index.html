@@ -1129,7 +1129,7 @@ function wRender(id){const today=todayStr();
     case 'toship':return numCard('출고 대기',mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done').length,'미송·출고요청','b','ti-truck',"go('ship')");
     case 'done_today':return numCard('당일 출고완료',mine(ORD).filter(o=>o.ship==='done'&&o.shipped_date===today).length,'오늘','g','ti-circle-check',"go('ship')");
     case 'rx':return numCard('교환/반품',mine(ORD).filter(o=>o.req==='교환요청'||o.req==='환불요청').length,'요청','r','ti-refresh',"go('sales')");
-    case 'refund_wait':{const rows=mine(ORD).filter(o=>o.rxtype==='refund'&&o.rxstat!=='done'&&!((o.meta&&o.meta.settle&&o.meta.settle.net!=null))).filter(o=>['gotback','recall','refunded'].includes(o.rxstat));return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>반품입고·환불대기 <span class="muted" style="font-size:11px">${rows.length}건 · 계좌+금액 복사</span></h2><button class="btn sm ghost" onclick="go('rx')">환불대장</button></div><table><tbody>${rows.length?rows.slice(0,10).map(o=>`<tr><td><b>${esc(o.cust||'')}</b></td><td>${esc(itemLabel(o))} <span class="muted">×${o.qty}</span></td><td class="num-cell">${won(amtOf(o))}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm ghost" onclick="openRefundSettle(${o.id})">💵 정산</button> <button class="btn sm" onclick="copyRefund(${o.id})">📋 복사</button></td></tr>`).join(''):'<tr><td class="muted">환불대기 없음 👍</td></tr>'}</tbody></table></div>`;}
+    case 'refund_wait':{const rows=mine(ORD).filter(o=>o.rxtype==='refund'&&o.rxstat==='gotback');/* 사무실 입고됐는데 환불완료 안 누른 것만 */return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>환불 대기 <span class="muted" style="font-size:11px">사무실 입고됨 · 환불완료 전 ${rows.length}건</span></h2><button class="btn sm ghost" onclick="go('rx')">환불대장</button></div><table><tbody>${rows.length?rows.slice(0,10).map(o=>`<tr><td><b>${esc(o.cust||'')}</b></td><td>${esc(itemLabel(o))} <span class="muted">×${o.qty}</span></td><td class="num-cell">${won(((o.meta&&o.meta.settle&&o.meta.settle.net)!=null)?o.meta.settle.net:amtOf(o))}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm ghost" onclick="copyRefund(${o.id})">📋</button> <button class="btn sm" style="background:#059669" onclick="ledgerRefundDone(${o.id})">✅ 환불완료</button></td></tr>`).join(''):'<tr><td class="muted" style="padding:10px">입고 후 환불 대기 건 없음 👍</td></tr>'}</tbody></table></div>`;}
     case 'ship_fee':return numCard('배송비(당월)',won(_shipFeeMonth()),'집계','p','ti-package');
     case 'misong':{const ms=mine(ORD).filter(o=>o.back&&o.code!=='배송비');return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>미송 대기 <span class="muted" style="font-size:11px">${ms.length}건</span></h2><button class="btn sm" onclick="openMisongPO()">📋 동대문 발주서</button></div><table><tbody>${ms.length?ms.slice(0,10).map(o=>`<tr><td><b>${esc(o.cust||'')}</b></td><td>${esc(o.disp||prodName(o.code))}</td><td class="muted" style="text-align:right;white-space:nowrap">${o.color||''} ${o.size||''} · ${o.qty||0}개</td></tr>`).join(''):'<tr><td class="muted">미송 없음 👍</td></tr>'}</tbody></table></div>`;}
     case 'by_staff':return listCard('셀러별 매출(당월)',_byStaffRows(),"go('revenue')");
@@ -2206,6 +2206,14 @@ async function refundSettleCommit(){const d=RSETTLE;if(!d)return;const o=ORD.fin
 function copyRefund(id){const o=ORD.find(x=>x.id===id);if(!o)return;const st=(o.meta&&o.meta.settle)||{};const net=st.net!=null?st.net:amtOf(o);
   const txt=`${o.cust}\n${st.account||'(계좌 미입력)'}\n${won(net)}`;
   (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('📋 복사됨 — '+o.cust+' '+won(net))).catch(()=>{try{const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();toast('📋 복사됨 — '+o.cust);}catch(e){toast('복사 실패 — 수동 확인');}});}
+/* 환불대장 액션: 회수요청 → 📦회수입고(재고복원) → ✅환불완료 */
+async function ledgerGotback(id){const o=ORD.find(x=>x.id===id);if(!o)return;
+  if(o.rxstat!=='gotback'&&o.rxstat!=='done'){try{await rxStepStockEffect(o,'gotback',1);}catch(e){}}
+  o.rxstat='gotback';delete o.rxdone;rxStampStep(o,'gotback',todayStr());toast('📦 회수입고 ('+todayStr()+') · 재고 복원');render();await saveOrd(o);}
+async function ledgerRefundDone(id){const o=ORD.find(x=>x.id===id);if(!o)return;
+  const st=o.meta&&o.meta.settle;
+  if(!st){if(!confirm('환불 계좌·금액 정산이 안 됐습니다.\n먼저 [💵정산]으로 계좌·실환불액을 기록하는 걸 권장해요.\n\n그래도 환불완료로 표시할까요?'))return;}
+  o.rxstat='done';o.rxdone=todayStr();rxStampStep(o,'done',todayStr());toast('✅ 환불완료 ('+todayStr()+')');render();await saveOrd(o);}
 function refundLedgerRows(){return mine(ORD).filter(o=>o.rxtype==='refund'||(o.meta&&o.meta.settle)).slice().sort((a,b)=>String((b.meta&&b.meta.settle&&b.meta.settle.at)||b.rxdate||b.date||'').localeCompare(String((a.meta&&a.meta.settle&&a.meta.settle.at)||a.rxdate||a.date||''))||(b.id||0)-(a.id||0));}
 function refundLedgerView(){const rows=refundLedgerRows();
   const totNet=rows.reduce((s,o)=>s+(((o.meta&&o.meta.settle)||{}).net||0),0),unset=rows.filter(o=>!(o.meta&&o.meta.settle)).length;
@@ -2219,7 +2227,7 @@ function refundLedgerView(){const rows=refundLedgerRows();
       <td class="num-cell">${st?(st.deduct?'−'+won(st.deduct):'-'):'<span class="muted">-</span>'}</td>
       <td class="num-cell"><b>${net!=null?won(net):'<span style="color:#dc2626">미정산</span>'}</td>
       <td class="barcode muted" style="font-size:11px">${st&&st.account?esc(st.account):'<span style="color:#dc2626">미입력</span>'}</td>
-      <td style="text-align:right;white-space:nowrap"><button class="btn sm ghost" onclick="openRefundSettle(${o.id})">${st?'✏️ 수정':'💵 정산'}</button> <button class="btn sm" onclick="copyRefund(${o.id})">📋 복사</button></td>
+      <td style="text-align:right;white-space:nowrap">${o.rxstat==='done'?'<span class="pill p-done" style="font-size:10px">완료</span>':(o.rxstat==='gotback'?`<button class="btn sm" style="background:#059669" onclick="ledgerRefundDone(${o.id})">✅ 환불완료</button>`:`<button class="btn sm ghost" onclick="ledgerGotback(${o.id})" title="사무실 입고 처리 → 재고 복원">📦 회수입고</button>`)} <button class="btn sm ghost" onclick="openRefundSettle(${o.id})">${st?'✏️':'💵'} 정산</button> <button class="btn sm" onclick="copyRefund(${o.id})">📋</button></td>
     </tr>`;}).join(''):'<tr><td colspan="8" class="muted" style="padding:16px">환불·반품 기록이 없습니다</td></tr>'}
     </tbody></table></div>`;}
 /* 판매현황 상태별 액션 버튼 — 출고완료: 교환/반품 · 미출고: 환불/취소 */
