@@ -792,9 +792,9 @@ function isSampleCode(code,color,size){const t=skuOf(code,color,size);return !!(
 function isSampleO(o){if(!o||!o.code)return false;const t=skuOf(o.code,o.color,o.size);if(t)return !!t.sample;return STOCK.some(x=>x.code===o.code&&x.sample);}
 function sampleBadge(o){return isSampleO(o)?' <span class="pill" style="background:#fff7ed;color:#c2410c;border:1px solid #fdba74;font-size:10px;font-weight:800">⚠️샘플</span>':'';}
 const tagShow=o=>{
-  if(o&&o.source==='shop'){/* 링크주문: 번호표(품번) 우선 표시 — LIVE 대신 품번이 따라가야 함 */
-    if(o.code&&o.code!=='배송비'&&o.code!=='방송상품'&&o.code!=='적립금')return hashNo(o.code);
-    if(o.code==='방송상품')return '캡처';}
+  if(o&&o.source==='shop'){/* 링크주문: 실제 재고 번호표(stock.tag) 우선 — 고객이 부르는 번호·수정표와 동일하게. 없으면 품번번호로 폴백 */
+    if(o.code==='방송상품')return '캡처';
+    if(o.code&&o.code!=='배송비'&&o.code!=='적립금'){const t=tagOf(o.code);return (t!=null&&String(t).trim()!==''&&t!=='-')?t:hashNo(o.code);}}
   return (o.tag&&o.tag!=='-')?o.tag:tagOf(o.code);};
 const amtOf=o=>o.price*o.qty;
 const payPill=p=>p==='paid'?'<span class="pill p-done">결제완료</span>':'<span class="pill p-miss">미결제</span>';
