@@ -132,6 +132,7 @@
   .muted{color:var(--gray)} .barcode{font-family:'Courier New',monospace;letter-spacing:.5px}
   .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
   input,select,textarea{font-family:inherit;font-size:13px;min-height:var(--control-h);padding:8px 12px;border:1px solid var(--line);border-radius:9px;outline:none;background:#fff}
+  input[type=checkbox],input[type=radio]{min-height:0;width:16px;height:16px;padding:0;border-radius:4px;accent-color:#2563eb;flex:0 0 auto;vertical-align:middle;cursor:pointer}
   input:focus,select:focus,textarea:focus,.btn:focus-visible,.ico-btn:focus-visible,.tabs button:focus-visible,.side-toggle:focus-visible{border-color:var(--blue);outline:3px solid rgba(37,99,235,.18);outline-offset:1px}
   .btn{min-height:var(--control-h);display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;border:0;padding:8px 16px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
   .btn:hover{background:var(--blue-d)}
@@ -2217,7 +2218,10 @@ function renderCancelModal(o){const d=CANCELDRAFT;const bal=custPoints(o.cust);
     <div class="note" style="margin-bottom:12px"><b>${esc(o.cust)}</b> · ${itemLabel(o)} ×${o.qty} · ${won(amtOf(o))}</div>
     ${usedPt>0?`<div class="note" style="background:#f0fdf4;border:1px solid #b9e6c9;color:#059669;margin-bottom:12px">💰 이 주문에 사용한 적립금 <b>${won(usedPt)}</b>은 ${d.kind} 시 <b>자동으로 고객에게 환원</b>됩니다</div>`:''}
     <label>환불 금액</label><input id="cxAmt" type="number" value="${d.amount}" oninput="CANCELDRAFT.amount=parseInt(this.value)||0;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))" style="font-size:15px;font-weight:700">
-    <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;font-weight:700"><input type="checkbox" ${d.toPoints?'checked':''} onchange="CANCELDRAFT.toPoints=this.checked;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))"> 💰 현금 환불 대신 <b style="color:#059669">적립금으로 적립</b></label>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button onclick="CANCELDRAFT.toPoints=false;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))" style="flex:1;padding:11px;border-radius:10px;border:1.5px solid ${!d.toPoints?'#2563eb':'var(--line)'};background:${!d.toPoints?'#eaf1ff':'#fff'};color:${!d.toPoints?'#2563eb':'#64748b'};font-weight:700;font-size:13.5px;cursor:pointer">💵 계좌환불</button>
+      <button onclick="CANCELDRAFT.toPoints=true;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))" style="flex:1;padding:11px;border-radius:10px;border:1.5px solid ${d.toPoints?'#059669':'var(--line)'};background:${d.toPoints?'#ecfdf5':'#fff'};color:${d.toPoints?'#059669':'#64748b'};font-weight:700;font-size:13.5px;cursor:pointer">💰 적립금 적립</button>
+    </div>
     ${d.toPoints?`<div class="note" style="margin-top:10px">💰 <b>${esc(o.cust)}</b> 적립금 <b style="color:#059669">+${won(d.amount)}</b> (현재 ${won(bal)} → <b>${won(bal+d.amount)}</b>)</div>`:`
     <div style="margin-top:12px;padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:10px">
       <label style="font-size:12px">고객 계좌번호 <span class="muted" style="font-weight:400">(환불 입금용)</span></label>
