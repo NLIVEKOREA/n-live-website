@@ -2021,12 +2021,12 @@ function rxStepBar(o){const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);retur
 function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];const nextL={recall:'택배 회수신청',gotback:`회수입고 (재고 +${o.qty||1})`,reship:`새상품 재발송 (재고 −${o.qty||1})`,refunded:'환불완료',done:'완료처리'};
   return `<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">${t.ic} ${t.l} · ${o.cust} <span class="muted" style="font-size:12px;font-weight:400">${o.date||''} · 담당 ${o.staff||'-'}</span></h2>${payBadge(o.payway)}<span class="pill ${o.fault==='무과실'?'':'p-low'}">${o.fault==='무과실'?'고객귀책':'귀책: '+faulteeOf(o)}</span></div>
   <table><tbody><tr><td class="muted" style="width:64px">상품</td><td>${itemLabel(o)} <span class="muted">×${o.qty} · ${won(amtOf(o))}</span></td></tr><tr><td class="muted">사유</td><td>${o.rxreason||'-'}</td></tr>${o.rxtype==='exchange'&&o.rxnew?`<tr><td class="muted">교환→</td><td>${o.rxnew.tag?'['+o.rxnew.tag+'] ':''}${o.rxnew.name||o.rxnew.code||'-'} ${o.rxnew.color||''} ${o.rxnew.size||''}</td></tr>`:''}<tr><td class="muted">진행</td><td style="line-height:2.2">${rxStepBar(o)}</td></tr></tbody></table>
-  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-    ${next?`<button class="btn" onclick="rxNext(${o.id})">▶ ${nextL[next]}</button>`:''}
+  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end">
+    ${o.rxstat==='done'?`<span class="muted" style="margin-right:auto">✅ 완료 ${o.rxdone||''}</span>`:''}
     ${i>0?`<button class="btn gray sm" onclick="rxPrev(${o.id})">◀ 이전단계</button>`:''}
     <button class="btn ghost sm" onclick="rxEditOpen(${o.id})">✏️ 수정</button>
     <button class="btn red ghost sm" onclick="rxDelete(${o.id})">🗑️ 삭제</button>
-    ${o.rxstat==='done'?`<span class="muted" style="margin-left:auto">✅ 완료 ${o.rxdone||''}</span>`:''}
+    ${next?`<button class="btn" onclick="rxNext(${o.id})">▶ ${nextL[next]}</button>`:''}
   </div></div>`;}
 function rxFaultBoard(all){const m={};all.filter(o=>o.fault&&o.fault!=='무과실').forEach(o=>{const k=faulteeOf(o);m[k]=m[k]||{n:0,reasons:{}};m[k].n++;m[k].reasons[o.rxreason||'기타']=(m[k].reasons[o.rxreason||'기타']||0)+1;});const keys=Object.keys(m).sort((a,b)=>m[b].n-m[a].n);
   if(!keys.length)return `<div class="card"><div class="muted" style="padding:16px">기록된 과실(귀책)이 없습니다 · 회사귀책 사유로 접수된 건만 집계됩니다</div></div>`;
@@ -2265,11 +2265,11 @@ function renderCustDetail(c,logs){
     <div class="kpi"><div><div class="lab">적립금</div><div class="num" style="font-size:20px;color:#059669">${won(c.points||0)}</div><div class="sub">사용 가능</div></div></div>
     <div class="kpi"><div><div class="lab">최근 구매</div><div class="num" style="font-size:15px">${st.last||'-'}</div></div></div>
   </div>
-  ${sec('💰 적립금 <span class="muted" style="font-size:12px;font-weight:400">현재 '+won(c.points||0)+'</span>',`<div style="padding:0 0 6px"><div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn sm" onclick="custAdjustPoints(${c.id},1)">＋ 수동 적립</button><button class="btn sm gray" onclick="custAdjustPoints(${c.id},-1)">－ 차감</button><span class="muted" style="align-self:center;font-size:12px">주문관리에서 적립금을 사용할 수 있습니다</span></div>${logRows(pointLog)}</div>`)}
+  ${sec('💰 적립금 <span class="muted" style="font-size:12px;font-weight:400">현재 '+won(c.points||0)+'</span>',`<div style="padding:0 0 6px"><div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;justify-content:flex-end"><span class="muted" style="align-self:center;font-size:12px;margin-right:auto">주문관리에서 적립금을 사용할 수 있습니다</span><button class="btn sm gray" onclick="custAdjustPoints(${c.id},-1)">－ 차감</button><button class="btn sm" onclick="custAdjustPoints(${c.id},1)">＋ 수동 적립</button></div>${logRows(pointLog)}</div>`)}
   ${sec('↩️ 취소·환불 이력 <span class="muted" style="font-size:12px;font-weight:400">'+csLog.length+'건</span>',logRows(csLog))}
   ${sec('🔄 교환·반품 이력 <span class="muted" style="font-size:12px;font-weight:400">'+rx.length+'건</span>',rx.length?`<table><thead><tr><th>일시</th><th>구분</th><th>상품</th><th>사유</th><th>진행</th></tr></thead><tbody>${rx.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.rxdate||o.date)}</td><td><span class="pill p-req">${rxTypeLabel(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="muted">${esc(o.rxreason||'-')}</td><td>${o.rxstat==='done'?'<span class="pill p-done">완료</span>':'<span class="pill p-req">진행중</span>'}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">내역 없음</div>')}
   ${sec('📦 미송 이력 <span class="muted" style="font-size:12px;font-weight:400">'+back.length+'건 대기중</span>',back.length?`<table><thead><tr><th>주문일</th><th>번호표</th><th>상품</th><th class="num-cell">수량</th></tr></thead><tbody>${back.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.date)}</td><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">현재 미송 대기 없음</div>')}
-  ${sec('🚩 주의/블랙리스트',`<div style="padding:2px 0"><div style="display:flex;gap:6px;margin-bottom:10px">${flagBtn(null,'정상','')}${flagBtn('주의','⚠️ 주의','btn')}${flagBtn('블랙리스트','⛔ 블랙리스트','red')}</div><label>메모 <span class="muted" style="font-size:11px">문제 이력·특이사항</span></label><textarea id="cdMemo" style="width:100%;height:70px;padding:10px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:13px" placeholder="예: 잦은 단순변심 취소, 반말 고객 등">${esc(c.memo||'')}</textarea><div style="margin-top:8px"><button class="btn sm" onclick="saveCustMemo(${c.id})">메모 저장</button></div></div>`)}`;
+  ${sec('🚩 주의/블랙리스트',`<div style="padding:2px 0"><div style="display:flex;gap:6px;margin-bottom:10px;justify-content:flex-end">${flagBtn(null,'정상','')}${flagBtn('주의','⚠️ 주의','btn')}${flagBtn('블랙리스트','⛔ 블랙리스트','red')}</div><label>메모 <span class="muted" style="font-size:11px">문제 이력·특이사항</span></label><textarea id="cdMemo" style="width:100%;height:70px;padding:10px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:13px" placeholder="예: 잦은 단순변심 취소, 반말 고객 등">${esc(c.memo||'')}</textarea><div style="margin-top:8px;display:flex;justify-content:flex-end"><button class="btn sm" onclick="saveCustMemo(${c.id})">메모 저장</button></div></div>`)}`;
   $('#modal').classList.remove('hide');}
 async function setCustFlag(id,flag){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;c.flag=flag||null;try{const {error}=await SB.from('customers').update({flag:c.flag}).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패');}}catch(e){console.error(e);}toast(flag?('🚩 '+flag+': '+c.name):'표시 해제: '+c.name);openCustDetail(id);}
 async function saveCustMemo(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;const v=($('#cdMemo')&&$('#cdMemo').value||'').trim();c.memo=v||null;try{const {error}=await SB.from('customers').update({memo:c.memo}).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패');}else toast('📝 메모 저장');}catch(e){console.error(e);}}
@@ -2887,7 +2887,7 @@ function kakaoSet(){return `
     <tr><td class="muted">API Key</td><td class="barcode">SOLAPI-****-****-9F2A</td></tr>
     <tr><td class="muted">발신 프로필</td><td>엔라이브</td></tr>
     </tbody></table>
-    <div style="margin-top:12px;display:flex;gap:8px"><button class="btn" onclick="toast('충전 페이지로 이동 (데모)')">충전하기</button><button class="btn ghost sm" onclick="toast('연결 테스트 발송 (데모)')">연결 테스트</button></div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end"><button class="btn ghost sm" onclick="toast('연결 테스트 발송 (데모)')">연결 테스트</button><button class="btn" onclick="toast('충전 페이지로 이동 (데모)')">충전하기</button></div>
   </div>`;
 }
 function kakaoAlert(){return `
@@ -3043,7 +3043,7 @@ function liveDetail(s){
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
       <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
       <label class="lbl" style="margin-top:8px">▶️ 유튜브 라이브 (채널ID UC… 또는 영상 링크)</label><input id="ld_youtube" value="${escAttr(s.youtube||'')}" placeholder="UC... 또는 youtube.com/watch?v=...">
-      <div style="margin-top:12px"><button class="btn sm" onclick="liveSaveSettings(${s.id})">설정 저장</button></div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn sm" onclick="liveSaveSettings(${s.id})">설정 저장</button></div>
     </div>
     <div class="card2">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap"><h3 style="margin:0">📦 방송 상품 <span class="muted" style="font-weight:400;font-size:12px">${prods.length}개</span></h3>
