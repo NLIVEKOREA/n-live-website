@@ -2109,8 +2109,8 @@ const rxWhen=o=>((o.rxdate||o.rxdone||o.date||'')+'').replace(/\//g,'-');
 const rxSort=arr=>arr.slice().sort((a,b)=>{const c=String(rxWhen(b)).localeCompare(String(rxWhen(a)));return c!==0?c:(b.id||0)-(a.id||0);});/* 최신 등록이 위로 */
 function viewRx(){const all=mine(ORD).filter(o=>o.rxtype);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=rxSort(RXVIEWTAB==='active'?active:done);
   return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}${sellerTabs()}
-  <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='done';render()">처리 ${done.length}</button><button class="${RXVIEWTAB==='archive'?'on':''}" onclick="RXVIEWTAB='archive';render()">✅ 완료(정리)</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
-  ${RXVIEWTAB==='fault'?rxFaultBoard(all):RXVIEWTAB==='archive'?rxArchiveView(done):(cur.length?`<div class="rx-grid">${cur.map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">${RXVIEWTAB==='active'?'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)':'처리(완료)된 건이 없습니다'}</div></div>`)}`;}
+  <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='archive'||RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='archive';render()">✅ 완료 ${done.length}</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
+  ${RXVIEWTAB==='fault'?rxFaultBoard(all):(RXVIEWTAB==='archive'||RXVIEWTAB==='done')?rxArchiveView(done):(active.length?`<div class="rx-grid">${rxSort(active).map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)</div></div>`)}`;}
 /* 완료(정리) — 진짜 마무리된 CS를 고객별로 묶어 단계별 날짜와 함께 정리 */
 function rxArchiveView(done){
   if(!done.length)return '<div class="card"><div class="muted" style="padding:16px">완료된 CS가 없습니다</div></div>';
@@ -2128,7 +2128,7 @@ function rxArchiveView(done){
       <td>${esc(itemLabel(o))}${o.rxtype==='exchange'&&o.rxnew?` <span class="muted">→ ${esc((o.rxnew.tag?'['+o.rxnew.tag+'] ':'')+(o.rxnew.name||o.rxnew.code||''))} ${esc((o.rxnew.color||'')+' '+(o.rxnew.size||''))}</span>`:''}</td>
       <td class="muted">${esc(o.rxreason||'-')}</td>
       <td class="muted" style="font-size:11px">${dc(o,'req')}</td><td class="muted" style="font-size:11px">${dc(o,'recall')}</td><td class="muted" style="font-size:11px">${dc(o,'gotback')}</td><td class="muted" style="font-size:11px">${dc(o,proc)}</td><td class="muted" style="font-size:11px">${dc(o,'done')}</td>
-      <td class="num-cell" style="font-size:11.5px">${st?(st.method==='적립금'?'💰적립 ':'')+won(st.net):(o.rxtype==='refund'?'<span style="color:#dc2626">정산前</span>':'-')}</td>
+      <td class="num-cell" style="font-size:11.5px">${st?(st.method==='적립금'?'💰적립 ':'')+won(st.net):'<span class="muted">-</span>'}</td>
     </tr>`;}).join('')}
     </tbody></table></div></div>`;}).join('');}
 /* ===== 판매현황 상태 분류 — 판매관리·출고장과 동일한 ORD 필드에서 실시간 판정 ===== */
