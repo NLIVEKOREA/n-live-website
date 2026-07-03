@@ -1685,7 +1685,7 @@ function baseRows(){
   if(SALEQ){if(SALEFIELD==='상품번호')rows=rows.filter(o=>inc(o.code,SALEQ)||inc(skuFullCode(o.code,o.color,o.size),SALEQ)||inc(itemLabel(o),SALEQ));else if(SALEFIELD==='번호표')rows=rows.filter(o=>inc(tagShow(o),SALEQ));else rows=rows.filter(o=>inc(o.cust,SALEQ));}
   return rows;
 }
-function orderRowsAll(){return baseRows().filter(o=>o.ship!=='done'&&!RXSET.includes(o.req)&&(!o.req||o.req==='없음'));}
+function orderRowsAll(){return baseRows().filter(o=>o.ship!=='done'&&!o.back&&o.req!=='미송'&&!RXSET.includes(o.req)&&(!o.req||o.req==='없음'));}
 function orderRowsToday(){const t=todayStr();return orderRowsAll().filter(o=>(o.date||'').replace(/\//g,'-')===t);}
 function orderRows(){return ORDTAB==='today'?orderRowsToday():orderRowsAll();}
 function shipRows(){const d=SHIPDATE||todayStr();return mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-').slice(0,10)===d&&!RXSET.includes(o.req)&&((o.req==='출고요청'||o.req==='합배요청')||o.ship==='done'));}
