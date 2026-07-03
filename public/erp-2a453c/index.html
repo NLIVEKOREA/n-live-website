@@ -421,8 +421,9 @@
   <div class="loginbox">
     <h2>N-LIVE <b>ERP</b></h2>
     <div class="sb">회사 전용 시스템 · 직원 로그인</div>
-    <label>아이디</label><input id="loginId" placeholder="아이디 입력">
-    <label>비밀번호</label><input id="loginPw" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()">
+    <label>아이디</label><input id="loginId" placeholder="아이디 입력" onkeydown="if(event.key==='Enter'){event.preventDefault();(($('#loginPw').value||'').trim())?doLogin():$('#loginPw').focus();}">
+    <label>비밀번호</label><input id="loginPw" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter'){event.preventDefault();doLogin();}">
+    <div id="loginErr" style="display:none;margin:6px 0 2px;padding:10px 12px;background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;border-radius:8px;font-size:13px;font-weight:700"></div>
     <button class="btn" onclick="doLogin()">로그인</button>
     <div class="cred">관리자에게 받은 아이디·비밀번호로 로그인하세요.</div>
   </div>
@@ -2856,15 +2857,17 @@ async function delUser(i){const u=EMPLOYEES[i];if(!u)return;if(ME&&ME.id===u.log
   try{const {error}=await SB.from('employees').update({active:false}).eq('id',u.id);if(error)toast('⚠️ 처리 오류: '+error.message);}catch(e){toast('⚠️ 처리 오류');}}
 
 /* ===== 로그인 ===== */
+function loginErr(m){const e=$('#loginErr');if(e){if(m){e.textContent='⚠️ '+m;e.style.display='block';}else{e.textContent='';e.style.display='none';}}if(m)toast('❌ '+m);}
 async function doLogin(){
   const id=$('#loginId').value.trim(), pw=$('#loginPw').value.trim();
-  if(!id||!pw){toast('아이디·비밀번호를 입력하세요');return;}
+  loginErr('');
+  if(!id||!pw){loginErr('아이디와 비밀번호를 모두 입력해 주세요');(!id?$('#loginId'):$('#loginPw')).focus();return;}
   const email = id.includes('@')? id : id+SB_DOMAIN;
   toast('🔐 로그인 중...');
   const {error} = await SB.auth.signInWithPassword({email, password:pw});
-  if(error){toast('❌ 아이디 또는 비밀번호가 틀립니다');return;}
+  if(error){loginErr('아이디 또는 비밀번호가 틀렸습니다. 다시 확인해 주세요.');$('#loginPw').value='';$('#loginPw').focus();return;}
   const {data:emp} = await SB.from('employees').select('*').eq('login_id', id).maybeSingle();
-  if(!emp||emp.active===false){toast('❌ 등록되지 않았거나 비활성화된 계정입니다 (관리자 문의)');await SB.auth.signOut();return;}
+  if(!emp||emp.active===false){loginErr('등록되지 않았거나 비활성화된 계정입니다. 관리자에게 문의하세요.');await SB.auth.signOut();return;}
   ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id};
   await loadPrefs();
   toast('📥 데이터 불러오는 중...');
