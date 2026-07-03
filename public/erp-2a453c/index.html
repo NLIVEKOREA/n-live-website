@@ -2028,7 +2028,24 @@ function rxStockFor(o){return STOCK.find(s=>s.code===o.code&&(s.color||'')===(o.
 /* 단계별 재고효과: sign=+1 진입 적용, sign=-1 역산(되돌리기) */
 async function rxStepStockEffect(o,step,sign){const q=o.qty||1;
   if(step==='gotback'){const s=rxStockFor(o);if(s){await adjustStockDB(s,sign*q,sign>0?'교환/반품 회수입고':'회수취소',o.cust);return `${o.code} 재고 ${sign>0?'+':'−'}${q}`;}return '';}
-  if(step==='reship'){const nw=o.rxnew||{};const s=STOCK.find(x=>x.code===nw.code&&(x.color||'')===(nw.color||'')&&(x.size||'')===(nw.size||''));if(s){await adjustStockDB(s,-sign*q,sign>0?'교환 재발송':'재발송취소',o.cust);return `${nw.code||'새상품'} 재고 ${sign>0?'−':'+'}${q}`;}return '';}
+  if(step==='reship'){const nw=o.rxnew||{};const s=STOCK.find(x=>x.code===nw.code&&(x.color||'')===(nw.color||'')&&(x.size||'')===(nw.size||''));
+    if(sign>0){/* 재발송 진행 */
+      const have=(s&&s.qty!=null)?s.qty:0;
+      if(!s||have<q){/* 재고 부족 → 미송(사입) 자동 등록 */
+        if(!confirm('교환 새상품 재고가 부족합니다 (현재 '+(s?have:0)+'개 · 필요 '+q+'개).\n\n재고 차감 대신 [미송(사입)]으로 등록할까요?\n→ 미송관리·미송사입에 떠서 사입 후 발송합니다.\n\n[취소] 하면 재발송 단계로 넘어가지 않습니다.'))return false;
+        const today=(todayStr()).replace(/-/g,'/');
+        const mo={date:today,staff:o.staff,cust:o.cust,phone:o.phone||'',addr:o.addr||'',code:nw.code,disp:`${nw.name||nw.code} ${nw.color||''} ${nw.size||''}`.replace(/ +/g,' ').trim(),tag:nw.tag||tagOf(nw.code)||'',color:nw.color||'',size:nw.size||'',qty:q,price:0,pay:'paid',ship:'miss',back:true,req:'미송',prog:'미포장',reason:'교환 재발송(재고부족→미송사입)',meta:{exchangeOf:o.id}};
+        ORD.unshift(mo);await saveOrd(mo);
+        return `${nw.code||'새상품'} 재고부족 → 미송(사입) 등록`;
+      }
+      if(s){await adjustStockDB(s,-q,'교환 재발송',o.cust);return `${nw.code||'새상품'} 재고 −${q}`;}
+      return '';
+    }
+    /* 재발송취소(이전단계) — 미송으로 등록됐으면 그 미송주문 제거, 아니면 재고 원복 */
+    const mo=ORD.find(x=>x.meta&&x.meta.exchangeOf===o.id&&x.ship==='miss');
+    if(mo){const i=ORD.indexOf(mo);if(i>=0)ORD.splice(i,1);await delOrd(mo);return `교환 미송주문 취소`;}
+    if(s){await adjustStockDB(s,q,'재발송취소',o.cust);return `${nw.code||'새상품'} 재고 +${q}`;}
+    return '';}
   return '';}
 let RXDRAFT=null,RXVIEWTAB='active',RXDONEVIEW='card',RXQ='',RXFIELD='고객';
 /* 교환·반품 검색 — 모든 탭 공통 적용 */
@@ -2082,6 +2099,7 @@ function rxClearNew(){if(!RXDRAFT)return;RXDRAFT.newCode=RXDRAFT.newName=RXDRAFT
 const RX_NEXTL={recall:'🚚 회수신청 완료',gotback:'📦 회수입고',reship:'📤 재발송',refunded:'💸 환불완료',done:'✅ 완료처리'};
 async function rxNext(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];if(!next)return;
   const eff=await rxStepStockEffect(o,next,1);
+  if(eff===false){toast('취소됨 — 단계 유지');render();return;}
   o.rxstat=next;const _td=todayStr();if(next==='done')o.rxdone=_td;rxStampStep(o,next,_td);
   toast((RX_NEXTL[next]||'진행')+' ('+_td+')'+(eff?' · '+eff:''));render();await saveOrd(o);}
 async function rxPrev(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);
