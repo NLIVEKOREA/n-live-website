@@ -588,6 +588,12 @@ let _rt=null,_rtTimer=null;
 function isTyping(){const a=document.activeElement;if(a&&['INPUT','TEXTAREA','SELECT'].includes(a.tagName))return true;const m=$('#modal');if(m&&!m.classList.contains('hide'))return true;return false;}
 function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(async()=>{if(_committing)return;await dbLoadAll();if(!isTyping())render();},700);}).subscribe();}catch(e){console.error('realtime',e);}}
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){const {error}=await SB.from('orders').update(row).eq('id',o.id);if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 새로고침 후 다시 시도하세요');return false;}}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 다시 시도하세요');return false;}if(data)o.id=data.id;}return true;}catch(e){console.error(e);toast('⚠️ 저장 오류 — 인터넷 연결을 확인하세요');return false;}}
+/* ===== 동시/이중 처리 안전장치 ===== 같은 작업키가 처리 중이면 재실행 차단(더블클릭·동시처리 방지) */
+const _busy=new Set();
+async function guard(key,fn){if(_busy.has(key)){toast('⏳ 처리 중입니다 — 잠시만요');return;}_busy.add(key);try{return await fn();}finally{_busy.delete(key);}}
+/* 필드 스냅샷/복원 — DB 저장 실패 시 화면 롤백용 */
+function _snap(o,keys){const s={};keys.forEach(k=>s[k]=o[k]);return s;}
+function _restore(o,s){Object.assign(o,s);}
 async function delOrd(o){try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');}}
 async function saveStock(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');}}
 /* 재고 원자적 가감 — DB에서 qty=qty±delta 계산(동시 차감해도 안 깨짐). 반환된 정확한 값으로 화면 갱신 */
@@ -1790,6 +1796,7 @@ async function commitOrder(){
   if(_samp.length&&!confirm('⚠️ 샘플 상품이 포함되어 있습니다:\n'+_samp.map(l=>'· '+(l.name||l.code)+' '+(l.color||'')+' '+(l.size||'')).join('\n')+'\n\n샘플은 반납 대상이라 자동으로 미송(재주문) 처리되어 [미송사입]에서 거래처 재주문으로 관리됩니다.\n\n계속할까요?'))return;
   _samp.forEach(l=>l.back=true);
   _committing=true;
+  try{
   const noStk=!!OE.noStockAdjust;const carry=OE.shopCarry||null;/* 링크주문 수정: 재고 손대지 않고 식별필드 보존 */
   const pk=OE.payKeep||'unpaid',sk=OE.shipKeep||'miss';/* 결제완료 주문 수정 시 결제·출고 상태 보존 */
   const staff=isSeller()?(OE.staff||ME.owner||ME.name):(OE.staff||$('#oeStaff')?.value||'박시연');
@@ -1818,7 +1825,8 @@ async function commitOrder(){
   if(_editOrig.length){if(_failed===0){for(const o of _editOrig){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);const s=skuOf(o.code,o.color,o.size);if(!noStk&&s&&o.code!=='낱장'&&o.code!=='배송비'&&o.code!=='적립금')await adjustStockDB(s,o.qty,'주문수정 원복',o.cust);}}else{toast('⚠️ 일부 저장 실패 — 원주문은 그대로 두었습니다. 확인 후 다시 시도하세요');}}
   toast((_failed?'⚠️ ':'✅ ')+'주문서 저장 ('+(_cnt-_failed)+'건)'+(back?' · 미송 '+back+'건 포함':'')+(_failed?' · '+_failed+'건 저장 실패(재고 미차감)':''));
   OE={cust:null,phone:'',addr:'',staff:null,lines:[],date:OE.date};render();
-  _committing=false;
+  }catch(e){console.error('commitOrder',e);toast('⚠️ 주문 저장 중 오류 — 새로고침 후 확인하세요');}
+  finally{_committing=false;}
 }
 
 /* ===== 판매관리 ===== */
@@ -2197,8 +2205,10 @@ async function rxStepStockEffect(o,step,sign){const q=o.qty||1;
       if(s){await adjustStockDB(s,-q,'교환 재발송',o.cust);return `${nw.code||'새상품'} 재고 −${q}`;}
       return '';
     }
-    /* 재발송취소(이전단계) — 미송으로 등록됐으면 그 미송주문 제거, 아니면 재고 원복 */
-    const mo=ORD.find(x=>x.meta&&x.meta.exchangeOf===o.id&&x.ship==='miss');
+    /* 재발송취소(이전단계) — 교환미송 주문이 이미 출고됐으면 되돌리기 차단, 미출고면 제거, 아니면 재고 원복 */
+    const moShipped=ORD.find(x=>x.meta&&x.meta.exchangeOf===o.id&&x.ship==='done');
+    if(moShipped){toast('⛔ 교환 미송상품이 이미 출고됐습니다 — 되돌릴 수 없어요 (미송관리에서 확인하세요)');return false;}
+    const mo=ORD.find(x=>x.meta&&x.meta.exchangeOf===o.id);
     if(mo){const i=ORD.indexOf(mo);if(i>=0)ORD.splice(i,1);await delOrd(mo);return `교환 미송주문 취소`;}
     if(s){await adjustStockDB(s,q,'재발송취소',o.cust);return `${nw.code||'새상품'} 재고 +${q}`;}
     return '';}
@@ -2253,18 +2263,24 @@ function rxNewColor(color){if(!RXDRAFT)return;RXDRAFT.newColor=color;const szIn=
 function rxNewSize(size){if(!RXDRAFT)return;RXDRAFT.newSize=size;rxRerender();}
 function rxClearNew(){if(!RXDRAFT)return;RXDRAFT.newCode=RXDRAFT.newName=RXDRAFT.newColor=RXDRAFT.newSize=RXDRAFT.newTag=null;rxRerender();}
 const RX_NEXTL={recall:'🚚 회수신청 완료',gotback:'📦 회수입고',reship:'📤 재발송',refunded:'💸 환불완료',done:'✅ 완료처리'};
-async function rxNext(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];if(!next)return;
-  const eff=await rxStepStockEffect(o,next,1);
+async function rxNext(id){return guard('rxstep:'+id,async()=>{const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];if(!next)return;
+  const eff=await rxStepStockEffect(o,next,1);/* 재고효과(원자) · 락으로 이중 차감 방지 */
   if(eff===false){toast('취소됨 — 단계 유지');render();return;}
-  o.rxstat=next;const _td=todayStr();if(next==='done')o.rxdone=_td;rxStampStep(o,next,_td);
-  toast((RX_NEXTL[next]||'진행')+' ('+_td+')'+(eff?' · '+eff:''));render();await saveOrd(o);}
-async function rxPrev(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);
+  const prev=_snap(o,['rxstat','rxdone','meta']);
+  o.rxstat=next;const _td=todayStr();if(next==='done')o.rxdone=_td;rxStampStep(o,next,_td);render();
+  const ok=await saveOrd(o);
+  if(!ok){await rxStepStockEffect(o,next,-1);_restore(o,prev);render();toast('⚠️ 저장 실패 — 재고·상태 되돌렸습니다');return;}
+  toast((RX_NEXTL[next]||'진행')+' ('+_td+')'+(eff?' · '+eff:''));render();});}
+async function rxPrev(id){return guard('rxstep:'+id,async()=>{const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);
   if(i<=0){toast('첫 단계예요 — 취소하려면 [삭제]를 누르세요');return;}
-  const cur=o.rxstat,prev=flow[i-1];
-  const eff=await rxStepStockEffect(o,cur,-1);   // 현재 단계 효과 역산
-  if(cur==='done')delete o.rxdone;rxUnstampStep(o,cur);
-  o.rxstat=prev;
-  toast('◀ '+RX_STEPL[prev]+' 단계로 되돌림'+(eff?' · '+eff+' 원복':''));render();await saveOrd(o);}
+  const cur=o.rxstat,prevStep=flow[i-1];
+  const eff=await rxStepStockEffect(o,cur,-1);/* 현재 단계 효과 역산 */
+  if(eff===false){render();return;}/* 되돌리기 차단(예: 교환미송 이미 출고) */
+  const snap=_snap(o,['rxstat','rxdone','meta']);
+  if(cur==='done')delete o.rxdone;rxUnstampStep(o,cur);o.rxstat=prevStep;render();
+  const ok=await saveOrd(o);
+  if(!ok){if(cur!=='reship')await rxStepStockEffect(o,cur,1);_restore(o,snap);render();toast('⚠️ 저장 실패 — 되돌렸습니다'+(cur==='reship'?' · 새로고침으로 재고 확인':''));return;}
+  toast('◀ '+RX_STEPL[prevStep]+' 단계로 되돌림'+(eff?' · '+eff+' 원복':''));render();});}
 async function rxDelete(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);
   const hadStock=flow.slice(1,i+1).some(s=>s==='gotback'||s==='reship');
   if(!confirm(`이 ${RX_TYPES[o.rxtype].l} 건을 삭제하고 원래 출고완료 상태로 되돌릴까요?${hadStock?'\n진행 중 변경된 재고도 자동 원복됩니다.':''}`))return;
@@ -2295,7 +2311,7 @@ function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.index
   <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end">
     <span style="margin-right:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
       ${o.rxstat==='done'?`<span class="muted">✅ 완료 ${o.rxdone||''}</span>`:''}
-      ${o.rxtype==='refund'?`<button class="btn sm" style="background:#059669" onclick="openRefundSettle(${o.id})">💵 환불정산</button><button class="btn sm ghost" style="border-color:#059669;color:#059669" onclick="rxQuickPoint(${o.id})">💰 적립금처리</button>`:''}
+      ${o.rxtype==='refund'?(o.meta&&o.meta.pointsCredited?'<span class="pill" style="background:#dcfce7;color:#166534;font-size:11px">💰 적립금 지급완료</span>':`<button class="btn sm" style="background:#059669" onclick="openRefundSettle(${o.id})">💵 환불정산</button><button class="btn sm ghost" style="border-color:#059669;color:#059669" onclick="rxQuickPoint(${o.id})">💰 적립금처리</button>`):''}
     </span>
     ${i>0?`<button class="btn gray sm" onclick="rxPrev(${o.id})">◀ 이전단계</button>`:''}
     <button class="btn ghost sm" onclick="rxEditOpen(${o.id})">✏️ 수정</button>
@@ -2408,6 +2424,8 @@ function renderCancelModal(o){const d=CANCELDRAFT;const bal=custPoints(o.cust);
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">닫기</button><button class="btn" onclick="cancelSaleCommit()">${d.kind} 확정</button></div>`;
   $('#modal').classList.remove('hide');}
 async function cancelSaleCommit(){const d=CANCELDRAFT;if(!d)return;const o=ORD.find(x=>x.id===d.id);if(!o){closeModal();return;}
+  if(_busy.has('cancel:'+o.id)){toast('⏳ 처리 중입니다');return;}_busy.add('cancel:'+o.id);
+  try{
   const cust=o.cust,item=itemLabel(o),amt=Math.max(0,d.amount||0),toP=d.toPoints,kind=d.kind;
   const deduct=Math.max(0,d.deduct||0),net=Math.max(0,amt-deduct),account=(d.account||'').trim();
   const _snap={date:o.date,staff:o.staff,code:o.code,color:o.color,size:o.size,qty:o.qty};
@@ -2424,6 +2442,7 @@ async function cancelSaleCommit(){const d=CANCELDRAFT;if(!d)return;const o=ORD.f
   if(ptLine){const used=Math.abs(ptLine.price||0);const pi=ORD.indexOf(ptLine);if(pi>=0)ORD.splice(pi,1);await delOrd(ptLine);if(used>0){await addPoints(cust,used,'적립복원',{item:kind+' 환원',amount:used});toast('💰 사용한 적립금 '+won(used)+' 자동 환원');render();}}
   if(toP)await addPoints(cust,amt,kind,{item,amount:amt,reason:'적립금 적립'});
   else await logCust(cust,kind,{item,amount:amt,reason:'현금/계좌 환불'});
+  }finally{_busy.delete('cancel:'+o.id);}
 }
 /* ===== 환불 정산 (계좌·차감배송비·실환불 기록) =====
    반품·환불·입금후취소는 모두 고객에게 돈을 돌려줘야 함 → 계좌+금액+차감을 한 창에서 입력·기록.
@@ -2457,35 +2476,58 @@ function renderRefundSettle(o){const d=RSETTLE;if(!d)return;$('#modalBox').class
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">닫기</button><button class="btn" style="background:#059669" onclick="refundSettleCommit('point')">💰 적립금으로 처리</button><button class="btn" onclick="refundSettleCommit('cash')">💵 계좌환불 저장</button></div>`;
   $('#modal').classList.remove('hide');}
 async function refundSettleCommit(method){const d=RSETTLE;if(!d)return;const o=ORD.find(x=>x.id===d.id);if(!o){closeModal();return;}
-  const net=rsNet(d),isPoint=method==='point',_td=todayStr();
-  o.meta=Object.assign({},o.meta,{settle:{method:isPoint?'적립금':'현금',account:isPoint?'':(d.account||'').trim(),refund:d.refund||0,deduct:d.deduct||0,net,memo:(d.memo||'').trim(),at:_td,by:ME.name}});
-  const upd={meta:o.meta};
-  if(isPoint){o.rxstat='done';o.rxdone=_td;rxStampStep(o,'done',_td);upd.rxstat='done';upd.rxdone=_td;}/* 적립금 처리 = 환불완료 */
-  closeModal();RSETTLE=null;
-  render();
-  try{const {error}=await SB.from('orders').update(upd).eq('id',o.id);if(error){toast('⚠️ 저장 오류: '+error.message);return;}}catch(e){toast('⚠️ 저장 오류');return;}
-  if(isPoint){await addPoints(o.cust,net,'환불적립',{item:itemLabel(o),amount:net,reason:'환불→적립금'});toast('💰 적립금 +'+won(net)+' 적립 · 환불완료');render();}
-  else toast('💵 계좌환불 정산 저장 · 실환불 '+won(net));}
+  const isPoint=method==='point';
+  if(isPoint&&o.meta&&o.meta.pointsCredited){toast('⛔ 이미 적립금이 지급된 건입니다 (중복 지급 차단)');closeModal();RSETTLE=null;render();return;}
+  await guard('settle:'+o.id,async()=>{
+    if(isPoint&&o.meta&&o.meta.pointsCredited){toast('⛔ 이미 적립금 지급됨');return;}
+    const net=rsNet(d),_td=todayStr();const prev=_snap(o,['meta','rxstat','rxdone']);
+    o.meta=Object.assign({},o.meta,{settle:{method:isPoint?'적립금':'현금',account:isPoint?'':(d.account||'').trim(),refund:d.refund||0,deduct:d.deduct||0,net,memo:(d.memo||'').trim(),at:_td,by:ME.name},pointsCredited:isPoint?true:!!(o.meta&&o.meta.pointsCredited)});
+    if(isPoint){o.rxstat='done';o.rxdone=_td;rxStampStep(o,'done',_td);}
+    closeModal();RSETTLE=null;render();
+    const ok=await saveOrd(o);/* 플래그 포함 저장이 먼저 성공해야 적립 진행(재적립 불가 보장) */
+    if(!ok){_restore(o,prev);render();return;}
+    if(isPoint){await addPoints(o.cust,net,'환불적립',{item:itemLabel(o),amount:net,reason:'환불→적립금'});toast('💰 적립금 +'+won(net)+' 적립 · 환불완료');render();}
+    else toast('💵 계좌환불 정산 저장 · 실환불 '+won(net));
+  });}
 /* 진행중 카드에서 원클릭 적립금 처리 — 확인 후 적립+환불완료(진행중에서 빠짐) */
 async function rxQuickPoint(id){const o=ORD.find(x=>x.id===id);if(!o)return;
+  if(o.meta&&o.meta.pointsCredited){toast('⛔ 이미 적립금이 지급된 건입니다 (중복 지급 차단)');return;}
   const kind=o.rxtype==='exchange'?'exchange':'refund',deduct=deductDefault(kind,custFaultOf(o)),net=Math.max(0,amtOf(o)-deduct),_td=todayStr();
   if(!confirm('💰 적립금 처리\n\n'+o.cust+' · '+itemLabel(o)+'\n환불 '+won(amtOf(o))+(deduct?' − 차감 '+won(deduct):'')+' = 실환불 '+won(net)+'\n\n이 금액을 '+o.cust+' 적립금으로 적립하고 환불완료 처리할까요?\n(차감 금액을 조정하려면 [환불정산]을 이용하세요)'))return;
-  o.meta=Object.assign({},o.meta,{settle:{method:'적립금',account:'',refund:amtOf(o),deduct,net,memo:'적립금처리',at:_td,by:ME.name}});
-  o.rxstat='done';o.rxdone=_td;rxStampStep(o,'done',_td);render();
-  try{const {error}=await SB.from('orders').update({meta:o.meta,rxstat:'done',rxdone:_td}).eq('id',o.id);if(error){toast('⚠️ 저장 오류: '+error.message);return;}}catch(e){toast('⚠️ 저장 오류');return;}
-  await addPoints(o.cust,net,'환불적립',{item:itemLabel(o),amount:net,reason:'환불→적립금'});
-  toast('💰 적립금 +'+won(net)+' · 환불완료 → 완료 탭으로 이동');render();}
+  await guard('settle:'+id,async()=>{
+    if(o.meta&&o.meta.pointsCredited){toast('⛔ 이미 적립금 지급됨');return;}
+    const prev=_snap(o,['meta','rxstat','rxdone']);
+    o.meta=Object.assign({},o.meta||{},{settle:{method:'적립금',account:'',refund:amtOf(o),deduct,net,memo:'적립금처리',at:_td,by:ME.name},pointsCredited:true});
+    o.rxstat='done';o.rxdone=_td;rxStampStep(o,'done',_td);render();
+    const ok=await saveOrd(o);
+    if(!ok){_restore(o,prev);render();return;}
+    await addPoints(o.cust,net,'환불적립',{item:itemLabel(o),amount:net,reason:'환불→적립금'});
+    toast('💰 적립금 +'+won(net)+' · 환불완료 → 완료 탭으로 이동');render();
+  });}
 function copyRefund(id){const o=ORD.find(x=>x.id===id);if(!o)return;const st=(o.meta&&o.meta.settle)||{};const net=st.net!=null?st.net:amtOf(o);
   const txt=`${o.cust}\n${st.method==='적립금'?'적립금 적립':(st.account||'(계좌 미입력)')}\n${won(net)}`;
   (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('📋 복사됨 — '+o.cust+' '+won(net))).catch(()=>{try{const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();toast('📋 복사됨 — '+o.cust);}catch(e){toast('복사 실패 — 수동 확인');}});}
 /* 환불대장 액션: 회수요청 → 📦회수입고(재고복원) → ✅환불완료 */
-async function ledgerGotback(id){const o=ORD.find(x=>x.id===id);if(!o)return;
-  if(o.rxstat!=='gotback'&&o.rxstat!=='done'){try{await rxStepStockEffect(o,'gotback',1);}catch(e){}}
-  o.rxstat='gotback';delete o.rxdone;rxStampStep(o,'gotback',todayStr());toast('📦 회수입고 ('+todayStr()+') · 재고 복원');render();await saveOrd(o);}
-async function ledgerRefundDone(id){const o=ORD.find(x=>x.id===id);if(!o)return;
+async function ledgerGotback(id){const o=ORD.find(x=>x.id===id);if(!o)return;if(o.rxstat==='gotback'){toast('이미 회수입고 처리된 건입니다');return;}
+  await guard('rxstep:'+id,async()=>{
+    const wasBefore=(o.rxstat!=='gotback'&&o.rxstat!=='done');
+    if(wasBefore)await rxStepStockEffect(o,'gotback',1);/* 재고 +q (1회) */
+    const prev=_snap(o,['rxstat','rxdone','meta']);
+    o.rxstat='gotback';delete o.rxdone;rxStampStep(o,'gotback',todayStr());render();
+    const ok=await saveOrd(o);
+    if(!ok){if(wasBefore)await rxStepStockEffect(o,'gotback',-1);_restore(o,prev);render();toast('⚠️ 저장 실패 — 되돌렸습니다');return;}/* 실패 시 재고·상태 원복 */
+    toast('📦 회수입고 ('+todayStr()+') · 재고 복원');
+  });}
+async function ledgerRefundDone(id){const o=ORD.find(x=>x.id===id);if(!o)return;if(o.rxstat==='done'){toast('이미 환불완료된 건입니다');return;}
   const st=o.meta&&o.meta.settle;
   if(!st){if(!confirm('환불 계좌·금액 정산이 안 됐습니다.\n먼저 [💵정산]으로 계좌·실환불액을 기록하는 걸 권장해요.\n\n그래도 환불완료로 표시할까요?'))return;}
-  o.rxstat='done';o.rxdone=todayStr();rxStampStep(o,'done',todayStr());toast('✅ 환불완료 ('+todayStr()+')');render();await saveOrd(o);}
+  await guard('rxstep:'+id,async()=>{
+    const prev=_snap(o,['rxstat','rxdone','meta']);
+    o.rxstat='done';o.rxdone=todayStr();rxStampStep(o,'done',todayStr());render();
+    const ok=await saveOrd(o);
+    if(!ok){_restore(o,prev);render();toast('⚠️ 저장 실패 — 되돌렸습니다');return;}
+    toast('✅ 환불완료 ('+todayStr()+')');
+  });}
 function refundLedgerRows(){return mine(ORD).filter(o=>o.rxtype==='refund'||(o.meta&&o.meta.settle)).slice().sort((a,b)=>String((b.meta&&b.meta.settle&&b.meta.settle.at)||b.rxdate||b.date||'').localeCompare(String((a.meta&&a.meta.settle&&a.meta.settle.at)||a.rxdate||a.date||''))||(b.id||0)-(a.id||0));}
 function refundLedgerView(scope){let rows=refundLedgerRows();if(scope==='done')rows=rows.filter(o=>o.rxstat==='done');
   const totNet=rows.reduce((s,o)=>s+(((o.meta&&o.meta.settle)||{}).net||0),0),unset=rows.filter(o=>!(o.meta&&o.meta.settle)).length;
