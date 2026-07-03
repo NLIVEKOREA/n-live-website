@@ -2029,7 +2029,21 @@ async function rxStepStockEffect(o,step,sign){const q=o.qty||1;
   if(step==='gotback'){const s=rxStockFor(o);if(s){await adjustStockDB(s,sign*q,sign>0?'교환/반품 회수입고':'회수취소',o.cust);return `${o.code} 재고 ${sign>0?'+':'−'}${q}`;}return '';}
   if(step==='reship'){const nw=o.rxnew||{};const s=STOCK.find(x=>x.code===nw.code&&(x.color||'')===(nw.color||'')&&(x.size||'')===(nw.size||''));if(s){await adjustStockDB(s,-sign*q,sign>0?'교환 재발송':'재발송취소',o.cust);return `${nw.code||'새상품'} 재고 ${sign>0?'−':'+'}${q}`;}return '';}
   return '';}
-let RXDRAFT=null,RXVIEWTAB='active',RXDONEVIEW='card';
+let RXDRAFT=null,RXVIEWTAB='active',RXDONEVIEW='card',RXQ='',RXFIELD='고객';
+/* 교환·반품 검색 — 모든 탭 공통 적용 */
+function rxMatch(o){const q=(RXQ||'').trim();if(!q)return true;
+  if(RXFIELD==='고객')return inc(o.cust,q);
+  if(RXFIELD==='상품')return inc(o.tag,q)||inc(o.code,q)||inc(o.disp,q)||inc(itemLabel(o),q);
+  if(RXFIELD==='사유')return inc(o.rxreason,q);
+  if(RXFIELD==='담당자')return inc(o.staff,q)||inc(faultByOf(o),q);
+  return inc((o.cust||'')+(o.disp||'')+(o.rxreason||'')+(o.staff||''),q);}
+function rxSearchBox(){return `<div class="toolbar" style="margin-bottom:12px"><select onchange="RXFIELD=this.value;render()" style="padding:9px 12px;border-radius:9px;font-size:13px;font-weight:700">${['고객','상품','사유','담당자'].map(f=>`<option ${RXFIELD===f?'selected':''}>${f}</option>`).join('')}</select><input id="rxSearch" placeholder="🔍 ${RXFIELD} 입력 후 Enter" value="${esc(RXQ)}" oninput="RXQ=this.value" onkeydown="if(event.key==='Enter')render()" style="width:min(300px,100%);font-size:14px"><button class="btn sm" onclick="render()"><i class="ti ti-search"></i> 검색</button>${RXQ?`<button class="btn sm gray" onclick="RXQ='';render()">초기화</button>`:''}</div>`;}
+/* 귀책 담당자 — 지정값(meta.faultBy) 우선, 없으면 자동판정 */
+function faultByOf(o){return (o.meta&&o.meta.faultBy)||faulteeOf(o);}
+async function setFaultBy(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;
+  o.fault=(v==='고객(무과실)')?'무과실':(/물류|거래처|사무실/.test(v))?'물류':(v==='미지정')?o.fault:'셀러';
+  o.meta=Object.assign({},o.meta||{},{faultBy:(v==='미지정')?null:v});
+  toast('귀책 지정: '+o.cust+' → '+(v==='미지정'?'해제':v));render();await saveOrd(o);}
 function rxOpen(id,type){const o=ORD.find(x=>x.id===id);if(!o)return;RXDRAFT={id,type,reason:RX_REASONS[0].l,fault:RX_REASONS[0].f};renderRxModal(o);}
 function rxPickReason(v){RXDRAFT.reason=v;RXDRAFT.fault=faultOf(v);renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}
 function rxSetFault(v){RXDRAFT.fault=v;renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}
@@ -2113,31 +2127,51 @@ function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.index
     <button class="btn red ghost sm" onclick="rxDelete(${o.id})">🗑️ 삭제</button>
     ${next?`<button class="btn" onclick="rxNext(${o.id})">▶ ${nextL[next]}</button>`:''}
   </div></div>`;}
+function faultCurLabel(o){if(o.meta&&o.meta.faultBy)return o.meta.faultBy;return o.fault==='무과실'?'고객(무과실)':o.fault==='물류'?'물류팀':o.fault==='셀러'?(o.staff||'미지정'):'미지정';}
 function rxFaultBoard(all){
   const csShip=o=>o.rxtype==='exchange'?SHIP_FEE*2:SHIP_FEE;/* 교환 왕복 8,000 · 반품 회수 4,000 */
   const ym=o=>(String(o.rxdate||o.date||'').replace(/\//g,'-').slice(0,7))||'-';
+  const num='text-align:right;white-space:nowrap';
+  if(!all.length)return `<div class="card"><div class="muted" style="padding:16px">집계할 교환·반품 CS가 없습니다</div></div>`;
+  /* ① 귀책 지정 리스트 — CS별로 담당자를 골라 지정 */
+  const sellers=sellerList();const baseOpts=['미지정','고객(무과실)',...sellers,'물류팀','거래처','사무실'];
+  const items=all.slice().sort((a,b)=>String((b.rxdate||b.date||'')).localeCompare(String(a.rxdate||a.date||''))||(b.id||0)-(a.id||0));
+  const assignList=`<div class="card"><div class="card-h"><h2 style="margin:0">🧾 귀책 지정 <span class="muted" style="font-size:12px;font-weight:400">CS별 귀책 담당자를 골라주세요 · 지정하면 아래 집계에 바로 반영</span></h2></div>
+  <div style="overflow-x:auto"><table style="min-width:820px;width:100%;border-collapse:collapse">
+    <thead><tr style="border-bottom:2px solid #e2e8f0">${['일자','유형','고객','상품','사유'].map(h=>`<th style="text-align:left;padding:8px">${h}</th>`).join('')}<th style="text-align:left;padding:8px">귀책 담당자</th><th style="text-align:center;padding:8px">부담</th></tr></thead>
+    <tbody>${items.map(o=>{const cur=faultCurLabel(o);const opts=baseOpts.includes(cur)?baseOpts:[cur,...baseOpts];const co=o.fault&&o.fault!=='무과실';const assigned=!!(o.meta&&o.meta.faultBy);return `<tr style="border-bottom:1px solid #f1f5f9;${assigned?'':'background:#fffdf5'}">
+      <td style="padding:8px;white-space:nowrap;font-size:11.5px">${o.rxdate||o.date||'-'}</td>
+      <td style="padding:8px;white-space:nowrap">${(RX_TYPES[o.rxtype]||{}).ic||''} ${rxTypeLabel(o)}</td>
+      <td style="padding:8px;font-weight:700">${esc(o.cust||'')}</td>
+      <td style="padding:8px">${esc(itemLabel(o))}</td>
+      <td style="padding:8px;color:#64748b">${esc(o.rxreason||'-')}</td>
+      <td style="padding:8px"><select onchange="setFaultBy(${o.id},this.value)" style="padding:6px 8px;border-radius:8px;font-weight:700;font-size:12.5px;${assigned?'border-color:#2563eb':'border-color:#f59e0b'}">${opts.map(v=>`<option ${v===cur?'selected':''}>${v}</option>`).join('')}</select></td>
+      <td style="padding:8px;text-align:center">${co?'<span class="pill p-low" style="font-size:10px">회사부담</span>':'<span class="pill" style="font-size:10px;background:#dcfce7;color:#166534">고객부담</span>'}</td>
+    </tr>`;}).join('')}</tbody></table></div>
+    <div class="note" style="margin-top:8px;font-size:11px">💡 노란 배경 = 아직 미지정 · <b>고객(무과실)</b>=고객 부담 / 그 외=회사 부담(귀책)</div></div>`;
+  /* ② 귀책담당자별 집계 */
   const rows={};
-  all.forEach(o=>{const k=ym(o)+'|'+(o.staff||'-');const r=rows[k]||(rows[k]={ym:ym(o),staff:o.staff||'-',exch:0,refund:0,fault:0,refundAmt:0,ship:0,shipCo:0});
+  all.forEach(o=>{const party=faultByOf(o);const k=ym(o)+'|'+party;const r=rows[k]||(rows[k]={ym:ym(o),party,exch:0,refund:0,fault:0,refundAmt:0,ship:0,shipCo:0});
     if(o.rxtype==='exchange')r.exch++;else r.refund++;
     if(o.fault&&o.fault!=='무과실')r.fault++;
     if(o.rxtype==='refund')r.refundAmt+=amtOf(o);
     r.ship+=csShip(o);if(o.fault&&o.fault!=='무과실')r.shipCo+=csShip(o);});
-  const list=Object.values(rows).sort((a,b)=>String(b.ym).localeCompare(String(a.ym))||String(a.staff).localeCompare(String(b.staff)));
-  if(!list.length)return `<div class="card"><div class="muted" style="padding:16px">집계할 교환·반품 CS가 없습니다</div></div>`;
+  const list=Object.values(rows).sort((a,b)=>String(b.ym).localeCompare(String(a.ym))||String(a.party).localeCompare(String(b.party)));
   const T=list.reduce((t,r)=>({exch:t.exch+r.exch,refund:t.refund+r.refund,fault:t.fault+r.fault,refundAmt:t.refundAmt+r.refundAmt,ship:t.ship+r.ship,shipCo:t.shipCo+r.shipCo}),{exch:0,refund:0,fault:0,refundAmt:0,ship:0,shipCo:0});
-  const num='text-align:right;white-space:nowrap';
-  return `<div class="card"><div class="card-h"><h2 style="margin:0">⚠️ 귀책현황 <span class="muted" style="font-size:12px;font-weight:400">월별·담당자별 교환/반품 집계</span></h2></div>
+  const agg=`<div class="card" style="margin-top:14px"><div class="card-h"><h2 style="margin:0">⚠️ 귀책 집계 <span class="muted" style="font-size:12px;font-weight:400">월별·귀책담당자별</span></h2></div>
   <div style="overflow-x:auto"><table style="min-width:720px;width:100%;border-collapse:collapse">
-    <thead><tr style="border-bottom:2px solid #e2e8f0">${['월','담당자'].map(h=>`<th style="text-align:left;padding:8px">${h}</th>`).join('')}${[['교환','건'],['반품·환불','건'],['회사귀책','건'],['반품금액','원'],['배송비','발생'],['회사부담','배송비']].map(h=>`<th style="${num};padding:8px">${h[0]}<div style="font-size:9px;color:#94a3b8;font-weight:400">${h[1]}</div></th>`).join('')}</tr></thead>
-    <tbody>${list.map(r=>`<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px;font-weight:700">${r.ym}</td><td style="padding:8px"><b>${esc(r.staff)}</b></td><td style="${num};padding:8px">${r.exch||'·'}</td><td style="${num};padding:8px">${r.refund||'·'}</td><td style="${num};padding:8px">${r.fault?`<span class="pill p-low">${r.fault}</span>`:'·'}</td><td style="${num};padding:8px">${r.refundAmt?won(r.refundAmt):'·'}</td><td style="${num};padding:8px;color:#64748b">${won(r.ship)}</td><td style="${num};padding:8px;color:#dc2626;font-weight:700">${r.shipCo?won(r.shipCo):'·'}</td></tr>`).join('')}
+    <thead><tr style="border-bottom:2px solid #e2e8f0">${['월','귀책담당자'].map(h=>`<th style="text-align:left;padding:8px">${h}</th>`).join('')}${[['교환','건'],['반품·환불','건'],['회사귀책','건'],['반품금액','원'],['배송비','발생'],['회사부담','배송비']].map(h=>`<th style="${num};padding:8px">${h[0]}<div style="font-size:9px;color:#94a3b8;font-weight:400">${h[1]}</div></th>`).join('')}</tr></thead>
+    <tbody>${list.map(r=>`<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px;font-weight:700">${r.ym}</td><td style="padding:8px"><b>${esc(r.party==='무과실'?'고객(무과실)':r.party)}</b></td><td style="${num};padding:8px">${r.exch||'·'}</td><td style="${num};padding:8px">${r.refund||'·'}</td><td style="${num};padding:8px">${r.fault?`<span class="pill p-low">${r.fault}</span>`:'·'}</td><td style="${num};padding:8px">${r.refundAmt?won(r.refundAmt):'·'}</td><td style="${num};padding:8px;color:#64748b">${won(r.ship)}</td><td style="${num};padding:8px;color:#dc2626;font-weight:700">${r.shipCo?won(r.shipCo):'·'}</td></tr>`).join('')}
     <tr style="border-top:2px solid #e2e8f0;font-weight:800;background:#f8fafc"><td style="padding:9px" colspan="2">합계</td><td style="${num};padding:9px">${T.exch}</td><td style="${num};padding:9px">${T.refund}</td><td style="${num};padding:9px">${T.fault}</td><td style="${num};padding:9px">${won(T.refundAmt)}</td><td style="${num};padding:9px">${won(T.ship)}</td><td style="${num};padding:9px;color:#dc2626">${won(T.shipCo)}</td></tr></tbody></table></div>
-  <div class="note" style="margin-top:10px;font-size:11.5px">💡 회사귀책 = 불량·오배송 등 회사 과실 · 배송비 = 반품 회수 4,000 / 교환 왕복 8,000 기준 · <b style="color:#dc2626">회사부담 배송비</b> = 회사귀책 건의 배송비(고객귀책은 고객 부담)</div></div>`;}
+  <div class="note" style="margin-top:10px;font-size:11.5px">💡 회사귀책 = 회사 과실 건 · 배송비 = 반품 회수 4,000 / 교환 왕복 8,000 · <b style="color:#dc2626">회사부담 배송비</b> = 회사귀책 건 배송비</div></div>`;
+  return assignList+agg;}
 const rxWhen=o=>((o.rxdate||o.rxdone||o.date||'')+'').replace(/\//g,'-');
 const rxSort=arr=>arr.slice().sort((a,b)=>{const c=String(rxWhen(b)).localeCompare(String(rxWhen(a)));return c!==0?c:(b.id||0)-(a.id||0);});/* 최신 등록이 위로 */
-function viewRx(){const all=mine(ORD).filter(o=>o.rxtype);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=rxSort(RXVIEWTAB==='active'?active:done);
+function viewRx(){const all=mine(ORD).filter(o=>o.rxtype).filter(rxMatch);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=rxSort(RXVIEWTAB==='active'?active:done);
   return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}${sellerTabs()}
   <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='archive'||RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='archive';render()">✅ 완료 ${done.length}</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
-  ${RXVIEWTAB==='fault'?rxFaultBoard(all):(RXVIEWTAB==='archive'||RXVIEWTAB==='done')?rxArchiveView(done):(active.length?`<div class="rx-grid">${rxSort(active).map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)</div></div>`)}`;}
+  ${rxSearchBox()}${RXQ?`<div class="muted" style="font-size:12px;margin:-4px 0 10px">🔍 "<b>${esc(RXQ)}</b>" (${RXFIELD}) 검색 — 진행중 ${active.length} · 완료 ${done.length}건</div>`:''}
+  ${RXVIEWTAB==='fault'?rxFaultBoard(all):(RXVIEWTAB==='archive'||RXVIEWTAB==='done')?rxArchiveView(done):(active.length?`<div class="rx-grid">${rxSort(active).map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">${RXQ?'검색 결과가 없습니다':'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)'}</div></div>`)}`;}
 /* 완료(정리) — 진짜 마무리된 CS를 고객별로 묶어 단계별 날짜와 함께 정리 */
 function rxArchiveView(done){
   if(!done.length)return '<div class="card"><div class="muted" style="padding:16px">완료된 CS가 없습니다</div></div>';
