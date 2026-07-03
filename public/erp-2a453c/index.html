@@ -642,8 +642,16 @@ function openHelp(){$('#modalBox').className='modal-box';$('#modalBox').innerHTM
     <span class="muted">문제가 있으면 사장님께 문의하세요. 데이터는 모두 클라우드에 저장되어 어느 기기에서든 동일하게 보입니다.</span>
   </div>
   <div class="modal-foot"><button class="btn" onclick="closeModal()">닫기</button></div>`;$('#modal').classList.remove('hide');}
-function periodRange(key){const d=new Date();const today=ymd(d);const ym=today.slice(0,7);if(key==='today')return{from:today,to:today,label:'오늘'};if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:ymd(mon),to:today,label:'이번 주'};}if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'이번 달'};return{from:'',to:'',label:'누적'};}
-function periodTabs(cur,fn){return ['today','week','month','all'].map(k=>`<button class="${cur===k?'on':''}" onclick="${fn}('${k}')">${({today:'오늘',week:'이번 주',month:'이번 달',all:'누적'})[k]}</button>`).join('');}
+function periodRange(key){const d=new Date();const today=ymd(d);const ym=today.slice(0,7);const ago=n=>{const x=new Date(d);x.setDate(d.getDate()-n);return ymd(x);};
+  if(key==='today')return{from:today,to:today,label:'당일'};
+  if(key==='yesterday')return{from:ago(1),to:today,label:'전일~당일'};
+  if(key==='week'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd);return{from:ymd(mon),to:today,label:'이번주'};}
+  if(key==='lastweek'){const wd=(d.getDay()+6)%7;const mon=new Date(d);mon.setDate(d.getDate()-wd-7);const sun=new Date(mon);sun.setDate(mon.getDate()+6);return{from:ymd(mon),to:ymd(sun),label:'저번주'};}
+  if(key==='month')return{from:ym+'-01',to:ym+'-31',label:'당월'};
+  if(key==='lastmonth'){let p=ym.split('-').map(Number),y=p[0],m=p[1]-1;if(m<1){m=12;y--;}const lm=y+'-'+String(m).padStart(2,'0');return{from:lm+'-01',to:lm+'-31',label:'전월'};}
+  return{from:'',to:'',label:'전체'};}
+const PERIOD_LABEL={today:'당일',yesterday:'전일~당일',week:'이번주',lastweek:'저번주',month:'당월',lastmonth:'전월',all:'전체'};
+function periodTabs(cur,fn,keys){keys=keys||['today','week','month','lastmonth','all'];return keys.map(k=>`<button class="${cur===k?'on':''}" onclick="${fn}('${k}')">${PERIOD_LABEL[k]}</button>`).join('');}
 /* ===== 카테고리 ===== */
 const CAT_TREE={
   '패션':['상의','니트','셔츠·블라우스','원피스','팬츠','스커트','아우터','자켓','코트','셋업','데님','이너','기타'],
@@ -1637,12 +1645,7 @@ function viewSales(){
   ${SALETAB==='order'?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="muted" style="font-size:12px">기간</span><div class="tabs" style="margin:0"><button class="${ORDTAB==='today'?'on':''}" onclick="ORDTAB='today';render()">당일 ${orderRowsToday().length}</button><button class="${ORDTAB==='all'?'on':''}" onclick="ORDTAB='all';render()">전체 ${orderRowsAll().length}</button></div></div>${saleListCards('order')}`:`<div class="card" style="margin-bottom:12px"><div class="toolbar"><span class="muted" style="align-self:center">📅 출고 작업일</span><input type="date" value="${SHIPDATE||todayStr()}" onchange="SHIPDATE=this.value;render()"><button class="btn sm gray" onclick="SHIPDATE='';render()">오늘</button><span class="grow"></span><span class="muted" style="font-size:12px">당일 출고요청·완료 건 · 전체 누적은 <b>판매현황</b> 메뉴</span></div></div>${saleListCards('ship')}`}`;
 }
 function dataLastYM(){const ds=mine(ORD).filter(o=>o.pay==='paid').map(o=>(o.date||'').replace(/\//g,'-')).filter(Boolean).sort();return ds.length?ds[ds.length-1].slice(0,7):'2026-06';}
-function setPeriod(k){
-  if(k==='all'){SALEFROM='';SALETO='';}
-  else{let ym=dataLastYM();
-    if(k==='lastmonth'){let p=ym.split('-').map(Number),y=p[0],m=p[1]-1;if(m<1){m=12;y--;}ym=y+'-'+String(m).padStart(2,'0');}
-    SALEFROM=ym+'-01';SALETO=ym+'-31';}
-  render();}
+function setPeriod(k){const r=periodRange(k);if(k==='all'){SALEFROM='';SALETO='';}else{SALEFROM=r.from;SALETO=r.to;}render();}
 const REQ_REASON={'교환요청':['사이즈교환','컬러교환','단순변심','불량','오배송'],'환불요청':['단순변심','사이즈미스','불량','품절','배송지연'],'취소요청':['단순변심','중복주문','오주문','품절']};
 const REQDRAFT={};
 const RXSET=['교환요청','환불요청','취소요청'];
@@ -1654,7 +1657,7 @@ const reqDraftOf=o=>REQDRAFT[o.id]?REQDRAFT[o.id].req:(o.req||'없음');
 function setReqDraft(id,f,v){const o=ORD.find(x=>x.id===id);if(!REQDRAFT[id])REQDRAFT[id]={req:o.req||'없음',reason:o.reason||''};REQDRAFT[id][f]=v;
   if(f==='req'){const rr=REQ_REASON[v];REQDRAFT[id].reason=rr?(rr.includes(REQDRAFT[id].reason)?REQDRAFT[id].reason:rr[0]):'';}render();}
 function baseRows(){
-  if(SALEFROM===undefined){const ym=dataLastYM();SALEFROM=ym+'-01';SALETO=ym+'-31';}
+  if(SALEFROM===undefined){const r=periodRange('week');SALEFROM=r.from;SALETO=r.to;}
   let rows=mine(ORD).filter(o=>o.pay==='paid').filter(o=>{const d=(o.date||'').replace(/\//g,'-');return (!SALEFROM||d>=SALEFROM)&&(!SALETO||d<=SALETO);});
   if(SALEQ){if(SALEFIELD==='상품번호')rows=rows.filter(o=>inc(o.code,SALEQ)||inc(skuFullCode(o.code,o.color,o.size),SALEQ)||inc(itemLabel(o),SALEQ));else if(SALEFIELD==='번호표')rows=rows.filter(o=>inc(tagShow(o),SALEQ));else rows=rows.filter(o=>inc(o.cust,SALEQ));}
   return rows;
@@ -1710,7 +1713,9 @@ function saleToolbar(){
       <input type="date" value="${SALEFROM}" onchange="SALEFROM=this.value;render()">
       <span style="align-self:center">~</span>
       <input type="date" value="${SALETO}" onchange="SALETO=this.value;render()">
-      <button class="btn sm gray" onclick="setPeriod('thismonth')">당월</button>
+      <button class="btn sm gray" onclick="setPeriod('today')">당일</button>
+      <button class="btn sm gray" onclick="setPeriod('week')">이번주</button>
+      <button class="btn sm gray" onclick="setPeriod('month')">당월</button>
       <button class="btn sm gray" onclick="setPeriod('lastmonth')">전월</button>
       <button class="btn sm gray" onclick="setPeriod('all')">전체</button>
       <button class="btn sm gray" onclick="saleCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button>
@@ -1858,8 +1863,8 @@ function shipTabDone(){
   if(DONEPERIOD!=='all')done=done.filter(o=>{const d=o.shipped_date||'';return d>=r.from&&d<=r.to;});
   done=done.sort((a,b)=>(b.shipped_date||'').localeCompare(a.shipped_date||''));
   return `<div class="card"><div class="card-h"><h2>출고완료 <span class="muted" style="font-size:12px;font-weight:400">${r.label} · ${done.length}건</span></h2></div>
-    <div class="note">💡 기본은 <b>오늘 출고완료</b>건만 표시 · 기간 선택으로 누적 조회. (과거 이전분은 출고일 미기록이라 '누적'에서 보입니다)</div>
-    <div class="tabs" style="margin:10px 0">${periodTabs(DONEPERIOD,'setDonePeriod')}</div>
+    <div class="note">💡 기본은 <b>이번주 출고완료</b>건 표시 · 기간 선택으로 조회. (과거 이전분은 출고일 미기록이라 <b>전체</b>에서 보입니다)</div>
+    <div class="tabs" style="margin:10px 0">${periodTabs(DONEPERIOD,'setDonePeriod',['week','yesterday','lastweek','month','lastmonth','all'])}</div>
     <table><thead><tr><th>출고일</th><th>고객</th><th>주문#</th><th>품목</th><th class="num-cell">수량</th><th>배송비</th><th>송장번호</th><th>담당</th></tr></thead><tbody>
     ${done.slice(0,300).map(o=>`<tr><td class="muted">${o.shipped_date||o.date||'-'}</td><td>${esc(o.cust||'')}</td><td class="muted">#${o.id}</td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td><td>${o.code==='배송비'?'<span class="pill p-req">배송비</span>':'-'}</td><td class="barcode">${o.track}</td><td class="muted">${esc(o.staff||'-')}</td></tr>`).join('')||'<tr><td colspan="8" class="muted">해당 기간 출고완료 없음</td></tr>'}
     </tbody></table></div>`;
@@ -1912,7 +1917,7 @@ function viewShip(){
       <button class="${SHIPTAB==='wait'?'on':''}" onclick="SHIPTAB='wait';render()">출고대기 ${cnt(wait)}</button>
       <button class="${SHIPTAB==='back'?'on':''}" onclick="SHIPTAB='back';render()">미송관리 ${back.length}</button>
       <button class="${SHIPTAB==='bundle'?'on':''}" onclick="SHIPTAB='bundle';render()">합배관리 ${bundle.length}</button>
-      <button class="${SHIPTAB==='done'?'on':''}" onclick="SHIPTAB='done';render()">출고완료 ${done.length}</button>
+      <button class="${SHIPTAB==='done'?'on':''}" onclick="SHIPTAB='done';render()">출고완료</button>
       <span style="flex:1"></span><button class="btn sm gray" onclick="shipCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button><button class="btn sm gray" onclick="expAll()"><i class="ti ti-chevrons-down"></i> 모두펼치기</button>
     </div>
   </div>
@@ -1934,9 +1939,9 @@ function rxBlock(){
 }
 
 /* ===== 출고현황(완료내역) ===== */
-function shpPeriod(k){if(k==='all'){SHPFROM='';SHPTO='';}else{let ym=dataLastYM();if(k==='lastmonth'){let p=ym.split('-').map(Number),y=p[0],m=p[1]-1;if(m<1){m=12;y--;}ym=y+'-'+String(m).padStart(2,'0');}SHPFROM=ym+'-01';SHPTO=ym+'-31';}render();}
+function shpPeriod(k){const r=periodRange(k);if(k==='all'){SHPFROM='';SHPTO='';}else{SHPFROM=r.from;SHPTO=r.to;}render();}
 function shippedRows(){
-  if(SHPFROM===undefined){const ym=dataLastYM();SHPFROM=ym+'-01';SHPTO=ym+'-31';}
+  if(SHPFROM===undefined){const r=periodRange('week');SHPFROM=r.from;SHPTO=r.to;}
   let rows=mine(ORD).filter(o=>o.ship==='done'&&o.track).filter(o=>{const d=(o.date||'').replace(/\//g,'-');return (!SHPFROM||d>=SHPFROM)&&(!SHPTO||d<=SHPTO);});
   if(SHPQ){if(SHPFIELD==='상품번호')rows=rows.filter(o=>inc(o.code,SHPQ)||inc(skuFullCode(o.code,o.color,o.size),SHPQ)||inc(itemLabel(o),SHPQ));else if(SHPFIELD==='번호표')rows=rows.filter(o=>inc(tagShow(o),SHPQ));else if(SHPFIELD==='송장')rows=rows.filter(o=>inc(o.track,SHPQ));else rows=rows.filter(o=>inc(o.cust,SHPQ));}
   return rows;
@@ -2080,7 +2085,7 @@ function saleStatus(o){
   return progOf(o)==='포장'?'pack':'unpack';
 }
 function statusBaseRows(){
-  if(SHPFROM===undefined){const ym=dataLastYM();SHPFROM=ym+'-01';SHPTO=ym+'-31';}
+  if(SHPFROM===undefined){const r=periodRange('week');SHPFROM=r.from;SHPTO=r.to;}
   let rows=mine(ORD).filter(o=>o.pay==='paid').filter(o=>{const d=(o.date||'').replace(/\//g,'-');return (!SHPFROM||d>=SHPFROM)&&(!SHPTO||d<=SHPTO);});
   if(SHPQ){if(SHPFIELD==='상품번호')rows=rows.filter(o=>inc(o.code,SHPQ)||inc(skuFullCode(o.code,o.color,o.size),SHPQ)||inc(itemLabel(o),SHPQ));else if(SHPFIELD==='번호표')rows=rows.filter(o=>inc(tagShow(o),SHPQ));else if(SHPFIELD==='송장')rows=rows.filter(o=>inc(o.track,SHPQ));else rows=rows.filter(o=>inc(o.cust,SHPQ));}
   return rows;
@@ -2132,7 +2137,7 @@ function statusCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='ss:'+g.d
     </tbody></table></div>`;
 }
 function viewShipped(){
-  if(SHPFROM===undefined){const ym=dataLastYM();SHPFROM=ym+'-01';SHPTO=ym+'-31';}
+  if(SHPFROM===undefined){const r=periodRange('week');SHPFROM=r.from;SHPTO=r.to;}
   const base=statusBaseRows();
   const counts={all:base.length};SHP_STATES.forEach(s=>{if(s.k!=='all')counts[s.k]=0;});
   base.forEach(o=>{const st=saleStatus(o);if(st&&counts[st]!=null)counts[st]++;});
@@ -2155,7 +2160,9 @@ function viewShipped(){
       <input type="date" value="${SHPFROM}" onchange="SHPFROM=this.value;render()">
       <span style="align-self:center">~</span>
       <input type="date" value="${SHPTO}" onchange="SHPTO=this.value;render()">
-      <button class="btn sm gray" onclick="shpPeriod('thismonth')">당월</button>
+      <button class="btn sm gray" onclick="shpPeriod('today')">당일</button>
+      <button class="btn sm gray" onclick="shpPeriod('week')">이번주</button>
+      <button class="btn sm gray" onclick="shpPeriod('month')">당월</button>
       <button class="btn sm gray" onclick="shpPeriod('lastmonth')">전월</button>
       <button class="btn sm gray" onclick="shpPeriod('all')">전체</button>
       <button class="btn sm gray" onclick="shpCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button>
@@ -2967,7 +2974,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',SHPSTATUS='all',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',STOCKSORT={f:'qty',d:1},STOCKPAGE=1,STOCKFILTER='',STOCKVENDOR='',PRODTAB='compose',DONEPERIOD='today',SALESUB='req',ORDTAB='all',REVPERIOD='today',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',SHPSTATUS='all',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',STOCKSORT={f:'qty',d:1},STOCKPAGE=1,STOCKFILTER='',STOCKVENDOR='',PRODTAB='compose',DONEPERIOD='week',SALESUB='req',ORDTAB='all',REVPERIOD='week',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
 const STOCK_PGSIZE=100;
 function stockFilterSort(){const q=($('#stockSearch')&&$('#stockSearch').value||'').trim(),fld=STOCKFIELD;
   const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
