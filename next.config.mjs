@@ -10,6 +10,8 @@ const nextConfig = {
       { source: "/matching-pool/", destination: "/matching-pool.html" },
       { source: "/erp-2a453c", destination: "/erp-2a453c/index.html" },
       { source: "/erp-2a453c/", destination: "/erp-2a453c/index.html" },
+      { source: "/erp", destination: "/erp-2a453c/index.html" },
+      { source: "/erp/", destination: "/erp-2a453c/index.html" },
       // 셀러별 고정 주문페이지 — URL은 그대로 두고 정적 shop.html이 slug를 읽어 방송을 표시
       { source: "/shop/:seller", destination: "/shop.html" },
       { source: "/shop/:seller/", destination: "/shop.html" },
@@ -28,6 +30,8 @@ const nextConfig = {
       { source: "/erp-2a453c", headers: [noCache, ...sec] },
       { source: "/erp-2a453c/", headers: [noCache, ...sec] },
       { source: "/erp-2a453c/:path*", headers: [noCache, ...sec] },
+      { source: "/erp", headers: [noCache, ...sec] },
+      { source: "/erp/", headers: [noCache, ...sec] },
       { source: "/shop.html", headers: [noCache, ...sec] },
       { source: "/shop/:seller*", headers: [noCache, ...sec] },
     ];
