@@ -2334,6 +2334,7 @@ function viewStock(){
       <select id="sf_subcat" onchange="SFORM.subcat=this.value" style="width:96px"><option value="">종류</option>${(CAT_TREE[SFORM.cat]||[]).map(x=>`<option ${x===SFORM.subcat?'selected':''}>${x}</option>`).join('')}</select>
       ${CAT_HASSEASON(SFORM.cat)?`<select id="sf_season" onchange="SFORM.season=this.value" style="width:78px"><option value="">계절</option>${SEASONS.map(x=>`<option ${x===SFORM.season?'selected':''}>${x}</option>`).join('')}</select>`:''}
       <input id="sf_qty" type="number" placeholder="수량" value="${SFORM.qty}" oninput="SFORM.qty=this.value" style="width:68px">
+      <label style="display:inline-flex;align-items:center;gap:5px;padding:0 8px;font-weight:700;font-size:12.5px;white-space:nowrap;${SFORM.sample?'color:#c2410c':''}"><input type="checkbox" ${SFORM.sample?'checked':''} onchange="SFORM.sample=this.checked;render()" style="width:16px;height:16px"> 🔖 샘플</label>
       <button class="btn" onclick="stagedAdd()">＋ 목록에 추가</button>
     </div>
     ${STAGED.length?`
@@ -2880,7 +2881,7 @@ function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o
 function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
 /* 상품 일괄등록 — 6자리 자동번호 + 색상·사이즈 매트릭스 → SKU 자동생성 */
 let BULK={};
-function openBulkAdd(){BULK={name:'',code:nextProductCode(),tag:'',vendor:'',cat:'',subcat:'',season:'',inprice:'',price:'',colors:'',sizes:['F'],qty:{}};renderBulk();$('#modal').classList.remove('hide');}
+function openBulkAdd(){BULK={name:'',code:nextProductCode(),tag:'',vendor:'',cat:'',subcat:'',season:'',inprice:'',price:'',colors:'',sizes:['F'],qty:{},sample:false};renderBulk();$('#modal').classList.remove('hide');}
 function bulkSet(f,v){BULK[f]=v;if(f==='cat')BULK.subcat='';renderBulk();}
 function bulkSize(sz,on){BULK.sizes=BULK.sizes||[];if(on){if(!BULK.sizes.includes(sz))BULK.sizes.push(sz);}else BULK.sizes=BULK.sizes.filter(x=>x!==sz);renderBulk();}
 function bulkQty(key,v){BULK.qty[key]=Math.max(0,parseInt(v)||0);}
@@ -2890,7 +2891,7 @@ function renderBulk(){const b=BULK;const colors=String(b.colors||'').split(',').
   let matrix='<div class="muted" style="padding:16px;text-align:center;border:1px dashed var(--line);border-radius:10px;margin-top:10px">색상과 사이즈를 넣으면 여기에 수량 입력표가 생겨요</div>';
   if(colors.length&&sizes.length){matrix=`<div style="overflow:auto;margin-top:10px"><table style="min-width:100%"><thead><tr><th style="text-align:left">색상 \\ 사이즈</th>${sizes.map(sz=>`<th style="text-align:center">${sz}${isFreeSize(sz)?'':`<div style="font-size:9px;color:#94a3b8">-${String(sizes.indexOf(sz)+1).padStart(2,'0')}</div>`}</th>`).join('')}</tr></thead><tbody>
     ${colors.map((c,ci)=>`<tr><td style="font-weight:700;white-space:nowrap">${esc(c)} <span class="muted" style="font-size:9px">-${String(ci+1).padStart(2,'0')}</span></td>${sizes.map(sz=>`<td style="text-align:center"><input type="number" min="0" value="${b.qty[c+'|'+sz]||''}" placeholder="0" onchange="bulkQty('${esc(c)}|${esc(sz)}',this.value)" style="width:54px;text-align:center;padding:5px"></td>`).join('')}</tr>`).join('')}
-    </tbody></table></div><div class="muted" style="font-size:11px;margin-top:7px">💡 품목코드는 <b>${normCode6(b.code)}-01${sizes.length>1||!isFreeSize(sizes[0])?'-01':''}</b>부터 색상·사이즈 순서대로 자동 부여 · 수량 0인 칸은 등록 안 됨</div>`;}
+    </tbody></table></div><div class="muted" style="font-size:11px;margin-top:7px">💡 품목코드는 <b>${normCode6(b.code)}-01${sizes.length>1||!isFreeSize(sizes[0])?'-01':''}</b>부터 색상·사이즈 순서대로 자동 부여 · <b>선택한 색상×사이즈 전 조합이 등록</b>(수량 0이어도 됨 — 샘플·품절/미송용)</div>`;}
   $('#modalBox').innerHTML=`<h3>🆕 상품 일괄 등록 <span style="font-size:12px;color:#64748b;font-weight:500">색상·사이즈를 한 번에</span></h3>
   <div class="modal-row"><div><label>상품명 *</label><input value="${esc(b.name)}" oninput="BULK.name=this.value" placeholder="예: 데일리 루즈핏 니트"></div><div><label>상품번호 (6자리·자동)</label><input value="${esc(b.code)}" oninput="BULK.code=this.value" style="font-weight:700;color:#2563eb"></div></div>
   <div class="modal-row"><div><label>사입처</label><input list="bulkVendor" value="${esc(b.vendor)}" oninput="BULK.vendor=this.value" placeholder="예: eun"><datalist id="bulkVendor">${VENDORS.map(v=>`<option value="${esc(v.name)}">`).join('')}</datalist></div><div><label>카테고리 · 종류</label><div style="display:flex;gap:6px"><select onchange="bulkSet('cat',this.value)" style="flex:1"><option value="">-</option>${catOpt}</select><select onchange="BULK.subcat=this.value" style="flex:1"><option value="">종류</option>${subOpt}</select></div></div></div>
@@ -2899,24 +2900,26 @@ function renderBulk(){const b=BULK;const colors=String(b.colors||'').split(',').
   <label style="margin-top:10px;display:block">색상 <span class="muted" style="font-size:11px">쉼표로 구분 · 다 쓰고 Enter 또는 다음 칸 클릭하면 수량표 생성</span></label><input value="${esc(b.colors)}" oninput="BULK.colors=this.value" onchange="renderBulk()" onkeydown="if(event.key==='Enter'){event.preventDefault();renderBulk();}" placeholder="블랙, 화이트, 아이보리">
   <label style="margin-top:10px;display:block">사이즈 <span class="muted" style="font-size:11px">F=프리(생략), 여러 개 선택 가능</span></label><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">${chips}</div>
   ${matrix}
+  <label style="margin-top:12px;display:inline-flex;align-items:center;gap:7px;padding:10px 12px;background:${b.sample?'#fff7ed':'#f8fafc'};border:1px solid ${b.sample?'#fed7aa':'var(--line)'};border-radius:9px;cursor:pointer;font-weight:700;${b.sample?'color:#c2410c':''}"><input type="checkbox" ${b.sample?'checked':''} onchange="BULK.sample=this.checked;renderBulk()" style="width:17px;height:17px"> 🔖 샘플 상품 <span class="muted" style="font-weight:400;font-size:12px">— 반납 대상 · 주문 시 자동 미송·사입 (재고 0으로 등록됨)</span></label>
   <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveBulk()">＋ 입고 목록에 추가</button></div>`;}
 function saveBulk(){const b=BULK;if(!String(b.name).trim()){toast('상품명을 입력하세요');return;}
   const colors=String(b.colors||'').split(',').map(c=>c.trim()).filter(Boolean);const sizes=(b.sizes||[]).slice().sort((a,x)=>sizeRank(a)-sizeRank(x));
   if(!colors.length){toast('색상을 하나 이상 입력하세요');return;}if(!sizes.length){toast('사이즈를 선택하세요');return;}
   const bulkTag=String(b.tag||'').trim()||'-';
   const anyQty=colors.some(c=>sizes.some(sz=>(b.qty[c+'|'+sz]||0)>0));
-  let sample=false;
-  if(!anyQty){sample=confirm(SAMPLE_CONFIRM);}/* 수량 하나도 없이 등록 = 재고 0 등록 → 샘플 확인 후 색상×사이즈 전조합 0으로 등록 */
-  let n=0;colors.forEach(c=>{sizes.forEach(sz=>{const q=b.qty[c+'|'+sz]||0;if(anyQty&&q<=0)return;STAGED.unshift({chk:true,tag:bulkTag,code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q,sample});n++;});});
+  let sample=!!b.sample;
+  if(!anyQty&&!sample){sample=confirm(SAMPLE_CONFIRM);}/* 수량 0인데 샘플 미체크 → 확인창 fallback */
+  /* 선택한 색상×사이즈 전 조합 등록 — 수량 0이어도 등록(샘플·품절/미송 대비) */
+  let n=0;colors.forEach(c=>{sizes.forEach(sz=>{const q=b.qty[c+'|'+sz]||0;STAGED.unshift({chk:true,tag:bulkTag,code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q,sample});n++;});});
   if(!n){toast('색상·사이즈를 선택하세요');return;}
   closeModal();toast('✅ '+n+'개 SKU가 입고 목록에 추가됨 — 확인 후 [저장]하세요');render();}
 const SAMPLE_CONFIRM='재고 0으로 등록됩니다.\n\n이 상품이 샘플(반납 대상)인가요?\n\n[확인] = 샘플로 체크해서 등록 (주문 시 자동 미송·사입 처리)\n[취소] = 일반 상품(0재고)으로 등록';
 function stagedAdd(){
   if(!SFORM.code.trim()||!SFORM.name.trim()){toast('품목코드·품목명은 필수');return;}
-  const q=parseInt(SFORM.qty)||0;let sample=false;
-  if(q<=0){sample=confirm(SAMPLE_CONFIRM);}/* 재고 0 등록 → 샘플 확인 */
+  const q=parseInt(SFORM.qty)||0;let sample=!!SFORM.sample;
+  if(q<=0&&!sample){sample=confirm(SAMPLE_CONFIRM);}/* 재고 0인데 샘플 미체크 → 확인창 fallback */
   STAGED.unshift({chk:true,tag:SFORM.tag.trim()||'-',code:SFORM.code.trim(),vendor:SFORM.vendor.trim()||null,name:SFORM.name.trim(),color:SFORM.color.trim()||'-',size:SFORM.size.trim()||'F',in_price:parseInt(SFORM.inprice)||0,price:parseInt(SFORM.price)||0,category:SFORM.cat||null,subcategory:SFORM.subcat||null,season:(CAT_HASSEASON(SFORM.cat)?SFORM.season:'')||null,qty:q,sample});
-  SFORM.code='';SFORM.name='';SFORM.color='';SFORM.size='';SFORM.inprice='';SFORM.price='';SFORM.qty='';
+  SFORM.code='';SFORM.name='';SFORM.color='';SFORM.size='';SFORM.inprice='';SFORM.price='';SFORM.qty='';SFORM.sample=false;
   toast('목록에 추가 ('+STAGED.length+'건 대기)'+(sample?' · 🔖샘플':''));render();setTimeout(()=>$('#sf_code')?.focus(),40);
 }
 function stagedSampleToggle(i){if(STAGED[i]){STAGED[i].sample=!STAGED[i].sample;render();}}
