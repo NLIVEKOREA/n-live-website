@@ -176,6 +176,9 @@
   .entrycell{position:relative}
   .drop2{position:absolute;left:0;top:100%;min-width:340px;background:#fff;border:1.5px solid var(--blue);border-radius:10px;box-shadow:0 18px 48px rgba(0,0,0,.28);z-index:9999;max-height:340px;overflow:auto;text-align:left;margin-top:2px}
   .oe-empty td{height:34px}
+  .lspin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:lspin .6s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes lspin{to{transform:rotate(360deg)}}
+  #loginBtn[disabled]{opacity:.85;cursor:progress}
   .drop2:empty{display:none}
   .drop-i{padding:10px 13px;cursor:pointer;font-size:13px;border-bottom:1px solid #f4f6fb;display:flex;align-items:center;gap:8px}
   .drop-i:last-child{border:0}
@@ -424,7 +427,7 @@
     <label>아이디</label><input id="loginId" placeholder="아이디 입력" onkeydown="if(event.key==='Enter'){event.preventDefault();(($('#loginPw').value||'').trim())?doLogin():$('#loginPw').focus();}">
     <label>비밀번호</label><input id="loginPw" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter'){event.preventDefault();doLogin();}">
     <div id="loginErr" style="display:none;margin:6px 0 2px;padding:10px 12px;background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c;border-radius:8px;font-size:13px;font-weight:700"></div>
-    <button class="btn" onclick="doLogin()">로그인</button>
+    <button class="btn" id="loginBtn" onclick="doLogin()">로그인</button>
     <div class="cred">관리자에게 받은 아이디·비밀번호로 로그인하세요.</div>
   </div>
 </div>
@@ -2858,16 +2861,20 @@ async function delUser(i){const u=EMPLOYEES[i];if(!u)return;if(ME&&ME.id===u.log
 
 /* ===== 로그인 ===== */
 function loginErr(m){const e=$('#loginErr');if(e){if(m){e.textContent='⚠️ '+m;e.style.display='block';}else{e.textContent='';e.style.display='none';}}if(m)toast('❌ '+m);}
+function loginLoading(on){const b=$('#loginBtn');if(!b)return;if(on){b.disabled=true;if(!b.dataset.t)b.dataset.t=b.textContent;b.innerHTML='<span class="lspin"></span>로그인 중…';}else{b.disabled=false;b.textContent=b.dataset.t||'로그인';}}
+let _logging=false;
 async function doLogin(){
+  if(_logging)return;
   const id=$('#loginId').value.trim(), pw=$('#loginPw').value.trim();
   loginErr('');
   if(!id||!pw){loginErr('아이디와 비밀번호를 모두 입력해 주세요');(!id?$('#loginId'):$('#loginPw')).focus();return;}
   const email = id.includes('@')? id : id+SB_DOMAIN;
-  toast('🔐 로그인 중...');
+  _logging=true;loginLoading(true);
+  try{
   const {error} = await SB.auth.signInWithPassword({email, password:pw});
-  if(error){loginErr('아이디 또는 비밀번호가 틀렸습니다. 다시 확인해 주세요.');$('#loginPw').value='';$('#loginPw').focus();return;}
+  if(error){loginErr('아이디 또는 비밀번호가 틀렸습니다. 다시 확인해 주세요.');$('#loginPw').value='';$('#loginPw').focus();loginLoading(false);_logging=false;return;}
   const {data:emp} = await SB.from('employees').select('*').eq('login_id', id).maybeSingle();
-  if(!emp||emp.active===false){loginErr('등록되지 않았거나 비활성화된 계정입니다. 관리자에게 문의하세요.');await SB.auth.signOut();return;}
+  if(!emp||emp.active===false){loginErr('등록되지 않았거나 비활성화된 계정입니다. 관리자에게 문의하세요.');await SB.auth.signOut();loginLoading(false);_logging=false;return;}
   ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id};
   await loadPrefs();
   toast('📥 데이터 불러오는 중...');
@@ -2877,8 +2884,10 @@ async function doLogin(){
   if(!menuAllowed(VIEW))VIEW='dash';
   rebuildSwitcher();buildNav();render();startRealtime();
   toast('환영합니다, '+ME.name+'님');
+  }catch(e){console.error('login',e);loginErr('로그인 중 오류가 발생했습니다. 인터넷을 확인하고 다시 시도해 주세요.');loginLoading(false);}
+  _logging=false;
 }
-async function logout(){localStorage.removeItem('erp_uid');try{await SB.auth.signOut();}catch(e){}$('#login').style.display='flex';$('#loginId').value='';$('#loginPw').value='';}
+async function logout(){localStorage.removeItem('erp_uid');try{await SB.auth.signOut();}catch(e){}loginErr('');loginLoading(false);$('#login').style.display='flex';$('#loginId').value='';$('#loginPw').value='';}
 function rebuildSwitcher(){const sel=$('#userSel');if(!sel)return;
   sel.innerHTML=USERS.map((u,i)=>`<option value="${i}">${u.name} · ${u.team}(${u.role})</option>`).join('');sel.value=USERS.indexOf(ME);}
 function switchUser(i){ME=USERS[+i];if(!menuAllowed(VIEW))VIEW='dash';buildNav();render();toast('계정 전환: '+ME.name);}
