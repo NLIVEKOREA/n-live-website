@@ -127,7 +127,7 @@
   .p-miss{background:var(--amber-s);color:var(--amber)} .p-req{background:var(--blue-s);color:var(--blue)}
   .p-done{background:var(--green-s);color:var(--green)} .p-low{background:var(--red-s);color:var(--red)}
   .p-gray{background:#eef1f6;color:#475569} .p-purple{background:#f1ebfe;color:#6d28d9}
-  .tagbox{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:var(--chip-h);background:#fef3c7;color:#92500a;border:1px solid #fcd34d;font-weight:800;font-size:12px;line-height:1;padding:0 9px;border-radius:7px;font-family:'Courier New',monospace;letter-spacing:.5px;white-space:nowrap}
+  .tagbox{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:var(--chip-h);background:#fde68a;color:#7c3f06;border:1.5px solid #f59e0b;font-weight:900;font-size:13px;line-height:1;padding:0 10px;border-radius:7px;font-family:'Courier New',monospace;letter-spacing:.5px;white-space:nowrap}
   .stock-low{color:var(--red);font-weight:800} .stock-ok{font-weight:700}
   .muted{color:var(--gray)} .barcode{font-family:'Courier New',monospace;letter-spacing:.5px}
   .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
@@ -1422,7 +1422,9 @@ function orderSheetText(){
     t+=`💰 입금액: ${(goods+ship).toLocaleString()}원\n`;
     t+=`💳 입금계좌: ${acct}\n\n입금 시 닉네임으로 입금 부탁드립니다.\n입금자명이 닉네임과 다르면 입금자명을 꼭 알려주세요.\n\n`;
   }else{
-    t+=`💳 결제수단: 카드결제 (상품+배송비 ${(goods+ship).toLocaleString()}원)\n\n`;
+    const cardExtra=Math.round(goods*0.1);
+    t+=`💳 카드결제 추가(10%): ${cardExtra.toLocaleString()}원\n`;
+    t+=`💰 결제금액: ${(goods+cardExtra+ship).toLocaleString()}원 (카드)\n\n※ 카드결제는 상품금액의 10%가 추가됩니다.\n\n`;
   }
   t+=`✅ 닉네임: ${g.cust||''}\n✅ 연락처: ${g.phone||''}\n✅ 주소: ${g.addr||''}\n✅ 배송메모: `;
   return t;
@@ -1463,11 +1465,11 @@ function lineRow(l,i){
     <td><span class="tagbox">${tagOf(l.code)}</span></td>
     <td class="barcode muted">${skuFullCode(l.code,l.color,l.size)}</td>
     <td style="text-align:left">${l.name}</td>
-    <td><select onchange="lineColor(${i},this.value)">${colors.map(c=>`<option ${l.color===c?'selected':''}>${c}</option>`).join('')}</select></td>
-    <td><select onchange="lineSize(${i},this.value)">${sizes.map(s=>`<option ${l.size===s.size?'selected':''}>${s.size}${s.qty<=0?'(품절)':''}</option>`).join('')}</select></td>
+    <td><select onchange="lineColor(${i},this.value)" style="font-weight:800;color:#0f172a">${colors.map(c=>`<option ${l.color===c?'selected':''}>${c}</option>`).join('')}</select></td>
+    <td><select onchange="lineSize(${i},this.value)" style="font-weight:800;color:#1d4ed8">${sizes.map(s=>`<option ${l.size===s.size?'selected':''}>${s.size}${s.qty<=0?'(품절)':''}</option>`).join('')}</select></td>
     <td><input class="qty" type="number" min="1" value="${l.qty}" onchange="lineQty(${i},this.value)"></td>
     <td class="num-cell" style="font-weight:700">${q==null?'-':q}</td>
-    <td class="num-cell muted">${won(l.price)}</td>
+    <td class="num-cell" style="font-weight:800;color:#0f172a">${won(l.price)}</td>
     <td class="num-cell">${won(l.price*l.qty)}</td>
     <td style="text-align:center"><input type="checkbox" ${l.back?'checked':''} onchange="lineBack(${i},this.checked)" title="미송 주문으로 체크"></td>
     <td><button class="btn sm red" onclick="removeLine(${i})">✕</button></td>
@@ -2730,7 +2732,7 @@ function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o
 function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
 /* 상품 일괄등록 — 6자리 자동번호 + 색상·사이즈 매트릭스 → SKU 자동생성 */
 let BULK={};
-function openBulkAdd(){BULK={name:'',code:nextProductCode(),vendor:'',cat:'',subcat:'',season:'',inprice:'',price:'',colors:'',sizes:['F'],qty:{}};renderBulk();$('#modal').classList.remove('hide');}
+function openBulkAdd(){BULK={name:'',code:nextProductCode(),tag:'',vendor:'',cat:'',subcat:'',season:'',inprice:'',price:'',colors:'',sizes:['F'],qty:{}};renderBulk();$('#modal').classList.remove('hide');}
 function bulkSet(f,v){BULK[f]=v;if(f==='cat')BULK.subcat='';renderBulk();}
 function bulkSize(sz,on){BULK.sizes=BULK.sizes||[];if(on){if(!BULK.sizes.includes(sz))BULK.sizes.push(sz);}else BULK.sizes=BULK.sizes.filter(x=>x!==sz);renderBulk();}
 function bulkQty(key,v){BULK.qty[key]=Math.max(0,parseInt(v)||0);}
@@ -2745,14 +2747,16 @@ function renderBulk(){const b=BULK;const colors=String(b.colors||'').split(',').
   <div class="modal-row"><div><label>상품명 *</label><input value="${esc(b.name)}" oninput="BULK.name=this.value" placeholder="예: 데일리 루즈핏 니트"></div><div><label>상품번호 (6자리·자동)</label><input value="${esc(b.code)}" oninput="BULK.code=this.value" style="font-weight:700;color:#2563eb"></div></div>
   <div class="modal-row"><div><label>사입처</label><input list="bulkVendor" value="${esc(b.vendor)}" oninput="BULK.vendor=this.value" placeholder="예: eun"><datalist id="bulkVendor">${VENDORS.map(v=>`<option value="${esc(v.name)}">`).join('')}</datalist></div><div><label>카테고리 · 종류</label><div style="display:flex;gap:6px"><select onchange="bulkSet('cat',this.value)" style="flex:1"><option value="">-</option>${catOpt}</select><select onchange="BULK.subcat=this.value" style="flex:1"><option value="">종류</option>${subOpt}</select></div></div></div>
   <div class="modal-row"><div><label>입고단가(원가)</label><input type="number" value="${b.inprice}" oninput="BULK.inprice=this.value" placeholder="0"></div><div><label>출고단가(판매가)</label><input type="number" value="${b.price}" oninput="BULK.price=this.value" placeholder="0"></div></div>
-  <label>색상 <span class="muted" style="font-size:11px">쉼표로 구분 · 다 쓰고 Enter 또는 다음 칸 클릭하면 수량표 생성</span></label><input value="${esc(b.colors)}" oninput="BULK.colors=this.value" onchange="renderBulk()" onkeydown="if(event.key==='Enter'){event.preventDefault();renderBulk();}" placeholder="블랙, 화이트, 아이보리">
+  <label>번호표 <span class="muted" style="font-size:11px">방송·재고 표시용 번호 (예: 063) · 이 상품 전체 SKU에 부여 · 비우면 나중에</span></label><input value="${esc(b.tag||'')}" oninput="BULK.tag=this.value" placeholder="예: 063" style="font-weight:700;color:#92500a">
+  <label style="margin-top:10px;display:block">색상 <span class="muted" style="font-size:11px">쉼표로 구분 · 다 쓰고 Enter 또는 다음 칸 클릭하면 수량표 생성</span></label><input value="${esc(b.colors)}" oninput="BULK.colors=this.value" onchange="renderBulk()" onkeydown="if(event.key==='Enter'){event.preventDefault();renderBulk();}" placeholder="블랙, 화이트, 아이보리">
   <label style="margin-top:10px;display:block">사이즈 <span class="muted" style="font-size:11px">F=프리(생략), 여러 개 선택 가능</span></label><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">${chips}</div>
   ${matrix}
   <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveBulk()">＋ 입고 목록에 추가</button></div>`;}
 function saveBulk(){const b=BULK;if(!String(b.name).trim()){toast('상품명을 입력하세요');return;}
   const colors=String(b.colors||'').split(',').map(c=>c.trim()).filter(Boolean);const sizes=(b.sizes||[]).slice().sort((a,x)=>sizeRank(a)-sizeRank(x));
   if(!colors.length){toast('색상을 하나 이상 입력하세요');return;}if(!sizes.length){toast('사이즈를 선택하세요');return;}
-  let n=0;colors.forEach(c=>{sizes.forEach(sz=>{const q=b.qty[c+'|'+sz]||0;if(q<=0)return;STAGED.unshift({chk:true,tag:'-',code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q});n++;});});
+  const bulkTag=String(b.tag||'').trim()||'-';
+  let n=0;colors.forEach(c=>{sizes.forEach(sz=>{const q=b.qty[c+'|'+sz]||0;if(q<=0)return;STAGED.unshift({chk:true,tag:bulkTag,code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q});n++;});});
   if(!n){toast('수량을 입력한 칸이 없어요');return;}
   closeModal();toast('✅ '+n+'개 SKU가 입고 목록에 추가됨 — 확인 후 [저장]하세요');render();}
 function stagedAdd(){
