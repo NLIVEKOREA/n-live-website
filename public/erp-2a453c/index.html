@@ -174,7 +174,8 @@
   .ogrid .qty{text-align:center}
   .ogrid tfoot td{background:#f8fafc;font-weight:800;border:1px solid var(--line);text-align:center}
   .entrycell{position:relative}
-  .drop2{position:absolute;left:0;top:100%;min-width:300px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 16px 40px rgba(0,0,0,.16);z-index:40;max-height:260px;overflow:auto;text-align:left;margin-top:2px}
+  .drop2{position:absolute;left:0;top:100%;min-width:340px;background:#fff;border:1.5px solid var(--blue);border-radius:10px;box-shadow:0 18px 48px rgba(0,0,0,.28);z-index:9999;max-height:340px;overflow:auto;text-align:left;margin-top:2px}
+  .oe-empty td{height:34px}
   .drop2:empty{display:none}
   .drop-i{padding:10px 13px;cursor:pointer;font-size:13px;border-bottom:1px solid #f4f6fb;display:flex;align-items:center;gap:8px}
   .drop-i:last-child{border:0}
@@ -1258,6 +1259,7 @@ function viewOrder(){
     </tr></thead><tbody>
     ${OE.lines.map((l,i)=>lineRow(l,i)).join('')}
     ${entryRow(OE.lines.length+1)}
+    ${Array.from({length:Math.max(0,5-OE.lines.length)}).map((_,k)=>`<tr class="oe-empty"><td class="muted">${OE.lines.length+2+k}</td><td colspan="11"></td></tr>`).join('')}
     </tbody>
     <tfoot><tr><td colspan="6">합계</td><td>${cnt}</td><td></td><td></td><td class="num-cell">${won(total)}</td><td></td><td></td></tr></tfoot>
     </table>
@@ -2993,6 +2995,7 @@ function viewLive(){
           ${s.status==='open'?`<button class="btn sm red" onclick="liveClose(${s.id})">방송 마감</button>`:`<button class="btn sm green" onclick="liveOpen(${s.id})">▶ 판매 시작</button>`}
           <button class="btn sm ghost" onclick="liveCopyUrl('${escAttr(s.slug)}')">URL 복사</button>
           <button class="btn sm ghost" onclick="liveDup(${s.id})">복제</button>
+          <button class="btn sm red ghost" onclick="liveDelete(${s.id})">🗑️ 삭제</button>
         </div>
       </div>`;}).join('')}</div>`:`<div class="muted" style="padding:20px">아직 만든 방송이 없습니다. [새 방송 만들기]로 시작하세요.</div>`}`;
 }
@@ -3111,6 +3114,18 @@ async function liveClose(id){
   if(!confirm('방송을 마감할까요?\n고객 주문페이지가 닫힙니다. (이미 들어온 주문·데이터는 그대로 유지)'))return;
   try{const {error}=await SB.from('live_sessions').update({status:'closed',closed_at:new Date().toISOString()}).eq('id',id);
     if(error){console.error(error);toast('⚠️ 마감 실패');return;}toast('■ 방송 마감');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
+}
+async function liveDelete(id){const s=(LIVE_SESS||[]).find(x=>x.id===id);if(!s)return;
+  if(!confirm(`방송 "${s.title||'(제목없음)'}" 삭제할까요?\n· 등록된 상품도 함께 삭제됩니다\n· 이미 수집된 주문은 주문관리에 그대로 남습니다${s.status==='open'?'\n\n⚠️ 현재 [판매중]인 방송입니다 — 삭제하면 고객 주문페이지가 닫힙니다.':''}`))return;
+  try{
+    await SB.from('orders').update({session_id:null}).eq('session_id',id);
+    await SB.from('session_products').delete().eq('session_id',id);
+    const {error}=await SB.from('live_sessions').delete().eq('id',id);
+    if(error){console.error(error);toast('⚠️ 삭제 실패: '+(error.message||''));return;}
+    LIVE_SESS=(LIVE_SESS||[]).filter(x=>x.id!==id);SESS_PROD=(SESS_PROD||[]).filter(x=>x.session_id!==id);
+    if(LIVEEDIT===id)LIVEEDIT=null;
+    toast('🗑️ 방송 삭제됨');render();
+  }catch(e){console.error(e);toast('⚠️ 삭제 오류');}
 }
 async function liveDup(id){
   const s=(LIVE_SESS||[]).find(x=>x.id===id);if(!s)return;
