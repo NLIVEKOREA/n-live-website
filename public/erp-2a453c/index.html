@@ -1775,9 +1775,9 @@ async function setProg(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const p
   if(await saveOrd(o)===false){Object.assign(o,prev);toast('⚠️ 저장 실패 — 다시 시도하세요');}render();}
 function shipChk(id,c){if(c)SHIPCHK.add(id);else SHIPCHK.delete(id);}
 function openCustomers(){
-  const list=mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done'&&(o.req==='미송'||o.req==='출고요청'||o.req==='합배요청')),m={};
+  const list=mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done'&&(o.back||o.req==='미송'||o.req==='출고요청'||o.req==='합배요청')),m={};
   list.forEach(o=>{const k=o.cust;if(!m[k])m[k]={cust:o.cust,phone:o.phone,addr:o.addr,lines:[],dates:new Set()};m[k].lines.push(o);m[k].dates.add(o.date);});
-  return Object.values(m).map(c=>{c.hasBack=c.lines.some(l=>l.req==='미송');const hasBundle=c.lines.some(l=>l.req==='합배요청');c.cat=c.hasBack?'back':(hasBundle?'bundle':'wait');return c;});
+  return Object.values(m).map(c=>{c.hasBack=c.lines.some(l=>l.req==='미송'||l.back);const hasBundle=c.lines.some(l=>l.req==='합배요청');c.cat=c.hasBack?'back':(hasBundle?'bundle':'wait');return c;});
 }
 function progSel(o){return `<select onchange="setProg(${o.id},this.value)" style="padding:4px 6px;font-size:11.5px;border-radius:6px">${['미포장','포장','미송'].map(p=>`<option ${progOf(o)===p?'selected':''}>${p}</option>`).join('')}</select>`;}
 function waitCard(list){
