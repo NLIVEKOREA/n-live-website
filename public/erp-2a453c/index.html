@@ -174,7 +174,7 @@
   .ogrid .qty{text-align:center}
   .ogrid tfoot td{background:#f8fafc;font-weight:800;border:1px solid var(--line);text-align:center}
   .entrycell{position:relative}
-  .drop2{position:absolute;left:0;top:100%;min-width:340px;background:#fff;border:1.5px solid var(--blue);border-radius:10px;box-shadow:0 18px 48px rgba(0,0,0,.28);z-index:9999;max-height:340px;overflow:auto;text-align:left;margin-top:2px}
+  .drop2{position:fixed;min-width:360px;background:#fff;border:1.5px solid var(--blue);border-radius:10px;box-shadow:0 18px 48px rgba(0,0,0,.30);z-index:99999;max-height:60vh;overflow:auto;text-align:left}
   .oe-empty td{height:34px}
   .lspin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:lspin .6s linear infinite;vertical-align:-2px;margin-right:6px}
   @keyframes lspin{to{transform:rotate(360deg)}}
@@ -271,6 +271,9 @@
   @media(max-width:1100px){.orderstatus{grid-template-columns:1fr}}
   .orderwrap2{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
   .ow-left{display:flex;flex-direction:column;gap:16px}
+  /* 미결제(좌)·결제완료(우) 2열 — 입력폼은 전체폭, 결제완료는 오른쪽 세로 컬럼 */
+  .orderstat2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start}
+  @media(max-width:1000px){.orderstat2{grid-template-columns:1fr}}
   .oe-actbar{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}
   .oe-actbar .oe-sum{font-size:15px;color:var(--gray)}
   .oe-actbar .oe-sum b{font-size:20px;color:var(--ink)}
@@ -1237,7 +1240,6 @@ function viewOrder(){
     <p>방송 중 주문 접수 · 고객/품목 <b>일부만 입력+Enter</b>로 검색 · 저장(F8) 시 재고 차감, 취소 시 복원</p></div>
   ${lockBanner()}
   <div class="orderwrap2">
-  <div class="ow-left">
   <div class="card">
     <div class="oehdr"><div class="oehdr-grid">
       <label>일자</label><div class="fld"><input type="date" value="${OE.date||todayStr()}" onchange="OE.date=this.value" title="00시 이후 방송분은 날짜를 조정하세요"></div>
@@ -1286,11 +1288,11 @@ function viewOrder(){
       </div>
     </div>
   </div>
+  <div class="orderstat2">
   <div class="card">
       <div class="card-h"><h2>미결제 <span class="muted" style="font-size:11.5px;font-weight:400">${mine(ORD).filter(o=>o.pay==='unpaid').length}건 · 날짜·고객별</span></h2><div style="display:flex;gap:5px"><button class="btn sm gray" onclick="ordCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button><button class="btn sm gray" onclick="expAll()"><i class="ti ti-chevrons-down"></i> 모두펼치기</button></div></div>
       ${orderStatusCards('unpaid')}
     </div>
-  </div>
     <div class="card">
       <div class="card-h"><h2>결제완료 <span class="muted" style="font-size:11.5px;font-weight:400">${CDATE?CDATE+' 기준':'전체'}</span></h2></div>
       <div class="toolbar">
@@ -1301,6 +1303,7 @@ function viewOrder(){
       </div>
       ${paidCards()}
     </div>
+  </div>
   </div>`;
 }
 function payBadge(pw){if(!pw||pw==='-')return '';const cash=pw==='현금';return `<span class="pill ${cash?'p-done':'p-req'}" style="font-size:11px;flex:0 0 auto;white-space:nowrap">${cash?'💵':'💳'} ${pw}</span>`;}
@@ -1492,12 +1495,14 @@ function entryRow(no){
   </tr>`;
 }
 /* 고객 검색 */
+/* 검색 드롭다운을 화면기준(fixed)으로 입력칸 아래 배치 — 표/카드 overflow에 안 짤리고, 화면 하단까지 공간만큼 자동 높이 */
+function dropPos(d,inp){if(!d||!inp)return;const r=inp.getBoundingClientRect();const below=window.innerHeight-r.bottom-12;d.style.position='fixed';d.style.left=Math.max(6,r.left)+'px';d.style.top=(r.bottom+3)+'px';d.style.minWidth=Math.max(360,r.width)+'px';d.style.maxHeight=Math.max(160,below)+'px';}
 function custSearch(v){const d=$('#custDrop');if(!d)return;v=v.trim();
   if(!v){d.innerHTML='';return;}
   const m=CUSTOMERS.filter(c=>inc(c.name,v)||(c.phone&&c.phone.replace(/[^0-9]/g,'').includes(v.replace(/[^0-9]/g,'')))&&/\d/.test(v)).slice(0,25);
   const nameCnt={};m.forEach(c=>nameCnt[c.name]=(nameCnt[c.name]||0)+1);
   d.innerHTML=m.length?m.map(c=>`<div class="drop-i" onclick="pickCustId(${c.id})"><b>${esc(c.name)}</b>${nameCnt[c.name]>1?' <span class="pill p-miss" style="font-size:10px;padding:1px 5px">동명이인</span>':''}<span class="muted" style="margin-left:auto">${esc(c.phone||'연락처 미등록')}</span></div>`).join('')
-    :`<div class="drop-i" onclick="openCustModal('${escAttr(v)}')">검색결과 없음 · <b style="color:var(--blue)">＋ 신규고객 '${esc(v)}' 팝업등록</b></div>`;}
+    :`<div class="drop-i" onclick="openCustModal('${escAttr(v)}')">검색결과 없음 · <b style="color:var(--blue)">＋ 신규고객 '${esc(v)}' 팝업등록</b></div>`;dropPos(d,$('#custIn'));}
 function custKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!v)return;
   const exact=CUSTOMERS.filter(c=>c.name===v),m=CUSTOMERS.filter(c=>inc(c.name,v));
   if(exact.length===1)pickCustId(exact[0].id);
@@ -1516,7 +1521,7 @@ function entrySearch(v){const d=$('#entryDrop');if(!d)return;v=v.trim();if(!v){d
   const codes=[...new Set(STOCK.filter(s=>inc(s.tag,v)||inc(s.code,v)||inc(s.name,v)).map(s=>s.code))];
   d.innerHTML=codes.length?codes.slice(0,20).map(c=>{const p=STOCK.find(s=>s.code===c),tot=STOCK.filter(s=>s.code===c).reduce((a,s)=>a+s.qty,0);
     return `<div class="drop-i" onclick="addLineByCode('${c}')"><span class="tagbox">${p.tag}</span><b>${c}</b> ${p.name}<span class="muted" style="margin-left:auto">재고 ${tot}</span></div>`;}).join('')
-    :`<div class="drop-i" onclick="openProdModal('${v}')">검색결과 없음 · <b style="color:var(--blue)">＋ 신규품목 '${v}' 팝업등록</b></div>`;}
+    :`<div class="drop-i" onclick="openProdModal('${v}')">검색결과 없음 · <b style="color:var(--blue)">＋ 신규품목 '${v}' 팝업등록</b></div>`;dropPos(d,$('#entryIn'));}
 function entryKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!v)return;
   const exactTag=[...new Set(STOCK.filter(s=>s.tag===v).map(s=>s.code))];
   const codes=[...new Set(STOCK.filter(s=>inc(s.tag,v)||inc(s.code,v)||inc(s.name,v)).map(s=>s.code))];
@@ -2006,7 +2011,7 @@ function rxNewItemBox(d,origQty){
 function rxRerender(){if(!RXDRAFT)return;if(RXDRAFT.editId){const r=$('#rxe_reason'),f=$('#rxe_fault');if(r)RXDRAFT.reason=r.value;if(f)RXDRAFT.fault=f.value;rxEditOpen(RXDRAFT.editId);}else{renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}}
 function rxSearch(v){const d=$('#rxDrop');if(!d)return;v=(v||'').trim();if(!v){d.innerHTML='';return;}
   const codes=[...new Set(STOCK.filter(s=>inc(s.tag,v)||inc(s.code,v)||inc(s.name,v)).map(s=>s.code))];
-  d.innerHTML=codes.length?codes.slice(0,20).map(c=>{const p=STOCK.find(s=>s.code===c),tot=STOCK.filter(s=>s.code===c).reduce((a,s)=>a+(s.qty||0),0);return `<div class="drop-i" onclick="rxPickNew('${escAttr(c)}')"><span class="tagbox">${esc(p.tag||'')}</span><b>${esc(c)}</b> ${esc(p.name||'')}<span class="muted" style="margin-left:auto">재고 ${tot}</span></div>`;}).join(''):'<div class="drop-i muted">검색 결과 없음</div>';}
+  d.innerHTML=codes.length?codes.slice(0,20).map(c=>{const p=STOCK.find(s=>s.code===c),tot=STOCK.filter(s=>s.code===c).reduce((a,s)=>a+(s.qty||0),0);return `<div class="drop-i" onclick="rxPickNew('${escAttr(c)}')"><span class="tagbox">${esc(p.tag||'')}</span><b>${esc(c)}</b> ${esc(p.name||'')}<span class="muted" style="margin-left:auto">재고 ${tot}</span></div>`;}).join(''):'<div class="drop-i muted">검색 결과 없음</div>';dropPos(d,$('#rxq'));}
 function rxSearchKey(e){if(e.key!=='Enter')return;e.preventDefault();const v=e.target.value.trim();if(!v)return;const exact=[...new Set(STOCK.filter(s=>s.tag===v).map(s=>s.code))];const codes=[...new Set(STOCK.filter(s=>inc(s.tag,v)||inc(s.code,v)||inc(s.name,v)).map(s=>s.code))];const pick=exact.length===1?exact[0]:codes.includes(v)?v:codes.length===1?codes[0]:null;if(pick)rxPickNew(pick);}
 function rxPickNew(code){if(!RXDRAFT)return;const color=colorsOf(code)[0]||'';const szIn=STOCK.filter(s=>s.code===code&&s.color===color),sk=szIn.find(s=>s.qty>0)||szIn[0]||{};RXDRAFT.newCode=code;RXDRAFT.newName=prodName(code);RXDRAFT.newColor=color;RXDRAFT.newSize=sk.size||'';RXDRAFT.newTag=tagOf(code);rxRerender();}
 function rxNewColor(color){if(!RXDRAFT)return;RXDRAFT.newColor=color;const szIn=STOCK.filter(s=>s.code===RXDRAFT.newCode&&s.color===color),sk=szIn.find(s=>s.qty>0)||szIn[0]||{};RXDRAFT.newSize=sk.size||'';rxRerender();}
