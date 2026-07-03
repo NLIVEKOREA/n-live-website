@@ -2061,8 +2061,8 @@ const SHP_STATE_PILL={unpack:['p-gray','미포장'],pack:['p-req','포장'],done
 function saleStatus(o){
   if(o.pay!=='paid')return null;
   if(o.rxtype&&o.rxstat!=='done')return o.rxtype==='exchange'?'exch':'refund';
-  if(o.ship==='done'&&o.track)return 'done';
   if(o.req==='미송'||o.back)return 'back';
+  if(o.ship==='done')return 'done';/* 출고완료 = 출고됨(송장은 있으면 표시, 없어도 출고완료로 인정 — 이관 데이터엔 송장 없는 경우 많음) */
   if(o.req==='합배요청')return 'bundle';
   return progOf(o)==='포장'?'pack':'unpack';
 }
