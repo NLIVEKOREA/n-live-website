@@ -1974,7 +1974,7 @@ function rxOpen(id,type){const o=ORD.find(x=>x.id===id);if(!o)return;RXDRAFT={id
 function rxPickReason(v){RXDRAFT.reason=v;RXDRAFT.fault=faultOf(v);renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}
 function rxSetFault(v){RXDRAFT.fault=v;renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}
 function renderRxModal(o){const d=RXDRAFT,t=RX_TYPES[d.type];
-  const newBox=d.type==='exchange'?`<div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px"><div style="font-weight:700;margin-bottom:8px">🔄 교환해서 새로 보낼 상품</div><div class="toolbar" style="flex-wrap:wrap;gap:6px"><input id="rx_tag" placeholder="번호표" value="${d.newTag||''}" style="width:78px"><input id="rx_code" placeholder="품목코드" value="${d.newCode||''}" style="width:118px"><input id="rx_name" placeholder="품목명" value="${d.newName||''}" style="width:128px"><input id="rx_color" placeholder="색상" value="${d.newColor||''}" style="width:74px"><input id="rx_size" placeholder="사이즈" value="${d.newSize||''}" style="width:64px"></div><div class="muted" style="font-size:12px;margin-top:5px">※ [회수입고] 후 [재발송] 누르면 새 상품 재고가 자동 −${o.qty||1} 됩니다</div></div>`:'';
+  const newBox=d.type==='exchange'?rxNewItemBox(d,o.qty||1):'';
   $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">${t.ic} ${t.l} 접수</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
   <div class="note" style="margin-bottom:14px"><b>${o.cust}</b> · ${itemLabel(o)} ×${o.qty} · ${won(amtOf(o))} <span class="muted">(담당 ${o.staff||'-'})</span></div>
   <div style="margin-bottom:12px"><div class="muted" style="margin-bottom:5px">사유</div><select onchange="rxPickReason(this.value)" style="width:100%;padding:11px;border-radius:9px;font-weight:700;font-family:inherit">${RX_REASONS.map(r=>`<option ${d.reason===r.l?'selected':''}>${r.l}</option>`).join('')}</select></div>
@@ -1984,8 +1984,26 @@ function renderRxModal(o){const d=RXDRAFT,t=RX_TYPES[d.type];
   $('#modal').classList.remove('hide');}
 async function rxCommit(){const d=RXDRAFT;if(!d)return;const o=ORD.find(x=>x.id===d.id);if(!o)return;
   o.rxtype=d.type;o.rxstat='req';o.rxreason=d.reason;o.fault=d.fault;o.rxdate=todayStr();
-  if(d.type==='exchange')o.rxnew={tag:($('#rx_tag').value||'').trim(),code:($('#rx_code').value||'').trim(),name:($('#rx_name').value||'').trim(),color:($('#rx_color').value||'').trim(),size:($('#rx_size').value||'').trim()};
+  if(d.type==='exchange'){
+    if(!d.newCode){toast('교환해서 보낼 새 상품을 검색해서 선택해 주세요');return;}
+    o.rxnew={tag:d.newTag||'',code:d.newCode||'',name:d.newName||'',color:d.newColor||'',size:d.newSize||''};}
   closeModal();RXDRAFT=null;toast(`${RX_TYPES[o.rxtype].l} 접수됨 → [교환·반품] 메뉴에서 처리`);render();await saveOrd(o);}
+/* 교환 새상품 검색 픽커 — 주문입력과 동일하게 번호표·품번·상품명 검색, 재발송 시 재고 자동차감 */
+function rxNewItemBox(d,origQty){
+  const cols=d.newCode?colorsOf(d.newCode):[],szs=d.newCode?[...new Set(STOCK.filter(s=>s.code===d.newCode&&s.color===d.newColor).map(s=>s.size))]:[];
+  const sk=d.newCode?skuOf(d.newCode,d.newColor,d.newSize):null;
+  const sel=d.newCode?`<div style="margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:#f0f7ff;border:1px solid #bcd3ff;border-radius:9px;padding:8px 10px"><span class="tagbox">${esc(tagOf(d.newCode)||d.newTag||'')}</span><b>${esc(d.newName||d.newCode)}</b><select onchange="rxNewColor(this.value)">${cols.map(c=>`<option ${d.newColor===c?'selected':''}>${esc(c)}</option>`).join('')}</select><select onchange="rxNewSize(this.value)">${szs.map(z=>`<option ${d.newSize===z?'selected':''}>${esc(z)}</option>`).join('')}</select><span class="muted" style="font-size:12px">재고 ${(sk&&sk.qty!=null)?sk.qty:0} · 재발송 시 −${origQty||1}</span><button class="btn gray sm" style="margin-left:auto" onclick="rxClearNew()">✕ 해제</button></div>`
+    :'<div class="muted" style="font-size:12px;margin-top:6px">검색해서 새 상품을 고르면 [재발송] 단계에서 재고가 자동 차감됩니다</div>';
+  return `<div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px"><div style="font-weight:700;margin-bottom:8px">🔄 교환해서 새로 보낼 상품 <span class="muted" style="font-weight:400;font-size:12px">— 번호표·품번·상품명 검색 (예: 063)</span></div><div style="position:relative"><input id="rxq" placeholder="예: 063 또는 상품명 입력" autocomplete="off" oninput="rxSearch(this.value)" onkeydown="rxSearchKey(event)" style="width:100%"><div id="rxDrop" class="drop2"></div></div>${sel}</div>`;}
+function rxRerender(){if(!RXDRAFT)return;if(RXDRAFT.editId){const r=$('#rxe_reason'),f=$('#rxe_fault');if(r)RXDRAFT.reason=r.value;if(f)RXDRAFT.fault=f.value;rxEditOpen(RXDRAFT.editId);}else{renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}}
+function rxSearch(v){const d=$('#rxDrop');if(!d)return;v=(v||'').trim();if(!v){d.innerHTML='';return;}
+  const codes=[...new Set(STOCK.filter(s=>inc(s.tag,v)||inc(s.code,v)||inc(s.name,v)).map(s=>s.code))];
+  d.innerHTML=codes.length?codes.slice(0,20).map(c=>{const p=STOCK.find(s=>s.code===c),tot=STOCK.filter(s=>s.code===c).reduce((a,s)=>a+(s.qty||0),0);return `<div class="drop-i" onclick="rxPickNew('${escAttr(c)}')"><span class="tagbox">${esc(p.tag||'')}</span><b>${esc(c)}</b> ${esc(p.name||'')}<span class="muted" style="margin-left:auto">재고 ${tot}</span></div>`;}).join(''):'<div class="drop-i muted">검색 결과 없음</div>';}
+function rxSearchKey(e){if(e.key!=='Enter')return;e.preventDefault();const v=e.target.value.trim();if(!v)return;const exact=[...new Set(STOCK.filter(s=>s.tag===v).map(s=>s.code))];const codes=[...new Set(STOCK.filter(s=>inc(s.tag,v)||inc(s.code,v)||inc(s.name,v)).map(s=>s.code))];const pick=exact.length===1?exact[0]:codes.includes(v)?v:codes.length===1?codes[0]:null;if(pick)rxPickNew(pick);}
+function rxPickNew(code){if(!RXDRAFT)return;const color=colorsOf(code)[0]||'';const szIn=STOCK.filter(s=>s.code===code&&s.color===color),sk=szIn.find(s=>s.qty>0)||szIn[0]||{};RXDRAFT.newCode=code;RXDRAFT.newName=prodName(code);RXDRAFT.newColor=color;RXDRAFT.newSize=sk.size||'';RXDRAFT.newTag=tagOf(code);rxRerender();}
+function rxNewColor(color){if(!RXDRAFT)return;RXDRAFT.newColor=color;const szIn=STOCK.filter(s=>s.code===RXDRAFT.newCode&&s.color===color),sk=szIn.find(s=>s.qty>0)||szIn[0]||{};RXDRAFT.newSize=sk.size||'';rxRerender();}
+function rxNewSize(size){if(!RXDRAFT)return;RXDRAFT.newSize=size;rxRerender();}
+function rxClearNew(){if(!RXDRAFT)return;RXDRAFT.newCode=RXDRAFT.newName=RXDRAFT.newColor=RXDRAFT.newSize=RXDRAFT.newTag=null;rxRerender();}
 const RX_NEXTL={recall:'🚚 회수신청 완료',gotback:'📦 회수입고',reship:'📤 재발송',refunded:'💸 환불완료',done:'✅ 완료처리'};
 async function rxNext(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];if(!next)return;
   const eff=await rxStepStockEffect(o,next,1);
@@ -2005,18 +2023,20 @@ async function rxDelete(id){const o=ORD.find(x=>x.id===id);if(!o)return;const fl
   ['rxtype','rxstat','rxreason','fault','rxnew','rxdate','rxdone'].forEach(k=>delete o[k]);
   toast('🗑️ 취소 · 원래 상태로 복구');render();await saveOrd(o);}
 function rxEditOpen(id){const o=ORD.find(x=>x.id===id);if(!o)return;
-  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">✏️ ${RX_TYPES[o.rxtype].l} 정보 수정</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+  if(!(RXDRAFT&&RXDRAFT.editId===id)){const nw=o.rxnew||{};RXDRAFT={editId:id,reason:o.rxreason,fault:o.fault,newTag:nw.tag||null,newCode:nw.code||null,newName:nw.name||null,newColor:nw.color||null,newSize:nw.size||null};}
+  const rReason=RXDRAFT.reason||o.rxreason,rFault=RXDRAFT.fault||o.fault;
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">✏️ ${RX_TYPES[o.rxtype].l} 정보 수정</h3><span style="flex:1"></span><button class="btn gray sm" onclick="RXDRAFT=null;closeModal()">✕</button></div>
     <div class="note" style="margin-bottom:12px"><b>${esc(o.cust)}</b> · ${itemLabel(o)}</div>
-    <label>사유</label><select id="rxe_reason" onchange="rxeReasonChg()" style="width:100%;padding:10px;border-radius:9px;font-weight:700;font-family:inherit">${RX_REASONS.map(r=>`<option ${o.rxreason===r.l?'selected':''}>${r.l}</option>`).join('')}</select>
-    <label>귀책</label><select id="rxe_fault" style="width:100%;padding:10px;border-radius:9px;font-weight:700;font-family:inherit">${['셀러','물류','무과실'].map(f=>`<option ${o.fault===f?'selected':''}>${f}</option>`).join('')}</select>
-    ${o.rxtype==='exchange'?`<div style="border-top:1px solid var(--line);margin-top:12px;padding-top:10px"><div style="font-weight:700;margin-bottom:6px">🔄 교환 새상품 ${['gotback','reship','done'].includes(o.rxstat)?'<span class="muted" style="font-size:11px;font-weight:400">※ 이미 재발송했다면 재고는 수동 확인</span>':''}</div><div class="toolbar" style="flex-wrap:wrap;gap:6px"><input id="rxe_tag" placeholder="번호표" value="${esc((o.rxnew||{}).tag||'')}" style="width:78px"><input id="rxe_code" placeholder="품목코드" value="${esc((o.rxnew||{}).code||'')}" style="width:118px"><input id="rxe_name" placeholder="품목명" value="${esc((o.rxnew||{}).name||'')}" style="width:128px"><input id="rxe_color" placeholder="색상" value="${esc((o.rxnew||{}).color||'')}" style="width:74px"><input id="rxe_size" placeholder="사이즈" value="${esc((o.rxnew||{}).size||'')}" style="width:64px"></div></div>`:''}
-    <div class="modal-foot" style="margin-top:16px"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="rxEditSave(${id})">저장</button></div>`;
+    <label>사유</label><select id="rxe_reason" onchange="rxeReasonChg()" style="width:100%;padding:10px;border-radius:9px;font-weight:700;font-family:inherit">${RX_REASONS.map(r=>`<option ${rReason===r.l?'selected':''}>${r.l}</option>`).join('')}</select>
+    <label>귀책</label><select id="rxe_fault" style="width:100%;padding:10px;border-radius:9px;font-weight:700;font-family:inherit">${['셀러','물류','무과실'].map(f=>`<option ${rFault===f?'selected':''}>${f}</option>`).join('')}</select>
+    ${o.rxtype==='exchange'?rxNewItemBox(RXDRAFT,o.qty||1):''}
+    <div class="modal-foot" style="margin-top:16px"><button class="btn gray" onclick="RXDRAFT=null;closeModal()">취소</button><button class="btn" onclick="rxEditSave(${id})">저장</button></div>`;
   $('#modal').classList.remove('hide');}
-function rxeReasonChg(){const r=RX_REASONS.find(x=>x.l===$('#rxe_reason').value);if(r)$('#rxe_fault').value=r.f;}
+function rxeReasonChg(){const r=RX_REASONS.find(x=>x.l===$('#rxe_reason').value);if(r)$('#rxe_fault').value=r.f;if(RXDRAFT){RXDRAFT.reason=$('#rxe_reason').value;RXDRAFT.fault=$('#rxe_fault').value;}}
 async function rxEditSave(id){const o=ORD.find(x=>x.id===id);if(!o)return;
   o.rxreason=$('#rxe_reason').value;o.fault=$('#rxe_fault').value;
-  if(o.rxtype==='exchange')o.rxnew={tag:($('#rxe_tag').value||'').trim(),code:($('#rxe_code').value||'').trim(),name:($('#rxe_name').value||'').trim(),color:($('#rxe_color').value||'').trim(),size:($('#rxe_size').value||'').trim()};
-  closeModal();toast('✅ 정보 수정 완료');render();await saveOrd(o);}
+  if(o.rxtype==='exchange'){const d=RXDRAFT||{};o.rxnew={tag:d.newTag||'',code:d.newCode||'',name:d.newName||'',color:d.newColor||'',size:d.newSize||''};}
+  closeModal();RXDRAFT=null;toast('✅ 정보 수정 완료');render();await saveOrd(o);}
 function rxStepBar(o){const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);return flow.map((s,si)=>{const c=si<i?'background:#dcfce7;color:#166534':si===i?'background:#dbeafe;color:#2563eb':'background:#f1f5f9;color:#94a3b8';return `<span style="display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;${c}">${si<i?'✓ ':''}${RX_STEPL[s]}</span>`;}).join('<span style="color:#cbd5e1;margin:0 2px">›</span>');}
 function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];const nextL={recall:'택배 회수신청',gotback:`회수입고 (재고 +${o.qty||1})`,reship:`새상품 재발송 (재고 −${o.qty||1})`,refunded:'환불완료',done:'완료처리'};
   return `<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">${t.ic} ${t.l} · ${o.cust} <span class="muted" style="font-size:12px;font-weight:400">${o.date||''} · 담당 ${o.staff||'-'}</span></h2>${payBadge(o.payway)}<span class="pill ${o.fault==='무과실'?'':'p-low'}">${o.fault==='무과실'?'고객귀책':'귀책: '+faulteeOf(o)}</span></div>
