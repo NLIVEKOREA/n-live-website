@@ -2128,6 +2128,8 @@ function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.index
     ${next?`<button class="btn" onclick="rxNext(${o.id})">▶ ${nextL[next]}</button>`:''}
   </div></div>`;}
 function faultCurLabel(o){if(o.meta&&o.meta.faultBy)return o.meta.faultBy;return o.fault==='무과실'?'고객(무과실)':o.fault==='물류'?'물류팀':o.fault==='셀러'?(o.staff||'미지정'):'미지정';}
+/* 귀책 담당자 고정 순서: 셀러 → 보조 → (기타 담당) → 물류 → 사무실/거래처 → 고객(무과실) */
+function faultPartyRank(name){const n=String(name||'');if(n==='무과실'||/고객/.test(n))return 90;if(n==='사무실')return 46;if(n==='거래처')return 48;if(/물류/.test(n))return 40;const e=(typeof EMPLOYEES!=='undefined'?EMPLOYEES:[]).find(x=>x.name===n);if(e){if(e.team==='물류팀'||e.role==='물류')return 40;if(e.role==='보조')return 20;if(e.team==='셀러팀'||e.role==='셀러')return 10;if(e.role==='관리자'||e.role==='운영')return 5;}return 30;}
 function rxFaultBoard(all){
   const csShip=o=>o.rxtype==='exchange'?SHIP_FEE*2:SHIP_FEE;/* 교환 왕복 8,000 · 반품 회수 4,000 */
   const ym=o=>(String(o.rxdate||o.date||'').replace(/\//g,'-').slice(0,7))||'-';
@@ -2140,13 +2142,19 @@ function rxFaultBoard(all){
     if(o.fault&&o.fault!=='무과실')r.fault++;
     if(o.rxtype==='refund')r.refundAmt+=amtOf(o);
     r.ship+=csShip(o);if(o.fault&&o.fault!=='무과실')r.shipCo+=csShip(o);});
-  const list=Object.values(rows).sort((a,b)=>String(b.ym).localeCompare(String(a.ym))||String(a.party).localeCompare(String(b.party)));
-  const T=list.reduce((t,r)=>({exch:t.exch+r.exch,refund:t.refund+r.refund,fault:t.fault+r.fault,refundAmt:t.refundAmt+r.refundAmt,ship:t.ship+r.ship,shipCo:t.shipCo+r.shipCo}),{exch:0,refund:0,fault:0,refundAmt:0,ship:0,shipCo:0});
-  const agg=`<div class="card"><div class="card-h"><h2 style="margin:0">⚠️ 귀책현황 <span class="muted" style="font-size:12px;font-weight:400">월별·귀책담당자별 집계</span></h2></div>
+  const list=Object.values(rows);
+  const sum=arr=>arr.reduce((t,r)=>({exch:t.exch+r.exch,refund:t.refund+r.refund,fault:t.fault+r.fault,refundAmt:t.refundAmt+r.refundAmt,ship:t.ship+r.ship,shipCo:t.shipCo+r.shipCo}),{exch:0,refund:0,fault:0,refundAmt:0,ship:0,shipCo:0});
+  const T=sum(list);
+  const byYM={};list.forEach(r=>{(byYM[r.ym]=byYM[r.ym]||[]).push(r);});
+  const months=Object.keys(byYM).sort((a,b)=>String(b).localeCompare(String(a)));
+  months.forEach(m=>byYM[m].sort((a,b)=>faultPartyRank(a.party)-faultPartyRank(b.party)||String(a.party).localeCompare(String(b.party))));
+  const cell=v=>`<td style="${num};padding:8px 10px">${v}</td>`;
+  const dataRow=(nm,r,style)=>`<tr style="${style||'border-bottom:1px solid #f1f5f9'}"><td style="padding:8px 10px 8px 22px">${nm}</td>${cell(r.exch||'·')}${cell(r.refund||'·')}${cell(r.fault?`<span class="pill p-low">${r.fault}</span>`:'·')}${cell(r.refundAmt?won(r.refundAmt):'·')}<td style="${num};padding:8px 10px;color:#64748b">${won(r.ship)}</td><td style="${num};padding:8px 10px;color:#dc2626;font-weight:700">${r.shipCo?won(r.shipCo):'·'}</td></tr>`;
+  const agg=`<div class="card"><div class="card-h"><h2 style="margin:0">⚠️ 귀책현황 <span class="muted" style="font-size:12px;font-weight:400">월별 구역 · 셀러→보조→물류→거래처→고객 순</span></h2></div>
   <div style="overflow-x:auto"><table style="min-width:720px;width:100%;border-collapse:collapse">
-    <thead><tr style="border-bottom:2px solid #e2e8f0">${['월','귀책담당자'].map(h=>`<th style="text-align:left;padding:8px">${h}</th>`).join('')}${[['교환','건'],['반품·환불','건'],['회사귀책','건'],['반품금액','원'],['배송비','발생'],['회사부담','배송비']].map(h=>`<th style="${num};padding:8px">${h[0]}<div style="font-size:9px;color:#94a3b8;font-weight:400">${h[1]}</div></th>`).join('')}</tr></thead>
-    <tbody>${list.map(r=>`<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px;font-weight:700">${r.ym}</td><td style="padding:8px"><b>${esc(r.party==='무과실'?'고객(무과실)':r.party)}</b></td><td style="${num};padding:8px">${r.exch||'·'}</td><td style="${num};padding:8px">${r.refund||'·'}</td><td style="${num};padding:8px">${r.fault?`<span class="pill p-low">${r.fault}</span>`:'·'}</td><td style="${num};padding:8px">${r.refundAmt?won(r.refundAmt):'·'}</td><td style="${num};padding:8px;color:#64748b">${won(r.ship)}</td><td style="${num};padding:8px;color:#dc2626;font-weight:700">${r.shipCo?won(r.shipCo):'·'}</td></tr>`).join('')}
-    <tr style="border-top:2px solid #e2e8f0;font-weight:800;background:#f8fafc"><td style="padding:9px" colspan="2">합계</td><td style="${num};padding:9px">${T.exch}</td><td style="${num};padding:9px">${T.refund}</td><td style="${num};padding:9px">${T.fault}</td><td style="${num};padding:9px">${won(T.refundAmt)}</td><td style="${num};padding:9px">${won(T.ship)}</td><td style="${num};padding:9px;color:#dc2626">${won(T.shipCo)}</td></tr></tbody></table></div>
+    <thead><tr style="border-bottom:2px solid #e2e8f0"><th style="text-align:left;padding:8px 10px">귀책담당자</th>${[['교환','건'],['반품·환불','건'],['회사귀책','건'],['반품금액','원'],['배송비','발생'],['회사부담','배송비']].map(h=>`<th style="${num};padding:8px 10px">${h[0]}<div style="font-size:9px;color:#94a3b8;font-weight:400">${h[1]}</div></th>`).join('')}</tr></thead>
+    <tbody>${months.map(m=>{const ms=sum(byYM[m]);return `<tr style="background:#eef2ff"><td colspan="7" style="padding:8px 10px;font-weight:800;color:#3730a3;border-top:2px solid #c7d2fe">📅 ${m} <span class="muted" style="font-weight:500;font-size:11px">· 교환 ${ms.exch} · 반품·환불 ${ms.refund} · 회사귀책 ${ms.fault}건 · 반품 ${won(ms.refundAmt)} · 회사부담배송비 ${won(ms.shipCo)}</span></td></tr>`+byYM[m].map(r=>dataRow(`<b>${esc(r.party==='무과실'?'고객(무과실)':r.party)}</b>`,r)).join('');}).join('')}
+    ${dataRow('<b>총 합계</b>',T,'border-top:2px solid #e2e8f0;font-weight:800;background:#f8fafc')}</tbody></table></div>
   <div class="note" style="margin-top:10px;font-size:11.5px">💡 회사귀책 = 회사 과실 건 · 배송비 = 반품 회수 4,000 / 교환 왕복 8,000 · <b style="color:#dc2626">회사부담 배송비</b> = 회사귀책 건 배송비</div></div>`;
   return agg;}
 const rxWhen=o=>((o.rxdate||o.rxdone||o.date||'')+'').replace(/\//g,'-');
