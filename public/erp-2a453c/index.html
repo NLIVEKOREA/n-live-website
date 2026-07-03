@@ -28,6 +28,7 @@
   .workcal-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;padding-right:20px}
   .workcal-summary{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:10px 14px;background:#f8fafc;border-bottom:1px solid #eef2f7}
   .workcal-stat{min-width:0;padding:8px 9px;background:#fff;border:1px solid #e5e7eb;border-radius:10px}.workcal-stat span{display:block;font-size:10px;color:#64748b;white-space:nowrap}.workcal-stat b{display:block;font-size:14px;color:#111827;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .workcal-salesbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid #eef2f7;background:#fff}.workcal-salesbar>strong{font-size:11px;color:#475569;margin-right:2px}.workcal-saleschip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #dbeafe;border-radius:999px;background:#eff6ff;color:#1e40af;font-size:10.5px}.workcal-saleschip b{font-size:11px;color:#1d4ed8}
   .workcal-filters{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:9px 14px;border-bottom:1px solid #eef2f7}
   .workcal-search{flex:1;min-width:150px;height:32px!important;padding:5px 10px!important;font-size:12px!important}
   .workcal-filter{height:32px!important;padding:4px 8px!important;font-size:11.5px!important}
@@ -1189,10 +1190,13 @@ function workMonthMove(n){WORK_UI.month=workMonthShift(WORK_UI.month,n);WORK_UI.
 function workFilter(f,v){WORK_UI[f]=v;render();}
 function workSearchInput(v){WORK_UI.q=v;clearTimeout(_workSearchT);_workSearchT=setTimeout(render,220);}
 function workSummary(){const t=workToday(),a=workSchedules().filter(workVisible),today=a.filter(s=>s.date===t&&s.status!=='cancelled');
+  const sales=workSalesByStaff(t);
   return {today:today.length,meeting:today.filter(s=>s.category==='meeting').length,bcast:today.filter(s=>s.category==='seller_broadcast').length,
-    payment:today.filter(s=>s.category==='payment').reduce((n,s)=>n+(Number(s.amount)||0),0),interview:today.filter(s=>s.category==='interview').length,important:today.filter(s=>s.isImportant).length};}
-function workSummaryHtml(){const s=workSummary(),x=[['오늘 일정',s.today+'건'],['미팅',s.meeting+'건'],['방송',s.bcast+'건'],['입금 예정',workMoney(s.payment)],['면접',s.interview+'건'],['중요',s.important+'건']];
-  return `<div class="workcal-summary">${x.map(v=>`<div class="workcal-stat"><span>${v[0]}</span><b>${v[1]}</b></div>`).join('')}</div>`;}
+    sales:sales.total,byStaff:sales.rows,interview:today.filter(s=>s.category==='interview').length,important:today.filter(s=>s.isImportant).length};}
+function workSalesByStaff(date){const m={};mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-')===date).forEach(o=>{const k=o.staff||'담당 미지정';m[k]=(m[k]||0)+amtOf(o);});const rows=Object.entries(m).sort((a,b)=>b[1]-a[1]);return {rows,total:rows.reduce((n,x)=>n+x[1],0)};}
+function workSellerSalesHtml(rows){return `<div class="workcal-salesbar"><strong>셀러별 입금확인 매출</strong>${rows.length?rows.map(([name,amt])=>`<span class="workcal-saleschip">${esc(name)} <b>${workMoney(amt)}</b></span>`).join(''):'<span class="muted" style="font-size:10.5px">오늘 결제완료 매출 없음</span>'}</div>`;}
+function workSummaryHtml(){const s=workSummary(),x=[['오늘 일정',s.today+'건'],['미팅',s.meeting+'건'],['방송',s.bcast+'건'],['오늘 실제 매출',workMoney(s.sales)],['면접',s.interview+'건'],['중요',s.important+'건']];
+  return `<div class="workcal-summary">${x.map(v=>`<div class="workcal-stat"><span>${v[0]}</span><b>${v[1]}</b></div>`).join('')}</div>${workSellerSalesHtml(s.byStaff)}`;}
 function workCalendarHtml(){const ym=WORK_UI.month,d0=workDate(ym+'-01'),first=(d0.getDay()+6)%7,start=new Date(d0);start.setDate(1-first);const visible=workSchedules().filter(workVisible);
   const cells=[];for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=workYmd(d),arr=visible.filter(s=>s.date===ds&&s.status!=='cancelled'),other=ds.slice(0,7)!==ym;
     const cats=[...new Set(arr.map(s=>s.category))],tags=cats.slice(0,2).map(k=>`<span class="workcal-daytag">${esc((WORK_CAT[k]||WORK_CAT.personal).l)}</span>`).join('');
