@@ -1129,7 +1129,16 @@ function wRender(id){const today=todayStr();
     case 'toship':return numCard('출고 대기',mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done').length,'미송·출고요청','b','ti-truck',"go('ship')");
     case 'done_today':return numCard('당일 출고완료',mine(ORD).filter(o=>o.ship==='done'&&o.shipped_date===today).length,'오늘','g','ti-circle-check',"go('ship')");
     case 'rx':return numCard('교환/반품',mine(ORD).filter(o=>o.req==='교환요청'||o.req==='환불요청').length,'요청','r','ti-refresh',"go('sales')");
-    case 'refund_wait':{const rows=mine(ORD).filter(o=>o.rxtype==='refund'&&o.rxstat==='gotback');/* 사무실 입고됐는데 환불완료 안 누른 것만 */return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>환불 대기 <span class="muted" style="font-size:11px">사무실 입고됨 · 환불완료 전 ${rows.length}건</span></h2><button class="btn sm ghost" onclick="go('rx')">교환·반품 열기</button></div><table><tbody>${rows.length?rows.slice(0,10).map(o=>`<tr><td><b>${esc(o.cust||'')}</b></td><td>${esc(itemLabel(o))} <span class="muted">×${o.qty}</span></td><td class="num-cell">${won(((o.meta&&o.meta.settle&&o.meta.settle.net)!=null)?o.meta.settle.net:amtOf(o))}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm ghost" onclick="copyRefund(${o.id})">📋</button> <button class="btn sm" style="background:#059669" onclick="ledgerRefundDone(${o.id})">✅ 환불완료</button></td></tr>`).join(''):'<tr><td class="muted" style="padding:10px">입고 후 환불 대기 건 없음 👍</td></tr>'}</tbody></table></div>`;}
+    case 'refund_wait':{const rows=mine(ORD).filter(o=>o.rxtype==='refund'&&o.rxstat==='gotback');/* 사무실 입고됐는데 환불완료 안 누른 것 — 스크롤 없이 전부 표시 */
+      const bs='padding:6px 10px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;white-space:nowrap;border:1px solid';
+      return `<div class="card" style="grid-column:span 2;overflow:visible"><div class="card-h"><h2>💵 환불 대기 <span class="muted" style="font-size:11px">사무실 입고됨 · 환불 처리 전 ${rows.length}건</span></h2><button class="btn sm ghost" onclick="go('rx')">교환·반품</button></div>
+      <div style="display:flex;flex-direction:column;gap:8px">${rows.length?rows.map(o=>{const st=o.meta&&o.meta.settle;const amt=(st&&st.net!=null)?st.net:amtOf(o);return `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fafbfc">
+        <div style="flex:1 1 150px;min-width:0"><b>${esc(o.cust||'')}</b> <span class="muted" style="font-size:11.5px">${esc(itemLabel(o))} ×${o.qty}</span><div style="font-size:12px;color:#065f46;font-weight:700">실환불 ${won(amt)}${st?(st.method==='적립금'?' · 💰적립':''):' · 정산前'}</div></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button style="${bs} #059669;background:#059669;color:#fff" onclick="openRefundSettle(${o.id})">💵 환불정산</button>
+          <button style="${bs} #059669;background:#fff;color:#059669" onclick="rxQuickPoint(${o.id})">💰 적립금처리</button>
+          <button style="${bs} #2563eb;background:#2563eb;color:#fff" onclick="ledgerRefundDone(${o.id})">🏦 계좌환불</button>
+        </div></div>`;}).join(''):'<div class="muted" style="padding:14px;text-align:center">사무실 입고 후 환불 처리 대기 건 없음 👍</div>'}</div></div>`;}
     case 'ship_fee':return numCard('배송비(당월)',won(_shipFeeMonth()),'집계','p','ti-package');
     case 'misong':{const ms=mine(ORD).filter(o=>o.back&&o.code!=='배송비');return `<div class="card" style="grid-column:span 2"><div class="card-h"><h2>미송 대기 <span class="muted" style="font-size:11px">${ms.length}건</span></h2><button class="btn sm" onclick="openMisongPO()">📋 동대문 발주서</button></div><table><tbody>${ms.length?ms.slice(0,10).map(o=>`<tr><td><b>${esc(o.cust||'')}</b></td><td>${esc(o.disp||prodName(o.code))}</td><td class="muted" style="text-align:right;white-space:nowrap">${o.color||''} ${o.size||''} · ${o.qty||0}개</td></tr>`).join(''):'<tr><td class="muted">미송 없음 👍</td></tr>'}</tbody></table></div>`;}
     case 'by_staff':return listCard('셀러별 매출(당월)',_byStaffRows(),"go('revenue')");
@@ -1225,7 +1234,9 @@ function viewDash(){
   const ids=getUserWidgets();
   const cols=dashColumns();let saved=loadLayout();if((!saved||!Object.keys(saved).length)&&cols===12)saved=POS_LAYOUT[ME.role]||{};
   const items=ids.map(id=>{const sz=WIDGET_SIZE[id]||{w:4,h:3},s=saved[id]||{};
-    const w=Math.min(cols,s.w||sz.w),h=s.h||sz.h;
+    const w=Math.min(cols,s.w||sz.w);let h=s.h||sz.h;
+    /* 환불대기 위젯은 회수입고 건수만큼 높이 자동확장 → 어떤 크기에서도 스크롤 없이 전부 표시 */
+    if(id==='refund_wait'){const n=mine(ORD).filter(o=>o.rxtype==='refund'&&o.rxstat==='gotback').length;h=Math.max(3,Math.min(14,2+Math.ceil(n*(w<=4?2.2:1.5))));}
     return `<div class="grid-stack-item" gs-id="${id}" gs-w="${w}" gs-h="${h}"${s.x!=null?` gs-x="${Math.min(s.x,Math.max(0,cols-w))}"`:''}${s.y!=null?` gs-y="${s.y}"`:''}><div class="grid-stack-item-content"><button class="wx" title="위젯 제거" aria-label="${esc(WIDGET_META[id]||id)} 위젯 제거" onclick="event.stopPropagation();wgToggle('${id}')">×</button>${wRender(id)}</div></div>`;}).join('');
   return `
   <div class="greet">
