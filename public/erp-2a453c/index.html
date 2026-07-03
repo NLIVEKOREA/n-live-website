@@ -1685,7 +1685,11 @@ function baseRows(){
   if(SALEQ){if(SALEFIELD==='상품번호')rows=rows.filter(o=>inc(o.code,SALEQ)||inc(skuFullCode(o.code,o.color,o.size),SALEQ)||inc(itemLabel(o),SALEQ));else if(SALEFIELD==='번호표')rows=rows.filter(o=>inc(tagShow(o),SALEQ));else rows=rows.filter(o=>inc(o.cust,SALEQ));}
   return rows;
 }
-function orderRowsAll(){return baseRows().filter(o=>o.ship!=='done'&&!o.back&&o.req!=='미송'&&!RXSET.includes(o.req)&&(!o.req||o.req==='없음'));}
+const _isSvcLine=o=>o.code==='배송비'||o.code==='적립금'||o.code==='합배';
+function orderRowsAll(){const rows=baseRows().filter(o=>o.ship!=='done'&&!o.back&&o.req!=='미송'&&!RXSET.includes(o.req)&&(!o.req||o.req==='없음'));
+  /* 미송이 미송관리로 빠지고 배송비/적립금만 덩그러니 남은 그룹은 출고대기에서 숨김(판매현황엔 그대로 유지) */
+  const hasReal={};rows.forEach(o=>{if(!_isSvcLine(o))hasReal[(o.date||'')+'|'+(o.cust||'')]=true;});
+  return rows.filter(o=>!_isSvcLine(o)||hasReal[(o.date||'')+'|'+(o.cust||'')]);}
 function orderRowsToday(){const t=todayStr();return orderRowsAll().filter(o=>(o.date||'').replace(/\//g,'-')===t);}
 function orderRows(){return ORDTAB==='today'?orderRowsToday():orderRowsAll();}
 function shipRows(){const d=SHIPDATE||todayStr();return mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-').slice(0,10)===d&&!RXSET.includes(o.req)&&((o.req==='출고요청'||o.req==='합배요청')||o.ship==='done'));}
