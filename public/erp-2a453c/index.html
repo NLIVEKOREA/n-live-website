@@ -288,6 +288,9 @@
   /* 출고장 고객 카드 (가독성 정리) */
   .sg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
   @media(max-width:1000px){.sg-grid{grid-template-columns:1fr}}
+  .rx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:14px;align-items:start}
+  @media(max-width:1000px){.rx-grid{grid-template-columns:1fr}}
+  .rx-grid>.card{margin:0}
   .sg-card{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:#fff}
   .sg-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
   .sg-name{font-size:16px;font-weight:800;letter-spacing:-.3px}
@@ -771,6 +774,8 @@ const PERM={dash:['all','logi','self'],sns:['all','self'],order:['all','self'],s
   stock:['all','logi','self'],cust:['all','self'],prod:['all'],vendor:['all','logi'],
   revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
 const menuAllowed=v=>(PERM[v]||['all']).includes(ME.scope);
+/* 재고 등록·수정 권한: 관리/물류는 기본 허용, 셀러(self)는 stock_edit 플래그가 켜진 경우만 */
+const canStockEdit=()=>!isSeller()||!!ME.stock_edit;
 function lockBanner(){
   if(isSeller())return `<div class="lock">🔒 <b>${ME.name}</b> 셀러 · 본인 담당 고객·매출만 표시됩니다.</div>`;
   if(isLogi())  return `<div class="lock">🔒 <b>물류팀 ${ME.name}</b> — 출고·재고 중심. 매출/원가는 제한.</div>`;
@@ -2086,10 +2091,12 @@ function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.index
 function rxFaultBoard(all){const m={};all.filter(o=>o.fault&&o.fault!=='무과실').forEach(o=>{const k=faulteeOf(o);m[k]=m[k]||{n:0,reasons:{}};m[k].n++;m[k].reasons[o.rxreason||'기타']=(m[k].reasons[o.rxreason||'기타']||0)+1;});const keys=Object.keys(m).sort((a,b)=>m[b].n-m[a].n);
   if(!keys.length)return `<div class="card"><div class="muted" style="padding:16px">기록된 과실(귀책)이 없습니다 · 회사귀책 사유로 접수된 건만 집계됩니다</div></div>`;
   return `<div class="card"><div class="card-h"><h2 style="margin:0">⚠️ 귀책 현황 <span class="muted" style="font-size:12px;font-weight:400">회사귀책 건만 · 셀러/물류별 누적</span></h2></div><table><thead><tr><th>대상</th><th class="num-cell">과실</th><th>주요 사유</th></tr></thead><tbody>${keys.map(k=>`<tr><td><b>${k}</b></td><td class="num-cell"><span class="pill p-low">${m[k].n}건</span></td><td class="muted">${Object.entries(m[k].reasons).map(([r,c])=>r+' '+c).join(' · ')}</td></tr>`).join('')}</tbody></table></div>`;}
-function viewRx(){const all=mine(ORD).filter(o=>o.rxtype);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=RXVIEWTAB==='active'?active:done;
+const rxWhen=o=>((o.rxdate||o.rxdone||o.date||'')+'').replace(/\//g,'-');
+const rxSort=arr=>arr.slice().sort((a,b)=>{const c=String(rxWhen(b)).localeCompare(String(rxWhen(a)));return c!==0?c:(b.id||0)-(a.id||0);});/* 최신 등록이 위로 */
+function viewRx(){const all=mine(ORD).filter(o=>o.rxtype);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=rxSort(RXVIEWTAB==='active'?active:done);
   return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}${sellerTabs()}
   <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='done';render()">완료 ${done.length}</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
-  ${RXVIEWTAB==='fault'?rxFaultBoard(all):(cur.length?cur.map(rxCard).join(''):`<div class="card"><div class="muted" style="padding:16px">${RXVIEWTAB==='active'?'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)':'완료된 건이 없습니다'}</div></div>`)}`;}
+  ${RXVIEWTAB==='fault'?rxFaultBoard(all):(cur.length?`<div class="rx-grid">${cur.map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">${RXVIEWTAB==='active'?'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)':'완료된 건이 없습니다'}</div></div>`)}`;}
 /* ===== 판매현황 상태 분류 — 판매관리·출고장과 동일한 ORD 필드에서 실시간 판정 ===== */
 const SHP_STATES=[{k:'all',l:'전체'},{k:'unpack',l:'미포장'},{k:'pack',l:'포장(출고전)'},{k:'done',l:'출고완료'},{k:'back',l:'미송'},{k:'bundle',l:'합배'},{k:'exch',l:'교환중'},{k:'refund',l:'환불중'}];
 const SHP_STATE_PILL={unpack:['p-gray','미포장'],pack:['p-req','포장'],done:['p-done','출고완료'],back:['p-low','미송'],bundle:['p-purple','합배'],exch:['p-req','교환중'],refund:['p-low','환불중']};
@@ -2196,7 +2203,7 @@ function viewShipped(){
 
 /* ===== 재고관리 ===== */
 function viewStock(){
-  const q=($('#stockSearch')?.value||'').trim(),can=!isSeller(),fld=STOCKFIELD;
+  const q=($('#stockSearch')?.value||'').trim(),can=canStockEdit(),fld=STOCKFIELD;
   const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
   const flist=stockFilterSort();const stotal=flist.length;const spages=Math.max(1,Math.ceil(stotal/STOCK_PGSIZE));const spg=Math.min(STOCKPAGE,spages);const sfrom=(spg-1)*STOCK_PGSIZE;const rows=flist.slice(sfrom,sfrom+STOCK_PGSIZE);
   const selN=STAGED.filter(x=>x.chk).length;
@@ -2204,7 +2211,7 @@ function viewStock(){
   return `
   <div class="head"><h1>재고관리 <span class="badge">핵심</span></h1>
     <p>대량 입고는 아래 <b>품목 등록</b>에서 작업 · 빠른 수정은 재고현황의 품목 클릭(팝업) · 바코드 스캔 입출고</p></div>
-  ${isSeller()?`<div class="lock">🔒 셀러팀 ${ME.name} — 재고는 <b>조회만</b> 가능</div>`:''}
+  ${isSeller()?(canStockEdit()?`<div class="lock" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46">🔑 셀러팀 ${ME.name} — <b>재고 등록·수정 권한</b>이 부여되어 있습니다 (조회+편집)</div>`:`<div class="lock">🔒 셀러팀 ${ME.name} — 재고는 <b>조회만</b> 가능</div>`):''}
   ${can?`<div class="card" style="margin-bottom:16px">
     <div class="card-h"><h2>＋ 품목 등록 <span class="muted" style="font-size:12px;font-weight:400">색상·사이즈 조합은 [일괄 등록] · 낱개는 아래 입력</span></h2><div style="display:flex;gap:8px"><button class="btn sm ghost" onclick="openReceiptScan()" title="사입 영수증 사진을 올리면 AI가 품목을 자동으로 읽어 입고목록에 채웁니다">📸 영수증 자동입고</button><button class="btn sm" onclick="openBulkAdd()"><i class="ti ti-layout-grid-add"></i> 상품 일괄등록</button></div></div>
     <input id="receiptFile" type="file" accept="image/*" capture="environment" style="display:none" onchange="receiptPicked(this)">
@@ -2549,11 +2556,11 @@ function openProdModal(prefill){prefill=prefill||'';PRODEDIT=null;const isNum=/^
   $('#modalBox').innerHTML=`<h3>품목 신규 등록</h3><div class="ms">검색에 없어 새로 등록합니다. 저장하면 작업 중인 주문에 바로 추가돼요(화면 유지).</div>${prodFormHTML(isNum?{code:prefill}:{name:prefill})}
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mp_code');if(el)el.focus();},40);}
-function openProdEdit(id){if(isSeller()){toast('셀러팀은 재고 조회만 가능합니다');return;}const s=STOCK.find(x=>x.id===id);if(!s){toast('품목 정보를 찾을 수 없어요');return;}PRODEDIT=id;
+function openProdEdit(id){if(!canStockEdit()){toast('셀러팀은 재고 조회만 가능합니다');return;}const s=STOCK.find(x=>x.id===id);if(!s){toast('품목 정보를 찾을 수 없어요');return;}PRODEDIT=id;
   $('#modalBox').innerHTML=`<h3>품목 수정</h3><div style="display:flex;align-items:center;gap:8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:9px;padding:9px 12px;margin-bottom:8px"><span class="muted" style="font-size:12px">전체 품목코드</span><b class="barcode" style="font-size:15px;color:#2563eb">${skuFullCode(s.code,s.color,s.size)}</b><span class="muted" style="font-size:11px">· 색상·사이즈 순서로 자동 부여</span></div><div class="ms">등록 시 입력한 내용을 수정합니다. 저장하면 이 품목이 보이는 모든 화면에 반영돼요.</div>${prodFormHTML(s)}
     <div class="modal-foot"><button class="btn red ghost" onclick="delProd()">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');}
-async function saveProd(){if(isSeller()){toast('권한이 없습니다');return;}const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
+async function saveProd(){if(!canStockEdit()){toast('권한이 없습니다');return;}const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
   if(!code||!name){toast('품목코드·품목명은 필수');return;}
   const d={code,tag:$('#mp_tag').value.trim()||'-',vendor:$('#mp_vendor').value.trim()||null,name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',in_price:parseInt($('#mp_inprice').value)||0,price:parseInt($('#mp_price').value)||0,category:$('#mp_cat').value||null,subcategory:$('#mp_subcat').value||null,season:(CAT_HASSEASON($('#mp_cat').value)?$('#mp_season').value:'')||null,qty:parseInt($('#mp_qty').value)||0,sample:!!($('#mp_sample')&&$('#mp_sample').checked)};
   const editing=PRODEDIT!=null;let s;
@@ -2562,7 +2569,7 @@ async function saveProd(){if(isSeller()){toast('권한이 없습니다');return;
   await saveStockRow(s);
   const wasEditing=editing;PRODEDIT=null;closeModal();toast(wasEditing?('✅ 수정: '+name):('✅ 품목 등록: '+name));
   if(!wasEditing&&VIEW==='order')addLineByCode(code);else render();}
-async function delProd(){if(isSeller()){toast('권한이 없습니다');return;}if(PRODEDIT==null)return;const s=STOCK.find(x=>x.id===PRODEDIT);if(!s){closeModal();return;}if(!confirm(`'${s.name}' 품목을 재고에서 완전히 삭제할까요?`))return;const i=STOCK.indexOf(s);if(i>=0)STOCK.splice(i,1);PRODEDIT=null;closeModal();toast('🗑️ 품목 삭제: '+s.name);render();await delStockDB(s);}
+async function delProd(){if(!canStockEdit()){toast('권한이 없습니다');return;}if(PRODEDIT==null)return;const s=STOCK.find(x=>x.id===PRODEDIT);if(!s){closeModal();return;}if(!confirm(`'${s.name}' 품목을 재고에서 완전히 삭제할까요?`))return;const i=STOCK.indexOf(s);if(i>=0)STOCK.splice(i,1);PRODEDIT=null;closeModal();toast('🗑️ 품목 삭제: '+s.name);render();await delStockDB(s);}
 /* 입고목록(STAGED) 항목 수정 — 저장 전 대기 항목을 팝업에서 고침(다 지우고 다시 안 써도 됨) */
 let STAGEEDIT=null;
 function openStageEdit(i){const x=STAGED[i];if(!x){toast('항목을 찾을 수 없어요');return;}STAGEEDIT=i;
@@ -2863,16 +2870,18 @@ function editUser(i){const u=EMPLOYEES[i];if(!u)return;
     <div class="modal-row"><div><label>팀</label><select id="eu_team">${['운영팀','물류팀','셀러팀'].map(t=>`<option ${u.team===t?'selected':''}>${t}</option>`).join('')}</select></div>
       <div><label>권한범위</label><select id="eu_scope">${[['all','전체권한'],['logi','물류범위'],['self','본인자료만']].map(([v,l])=>`<option value="${v}" ${u.scope===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
     <label>담당셀러(보조만)</label><input id="eu_owner" value="${esc(u.owner||'')}">
+    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:9px;cursor:pointer;font-weight:700"><input type="checkbox" id="eu_stock" ${u.stock_edit?'checked':''} style="width:17px;height:17px"> 📦 재고 등록·수정 권한 <span class="muted" style="font-weight:400;font-size:12px">— 셀러/보조도 재고관리에서 품목 등록·수정·입출고 가능</span></label>
     <div class="modal-foot"><button class="btn red ghost" onclick="delUser(${i})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveUser(${i})">저장</button></div>`;
   $('#modal').classList.remove('hide');}
 async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_name').value.trim();
   if(!name){toast('이름은 필수입니다');return;}
   const team=$('#eu_team').value,scope=$('#eu_scope').value,owner=$('#eu_owner').value.trim();
   const roleMap={운영팀:'운영',물류팀:'물류',셀러팀:(scope==='self'&&owner)?'보조':'셀러'};
-  const patch={name,team,role:roleMap[team],scope,owner:owner||null};
+  const stockEdit=!!($('#eu_stock')&&$('#eu_stock').checked);
+  const patch={name,team,role:roleMap[team],scope,owner:owner||null,stock_edit:stockEdit};
   const wasMe=ME&&ME.id===u.login_id;
   Object.assign(u,patch);closeModal();toast('✅ 수정: '+name);
-  if(wasMe){ME.name=u.name;ME.team=u.team;ME.role=u.role;ME.scope=u.scope;ME.owner=u.owner;}
+  if(wasMe){ME.name=u.name;ME.team=u.team;ME.role=u.role;ME.scope=u.scope;ME.owner=u.owner;ME.stock_edit=u.stock_edit;}
   render();
   try{const {error}=await SB.from('employees').update(patch).eq('id',u.id);if(error)toast('⚠️ 저장 오류: '+error.message);}catch(e){toast('⚠️ 저장 오류');}}
 async function changeMyPassword(){
@@ -2904,7 +2913,7 @@ async function doLogin(){
   if(error){loginErr('아이디 또는 비밀번호가 틀렸습니다. 다시 확인해 주세요.');$('#loginPw').value='';$('#loginPw').focus();loginLoading(false);_logging=false;return;}
   const {data:emp} = await SB.from('employees').select('*').eq('login_id', id).maybeSingle();
   if(!emp||emp.active===false){loginErr('등록되지 않았거나 비활성화된 계정입니다. 관리자에게 문의하세요.');await SB.auth.signOut();loginLoading(false);_logging=false;return;}
-  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id};
+  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id,stock_edit:!!emp.stock_edit};
   await loadPrefs();
   toast('📥 데이터 불러오는 중...');
   await dbLoadAll();
@@ -3456,7 +3465,7 @@ rebuildSwitcher();buildNav();render();
       const id=(data.session.user.email||'').split('@')[0];
       const {data:emp}=await SB.from('employees').select('*').eq('login_id',id).maybeSingle();
       if(!emp||emp.active===false)return;
-      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id};
+      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id,stock_edit:!!emp.stock_edit};
       $('#login').style.display='none';   // 세션 확인 즉시 숨김 — 데이터 로딩 동안 로그인 화면 깜빡임/튕김 방지
       {const _h=location.hash.slice(1);if(_h&&VIEWS[_h]&&menuAllowed(_h))VIEW=_h;}
       if(!menuAllowed(VIEW))VIEW='dash';
