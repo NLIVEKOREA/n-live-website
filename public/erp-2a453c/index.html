@@ -2102,9 +2102,25 @@ function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.index
     <button class="btn red ghost sm" onclick="rxDelete(${o.id})">🗑️ 삭제</button>
     ${next?`<button class="btn" onclick="rxNext(${o.id})">▶ ${nextL[next]}</button>`:''}
   </div></div>`;}
-function rxFaultBoard(all){const m={};all.filter(o=>o.fault&&o.fault!=='무과실').forEach(o=>{const k=faulteeOf(o);m[k]=m[k]||{n:0,reasons:{}};m[k].n++;m[k].reasons[o.rxreason||'기타']=(m[k].reasons[o.rxreason||'기타']||0)+1;});const keys=Object.keys(m).sort((a,b)=>m[b].n-m[a].n);
-  if(!keys.length)return `<div class="card"><div class="muted" style="padding:16px">기록된 과실(귀책)이 없습니다 · 회사귀책 사유로 접수된 건만 집계됩니다</div></div>`;
-  return `<div class="card"><div class="card-h"><h2 style="margin:0">⚠️ 귀책 현황 <span class="muted" style="font-size:12px;font-weight:400">회사귀책 건만 · 셀러/물류별 누적</span></h2></div><table><thead><tr><th>대상</th><th class="num-cell">과실</th><th>주요 사유</th></tr></thead><tbody>${keys.map(k=>`<tr><td><b>${k}</b></td><td class="num-cell"><span class="pill p-low">${m[k].n}건</span></td><td class="muted">${Object.entries(m[k].reasons).map(([r,c])=>r+' '+c).join(' · ')}</td></tr>`).join('')}</tbody></table></div>`;}
+function rxFaultBoard(all){
+  const csShip=o=>o.rxtype==='exchange'?SHIP_FEE*2:SHIP_FEE;/* 교환 왕복 8,000 · 반품 회수 4,000 */
+  const ym=o=>(String(o.rxdate||o.date||'').replace(/\//g,'-').slice(0,7))||'-';
+  const rows={};
+  all.forEach(o=>{const k=ym(o)+'|'+(o.staff||'-');const r=rows[k]||(rows[k]={ym:ym(o),staff:o.staff||'-',exch:0,refund:0,fault:0,refundAmt:0,ship:0,shipCo:0});
+    if(o.rxtype==='exchange')r.exch++;else r.refund++;
+    if(o.fault&&o.fault!=='무과실')r.fault++;
+    if(o.rxtype==='refund')r.refundAmt+=amtOf(o);
+    r.ship+=csShip(o);if(o.fault&&o.fault!=='무과실')r.shipCo+=csShip(o);});
+  const list=Object.values(rows).sort((a,b)=>String(b.ym).localeCompare(String(a.ym))||String(a.staff).localeCompare(String(b.staff)));
+  if(!list.length)return `<div class="card"><div class="muted" style="padding:16px">집계할 교환·반품 CS가 없습니다</div></div>`;
+  const T=list.reduce((t,r)=>({exch:t.exch+r.exch,refund:t.refund+r.refund,fault:t.fault+r.fault,refundAmt:t.refundAmt+r.refundAmt,ship:t.ship+r.ship,shipCo:t.shipCo+r.shipCo}),{exch:0,refund:0,fault:0,refundAmt:0,ship:0,shipCo:0});
+  const num='text-align:right;white-space:nowrap';
+  return `<div class="card"><div class="card-h"><h2 style="margin:0">⚠️ 귀책현황 <span class="muted" style="font-size:12px;font-weight:400">월별·담당자별 교환/반품 집계</span></h2></div>
+  <div style="overflow-x:auto"><table style="min-width:720px;width:100%;border-collapse:collapse">
+    <thead><tr style="border-bottom:2px solid #e2e8f0">${['월','담당자'].map(h=>`<th style="text-align:left;padding:8px">${h}</th>`).join('')}${[['교환','건'],['반품·환불','건'],['회사귀책','건'],['반품금액','원'],['배송비','발생'],['회사부담','배송비']].map(h=>`<th style="${num};padding:8px">${h[0]}<div style="font-size:9px;color:#94a3b8;font-weight:400">${h[1]}</div></th>`).join('')}</tr></thead>
+    <tbody>${list.map(r=>`<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px;font-weight:700">${r.ym}</td><td style="padding:8px"><b>${esc(r.staff)}</b></td><td style="${num};padding:8px">${r.exch||'·'}</td><td style="${num};padding:8px">${r.refund||'·'}</td><td style="${num};padding:8px">${r.fault?`<span class="pill p-low">${r.fault}</span>`:'·'}</td><td style="${num};padding:8px">${r.refundAmt?won(r.refundAmt):'·'}</td><td style="${num};padding:8px;color:#64748b">${won(r.ship)}</td><td style="${num};padding:8px;color:#dc2626;font-weight:700">${r.shipCo?won(r.shipCo):'·'}</td></tr>`).join('')}
+    <tr style="border-top:2px solid #e2e8f0;font-weight:800;background:#f8fafc"><td style="padding:9px" colspan="2">합계</td><td style="${num};padding:9px">${T.exch}</td><td style="${num};padding:9px">${T.refund}</td><td style="${num};padding:9px">${T.fault}</td><td style="${num};padding:9px">${won(T.refundAmt)}</td><td style="${num};padding:9px">${won(T.ship)}</td><td style="${num};padding:9px;color:#dc2626">${won(T.shipCo)}</td></tr></tbody></table></div>
+  <div class="note" style="margin-top:10px;font-size:11.5px">💡 회사귀책 = 불량·오배송 등 회사 과실 · 배송비 = 반품 회수 4,000 / 교환 왕복 8,000 기준 · <b style="color:#dc2626">회사부담 배송비</b> = 회사귀책 건의 배송비(고객귀책은 고객 부담)</div></div>`;}
 const rxWhen=o=>((o.rxdate||o.rxdone||o.date||'')+'').replace(/\//g,'-');
 const rxSort=arr=>arr.slice().sort((a,b)=>{const c=String(rxWhen(b)).localeCompare(String(rxWhen(a)));return c!==0?c:(b.id||0)-(a.id||0);});/* 최신 등록이 위로 */
 function viewRx(){const all=mine(ORD).filter(o=>o.rxtype);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=rxSort(RXVIEWTAB==='active'?active:done);
@@ -2119,18 +2135,22 @@ function rxArchiveView(done){
   const custs=Object.keys(byCust).sort((a,b)=>Math.max(...byCust[b].map(dk).map(Number))-Math.max(...byCust[a].map(dk).map(Number)));
   const dc=(o,s)=>{const d=rxStepDate(o,s);return d?`<span style="white-space:nowrap">${String(d).slice(5)}</span>`:'<span class="muted">-</span>';};
   const totItems=done.length,totRefund=done.filter(o=>o.rxtype==='refund').length,totExch=done.filter(o=>o.rxtype==='exchange').length;
-  return `<div class="note" style="margin-bottom:12px">✅ <b>완료 정리</b> — 마무리된 CS ${totItems}건(반품·환불 ${totRefund} · 교환 ${totExch})을 <b>고객별</b>로 묶어 단계별 날짜와 함께 정리했습니다.</div>`+
-  custs.map(cust=>{const items=byCust[cust].slice().sort((a,b)=>Number(dk(b))-Number(dk(a)));
-    return `<div class="card"><div class="card-h"><h2 style="margin:0">${esc(cust)} <span class="muted" style="font-size:12px;font-weight:400">CS ${items.length}건 완료</span></h2></div>
-    <div style="overflow:auto"><table style="min-width:760px"><thead><tr><th>유형</th><th>상품</th><th>사유</th><th>접수</th><th>회수신청</th><th>회수입고</th><th>환불·재발송</th><th>완료</th><th class="num-cell">정산</th></tr></thead><tbody>
-    ${items.map(o=>{const st=o.meta&&o.meta.settle,proc=o.rxtype==='exchange'?'reship':'refunded';return `<tr>
-      <td style="white-space:nowrap">${(RX_TYPES[o.rxtype]||{}).ic||''} ${rxTypeLabel(o)}</td>
-      <td>${esc(itemLabel(o))}${o.rxtype==='exchange'&&o.rxnew?` <span class="muted">→ ${esc((o.rxnew.tag?'['+o.rxnew.tag+'] ':'')+(o.rxnew.name||o.rxnew.code||''))} ${esc((o.rxnew.color||'')+' '+(o.rxnew.size||''))}</span>`:''}</td>
-      <td class="muted">${esc(o.rxreason||'-')}</td>
-      <td class="muted" style="font-size:11px">${dc(o,'req')}</td><td class="muted" style="font-size:11px">${dc(o,'recall')}</td><td class="muted" style="font-size:11px">${dc(o,'gotback')}</td><td class="muted" style="font-size:11px">${dc(o,proc)}</td><td class="muted" style="font-size:11px">${dc(o,'done')}</td>
-      <td class="num-cell" style="font-size:11.5px">${st?(st.method==='적립금'?'💰적립 ':'')+won(st.net):'<span class="muted">-</span>'}</td>
-    </tr>`;}).join('')}
-    </tbody></table></div></div>`;}).join('');}
+  const td='padding:7px 8px;font-size:11.5px;vertical-align:middle';
+  const dcell=(o,s)=>{const d=rxStepDate(o,s);return `<td style="${td};text-align:center;color:#64748b">${d?String(d).slice(5):'·'}</td>`;};
+  const rows=custs.map(cust=>{const items=byCust[cust].slice().sort((a,b)=>Number(dk(b))-Number(dk(a)));
+    return `<tr><td colspan="9" style="background:#f1f5f9;font-weight:800;padding:8px 10px;border-top:2px solid #e2e8f0">${esc(cust)} <span class="muted" style="font-weight:400;font-size:11px">· CS ${items.length}건</span></td></tr>`+
+    items.map(o=>{const st=o.meta&&o.meta.settle,proc=o.rxtype==='exchange'?'reship':'refunded';return `<tr style="border-bottom:1px solid #f1f5f9">
+      <td style="${td};white-space:nowrap;font-weight:700">${(RX_TYPES[o.rxtype]||{}).ic||''} ${rxTypeLabel(o)}</td>
+      <td style="${td};overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escAttr(itemLabel(o)+(o.rxtype==='exchange'&&o.rxnew?' → '+((o.rxnew.tag?'['+o.rxnew.tag+'] ':'')+(o.rxnew.name||o.rxnew.code||'')+' '+(o.rxnew.color||'')+(o.rxnew.size||'')):''))}">${esc(itemLabel(o))}${o.rxtype==='exchange'&&o.rxnew?` <span class="muted">→ ${esc((o.rxnew.tag?'['+o.rxnew.tag+'] ':'')+(o.rxnew.name||o.rxnew.code||''))}</span>`:''}</td>
+      <td style="${td};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#64748b" title="${escAttr(o.rxreason||'')}">${esc(o.rxreason||'-')}</td>
+      ${dcell(o,'req')}${dcell(o,'recall')}${dcell(o,'gotback')}${dcell(o,proc)}${dcell(o,'done')}
+      <td style="${td};text-align:right;white-space:nowrap">${st?(st.method==='적립금'?'💰':'')+won(st.net):'·'}</td>
+    </tr>`;}).join('');}).join('');
+  return `<div class="note" style="margin-bottom:12px">✅ <b>완료 정리</b> — 마무리된 CS ${totItems}건(반품·환불 ${totRefund} · 교환 ${totExch})을 <b>고객별</b>로 묶어 단계별 날짜와 함께 정리했습니다.</div>
+  <div class="card"><div style="overflow-x:auto"><table style="min-width:880px;width:100%;table-layout:fixed;border-collapse:collapse">
+    <colgroup><col style="width:78px"><col><col style="width:130px"><col style="width:58px"><col style="width:66px"><col style="width:66px"><col style="width:78px"><col style="width:58px"><col style="width:88px"></colgroup>
+    <thead><tr style="border-bottom:2px solid #e2e8f0">${['유형','상품','사유','접수','회수신청','회수입고','환불·재발송','완료','정산'].map((h,ci)=>`<th style="${td};text-align:${ci>=3&&ci<=7?'center':ci===8?'right':'left'};color:#475569;font-weight:800">${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows}</tbody></table></div></div>`;}
 /* ===== 판매현황 상태 분류 — 판매관리·출고장과 동일한 ORD 필드에서 실시간 판정 ===== */
 const SHP_STATES=[{k:'all',l:'전체'},{k:'unpack',l:'미포장'},{k:'pack',l:'포장(출고전)'},{k:'done',l:'출고완료'},{k:'back',l:'미송'},{k:'bundle',l:'합배'},{k:'exch',l:'교환중'},{k:'refund',l:'환불중'}];
 const SHP_STATE_PILL={unpack:['p-gray','미포장'],pack:['p-req','포장'],done:['p-done','출고완료'],back:['p-low','미송'],bundle:['p-purple','합배'],exch:['p-req','교환중'],refund:['p-low','환불중']};
