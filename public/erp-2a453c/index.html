@@ -2006,6 +2006,10 @@ const RX_REASONS=[{l:'상품불량',f:'셀러'},{l:'오배송(잘못보냄)',f:'
 const RX_TYPES={exchange:{l:'교환',ic:'🔄'},refund:{l:'반품·환불',ic:'↩️'},cancel:{l:'취소',ic:'✖️'}};
 const RX_STEPL={req:'접수',recall:'회수신청',gotback:'회수입고',reship:'재발송',refunded:'환불완료',done:'완료'};
 function rxFlow(t){return t==='exchange'?['req','recall','gotback','reship','done']:['req','recall','gotback','refunded','done'];}
+/* 단계별 날짜 — meta.steps에 각 단계 도달일 기록 (req=요청일, gotback=사무실입고일, refunded/reship=처리일, done=완료일) */
+function rxStepDate(o,s){const st=(o.meta&&o.meta.steps)||{};return st[s]||(s==='req'?(o.rxdate||''):s==='done'?(o.rxdone||''):'')||'';}
+function rxStampStep(o,s,dt){const m=Object.assign({},o.meta||{});m.steps=Object.assign({},m.steps||{},{[s]:dt});o.meta=m;}
+function rxUnstampStep(o,s){if(o.meta&&o.meta.steps){const m=Object.assign({},o.meta);m.steps=Object.assign({},m.steps);delete m.steps[s];o.meta=m;}}
 function faultOf(reason){const r=RX_REASONS.find(x=>x.l===reason);return r?r.f:'무과실';}
 function faulteeOf(o){return o.fault==='셀러'?(o.staff||'담당셀러'):o.fault==='물류'?'물류팀':'무과실';}
 function rxStockFor(o){return STOCK.find(s=>s.code===o.code&&(s.color||'')===(o.color||'')&&(s.size||'')===(o.size||''));}
@@ -2028,7 +2032,7 @@ function renderRxModal(o){const d=RXDRAFT,t=RX_TYPES[d.type];
   <div class="modal-foot" style="margin-top:18px"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="rxCommit()">${t.l} 접수</button></div>`;
   $('#modal').classList.remove('hide');}
 async function rxCommit(){const d=RXDRAFT;if(!d)return;const o=ORD.find(x=>x.id===d.id);if(!o)return;
-  o.rxtype=d.type;o.rxstat='req';o.rxreason=d.reason;o.fault=d.fault;o.rxdate=todayStr();
+  o.rxtype=d.type;o.rxstat='req';o.rxreason=d.reason;o.fault=d.fault;o.rxdate=todayStr();rxStampStep(o,'req',o.rxdate);
   if(d.type==='exchange'){
     if(!d.newCode){toast('교환해서 보낼 새 상품을 검색해서 선택해 주세요');return;}
     o.rxnew={tag:d.newTag||'',code:d.newCode||'',name:d.newName||'',color:d.newColor||'',size:d.newSize||''};}
@@ -2052,13 +2056,13 @@ function rxClearNew(){if(!RXDRAFT)return;RXDRAFT.newCode=RXDRAFT.newName=RXDRAFT
 const RX_NEXTL={recall:'🚚 회수신청 완료',gotback:'📦 회수입고',reship:'📤 재발송',refunded:'💸 환불완료',done:'✅ 완료처리'};
 async function rxNext(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];if(!next)return;
   const eff=await rxStepStockEffect(o,next,1);
-  o.rxstat=next;if(next==='done')o.rxdone=todayStr();
-  toast((RX_NEXTL[next]||'진행')+(eff?' · '+eff:''));render();await saveOrd(o);}
+  o.rxstat=next;const _td=todayStr();if(next==='done')o.rxdone=_td;rxStampStep(o,next,_td);
+  toast((RX_NEXTL[next]||'진행')+' ('+_td+')'+(eff?' · '+eff:''));render();await saveOrd(o);}
 async function rxPrev(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);
   if(i<=0){toast('첫 단계예요 — 취소하려면 [삭제]를 누르세요');return;}
   const cur=o.rxstat,prev=flow[i-1];
   const eff=await rxStepStockEffect(o,cur,-1);   // 현재 단계 효과 역산
-  if(cur==='done')delete o.rxdone;
+  if(cur==='done')delete o.rxdone;rxUnstampStep(o,cur);
   o.rxstat=prev;
   toast('◀ '+RX_STEPL[prev]+' 단계로 되돌림'+(eff?' · '+eff+' 원복':''));render();await saveOrd(o);}
 async function rxDelete(id){const o=ORD.find(x=>x.id===id);if(!o)return;const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);
@@ -2066,6 +2070,7 @@ async function rxDelete(id){const o=ORD.find(x=>x.id===id);if(!o)return;const fl
   if(!confirm(`이 ${RX_TYPES[o.rxtype].l} 건을 삭제하고 원래 출고완료 상태로 되돌릴까요?${hadStock?'\n진행 중 변경된 재고도 자동 원복됩니다.':''}`))return;
   for(let k=i;k>=1;k--){await rxStepStockEffect(o,flow[k],-1);}   // 진입했던 단계 전부 역산
   ['rxtype','rxstat','rxreason','fault','rxnew','rxdate','rxdone'].forEach(k=>delete o[k]);
+  if(o.meta&&o.meta.steps){const m=Object.assign({},o.meta);delete m.steps;o.meta=m;}
   toast('🗑️ 취소 · 원래 상태로 복구');render();await saveOrd(o);}
 function rxEditOpen(id){const o=ORD.find(x=>x.id===id);if(!o)return;
   if(!(RXDRAFT&&RXDRAFT.editId===id)){const nw=o.rxnew||{};RXDRAFT={editId:id,reason:o.rxreason,fault:o.fault,newTag:nw.tag||null,newCode:nw.code||null,newName:nw.name||null,newColor:nw.color||null,newSize:nw.size||null};}
@@ -2082,7 +2087,7 @@ async function rxEditSave(id){const o=ORD.find(x=>x.id===id);if(!o)return;
   o.rxreason=$('#rxe_reason').value;o.fault=$('#rxe_fault').value;
   if(o.rxtype==='exchange'){const d=RXDRAFT||{};o.rxnew={tag:d.newTag||'',code:d.newCode||'',name:d.newName||'',color:d.newColor||'',size:d.newSize||''};}
   closeModal();RXDRAFT=null;toast('✅ 정보 수정 완료');render();await saveOrd(o);}
-function rxStepBar(o){const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);return flow.map((s,si)=>{const c=si<i?'background:#dcfce7;color:#166534':si===i?'background:#dbeafe;color:#2563eb':'background:#f1f5f9;color:#94a3b8';return `<span style="display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;${c}">${si<i?'✓ ':''}${RX_STEPL[s]}</span>`;}).join('<span style="color:#cbd5e1;margin:0 2px">›</span>');}
+function rxStepBar(o){const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);return flow.map((s,si)=>{const c=si<i?'background:#dcfce7;color:#166534':si===i?'background:#dbeafe;color:#2563eb':'background:#f1f5f9;color:#94a3b8';const dt=(si<=i)?rxStepDate(o,s):'';return `<span style="display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;text-align:center;line-height:1.25;${c}">${si<i?'✓ ':''}${RX_STEPL[s]}${dt?`<br><span style="font-size:9px;font-weight:500;opacity:.85">${String(dt).slice(5)}</span>`:''}</span>`;}).join('<span style="color:#cbd5e1;margin:0 2px">›</span>');}
 function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];const nextL={recall:'택배 회수신청',gotback:`회수입고 (재고 +${o.qty||1})`,reship:`새상품 재발송 (재고 −${o.qty||1})`,refunded:'환불완료',done:'완료처리'};
   return `<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">${t.ic} ${t.l} · ${o.cust} <span class="muted" style="font-size:12px;font-weight:400">${o.date||''} · 담당 ${o.staff||'-'}</span></h2>${payBadge(o.payway)}<span class="pill ${o.fault==='무과실'?'':'p-low'}">${o.fault==='무과실'?'고객귀책':'귀책: '+faulteeOf(o)}</span></div>
   <table><tbody><tr><td class="muted" style="width:64px">상품</td><td>${itemLabel(o)} <span class="muted">×${o.qty} · ${won(amtOf(o))}</span></td></tr><tr><td class="muted">사유</td><td>${o.rxreason||'-'}</td></tr>${o.rxtype==='exchange'&&o.rxnew?`<tr><td class="muted">교환→</td><td>${o.rxnew.tag?'['+o.rxnew.tag+'] ':''}${o.rxnew.name||o.rxnew.code||'-'} ${o.rxnew.color||''} ${o.rxnew.size||''}</td></tr>`:''}<tr><td class="muted">진행</td><td style="line-height:2.2">${rxStepBar(o)}</td></tr></tbody></table>
@@ -2205,9 +2210,9 @@ function refundLedgerRows(){return mine(ORD).filter(o=>o.rxtype==='refund'||(o.m
 function refundLedgerView(){const rows=refundLedgerRows();
   const totNet=rows.reduce((s,o)=>s+(((o.meta&&o.meta.settle)||{}).net||0),0),unset=rows.filter(o=>!(o.meta&&o.meta.settle)).length;
   return `<div class="card"><div class="card-h"><h2>환불대장 <span class="muted" style="font-size:12px">${rows.length}건 · 정산완료 실환불 합계 ${won(totNet)}${unset?` · <b style="color:#dc2626">미정산 ${unset}건</b>`:''}</span></h2></div>
-    <table><thead><tr><th>날짜</th><th>고객</th><th>상품</th><th class="num-cell">환불액</th><th class="num-cell">차감</th><th class="num-cell">실환불</th><th>계좌</th><th style="width:120px"></th></tr></thead><tbody>
-    ${rows.length?rows.map(o=>{const st=(o.meta&&o.meta.settle)||null;const net=st?st.net:null;return `<tr>
-      <td class="muted" style="white-space:nowrap">${(st&&st.at)||o.rxdate||o.date||'-'}</td>
+    <table><thead><tr><th>일자<br><span style="font-weight:400;font-size:10px;color:#94a3b8">요청·입고·정산</span></th><th>고객</th><th>상품</th><th class="num-cell">환불액</th><th class="num-cell">차감</th><th class="num-cell">실환불</th><th>계좌</th><th style="width:120px"></th></tr></thead><tbody>
+    ${rows.length?rows.map(o=>{const st=(o.meta&&o.meta.settle)||null;const net=st?st.net:null;const dReq=rxStepDate(o,'req')||o.rxdate||o.date||'-',dGot=rxStepDate(o,'gotback'),dProc=(st&&st.at)||rxStepDate(o,'refunded');return `<tr>
+      <td class="muted" style="white-space:nowrap;font-size:11px;line-height:1.5">요청 ${dReq}${dGot?`<br>입고 ${dGot}`:''}<br>${dProc?`정산 ${dProc}`:'<span style="color:#dc2626">정산전</span>'}</td>
       <td><b>${esc(o.cust||'')}</b></td>
       <td>${esc(itemLabel(o))} <span class="muted">×${o.qty}</span> ${rxTypeLabel(o)==='반품'?'<span class="pill p-req" style="font-size:10px">반품</span>':'<span class="pill p-low" style="font-size:10px">환불</span>'}</td>
       <td class="num-cell">${won(st?st.refund:amtOf(o))}</td>
@@ -2219,7 +2224,7 @@ function refundLedgerView(){const rows=refundLedgerRows();
     </tbody></table></div>`;}
 /* 판매현황 상태별 액션 버튼 — 출고완료: 교환/반품 · 미출고: 환불/취소 */
 function csActionCell(o){const B='btn sm ghost',ST='padding:3px 7px;font-size:11px';
-  if(o.rxtype)return `<span class="pill ${o.rxstat==='done'?'':'p-req'}">${rxTypeLabel(o)}${o.rxstat==='done'?' 완료':' 진행'}</span>`;
+  if(o.rxtype){const lbl=RX_STEPL[o.rxstat]||'진행',cur=rxStepDate(o,o.rxstat);return `<span class="pill ${o.rxstat==='done'?'':'p-req'}">${rxTypeLabel(o)} ${o.rxstat==='done'?'완료':lbl}</span><div class="muted" style="font-size:10px;margin-top:3px;line-height:1.4">요청 ${o.rxdate||o.date||'-'}${cur&&cur!==(o.rxdate||'')?` · ${lbl} ${cur}`:''}</div>`;}
   if(o.code==='배송비'||o.code==='낱장'||o.code==='적립금')return (o.ship==='done'&&o.track)?`<span class="barcode muted">${esc(o.track)}</span>`:'<span class="muted">-</span>';
   if(o.ship==='done'&&o.track)return `<span class="barcode muted">${esc(o.track)}</span> <button class="${B}" style="${ST}" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="${B}" style="${ST}" onclick="rxOpen(${o.id},'refund')">반품</button>`;
   return `<button class="${B}" style="${ST}" onclick="cancelSale(${o.id},'환불')">환불</button><button class="btn sm red ghost" style="${ST}" onclick="cancelSale(${o.id},'취소')">취소</button>`;
