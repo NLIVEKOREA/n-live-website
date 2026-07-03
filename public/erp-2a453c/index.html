@@ -3650,6 +3650,10 @@ function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.styl
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuAllowed(b.dataset.v))return;VIEW=b.dataset.v;try{history.replaceState(null,'','#'+VIEW)}catch(e){}buildNav();render();if(innerWidth<1024)closeSideNav();});
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&VIEWS[h]&&menuAllowed(h)&&h!==VIEW){VIEW=h;buildNav();render();}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#sideNav')&&$('#sideNav').classList.contains('open'))closeSideNav();if(e.key==='F8'&&VIEW==='order'){e.preventDefault();commitOrder();}});
+/* 검색 드롭다운(.drop2) — 바깥 클릭/ESC 시 닫기 (교환 새상품·고객·품목 검색 공통) */
+function closeAllDrops(){document.querySelectorAll('.drop2').forEach(d=>{if(d.innerHTML)d.innerHTML='';});}
+document.addEventListener('click',e=>{if(e.target.closest('.drop2')||e.target.closest('#rxq,#custIn,#entryIn'))return;closeAllDrops();},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){let any=false;document.querySelectorAll('.drop2').forEach(d=>{if(d.innerHTML){d.innerHTML='';any=true;}});if(any){e.stopPropagation();const a=document.activeElement;if(a&&/rxq|custIn|entryIn/.test(a.id))a.blur();}}},true);
 let _responsiveResizeT=null,_responsiveDashBp=dashBreakpoint();
 window.addEventListener('resize',()=>{if(innerWidth>=1024)closeSideNav();clearTimeout(_responsiveResizeT);_responsiveResizeT=setTimeout(()=>{const bp=dashBreakpoint();if(VIEW==='dash'&&bp!==_responsiveDashBp){_responsiveDashBp=bp;render();}},160);});
 new MutationObserver(()=>enhanceResponsiveUI($('#modalBox'))).observe($('#modalBox'),{childList:true,subtree:true});
