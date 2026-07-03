@@ -36,6 +36,10 @@
   .workcal-month{padding:12px;border-right:1px solid #eef2f7;min-width:0;overflow:auto}
   .workcal-month-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.workcal-month-head b{font-size:14px;color:#111827}.workcal-month-head button{border:0;background:#f1f5f9;width:28px;height:28px;border-radius:8px;cursor:pointer;color:#475569}
   .workcal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.workcal-dow{text-align:center;font-size:10px;color:#94a3b8;font-weight:700;padding:4px 0}.workcal-day{position:relative;min-height:84px;padding:7px;border:1px solid #eef2f7;border-radius:9px;background:#fff;cursor:pointer;text-align:left;overflow:hidden}.workcal-day:hover{background:#f8fafc;border-color:#bfdbfe}.workcal-day.other{opacity:.35}.workcal-day.today{background:#eff6ff;border-color:#93c5fd}.workcal-day.selected{background:#dbeafe;border-color:#2563eb}.workcal-daynum{font-size:12px;font-weight:800;color:#334155}.workcal-daytags{display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin-top:6px}.workcal-daytag{max-width:100%;padding:3px 6px;border:1px solid transparent;border-radius:5px;font-size:9px;font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.workcal-more{font-size:8.5px;color:#64748b;line-height:1.1}
+  .workcal-daysale{position:absolute;right:5px;bottom:4px;font-size:9px;font-weight:800;color:#0f766e;background:#ecfdf5;border-radius:5px;padding:1px 4px;line-height:1.3}
+  .workcal-daysales{margin:0 0 10px;padding:10px 12px;border:1px solid #bbf7d0;background:#f0fdf4;border-radius:11px}
+  .workcal-daysales-head{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}.workcal-daysales-head b{font-size:12.5px;color:#166534}.workcal-daysales-head .ds-total{font-size:16px;font-weight:800;color:#065f46}.workcal-daysales-head .ds-split{font-size:10.5px;color:#15803d}
+  .workcal-daysales-rows{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
   .workcal-list{display:flex;flex-direction:column;min-width:0;min-height:0}.workcal-list-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px}.workcal-list-head b{font-size:13px;color:#111827}.workcal-scroll{padding:0 12px 12px;overflow:auto;min-height:0}
   .workcal-item{display:grid;grid-template-columns:54px minmax(0,1fr);gap:10px;padding:10px 8px;border-bottom:1px solid #eef2f7;cursor:pointer;border-radius:9px}.workcal-item.has-photo{grid-template-columns:54px 42px minmax(0,1fr)}.workcal-item:hover{background:#f8fafc}.workcal-time{font-size:11px;font-weight:800;color:#2563eb;line-height:1.45}.workcal-avatar{width:42px;height:52px;border-radius:8px;object-fit:cover;border:1px solid #dbe3ef;background:#f1f5f9}.workcal-avatar.empty{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#94a3b8;text-align:center}.workcal-detail-photo{width:104px;height:130px;border-radius:12px;object-fit:cover;border:1px solid #dbe3ef;background:#f1f5f9}.workcal-item-title{display:flex;align-items:center;gap:5px;min-width:0}.workcal-item-title b{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0f172a}.workcal-meta{font-size:10.5px;color:#64748b;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.workcal-reason{font-size:10.5px;color:#475569;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.workcal-item.overdue{background:#fff7ed}.workcal-item.overdue .workcal-time{color:#ea580c}
   .sc-badge{display:inline-flex;align-items:center;gap:3px;border-radius:999px;padding:3px 7px;font-size:9.5px;font-weight:800;white-space:nowrap}.sc-status-confirmed{background:#ecfdf5;color:#0f766e}.sc-status-pending{background:#fff7ed;color:#c2410c}.sc-status-completed{background:#eff6ff;color:#1d4ed8}.sc-status-cancelled{background:#f1f5f9;color:#64748b}.sc-status-overdue{background:#ffedd5;color:#c2410c}
@@ -578,6 +582,7 @@ async function dbLoadAll(){
     SHIPPING=sh.data||[];
     EMPLOYEES.length=0;(em.data||[]).forEach(r=>EMPLOYEES.push(r));
     SCHED=(bs&&bs.data)||[];
+    try{const wsr=await SB.from('work_schedules').select('*');WORKSCH=((wsr&&wsr.data)||[]).map(r=>Object.assign({},r.data||{},{id:r.id}));}catch(e){console.warn('work_schedules load',e);WORKSCH=WORKSCH||[];}
     try{const ls=await SB.from('live_sessions').select('*').order('id',{ascending:false});LIVE_SESS=(ls&&ls.data)||[];
         const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];
         const pi=await SB.from('product_images').select('*');PIMG={};((pi&&pi.data)||[]).forEach(r=>{PIMG[r.code]=r.url;});}catch(e){console.warn('live load',e);LIVE_SESS=LIVE_SESS||[];SESS_PROD=SESS_PROD||[];PIMG=PIMG||{};}
@@ -629,6 +634,15 @@ function getAlerts(){const a=[],wd=new Date().getDay(),dd=new Date().getDate();
   const out=STOCK.filter(s=>s.qty<=0).length; if(out)a.push({ic:'ti-alert-triangle',t:'품절 '+out+'개 품목 — 판매 전 확인',go:"go('stock')"});
   const low=STOCK.filter(s=>s.qty>0&&s.qty<=2).length; if(low)a.push({ic:'ti-alert-hexagon',t:'재고 부족(2개 이하) '+low+'개',go:"go('stock')"});
   if(dd>=5&&dd<=7)a.push({ic:'ti-wallet',t:'정산일(매월 7일) 임박',go:"go('revenue')"});
+  /* 업무 스케줄 알림 — 당일(그날 계속) · 전일(내일 요약) · 전주(다음주 요약) */
+  try{if(typeof WORKSCH!=='undefined'&&WORKSCH.length){const wt=workToday(),vis=WORKSCH.filter(s=>s&&s.status!=='cancelled'&&workVisible(s));
+    const openWork="go('dash')";
+    vis.filter(s=>s.date===wt&&s.status!=='completed'&&(s.alerts||[]).includes('당일')).forEach(s=>{const c=WORK_CAT[s.category]||WORK_CAT.personal;a.push({ic:c.ic,t:'오늘 '+c.l+': '+(s.title||'')+(s.timeTbd?' (시간미정)':(s.startTime?' '+s.startTime:'')),go:openWork});});
+    const tmr=workAddDays(wt,1),tl=vis.filter(s=>s.date===tmr&&(s.alerts||[]).includes('전일'));
+    if(tl.length)a.push({ic:'ti-calendar-due',t:'내일 일정 '+tl.length+'건: '+tl.slice(0,3).map(s=>s.title).join(', ')+(tl.length>3?' 외':''),go:openWork});
+    const ns=workAddDays(workWeekStart(wt),7),ne=workAddDays(ns,6),nl=vis.filter(s=>s.date>=ns&&s.date<=ne&&(s.alerts||[]).includes('전주'));
+    if(nl.length)a.push({ic:'ti-calendar-week',t:'다음주 일정 '+nl.length+'건: '+nl.slice(0,3).map(s=>s.title).join(', ')+(nl.length>3?' 외':''),go:openWork});
+  }}catch(e){}
   return a;}
 function alertCount(){return getAlerts().length;}
 /* 바코드 — 값은 품목 고유번호(N+id), 라벨엔 품목명·색상·사이즈·가격을 글자로. Xprinter XP-DT427B(40x30mm) 기준 */
@@ -1162,7 +1176,9 @@ const WORK_CAT={
 const WORK_STATUS={confirmed:'확정',pending:'대기',completed:'완료',cancelled:'취소'};
 const WORK_ROLE_LABEL={admin:'관리자',owner:'대표',operation:'운영팀',seller_manager:'셀러매니저',logistics:'물류팀',seller:'셀러'};
 let WORK_UI={date:null,month:null,range:'today',q:'',cat:'all',status:'all',important:false,editing:null};
+let WORKSCH=[];/* 공용 업무일정 — work_schedules 테이블에서 로드(전 사원 공유) */
 let _workSearchT=null;
+const WORK_ROLES_ALL=['admin','owner','operation','seller_manager','logistics','seller'];
 function workUserRole(){return ({'관리자':'admin','운영':'operation','물류':'logistics','셀러':'seller','보조':'seller_manager'})[ME.role]||'admin';}
 function workToday(){return todayStr();}
 function workDate(s){const p=(s||workToday()).split('-').map(Number);return new Date(p[0],p[1]-1,p[2]||1);}
@@ -1170,9 +1186,14 @@ function workYmd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2
 function workAddDays(s,n){const d=workDate(s);d.setDate(d.getDate()+n);return workYmd(d);}
 function workMonthShift(s,n){const d=workDate((s||workToday()).slice(0,7)+'-01');d.setMonth(d.getMonth()+n);return workYmd(d).slice(0,7);}
 function workWeekStart(s){const d=workDate(s),day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return workYmd(d);}
-function workSchedules(){return Array.isArray(PREFS.work_schedules)?PREFS.work_schedules:[];}
-function workScheduleSave(a){PREFS.work_schedules=a;savePrefs();}
-function workVisible(s){const r=workUserRole();if(r==='admin')return true;const roles=s.visibleToRoles||[];if(!roles.length||roles.includes(r))return r!=='seller'||!s.sellerId||!ME.id||String(s.sellerId)===String(ME.id);return false;}
+function workSchedules(){return WORKSCH;}
+/* 공용 저장(전 사원 공유) — 한 건 upsert */
+async function workScheduleUpsert(s){const i=WORKSCH.findIndex(x=>x.id===s.id);if(i>=0)WORKSCH[i]=s;else WORKSCH.unshift(s);
+  try{const {error}=await SB.from('work_schedules').upsert({id:s.id,data:s,owner:(typeof ME!=='undefined'&&ME&&ME.name)||null,updated_at:new Date().toISOString()});if(error){toast('⚠️ 일정 저장 실패: '+error.message);return false;}}catch(e){toast('⚠️ 일정 저장 오류 — 인터넷 확인');return false;}return true;}
+async function workScheduleRemove(id){const i=WORKSCH.findIndex(x=>x.id===id);const bak=i>=0?WORKSCH[i]:null;if(i>=0)WORKSCH.splice(i,1);
+  try{const {error}=await SB.from('work_schedules').delete().eq('id',id);if(error){if(bak)WORKSCH.splice(i,0,bak);toast('⚠️ 삭제 실패: '+error.message);return false;}}catch(e){if(bak)WORKSCH.splice(i,0,bak);toast('⚠️ 삭제 오류');return false;}return true;}
+/* 공개대상 역할 실제 적용: 관리자·운영은 전체 열람, 그 외는 공개대상(visibleToRoles)에 포함될 때만. 비어있으면 전체공개 */
+function workVisible(s){const r=workUserRole();if(r==='admin'||r==='operation')return true;const roles=s.visibleToRoles||[];return !roles.length||roles.includes(r);}
 function workStatusKey(s){return s.status!=='completed'&&s.status!=='cancelled'&&s.date<workToday()?'overdue':s.status;}
 function workStatusBadge(s){const k=workStatusKey(s);return `<span class="sc-badge sc-status-${k}">${k==='overdue'?'미완료':WORK_STATUS[k]||k}</span>`;}
 function workCatBadge(k){const m=WORK_CAT[k]||WORK_CAT.personal;return `<span class="sc-badge" style="background:${m.c}18;color:${m.c}"><i class="ti ${m.ic}"></i>${m.l}</span>`;}
@@ -1203,17 +1224,24 @@ function workSummary(){const t=workToday(),a=workSchedules().filter(workVisible)
     sales:sales.total,byStaff:sales.rows,interview:today.filter(s=>s.category==='interview').length,important:today.filter(s=>s.isImportant).length};}
 function workSalesByStaff(date){const m={};mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-')===date).forEach(o=>{const k=o.staff||'담당 미지정';m[k]=(m[k]||0)+amtOf(o);});const rows=Object.entries(m).sort((a,b)=>b[1]-a[1]);return {rows,total:rows.reduce((n,x)=>n+x[1],0)};}
 function workSellerSalesHtml(rows){return `<div class="workcal-salesbar"><strong>셀러별 입금확인 매출</strong>${rows.length?rows.map(([name,amt])=>`<span class="workcal-saleschip">${esc(name)} <b>${workMoney(amt)}</b></span>`).join(''):'<span class="muted" style="font-size:10.5px">오늘 결제완료 매출 없음</span>'}</div>`;}
+/* 일자별 매출 상세 — 셀러별 현금/카드/합계 (결제완료 기준) */
+function workSalesDetail(date){const m={};let cash=0,card=0;mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-')===date).forEach(o=>{const k=o.staff||'담당 미지정',amt=amtOf(o),isCard=(o.payway||'')==='카드';const r=m[k]||(m[k]={cash:0,card:0,total:0});if(isCard){r.card+=amt;card+=amt;}else{r.cash+=amt;cash+=amt;}r.total+=amt;});
+  const rows=Object.entries(m).map(([name,v])=>({name,cash:v.cash,card:v.card,total:v.total})).sort((a,b)=>b.total-a.total);return {rows,cash,card,total:cash+card};}
+function workSalesByDate(){const m={};mine(ORD).forEach(o=>{if(o.pay!=='paid')return;const d=(o.date||'').replace(/\//g,'-');if(!d)return;m[d]=(m[d]||0)+amtOf(o);});return m;}
+function workDaySalesHtml(){const d=WORK_UI.date,x=workSalesDetail(d),lbl=d===workToday()?'오늘':(d||'').replace(/-/g,'.');if(!x.total)return '';
+  return `<div class="workcal-daysales"><div class="workcal-daysales-head"><b>${lbl} 매출</b><span class="ds-total">${workMoney(x.total)}</span><span class="ds-split">현금 ${workMoney(x.cash)} · 카드 ${workMoney(x.card)}</span></div>
+    <div class="workcal-daysales-rows">${x.rows.map(r=>`<span class="workcal-saleschip"><b>${esc(r.name)}</b> ${workMoney(r.total)} <span class="muted" style="font-size:9.5px">현${Math.round(r.cash/10000)}·카${Math.round(r.card/10000)}만</span></span>`).join('')}</div></div>`;}
 function workPhotoHtml(s,detail){if(s.photo)return `<img class="${detail?'workcal-detail-photo':'workcal-avatar'}" src="${esc(s.photo)}" alt="${esc(s.person||s.title||'일정')} 사진">`;return s.category==='interview'?`<div class="${detail?'workcal-detail-photo':'workcal-avatar'} empty">사진<br>없음</div>`:'';}
 function workSummaryHtml(){const s=workSummary(),x=[['오늘 일정',s.today+'건'],['미팅',s.meeting+'건'],['방송',s.bcast+'건'],['오늘 실제 매출',workMoney(s.sales)],['면접',s.interview+'건'],['중요',s.important+'건']];
   return `<div class="workcal-summary">${x.map(v=>`<div class="workcal-stat"><span>${v[0]}</span><b>${v[1]}</b></div>`).join('')}</div>${workSellerSalesHtml(s.byStaff)}`;}
-function workCalendarHtml(){const ym=WORK_UI.month,d0=workDate(ym+'-01'),first=(d0.getDay()+6)%7,start=new Date(d0);start.setDate(1-first);const visible=workSchedules().filter(workVisible);
-  const cells=[];for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=workYmd(d),arr=visible.filter(s=>s.date===ds&&s.status!=='cancelled'),other=ds.slice(0,7)!==ym;
+function workCalendarHtml(){const ym=WORK_UI.month,d0=workDate(ym+'-01'),first=(d0.getDay()+6)%7,start=new Date(d0);start.setDate(1-first);const visible=workSchedules().filter(workVisible);const salesMap=workSalesByDate();
+  const cells=[];for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=workYmd(d),arr=visible.filter(s=>s.date===ds&&s.status!=='cancelled'),other=ds.slice(0,7)!==ym;const sale=salesMap[ds]||0;
     const cats=[...new Set(arr.map(s=>s.category))],tags=cats.slice(0,2).map(k=>{const m=WORK_CAT[k]||WORK_CAT.personal;return `<span class="workcal-daytag" style="background:${m.c}18;color:${m.c};border-color:${m.c}35">${esc(m.l)}</span>`;}).join('');
-    cells.push(`<button class="workcal-day${other?' other':''}${ds===workToday()?' today':''}${ds===WORK_UI.date?' selected':''}" onclick="workPickDate('${ds}')" title="${arr.length?arr.length+'건 · 클릭해 보기':'일정 없음 · 클릭해 추가 가능'}"><span class="workcal-daynum">${d.getDate()}</span><span class="workcal-daytags">${tags}${cats.length>2||arr.length>cats.length?`<span class="workcal-more">외 ${Math.max(arr.length-2,1)}건</span>`:''}</span></button>`);}
+    cells.push(`<button class="workcal-day${other?' other':''}${ds===workToday()?' today':''}${ds===WORK_UI.date?' selected':''}" onclick="workPickDate('${ds}')" title="${arr.length?arr.length+'건':'일정 없음'}${sale?' · 매출 '+workMoney(sale):''} · 클릭해 보기"><span class="workcal-daynum">${d.getDate()}</span><span class="workcal-daytags">${tags}${cats.length>2||arr.length>cats.length?`<span class="workcal-more">외 ${Math.max(arr.length-2,1)}건</span>`:''}</span>${sale?`<span class="workcal-daysale">${sale>=10000?Math.round(sale/10000)+'만':Math.round(sale/1000)+'천'}</span>`:''}</button>`);}
   return `<div class="workcal-month"><div class="workcal-month-head"><button onclick="workMonthMove(-1)" aria-label="이전 달">‹</button><b>${ym.replace('-','년 ')}월</b><button onclick="workMonthMove(1)" aria-label="다음 달">›</button></div>
     <div class="workcal-grid">${['월','화','수','목','금','토','일'].map(x=>`<div class="workcal-dow">${x}</div>`).join('')}${cells.join('')}</div></div>`;}
 function workListHtml(compact){const a=workRoleRows(),show=compact?a.slice(0,5):a;
-  return `<div class="workcal-list"><div class="workcal-list-head"><b>${workRangeLabel()} <span class="muted">${a.length}건</span></b></div>
+  return `<div class="workcal-list">${workDaySalesHtml()}<div class="workcal-list-head"><b>${workRangeLabel()} <span class="muted">${a.length}건</span></b></div>
     <div class="workcal-scroll">${show.length?show.map(s=>{const who=s.sellerName||s.person||s.company||'',loc=s.address||s.region||'',over=workStatusKey(s)==='overdue';
       const photo=workPhotoHtml(s,false);return `<div class="workcal-item${over?' overdue':''}${photo?' has-photo':''}" onclick="openWorkDetail('${s.id}')"><div class="workcal-time">${s.timeTbd?'시간 미정':esc(s.startTime||'종일')}${s.endTime&&!s.timeTbd?'<br><span class="muted">~'+esc(s.endTime)+'</span>':''}</div>${photo}<div style="min-width:0">
         <div class="workcal-item-title"><b>${s.isImportant?'⭐ ':''}${esc(s.title)}</b>${workCatBadge(s.category)}${workStatusBadge(s)}</div>
@@ -1228,19 +1256,15 @@ function wWorkSchedule(){workEnsureUi();const compact=!['관리자','운영'].in
     <button class="btn sm ${WORK_UI.range==='today'?'':'ghost'}" onclick="workSetRange('today')">오늘</button><button class="btn sm ${WORK_UI.range==='week'?'':'ghost'}" onclick="workSetRange('week')">이번 주</button><button class="btn sm ${WORK_UI.range==='month'?'':'ghost'}" onclick="workSetRange('month')">이번 달</button><button class="btn sm red ghost" onclick="openWorkResetConfirm()">일정 초기화</button><button class="btn sm" onclick="openWorkForm()">＋ 일정 추가</button></div></div>
   ${workSummaryHtml()}${workFiltersHtml()}<div class="workcal-body">${compact?'':workCalendarHtml()}${workListHtml(compact)}</div></div>`;}
 function workDetailRow(l,v,raw){if(v==null||v===''||(Array.isArray(v)&&!v.length))return '';return `<div>${l}</div><div>${raw?v:esc(String(v))}</div>`;}
-function openWorkDetail(id){const s=workSchedules().find(x=>x.id===id);if(!s)return;const links=[
-  s.sellerId?`<button class="btn sm ghost" onclick="toast('셀러 연결: ${esc(s.sellerName||s.sellerId)}')">셀러 · ${esc(s.sellerName||s.sellerId)}</button>`:'',
-  s.brandId?`<button class="btn sm ghost" onclick="toast('브랜드 연결: ${esc(s.brandName||s.brandId)}')">브랜드 · ${esc(s.brandName||s.brandId)}</button>`:'',
-  s.orderId?`<button class="btn sm ghost" onclick="go('shipped');closeModal()">주문 · ${esc(s.orderId)}</button>`:'',
-  s.settlementId?`<button class="btn sm ghost" onclick="go('revenue');closeModal()">정산 · ${esc(s.settlementId)}</button>`:''].filter(Boolean).join(' ');
+function openWorkDetail(id){const s=workSchedules().find(x=>x.id===id);if(!s)return;const links='';
   const files=(s.files||[]).map(f=>`<span class="pill p-gray"><i class="ti ti-paperclip"></i> ${esc(f.name)}${f.size?' · '+esc(f.size):''}</span>`).join(' ');
   const photo=workPhotoHtml(s,true);$('#modalBox').className='modal-box';$('#modalBox').innerHTML=`<div style="display:flex;gap:16px;align-items:flex-start">${photo}<div style="min-width:0;flex:1"><h3>${s.isImportant?'⭐ ':''}${esc(s.title)}</h3><div style="display:flex;gap:6px;margin:-5px 0 12px">${workCatBadge(s.category)}${workStatusBadge(s)}</div>
-   <div class="schedule-detail-grid">${workDetailRow('사유',s.reason)}${workDetailRow('날짜',s.date)}${workDetailRow('시간',s.timeTbd?'시간 미정':s.startTime+(s.endTime?' ~ '+s.endTime:''))}${workDetailRow('미팅자',s.person)}${workDetailRow('회사명',s.company)}${workDetailRow('지역',s.region)}${workDetailRow('주소',s.address)}${workDetailRow('메모',s.memo)}${workDetailRow('입금 예정',s.amount?workMoney(s.amount):'')}${workDetailRow('알림',(s.alerts||[]).join(', '))}${workDetailRow('공개 대상',(s.visibleToRoles||[]).map(r=>WORK_ROLE_LABEL[r]||r).join(', '))}${workDetailRow('생성/수정',(s.createdAt||'-')+' / '+(s.updatedAt||'-'))}</div></div></div>
+   <div class="schedule-detail-grid">${workDetailRow('사유',s.reason)}${workDetailRow('날짜',s.date)}${workDetailRow('시간',s.timeTbd?'시간 미정':s.startTime+(s.endTime?' ~ '+s.endTime:''))}${workDetailRow('미팅자',s.person)}${workDetailRow('회사명',s.company)}${workDetailRow('지역',s.region)}${workDetailRow('주소',s.address)}${workDetailRow('메모',s.memo)}${workDetailRow('알림',(s.alerts||[]).join(', '))}${workDetailRow('공개 대상',(s.visibleToRoles||[]).map(r=>WORK_ROLE_LABEL[r]||r).join(', '))}${workDetailRow('생성/수정',(s.createdAt||'-')+' / '+(s.updatedAt||'-'))}</div></div></div>
    ${links?`<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">${links}</div>`:''}${files?`<div style="margin-top:10px">${files}</div>`:''}
    <div class="modal-foot"><button class="btn red ghost" onclick="workScheduleDelete('${s.id}')">삭제</button><button class="btn gray" onclick="closeModal()">닫기</button><button class="btn" onclick="openWorkForm('${s.id}')">수정</button></div>`;$('#modal').classList.remove('hide');}
 function workFormVal(id){const e=$('#'+id);return e?e.value.trim():'';}
 function workRoleChecks(vals){vals=vals||[];return Object.entries(WORK_ROLE_LABEL).map(([k,l])=>`<label class="schedule-role-option"><input type="checkbox" name="wfRole" value="${k}" ${vals.includes(k)?'checked':''}>${l}</label>`).join('');}
-function openWorkForm(id,date){const s=workSchedules().find(x=>x.id===id)||{date:date||WORK_UI.date||workToday(),startTime:'10:00',endTime:'',category:'meeting',status:'confirmed',visibleToRoles:['admin','owner','operation'],isImportant:false};WORK_UI.editing=id||null;
+function openWorkForm(id,date){const s=workSchedules().find(x=>x.id===id)||{date:date||WORK_UI.date||workToday(),startTime:'10:00',endTime:'',category:'meeting',status:'confirmed',visibleToRoles:WORK_ROLES_ALL.slice(),isImportant:false,alerts:['당일']};WORK_UI.editing=id||null;
   $('#modalBox').className='modal-box modal-wide';$('#modalBox').innerHTML=`<h3>${id?'일정 수정':'＋ 일정 추가'}</h3><div class="schedule-form-grid">
    <div class="full"><label>일정명 *</label><input id="wfTitle" value="${esc(s.title||'')}" placeholder="예: 브랜드 미팅"></div>
    <div><label>카테고리 *</label><select id="wfCat">${Object.entries(WORK_CAT).map(([k,v])=>`<option value="${k}" ${s.category===k?'selected':''}>${v.l}</option>`).join('')}</select></div><div><label>상태</label><select id="wfStatus">${Object.entries(WORK_STATUS).map(([k,v])=>`<option value="${k}" ${s.status===k?'selected':''}>${v}</option>`).join('')}</select></div>
@@ -1248,27 +1272,24 @@ function openWorkForm(id,date){const s=workSchedules().find(x=>x.id===id)||{date
    <div class="full"><label>사유 *</label><input id="wfReason" value="${esc(s.reason||'')}" placeholder="업무 목적과 확인할 내용을 입력"></div>
    <div><label>미팅자/담당자</label><input id="wfPerson" value="${esc(s.person||'')}"></div><div><label>회사명</label><input id="wfCompany" value="${esc(s.company||'')}"></div>
    <div><label>지역</label><input id="wfRegion" value="${esc(s.region||'')}"></div><div><label>주소/장소</label><input id="wfAddress" value="${esc(s.address||'')}"></div>
-   <div><label>셀러 ID / 이름</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><input id="wfSellerId" value="${esc(s.sellerId||'')}" placeholder="ID"><input id="wfSellerName" value="${esc(s.sellerName||'')}" placeholder="이름"></div></div>
-   <div><label>브랜드 ID / 이름</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><input id="wfBrandId" value="${esc(s.brandId||'')}" placeholder="ID"><input id="wfBrandName" value="${esc(s.brandName||'')}" placeholder="브랜드"></div></div>
-   <div><label>주문 연결</label><input id="wfOrderId" value="${esc(s.orderId||'')}" placeholder="주문 ID"></div><div><label>정산 연결</label><input id="wfSettlementId" value="${esc(s.settlementId||'')}" placeholder="정산 ID"></div>
-   <div><label>입금 예정 금액</label><input id="wfAmount" type="number" value="${s.amount||''}" placeholder="0"></div><div><label>알림</label><input id="wfAlerts" value="${esc((s.alerts||[]).join(', '))}" placeholder="30분 전, 1시간 전"></div>
+   <div class="full"><label>알림 <span class="muted" style="font-weight:400;font-size:11px">— 언제 알림창에 띄울지</span></label><div class="schedule-role-options">${[['당일','당일 (그날 계속 알림)'],['전일','전일 (하루 전 익일계획 요약)'],['전주','전주 (주말에 다음주 요약)']].map(([v,l])=>`<label class="schedule-role-option"><input type="checkbox" name="wfAlert" value="${v}" ${(s.alerts||[]).includes(v)?'checked':''}>${l}</label>`).join('')}</div></div>
    <div class="full"><label>메모</label><textarea id="wfMemo" rows="3">${esc(s.memo||'')}</textarea></div><div class="full"><label>관련파일명 (쉼표 구분)</label><input id="wfFiles" value="${esc((s.files||[]).map(f=>f.name).join(', '))}" placeholder="제안서.pdf, 공급가.xlsx"></div>
    <div class="full"><label>공개 대상 역할</label><div class="schedule-role-options">${workRoleChecks(s.visibleToRoles)}</div></div><div class="full"><label class="schedule-important"><input id="wfImportant" type="checkbox" ${s.isImportant?'checked':''}> 중요 일정으로 표시</label></div>
    </div><div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="workFormSave()">저장</button></div>`;$('#modal').classList.remove('hide');}
-function workFormSave(){const title=workFormVal('wfTitle'),date=workFormVal('wfDate'),reason=workFormVal('wfReason');if(!title||!date||!reason){toast('일정명·날짜·사유는 필수입니다');return;}
+async function workFormSave(){const title=workFormVal('wfTitle'),date=workFormVal('wfDate'),reason=workFormVal('wfReason');if(!title||!date||!reason){toast('일정명·날짜·사유는 필수입니다');return;}
   const old=workSchedules().find(x=>x.id===WORK_UI.editing),now=new Date().toISOString(),roles=[...document.querySelectorAll('input[name="wfRole"]:checked')].map(x=>x.value);
   const files=workFormVal('wfFiles').split(',').map(x=>x.trim()).filter(Boolean).map((name,i)=>({id:'file_'+Date.now()+'_'+i,name,type:/\\.pdf$/i.test(name)?'pdf':/\\.(jpg|jpeg|png|gif)$/i.test(name)?'image':/\\.xlsx?$/i.test(name)?'xlsx':'doc',size:''}));
   const timeTbd=!!$('#wfTimeTbd').checked;const s={id:(old&&old.id)||('sch_'+Date.now()),title,category:workFormVal('wfCat'),date,startTime:timeTbd?'':(workFormVal('wfStart')||'00:00'),endTime:timeTbd?undefined:(workFormVal('wfEnd')||undefined),timeTbd,photo:old&&old.photo||undefined,reason,
     person:workFormVal('wfPerson'),company:workFormVal('wfCompany'),region:workFormVal('wfRegion'),address:workFormVal('wfAddress'),memo:workFormVal('wfMemo'),status:workFormVal('wfStatus'),isImportant:!!$('#wfImportant').checked,
-    amount:parseInt(workFormVal('wfAmount'),10)||undefined,sellerId:workFormVal('wfSellerId')||undefined,sellerName:workFormVal('wfSellerName')||undefined,brandId:workFormVal('wfBrandId')||undefined,brandName:workFormVal('wfBrandName')||undefined,
-    orderId:workFormVal('wfOrderId')||undefined,settlementId:workFormVal('wfSettlementId')||undefined,alerts:workFormVal('wfAlerts').split(',').map(x=>x.trim()).filter(Boolean),visibleToRoles:roles,files,createdAt:(old&&old.createdAt)||now,updatedAt:now};
-  const a=workSchedules().slice(),i=a.findIndex(x=>x.id===s.id);if(i>=0)a[i]=s;else a.push(s);workScheduleSave(a);WORK_UI.date=s.date;WORK_UI.month=s.date.slice(0,7);WORK_UI.range='today';closeModal();toast('✅ 일정 '+(old?'수정':'추가')+' 완료');workRefreshWidget();}
-function workScheduleDelete(id){if(!confirm('이 일정을 삭제하시겠습니까?'))return;workScheduleSave(workSchedules().filter(x=>x.id!==id));closeModal();toast('일정이 삭제되었습니다');workRefreshWidget();}
+    alerts:[...document.querySelectorAll('input[name="wfAlert"]:checked')].map(x=>x.value),visibleToRoles:roles,files,createdAt:(old&&old.createdAt)||now,updatedAt:now};
+  if(s.category==='seller_broadcast'){s.visibleToRoles=WORK_ROLES_ALL.slice();}/* 셀러 방송은 항상 전 사원 공개 */
+  const okSave=await workScheduleUpsert(s);if(!okSave){return;}WORK_UI.date=s.date;WORK_UI.month=s.date.slice(0,7);WORK_UI.range='today';closeModal();toast('✅ 일정 '+(old?'수정':'추가')+' 완료 (전 사원 공유)');workRefreshWidget();}
+async function workScheduleDelete(id){if(!confirm('이 일정을 삭제하시겠습니까?'))return;if(!await workScheduleRemove(id))return;closeModal();toast('일정이 삭제되었습니다');workRefreshWidget();}
 function openWorkResetConfirm(){const n=workSchedules().length;$('#modalBox').className='modal-box';$('#modalBox').innerHTML=`<h3>⚠️ 일정 전체 초기화</h3>
   <div class="note" style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b"><b>현재 등록된 일정 ${n}건을 전부 삭제합니다.</b><br>초기화한 일정은 다시 복구할 수 없습니다.</div>
   <p style="font-size:13px;color:#475569;margin-top:14px">정말 초기화하려면 아래 <b>초기화 확정</b> 버튼을 직접 눌러주세요.</p>
   <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn red" onclick="workResetAll()">초기화 확정</button></div>`;$('#modal').classList.remove('hide');}
-function workResetAll(){workScheduleSave([]);WORK_UI.q='';WORK_UI.cat='all';WORK_UI.status='all';WORK_UI.important=false;WORK_UI.date=workToday();WORK_UI.month=WORK_UI.date.slice(0,7);WORK_UI.range='today';closeModal();toast('일정이 전체 초기화되었습니다');workRefreshWidget();}
+async function workResetAll(){const ids=WORKSCH.map(s=>s.id);WORKSCH.length=0;try{if(ids.length)await SB.from('work_schedules').delete().in('id',ids);}catch(e){toast('⚠️ 초기화 저장 오류');}WORK_UI.q='';WORK_UI.cat='all';WORK_UI.status='all';WORK_UI.important=false;WORK_UI.date=workToday();WORK_UI.month=WORK_UI.date.slice(0,7);WORK_UI.range='today';closeModal();toast('일정이 전체 초기화되었습니다');workRefreshWidget();}
 function workMockData(){const t=workToday(),spec=[
  ['브랜드 미팅','meeting',0,'14:00','신규 브랜드 협업 논의','김민수','성수동',0,true,0],['셀러 박시연 방송','seller_broadcast',0,'19:00','의류 신상 라이브 방송','박시연','인천 스튜디오',0,true,0],
  ['운영팀 면접','interview',1,'11:00','운영팀 신규 인력 면접','지원자 이지현','본사',0,false,0],['브랜드 정산금 입금','payment',1,'15:00','입금 확인 후 정산표 업데이트','거래처 A','계좌 입금',12450000,true,0],
@@ -1281,7 +1302,7 @@ function workMockData(){const t=workToday(),spec=[
  ['물류 장비 점검','logistics',14,'08:30','바코드 스캐너 점검','물류팀','창고',0,false,0],['CS 담당 면접','interview',15,'13:30','CS 경력직 면접','지원자 박서연','본사',0,false,0],
  ['개인 병원 일정','personal',16,'10:00','정기 검진','대표','강남',0,false,0],['분기 운영회의','meeting',18,'15:00','분기 목표와 KPI 점검','전 팀장','본사',0,true,0]];
   return spec.map((x,i)=>({id:'sample_'+String(i+1).padStart(3,'0'),title:x[0],category:x[1],date:workAddDays(t,x[2]),startTime:x[3],endTime:workAddDays(t,0)&&addHours(x[3],1),reason:x[4],person:x[5],region:x[6],address:x[6],memo:'[예시 일정] 실제 사용 전 수정하거나 삭제하세요.',status:i%5===2?'pending':'confirmed',isImportant:x[8],amount:x[7]||undefined,sellerId:x[1]==='seller_broadcast'?'seller_'+(i+1):undefined,sellerName:x[1]==='seller_broadcast'?x[5]:undefined,brandId:['brand','meeting'].includes(x[1])?'brand_'+(i+1):undefined,brandName:x[1]==='brand'?x[5]:undefined,alerts:['30분 전'],visibleToRoles:x[1]==='logistics'?['admin','owner','operation','logistics']:x[1]==='seller_broadcast'?['admin','owner','operation','seller_manager','seller']:['admin','owner','operation'],files:i===0?[{id:'sample_file',name:'N-LINKEY_Proposal.pdf',type:'pdf',size:'2.4MB'}]:[],createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}));}
-function workLoadSamples(){if(!confirm('예시 일정 20개를 불러올까요?\\n실제 일정과 구분되도록 메모에 [예시 일정]이 표시됩니다.'))return;workScheduleSave(workMockData());toast('예시 일정 20개를 불러왔습니다');workRefreshWidget();}
+async function workLoadSamples(){if(!confirm('예시 일정 20개를 불러올까요?\\n실제 일정과 구분되도록 메모에 [예시 일정]이 표시됩니다.'))return;const d=workMockData();WORKSCH.push(...d);try{await SB.from('work_schedules').upsert(d.map(s=>({id:s.id,data:s,owner:(typeof ME!=='undefined'&&ME&&ME.name)||null,updated_at:new Date().toISOString()})));}catch(e){toast('⚠️ 예시 저장 오류');}toast('예시 일정 20개를 불러왔습니다');workRefreshWidget();}
 
 const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',sales_avg:'평균 객단가',settle:'정산 예정',repurchase:'재구매율',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',refund_wait:'반품입고·환불대기',ship_fee:'배송비 집계(당월)',misong:'미송 대기',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',vip:'단골/VIP 고객',taste:'고객 구매성향',topprod:'인기 상품',lowprod:'관리 필요 상품',bcast:'방송 성과',goal:'목표 달성률',alerts:'알림/체크 필요',schedule:'방송 스케줄',work_schedule:'업무 스케줄 캘린더',sns:'등록 SNS',inflow:'유입 채널',msg_react:'메시지 반응',new_cust:'신규 고객',quick:'업무 바로가기'};
 function wRender(id){const today=todayStr();
