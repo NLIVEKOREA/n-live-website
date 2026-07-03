@@ -1488,6 +1488,7 @@ function viewOrder(){
       <button class="btn sm" style="background:var(--blue-s);color:var(--blue);border:1px solid #bcd3ff" onclick="addShip(4000,'배송비')">배송비 +4,000</button>
       <button class="btn sm" style="background:var(--green-s);color:var(--green);border:1px solid #b9e6c9" onclick="addShip(0,'무료배송')">무료배송 +0</button>
       ${OE.shipManual?`<button class="btn sm gray" onclick="OE.shipManual=false;render()">↻ 자동복구</button>`:''}
+      ${(()=>{const g=OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0),sh=OE.lines.filter(l=>l.kind==='ship').reduce((a,l)=>a+(l.price||0),0),th=freeThresh();return (th>0&&g>=th&&sh>0)?`<span style="flex-basis:100%;margin-top:6px;padding:7px 11px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:8px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px">🆓 무료배송 대상(${won(g)} ≥ ${won(th)})인데 배송비 ${won(sh)}이 잡혀 있어요 <button class="btn sm" style="background:#059669;padding:3px 10px" onclick="addShip(0,'무료배송')">무료배송으로 바꾸기</button></span>`:'';})()}
       <span class="muted" style="margin:0 2px">|</span>
       <button class="btn sm" style="background:#f0fdf4;color:#059669;border:1px solid #b9e6c9" onclick="usePoints()" ${OE.cust&&custPoints(OE.cust)>0?'':'disabled title="적립금 보유 고객만"'}>💰 적립금 사용${OE.cust?' <b>(보유 '+won(custPoints(OE.cust))+')</b>':''}</button>
       <span class="muted" style="margin-left:auto;font-size:12.5px;display:flex;align-items:center;gap:5px;white-space:nowrap">🆓 무료배송 기준 <input type="number" value="${freeThresh()}" onchange="setFreeThresh(this.value)" style="width:96px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:13px"> 원 이상</span>
@@ -1819,6 +1820,13 @@ async function commitOrder(){
   const _samp=OE.lines.filter(l=>l.code&&l.code!=='배송비'&&l.code!=='적립금'&&l.code!=='낱장'&&!l.back&&isSampleCode(l.code,l.color,l.size));
   if(_samp.length&&!confirm('⚠️ 샘플 상품이 포함되어 있습니다:\n'+_samp.map(l=>'· '+(l.name||l.code)+' '+(l.color||'')+' '+(l.size||'')).join('\n')+'\n\n샘플은 반납 대상이라 자동으로 미송(재주문) 처리되어 [미송사입]에서 거래처 재주문으로 관리됩니다.\n\n계속할까요?'))return;
   _samp.forEach(l=>l.back=true);
+  /* 무료배송 대상인데 배송비가 수동으로 들어간 경우 방지 — 저장 전 확인 */
+  {const _goods=OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);
+   const _shipSum=OE.lines.filter(l=>l.kind==='ship').reduce((a,l)=>a+(l.price||0),0);const _th=freeThresh();
+   if(_th>0&&_goods>=_th&&_shipSum>0){
+     if(confirm('🆓 무료배송 대상입니다.\n상품합 '+won(_goods)+' ≥ 기준 '+won(_th)+'\n\n그런데 배송비 '+won(_shipSum)+'원이 들어가 있어요.\n\n[확인] 무료배송(배송비 0)으로 바꿔 저장\n[취소] 배송비 그대로 저장')){
+       OE.lines=OE.lines.filter(l=>l.kind!=='ship');OE.lines.push({kind:'ship',name:'무료배송',code:'배송비',color:'',size:'',qty:1,price:0});}
+   }}
   _committing=true;
   try{
   const noStk=!!OE.noStockAdjust;const carry=OE.shopCarry||null;/* 링크주문 수정: 재고 손대지 않고 식별필드 보존 */
