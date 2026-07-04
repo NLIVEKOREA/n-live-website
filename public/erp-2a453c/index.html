@@ -806,8 +806,13 @@ let ME=USERS[0];
 let EMPLOYEES=[];
 const canSeeAll=()=>ME.scope==='all',isSeller=()=>ME.scope==='self',isLogi=()=>ME.scope==='logi';
 let SELLERVIEW='';   // 운영/관리자/물류가 특정 셀러만 볼 때 (''=전체)
+const isSubMgr=()=>ME.role==='보조';/* 셀러 서브매니저 */
 const mine=arr=>{
-  if(isSeller())return arr.filter(x=>x.staff===(ME.owner||ME.name));
+  if(isSeller()){
+    /* 보조(서브매니저)는 출고장에선 물류처럼 전체 열람/작업 */
+    if(isSubMgr()&&typeof VIEW!=='undefined'&&VIEW==='ship')return arr;
+    return arr.filter(x=>x.staff===(ME.owner||ME.name));
+  }
   if(SELLERVIEW)return arr.filter(x=>x.staff===SELLERVIEW);
   return arr;
 };
@@ -822,10 +827,12 @@ const PERM={dash:['all','logi','self'],sns:['all','self'],order:['all','self'],s
   ship:['all','logi'],bo:['all','logi','self'],shipped:['all','logi','self'],rx:['all','logi','self'],
   stock:['all','logi','self'],cust:['all','self'],prod:['all'],vendor:['all','logi'],
   revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
-const menuAllowed=v=>(PERM[v]||['all']).includes(ME.scope);
+const SUBMGR_MENUS=['ship'];/* 셀러 보조(서브매니저) 추가 허용 메뉴: 출고장(물류와 동일) */
+const menuAllowed=v=>(PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));
 /* 재고 등록·수정 권한: 관리/물류는 기본 허용, 셀러(self)는 stock_edit 플래그가 켜진 경우만 */
 const canStockEdit=()=>!isSeller()||!!ME.stock_edit;
 function lockBanner(){
+  if(isSubMgr()&&typeof VIEW!=='undefined'&&VIEW==='ship')return `<div class="lock">🚚 <b>${ME.name}</b> 셀러 보조 · 출고장은 전체 물류 열람·작업 가능</div>`;
   if(isSeller())return `<div class="lock">🔒 <b>${ME.name}</b> 셀러 · 본인 담당 고객·매출만 표시됩니다.</div>`;
   if(isLogi())  return `<div class="lock">🔒 <b>물류팀 ${ME.name}</b> — 출고·재고 중심. 매출/원가는 제한.</div>`;
   return '';
