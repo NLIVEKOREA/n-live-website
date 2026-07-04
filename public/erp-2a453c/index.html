@@ -1009,20 +1009,18 @@ function wPoSettle(){
   unpaid.forEach(o=>{const v=boVendorOf(o),d=poDate(o),k=v+'|'+d;(byVD[k]=byVD[k]||{v,d,cnt:0,amt:0});byVD[k].cnt++;byVD[k].amt+=boInPrice(o)*(o.qty||0);});
   const drows=Object.values(byVD).sort((a,b)=>(b.d||'').localeCompare(a.d||'')||b.amt-a.amt);
   const pb=(p,l)=>`<button class="chipf ${period===p?'on':''}" onclick="poSetPeriod('${p}')">${l}</button>`;
-  return `<div class="card" style="grid-column:span 2;overflow:visible">
-    <div class="card-h"><h2>🧾 사입 입금관리 <span class="muted" style="font-size:11px">거래처(사입삼촌) 입금 · 관리자 전용</span></h2><button class="btn sm ghost" onclick="go('bo')">미송사입</button></div>
-    <div class="filterbar" style="margin:2px 0 8px">${pb('today','일')}${pb('week','주')}${pb('month','월')}<span class="muted" style="font-size:11px;align-self:center;margin-left:6px">${r.label} 취합</span></div>
-    <table><thead><tr><th>거래처</th><th class="num-cell">건수</th><th class="num-cell">사입금액</th><th class="num-cell">미입금</th></tr></thead>
-    <tbody>${vrows.length?vrows.map(x=>`<tr><td><b>${esc(x.v)}</b></td><td class="num-cell">${x.cnt}</td><td class="num-cell">${won(x.amt)}</td><td class="num-cell" style="font-weight:700;color:${x.unpaid?'#dc2626':'#059669'}">${x.unpaid?won(x.unpaid):'완료'}</td></tr>`).join(''):'<tr><td colspan="4" class="muted" style="padding:12px">해당 기간 거래처 주문완료 건 없음</td></tr>'}</tbody>
-    ${vrows.length?`<tfoot><tr style="font-weight:800;border-top:2px solid var(--line)"><td>합계</td><td class="num-cell">${inP.length}</td><td class="num-cell">${won(totAmt)}</td><td class="num-cell" style="color:${totUnpaid?'#dc2626':'#059669'}">${totUnpaid?won(totUnpaid):'완료'}</td></tr></tfoot>`:''}
-    </table>
-    <div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px">
-      <div style="font-weight:800;font-size:13px;margin-bottom:6px">💰 입금 대기 <span class="muted" style="font-size:11px">거래처 주문완료 후 사입삼촌에게 입금할 건 · 일자별</span></div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-      ${drows.length?drows.map(x=>`<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:#fffef8">
-        <div style="flex:1 1 150px;min-width:0"><span class="muted" style="font-size:11.5px">${x.d}</span> · <b>${esc(x.v)}</b> <span class="muted" style="font-size:11.5px">${x.cnt}건</span><div style="font-size:13px;color:#b45309;font-weight:800">입금할 금액 ${won(x.amt)}</div></div>
-        <button class="btn sm" style="background:#059669;color:#fff" onclick="poMarkPaid('${escAttr(x.v)}','${x.d}')">💰 입금완료</button>
-      </div>`).join(''):'<div class="muted" style="padding:12px;text-align:center">입금할 사입 건 없음 👍</div>'}
+  const nz=n=>n?won(n):'0';
+  return `<div class="card" style="grid-column:span 2;overflow:hidden;display:flex;flex-direction:column">
+    <div class="card-h" style="margin-bottom:4px"><h2 style="font-size:15px">🧾 사입 입금관리 <span class="muted" style="font-size:10.5px;font-weight:400">관리자 전용</span></h2><button class="btn sm ghost" onclick="go('bo')">미송사입</button></div>
+    <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:6px">${pb('today','일')}${pb('week','주')}${pb('month','월')}<span style="flex:1"></span><span style="font-size:12px;white-space:nowrap"><b style="color:${totUnpaid?'#dc2626':'#059669'}">미입금 ${nz(totUnpaid)}</b> <span class="muted">/ ${nz(totAmt)}</span></span></div>
+    ${vrows.length?`<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:7px">${vrows.map(x=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;padding:3px 9px;background:#f7f9fc;border-radius:7px"><b style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.v)}</b><span class="muted" style="white-space:nowrap">${x.cnt}건</span><span style="white-space:nowrap">${won(x.amt)}</span><span style="font-weight:700;white-space:nowrap;min-width:52px;text-align:right;color:${x.unpaid?'#dc2626':'#059669'}">${x.unpaid?won(x.unpaid):'완료'}</span></div>`).join('')}</div>`:`<div class="muted" style="font-size:12px;padding:5px 2px 8px">${r.label} 거래처 주문완료 없음</div>`}
+    <div style="border-top:1px dashed var(--line);padding-top:7px;min-height:0;overflow:auto">
+      <div style="font-weight:800;font-size:12px;margin-bottom:5px">💰 입금 대기 <span class="muted" style="font-size:10.5px;font-weight:400">거래처+날짜별 · 버튼 하나로 하루치 입금</span></div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+      ${drows.length?drows.map(x=>`<div style="display:flex;flex-wrap:nowrap;align-items:center;gap:8px;padding:5px 9px;border:1px solid var(--line);border-radius:9px;background:#fffef8">
+        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px"><span class="muted">${x.d}</span> <b>${esc(x.v)}</b> <span class="muted">${x.cnt}건</span> · <b style="color:#b45309">${won(x.amt)}</b></span>
+        <button class="btn sm" style="background:#059669;color:#fff;padding:3px 10px;font-size:11.5px;flex:0 0 auto;white-space:nowrap" onclick="poMarkPaid('${escAttr(x.v)}','${x.d}')">💰 입금완료</button>
+      </div>`).join(''):'<div class="muted" style="font-size:12px;padding:6px 2px;text-align:center">입금할 사입 건 없음 👍</div>'}
       </div>
     </div>
   </div>`;}
@@ -1456,7 +1454,7 @@ function renderWidgetEdit(){const a=getUserWidgets();$('#modalBox').className='m
 const WIDGET_SIZE={
  sales_today:{w:2,h:3},sales_week:{w:2,h:3},sales_month:{w:2,h:3},sales_total:{w:2,h:3},sales_avg:{w:2,h:3},settle:{w:2,h:3},repurchase:{w:2,h:3},unpaid:{w:2,h:3},toship:{w:2,h:3},done_today:{w:2,h:3},rx:{w:2,h:3},ship_fee:{w:2,h:3},
  sns:{w:4,h:5},vip:{w:5,h:6},taste:{w:7,h:5},topprod:{w:5,h:5},bcast:{w:7,h:5},schedule:{w:5,h:4},work_schedule:{w:12,h:14},
- misong:{w:4,h:4},refund_wait:{w:6,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},new_cust:{w:6,h:5},po_settle:{w:6,h:6},quick:{w:4,h:3}
+ misong:{w:4,h:4},refund_wait:{w:6,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},new_cust:{w:6,h:5},po_settle:{w:5,h:6},quick:{w:4,h:3}
 };
 /* 포지션별 기본 레이아웃 — 신규 사용자/미설정 시 오·열 맞춘 기본 배치 (12열) */
 const POS_LAYOUT={
@@ -1494,7 +1492,7 @@ function viewDash(){
     const w=Math.min(cols,s.w||sz.w);let h=s.h||sz.h;
     /* 환불대기 위젯은 회수입고 건수만큼 높이 자동확장 → 어떤 크기에서도 스크롤 없이 전부 표시 */
     if(id==='refund_wait'){const n=mine(ORD).filter(o=>o.rxtype==='refund'&&o.rxstat==='gotback').length;h=Math.max(3,Math.min(14,2+Math.ceil(n*(w<=4?2.2:1.5))));}
-    if(id==='po_settle'){const g=new Set();poOrderedItems().forEach(o=>{if(!(o.meta&&o.meta.poPaid))g.add(boVendorOf(o)+'|'+poDate(o));});h=Math.max(6,Math.min(18,7+Math.ceil(g.size*0.9)));}
+    if(id==='po_settle'){const rr=periodRange(PO_PERIOD||'month'),ord=poOrderedItems();const vend=new Set(ord.filter(o=>{const d=poDate(o);return d>=rr.from&&d<=rr.to;}).map(o=>boVendorOf(o)));const grp=new Set();ord.forEach(o=>{if(!poIsPaid(o))grp.add(boVendorOf(o)+'|'+poDate(o));});const rows=vend.size+grp.size+2;h=Math.max(4,Math.min(20,3+Math.ceil(rows*(w<=4?2.0:1.35))));}
     return `<div class="grid-stack-item" gs-id="${id}" gs-w="${w}" gs-h="${h}"${s.x!=null?` gs-x="${Math.min(s.x,Math.max(0,cols-w))}"`:''}${s.y!=null?` gs-y="${s.y}"`:''}><div class="grid-stack-item-content"><button class="wx" title="위젯 제거" aria-label="${esc(WIDGET_META[id]||id)} 위젯 제거" onclick="event.stopPropagation();wgToggle('${id}')">×</button>${wRender(id)}</div></div>`;}).join('');
   return `
   <div class="greet">
