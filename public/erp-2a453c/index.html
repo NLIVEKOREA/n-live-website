@@ -975,10 +975,11 @@ function boVendorCard(vendor,items,ordered){const q=items.reduce((a,o)=>a+(o.qty
   </div>`;}
 /* ===== 사입 입금관리 (거래처 주문완료 → 사입삼촌 입금 체크) · 관리자 전용 ===== */
 let PO_PERIOD='month';
+const PO_SINCE='2026-07-03';/* 이 날짜 이전 사입은 이미 정산완료 → 위젯에서 숨김 (필요시 이 값만 수정) */
 function poSetPeriod(p){PO_PERIOD=p;render();}
-function poOrderedItems(){return mine(ORD).filter(o=>o.bo_status==='ordered'&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장'&&o.id!=null);}
-function poIsPaid(o){return !!(o.meta&&o.meta.poPaid);}
 function poDate(o){return (o.date||'').replace(/\//g,'-').slice(0,10);}
+function poOrderedItems(){return mine(ORD).filter(o=>o.bo_status==='ordered'&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장'&&o.id!=null&&poDate(o)>=PO_SINCE);}
+function poIsPaid(o){return !!(o.meta&&o.meta.poPaid);}
 async function poMarkPaid(vendor,date){
   const items=poOrderedItems().filter(o=>!poIsPaid(o)&&boVendorOf(o)===vendor&&poDate(o)===date);
   if(!items.length){toast('대상 없음');return;}
@@ -1493,7 +1494,7 @@ function viewDash(){
     const w=Math.min(cols,s.w||sz.w);let h=s.h||sz.h;
     /* 환불대기 위젯은 회수입고 건수만큼 높이 자동확장 → 어떤 크기에서도 스크롤 없이 전부 표시 */
     if(id==='refund_wait'){const n=mine(ORD).filter(o=>o.rxtype==='refund'&&o.rxstat==='gotback').length;h=Math.max(3,Math.min(14,2+Math.ceil(n*(w<=4?2.2:1.5))));}
-    if(id==='po_settle'){const g=new Set();mine(ORD).forEach(o=>{if(o.bo_status==='ordered'&&!(o.meta&&o.meta.poPaid)&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장')g.add(boVendorOf(o)+'|'+(o.date||'').slice(0,10));});h=Math.max(6,Math.min(18,7+Math.ceil(g.size*0.9)));}
+    if(id==='po_settle'){const g=new Set();poOrderedItems().forEach(o=>{if(!(o.meta&&o.meta.poPaid))g.add(boVendorOf(o)+'|'+poDate(o));});h=Math.max(6,Math.min(18,7+Math.ceil(g.size*0.9)));}
     return `<div class="grid-stack-item" gs-id="${id}" gs-w="${w}" gs-h="${h}"${s.x!=null?` gs-x="${Math.min(s.x,Math.max(0,cols-w))}"`:''}${s.y!=null?` gs-y="${s.y}"`:''}><div class="grid-stack-item-content"><button class="wx" title="위젯 제거" aria-label="${esc(WIDGET_META[id]||id)} 위젯 제거" onclick="event.stopPropagation();wgToggle('${id}')">×</button>${wRender(id)}</div></div>`;}).join('');
   return `
   <div class="greet">
