@@ -283,7 +283,11 @@
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   /* 주문현황 카드 */
   .date-div{font-size:13px;font-weight:800;color:#334155;margin:18px 0 11px;padding:8px 12px;background:#eef2f7;border-radius:8px;display:flex;align-items:center;gap:8px}
-  .ord-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .ord-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+  .bo-item{border-bottom:1px solid #f0f2f6;padding:6px 0}
+  .bo-item:last-child{border-bottom:none}
+  .bo-item-sub{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:#475569;margin-top:3px}
+  .bo-item-sub .bochip{background:#f4f6fb;border-radius:6px;padding:1px 7px}
   .ord-card{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:#fff}
   .oc-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;row-gap:5px}
   .oc-head b{font-size:14px;white-space:nowrap}
@@ -957,9 +961,14 @@ async function boRevert(vendor){const items=boAll().filter(o=>o.bo_status==='ord
 function boVendorCard(vendor,items,ordered){const q=items.reduce((a,o)=>a+(o.qty||0),0),amt=items.reduce((a,o)=>a+boInPrice(o)*(o.qty||0),0);
   return `<div class="ord-card" style="${ordered?'border-color:#a7d8b0':''}">
     <div class="oc-head"><b>🏭 ${esc(vendor)}</b> <span class="muted" style="font-size:12px">${items.length}품목 · ${q}개</span>${ordered?'<span class="pill p-done">주문완료·입고전</span>':''}<span class="grow"></span>${amt?`<span class="oc-total">입고 ${won(amt)}</span>`:''}</div>
-    <div style="overflow:auto"><table class="tbl"><thead><tr><th>품목</th><th>색상</th><th>사이즈</th><th class="num-cell">수량</th><th class="num-cell">입고단가</th><th>고객</th></tr></thead><tbody>
-    ${items.map(o=>`<tr><td><b>${esc(o.disp||prodName(o.code))}</b>${sampleBadge(o)}<br><span class="muted" style="font-size:11px">${esc(o.code)}</span></td><td>${esc(o.color||'-')}</td><td>${esc(o.size||'-')}</td><td class="num-cell">${o.qty||0}</td><td class="num-cell">${boInPrice(o)?won(boInPrice(o)):'-'}</td><td class="muted">${esc(o.cust||'')}${o.source==='shop'?' 🔗':''}</td></tr>`).join('')}
-    </tbody></table></div>
+    <div>${items.map(o=>`<div class="bo-item">
+      <div style="font-size:13px"><b>${esc(o.disp||prodName(o.code))}</b>${sampleBadge(o)} <span class="muted" style="font-size:11px">${esc(o.code)}</span></div>
+      <div class="bo-item-sub">
+        <span class="bochip">${esc(o.color||'-')} / ${esc(o.size||'-')}</span>
+        <span class="bochip">수량 <b>${o.qty||0}</b></span>
+        ${boInPrice(o)?`<span class="bochip">단가 ${won(boInPrice(o))}</span>`:''}
+        <span>👤 ${esc(o.cust||'')}${o.source==='shop'?' 🔗':''}</span>
+      </div></div>`).join('')}</div>
     <div class="oc-btns">${ordered
       ?`<span class="muted" style="align-self:center;font-size:12px">입고되면 출고장 → 미송관리에서 송장 입력·발송</span><button class="btn sm gray" style="margin-left:auto" onclick="boRevert('${escAttr(vendor)}')">↩ 주문필요로</button>`
       :`<button class="btn sm ghost" onclick="boCopyVendor('${escAttr(vendor)}')">📋 거래처 카톡 복사</button><button class="btn sm" style="margin-left:auto" onclick="boMarkOrdered('${escAttr(vendor)}')">✅ 거래처 주문완료</button>`}</div>
