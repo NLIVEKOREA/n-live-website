@@ -2002,8 +2002,8 @@ async function sendBackAll(gi){const g=curGroups()[gi];if(!g)return;const chg=g.
   const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req='미송';delete REQDRAFT[o.id];});const ids=chg.map(o=>o.id);
   let ok=true;try{const {error}=await SB.from('orders').update({req:'미송'}).in('id',ids);if(error){console.error('sendBackAll',error);ok=false;}}catch(e){console.error(e);ok=false;}
   if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else toast('📦 일괄 미송: '+g.cust+' '+ids.length+'건 전체 미송관리로 (재입고 후 한번에 출고)');render();}
-function setShipReq(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;if(v==='유지'){o.req='출고요청';o.reason='';}else{o.req=v;const rr=REQ_REASON[v];if(rr&&!rr.includes(o.reason))o.reason=rr[0];}render();}
-function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(o)o.reason=v;render();}
+async function setShipReq(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev={req:o.req,reason:o.reason};if(v==='유지'){o.req='출고요청';o.reason='';}else{o.req=v;const rr=REQ_REASON[v];if(rr&&!rr.includes(o.reason))o.reason=rr[0];}render();if(await saveOrd(o)===false){o.req=prev.req;o.reason=prev.reason;toast('⚠️ 저장 실패 — 되돌렸습니다');render();}}
+async function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev=o.reason;o.reason=v;if(await saveOrd(o)===false){o.reason=prev;toast('⚠️ 저장 실패 — 되돌렸습니다');}render();}
 function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   return `<div class="card${COLLAPSED.has('so:'+g.date+g.cust)?' collapsed':''}">
     <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
