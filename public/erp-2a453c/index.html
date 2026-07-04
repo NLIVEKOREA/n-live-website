@@ -2104,7 +2104,8 @@ function shipLineCat(o){return o.req==='합배요청'?'bundle':o.req==='출고�
 function openCustomers(){
   const list=mine(ORD).filter(o=>o.pay==='paid'&&o.ship!=='done'&&inShipPipeline(o)),m={};
   list.forEach(o=>{const cat=shipLineCat(o);const k=cat+'|'+o.cust;if(!m[k])m[k]={cust:o.cust,phone:o.phone,addr:o.addr,cat,lines:[],dates:new Set()};m[k].lines.push(o);m[k].dates.add(o.date);});
-  return Object.values(m).map(c=>{c.hasBack=c.lines.some(l=>l.back);return c;});
+  return Object.values(m).map(c=>{c.hasBack=c.lines.some(l=>l.back);return c;})
+    .filter(c=>c.lines.some(l=>!_isSvcLine(l)));/* 배송비/적립금만 남은 유령 카드 숨김 (실상품 있는 고객만) */
 }
 function progSel(o){return `<select onchange="setProg(${o.id},this.value)" style="padding:4px 6px;font-size:11.5px;border-radius:6px">${['미포장','포장','미송'].map(p=>`<option ${progOf(o)===p?'selected':''}>${p}</option>`).join('')}</select>`;}
 function waitCard(list){
@@ -2114,7 +2115,7 @@ function waitCard(list){
     <div class="sg-head">${collBtn('w:'+c.cust)}<span class="sg-name">${c.cust}</span>${payBadge(c.lines[0]&&c.lines[0].payway)}<span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('wait',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>
     <div class="sg-rows">
-    ${c.lines.map(o=>`<div class="sg-row"><span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="sg-qty">${o.qty}개</span>
+    ${c.lines.filter(o=>!_isSvcLine(o)).map(o=>`<div class="sg-row"><span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="sg-qty">${o.qty}개</span>
       <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span></div>`).join('')}
     </div>
     <div class="sg-foot"><input id="trk_wait_${i}" placeholder="송장번호 입력"><button class="btn green" onclick="shipWait(${i})">✅ 출고완료</button></div>
@@ -2132,7 +2133,7 @@ function shipRowHtml(o,cat,isWait){const q=(skuOf(o.code,o.color,o.size)||{}).qt
     ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
   </div>`;}
 /* 고객 카드 안에서 주문날짜별로 묶어 표시 (합배/미송 여러 주문일 때 날짜 구분) */
-function shipRowsByDate(c,cat,isWait){const byd={};(c.lines||[]).forEach(o=>{const d=(o.date||'-').replace(/\//g,'-');(byd[d]=byd[d]||[]).push(o);});
+function shipRowsByDate(c,cat,isWait){const byd={};(c.lines||[]).filter(o=>!_isSvcLine(o)).forEach(o=>{const d=(o.date||'-').replace(/\//g,'-');(byd[d]=byd[d]||[]).push(o);});
   const dates=Object.keys(byd).sort((a,b)=>String(a).localeCompare(String(b)));
   return dates.map(d=>`<div style="font-size:11px;font-weight:800;color:#334155;background:#eef2f7;padding:4px 9px;border-radius:7px;margin:8px 0 4px">🗓️ ${d} <span class="muted" style="font-weight:400">· ${byd[d].length}건</span></div>`+byd[d].map(o=>shipRowHtml(o,cat,isWait)).join('')).join('');}
 function manageCards(list,cat){
@@ -2162,7 +2163,10 @@ async function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];
   else{c.lines.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
 async function shipChecked(cat,i){const c=openCustomers().filter(x=>x.cat===cat)[i];if(!c)return;
-  const sel=c.lines.filter(l=>SHIPCHK.has(l.id));if(!sel.length){toast('출고할 상품을 체크하세요');return;}
+  const picked=c.lines.filter(l=>SHIPCHK.has(l.id));if(!picked.length){toast('출고할 상품을 체크하세요');return;}
+  /* 배송비/적립금(서비스 라인)은 리스트엔 안 보이지만 출고 시 함께 완료 처리 — 미출고 배송비 잔존 방지 */
+  const svc=c.lines.filter(l=>_isSvcLine(l)&&l.ship!=='done'&&!picked.includes(l));
+  const sel=picked.concat(svc);
   const trk=($('#trk_'+cat+'_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const _td=todayStr();
   const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
@@ -2194,8 +2198,10 @@ function custPopBody(){
 async function shipPopAction(){
   const cat=CUSTPOP.cat,c=openCustomers().filter(x=>x.cat===cat)[CUSTPOP.i];if(!c)return;
   const trk=($('#ptrk')?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
-  const sel=cat==='wait'?c.lines:c.lines.filter(l=>SHIPCHK.has(l.id));
-  if(!sel.length){toast('출고할 상품을 체크하세요');return;}
+  const picked=cat==='wait'?c.lines:c.lines.filter(l=>SHIPCHK.has(l.id));
+  if(!picked.length){toast('출고할 상품을 체크하세요');return;}
+  const svc=cat==='wait'?[]:c.lines.filter(l=>_isSvcLine(l)&&l.ship!=='done'&&!picked.includes(l));
+  const sel=picked.concat(svc);
   const _td=todayStr();
   const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
