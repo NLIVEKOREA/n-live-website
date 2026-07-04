@@ -973,6 +973,58 @@ function boVendorCard(vendor,items,ordered){const q=items.reduce((a,o)=>a+(o.qty
       ?`<span class="muted" style="align-self:center;font-size:12px">입고되면 출고장 → 미송관리에서 송장 입력·발송</span><button class="btn sm gray" style="margin-left:auto" onclick="boRevert('${escAttr(vendor)}')">↩ 주문필요로</button>`
       :`<button class="btn sm ghost" onclick="boCopyVendor('${escAttr(vendor)}')">📋 거래처 카톡 복사</button><button class="btn sm" style="margin-left:auto" onclick="boMarkOrdered('${escAttr(vendor)}')">✅ 거래처 주문완료</button>`}</div>
   </div>`;}
+/* ===== 사입 입금관리 (거래처 주문완료 → 사입삼촌 입금 체크) · 관리자 전용 ===== */
+let PO_PERIOD='month';
+function poSetPeriod(p){PO_PERIOD=p;render();}
+function poOrderedItems(){return mine(ORD).filter(o=>o.bo_status==='ordered'&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장'&&o.id!=null);}
+function poIsPaid(o){return !!(o.meta&&o.meta.poPaid);}
+function poDate(o){return (o.date||'').replace(/\//g,'-').slice(0,10);}
+async function poMarkPaid(vendor,date){
+  const items=poOrderedItems().filter(o=>!poIsPaid(o)&&boVendorOf(o)===vendor&&poDate(o)===date);
+  if(!items.length){toast('대상 없음');return;}
+  const amt=items.reduce((a,o)=>a+boInPrice(o)*(o.qty||0),0);
+  if(!confirm(date+' · '+vendor+'\n사입금 '+won(amt)+' ('+items.length+'건)을 입금완료로 표시할까요?\n입금대기 목록에서 사라집니다. (되돌리기 가능)'))return;
+  const prev=items.map(o=>o.meta);const at=todayStr();
+  items.forEach(o=>{o.meta=Object.assign({},o.meta||{},{poPaid:true,poPaidAt:at,poPaidBy:(ME&&ME.name)||null});});
+  let ok=true;for(const o of items){if(await saveOrd(o)===false){ok=false;break;}}
+  if(!ok){items.forEach((o,i)=>o.meta=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else toast('💰 입금완료: '+vendor+' '+won(amt));
+  render();}
+async function poUnpay(vendor,date){
+  const items=poOrderedItems().filter(o=>poIsPaid(o)&&boVendorOf(o)===vendor&&poDate(o)===date);
+  if(!items.length)return;const prev=items.map(o=>o.meta);
+  items.forEach(o=>{const m=Object.assign({},o.meta||{});delete m.poPaid;delete m.poPaidAt;delete m.poPaidBy;o.meta=m;});
+  let ok=true;for(const o of items){if(await saveOrd(o)===false){ok=false;break;}}
+  if(!ok){items.forEach((o,i)=>o.meta=prev[i]);toast('⚠️ 저장 실패');}else toast('↩ 입금 취소: '+vendor+' '+date);
+  render();}
+function wPoSettle(){
+  if(!ME||ME.scope!=='all')return `<div class="card"><div class="muted" style="padding:14px">🔒 사입 입금관리는 관리자 전용입니다.</div></div>`;
+  const period=PO_PERIOD||'month',r=periodRange(period),ordered=poOrderedItems();
+  const inRange=o=>{const d=poDate(o);return d>=r.from&&d<=r.to;};
+  const inP=ordered.filter(inRange),byV={};
+  inP.forEach(o=>{const v=boVendorOf(o),amt=boInPrice(o)*(o.qty||0);(byV[v]=byV[v]||{v,cnt:0,amt:0,unpaid:0});byV[v].cnt++;byV[v].amt+=amt;if(!poIsPaid(o))byV[v].unpaid+=amt;});
+  const vrows=Object.values(byV).sort((a,b)=>b.amt-a.amt);
+  const totAmt=vrows.reduce((a,x)=>a+x.amt,0),totUnpaid=vrows.reduce((a,x)=>a+x.unpaid,0);
+  const unpaid=ordered.filter(o=>!poIsPaid(o)),byVD={};
+  unpaid.forEach(o=>{const v=boVendorOf(o),d=poDate(o),k=v+'|'+d;(byVD[k]=byVD[k]||{v,d,cnt:0,amt:0});byVD[k].cnt++;byVD[k].amt+=boInPrice(o)*(o.qty||0);});
+  const drows=Object.values(byVD).sort((a,b)=>(b.d||'').localeCompare(a.d||'')||b.amt-a.amt);
+  const pb=(p,l)=>`<button class="chipf ${period===p?'on':''}" onclick="poSetPeriod('${p}')">${l}</button>`;
+  return `<div class="card" style="grid-column:span 2;overflow:visible">
+    <div class="card-h"><h2>🧾 사입 입금관리 <span class="muted" style="font-size:11px">거래처(사입삼촌) 입금 · 관리자 전용</span></h2><button class="btn sm ghost" onclick="go('bo')">미송사입</button></div>
+    <div class="filterbar" style="margin:2px 0 8px">${pb('today','일')}${pb('week','주')}${pb('month','월')}<span class="muted" style="font-size:11px;align-self:center;margin-left:6px">${r.label} 취합</span></div>
+    <table><thead><tr><th>거래처</th><th class="num-cell">건수</th><th class="num-cell">사입금액</th><th class="num-cell">미입금</th></tr></thead>
+    <tbody>${vrows.length?vrows.map(x=>`<tr><td><b>${esc(x.v)}</b></td><td class="num-cell">${x.cnt}</td><td class="num-cell">${won(x.amt)}</td><td class="num-cell" style="font-weight:700;color:${x.unpaid?'#dc2626':'#059669'}">${x.unpaid?won(x.unpaid):'완료'}</td></tr>`).join(''):'<tr><td colspan="4" class="muted" style="padding:12px">해당 기간 거래처 주문완료 건 없음</td></tr>'}</tbody>
+    ${vrows.length?`<tfoot><tr style="font-weight:800;border-top:2px solid var(--line)"><td>합계</td><td class="num-cell">${inP.length}</td><td class="num-cell">${won(totAmt)}</td><td class="num-cell" style="color:${totUnpaid?'#dc2626':'#059669'}">${totUnpaid?won(totUnpaid):'완료'}</td></tr></tfoot>`:''}
+    </table>
+    <div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px">
+      <div style="font-weight:800;font-size:13px;margin-bottom:6px">💰 입금 대기 <span class="muted" style="font-size:11px">거래처 주문완료 후 사입삼촌에게 입금할 건 · 일자별</span></div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+      ${drows.length?drows.map(x=>`<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:#fffef8">
+        <div style="flex:1 1 150px;min-width:0"><span class="muted" style="font-size:11.5px">${x.d}</span> · <b>${esc(x.v)}</b> <span class="muted" style="font-size:11.5px">${x.cnt}건</span><div style="font-size:13px;color:#b45309;font-weight:800">입금할 금액 ${won(x.amt)}</div></div>
+        <button class="btn sm" style="background:#059669;color:#fff" onclick="poMarkPaid('${escAttr(x.v)}','${x.d}')">💰 입금완료</button>
+      </div>`).join(''):'<div class="muted" style="padding:12px;text-align:center">입금할 사입 건 없음 👍</div>'}
+      </div>
+    </div>
+  </div>`;}
 function viewBackorder(){
   const all=boAll();
   const need=all.filter(o=>o.bo_status!=='ordered'),ordered=all.filter(o=>o.bo_status==='ordered');
@@ -1320,7 +1372,7 @@ function workMockData(){const t=workToday(),spec=[
   return spec.map((x,i)=>({id:'sample_'+String(i+1).padStart(3,'0'),title:x[0],category:x[1],date:workAddDays(t,x[2]),startTime:x[3],endTime:workAddDays(t,0)&&addHours(x[3],1),reason:x[4],person:x[5],region:x[6],address:x[6],memo:'[예시 일정] 실제 사용 전 수정하거나 삭제하세요.',status:i%5===2?'pending':'confirmed',isImportant:x[8],amount:x[7]||undefined,sellerId:x[1]==='seller_broadcast'?'seller_'+(i+1):undefined,sellerName:x[1]==='seller_broadcast'?x[5]:undefined,brandId:['brand','meeting'].includes(x[1])?'brand_'+(i+1):undefined,brandName:x[1]==='brand'?x[5]:undefined,alerts:['30분 전'],visibleToRoles:x[1]==='logistics'?['admin','owner','operation','logistics']:x[1]==='seller_broadcast'?['admin','owner','operation','seller_manager','seller']:['admin','owner','operation'],files:i===0?[{id:'sample_file',name:'N-LINKEY_Proposal.pdf',type:'pdf',size:'2.4MB'}]:[],createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}));}
 async function workLoadSamples(){if(!confirm('예시 일정 20개를 불러올까요?\\n실제 일정과 구분되도록 메모에 [예시 일정]이 표시됩니다.'))return;const d=workMockData();WORKSCH.push(...d);try{await SB.from('work_schedules').upsert(d.map(s=>({id:s.id,data:s,owner:(typeof ME!=='undefined'&&ME&&ME.name)||null,updated_at:new Date().toISOString()})));}catch(e){toast('⚠️ 예시 저장 오류');}toast('예시 일정 20개를 불러왔습니다');workRefreshWidget();}
 
-const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',sales_avg:'평균 객단가',settle:'정산 예정',repurchase:'재구매율',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',refund_wait:'반품입고·환불대기',ship_fee:'배송비 집계(당월)',misong:'미송 대기',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',vip:'단골/VIP 고객',taste:'고객 구매성향',topprod:'인기 상품',lowprod:'관리 필요 상품',bcast:'방송 성과',goal:'목표 달성률',alerts:'알림/체크 필요',schedule:'방송 스케줄',work_schedule:'업무 스케줄 캘린더',sns:'등록 SNS',inflow:'유입 채널',msg_react:'메시지 반응',new_cust:'신규 고객',quick:'업무 바로가기'};
+const WIDGET_META={sales_today:'당일 매출',sales_week:'주간 매출',sales_month:'월간 매출',sales_total:'누적 매출',sales_avg:'평균 객단가',settle:'정산 예정',repurchase:'재구매율',unpaid:'입금 대기',toship:'출고 대기',done_today:'당일 출고완료',rx:'교환/반품 요청',refund_wait:'반품입고·환불대기',ship_fee:'배송비 집계(당월)',misong:'미송 대기',po_settle:'사입 입금관리',by_staff:'셀러별 매출',by_prod:'베스트셀러',my_sales:'내 판매상품',vip:'단골/VIP 고객',taste:'고객 구매성향',topprod:'인기 상품',lowprod:'관리 필요 상품',bcast:'방송 성과',goal:'목표 달성률',alerts:'알림/체크 필요',schedule:'방송 스케줄',work_schedule:'업무 스케줄 캘린더',sns:'등록 SNS',inflow:'유입 채널',msg_react:'메시지 반응',new_cust:'신규 고객',quick:'업무 바로가기'};
 function wRender(id){const today=todayStr();
   switch(id){
     case 'sales_today':return numCard('당일 매출',won(_salesP('today')),'주문 '+_cntP('today')+'건','g','ti-cash',null,_delta('today'));
@@ -1362,6 +1414,7 @@ function wRender(id){const today=todayStr();
     case 'inflow':return wInflow();
     case 'msg_react':return wMsgReact();
     case 'new_cust':return wNewCust();
+    case 'po_settle':return wPoSettle();
     case 'quick':return quickCard();
     default:return '';
   }
@@ -1371,7 +1424,7 @@ const POS_DEFAULT={
   '보조':['unpaid','toship','rx','misong','quick'],
   '물류':['toship','done_today','misong','alerts','quick'],
   '운영':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','refund_wait','ship_fee','by_staff','vip','topprod','taste','bcast','work_schedule','quick'],
-  '관리자':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','refund_wait','ship_fee','by_staff','vip','topprod','taste','bcast','work_schedule','quick']
+  '관리자':['sales_today','sales_month','sales_total','sales_avg','repurchase','toship','rx','refund_wait','ship_fee','po_settle','by_staff','vip','topprod','taste','bcast','work_schedule','quick']
 };
 /* 역할별 '추가 가능한 위젯' 화이트리스트 — 위젯편집에서 권한 밖/물류/준비중 위젯을 못 켜게 잠금. null=전체허용 */
 const WIDGET_ROLE={
@@ -1381,7 +1434,7 @@ const WIDGET_ROLE={
   '운영':null,'관리자':null
 };
 function allowedWidgets(){const r=WIDGET_ROLE[ME.role];return r?r.slice():Object.keys(WIDGET_META);}
-function getUserWidgets(){const al=allowedWidgets();let w=PREFS.widgets;if(Array.isArray(w)&&w.length){w=w.filter(id=>al.includes(id));if(['관리자','운영'].includes(ME.role)&&!PREFS.work_schedule_added_v1){PREFS.work_schedule_added_v1=true;if(!w.includes('work_schedule'))w.push('work_schedule');PREFS.widgets=w.slice();savePrefs();}return w;}return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).filter(id=>al.includes(id));}
+function getUserWidgets(){const al=allowedWidgets();let w=PREFS.widgets;if(Array.isArray(w)&&w.length){w=w.filter(id=>al.includes(id));if(['관리자','운영'].includes(ME.role)&&!PREFS.work_schedule_added_v1){PREFS.work_schedule_added_v1=true;if(!w.includes('work_schedule'))w.push('work_schedule');PREFS.widgets=w.slice();savePrefs();}if(ME.role==='관리자'&&!PREFS.po_settle_added_v1){PREFS.po_settle_added_v1=true;if(!w.includes('po_settle'))w.push('po_settle');PREFS.widgets=w.slice();savePrefs();}return w;}return (POS_DEFAULT[ME.role]||POS_DEFAULT['관리자']).filter(id=>al.includes(id));}
 function saveUserWidgets(arr){PREFS.widgets=arr;savePrefs();}
 function wgToggle(id){let a=getUserWidgets();const rm=a.includes(id);if(rm)a=a.filter(x=>x!==id);else{if(!allowedWidgets().includes(id)){toast('⚠️ 권한상 추가할 수 없는 위젯입니다');return;}a.push(id);}saveUserWidgets(a);render();renderWidgetEdit();if(rm&&VIEW==='dash')setTimeout(function(){try{if(_grid){_grid.compact();saveLayout(_grid.save(false));}}catch(e){}},130);}
 function wgMove(id,dir){let a=getUserWidgets();const i=a.indexOf(id);if(i<0)return;const j=i+dir;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;saveUserWidgets(a);render();renderWidgetEdit();}
@@ -1402,7 +1455,7 @@ function renderWidgetEdit(){const a=getUserWidgets();$('#modalBox').className='m
 const WIDGET_SIZE={
  sales_today:{w:2,h:3},sales_week:{w:2,h:3},sales_month:{w:2,h:3},sales_total:{w:2,h:3},sales_avg:{w:2,h:3},settle:{w:2,h:3},repurchase:{w:2,h:3},unpaid:{w:2,h:3},toship:{w:2,h:3},done_today:{w:2,h:3},rx:{w:2,h:3},ship_fee:{w:2,h:3},
  sns:{w:4,h:5},vip:{w:5,h:6},taste:{w:7,h:5},topprod:{w:5,h:5},bcast:{w:7,h:5},schedule:{w:5,h:4},work_schedule:{w:12,h:14},
- misong:{w:4,h:4},refund_wait:{w:6,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},new_cust:{w:6,h:5},quick:{w:4,h:3}
+ misong:{w:4,h:4},refund_wait:{w:6,h:4},lowprod:{w:4,h:4},goal:{w:4,h:4},alerts:{w:4,h:4},inflow:{w:4,h:4},msg_react:{w:4,h:4},by_staff:{w:4,h:4},by_prod:{w:4,h:4},my_sales:{w:4,h:4},new_cust:{w:6,h:5},po_settle:{w:6,h:6},quick:{w:4,h:3}
 };
 /* 포지션별 기본 레이아웃 — 신규 사용자/미설정 시 오·열 맞춘 기본 배치 (12열) */
 const POS_LAYOUT={
@@ -1440,6 +1493,7 @@ function viewDash(){
     const w=Math.min(cols,s.w||sz.w);let h=s.h||sz.h;
     /* 환불대기 위젯은 회수입고 건수만큼 높이 자동확장 → 어떤 크기에서도 스크롤 없이 전부 표시 */
     if(id==='refund_wait'){const n=mine(ORD).filter(o=>o.rxtype==='refund'&&o.rxstat==='gotback').length;h=Math.max(3,Math.min(14,2+Math.ceil(n*(w<=4?2.2:1.5))));}
+    if(id==='po_settle'){const g=new Set();mine(ORD).forEach(o=>{if(o.bo_status==='ordered'&&!(o.meta&&o.meta.poPaid)&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장')g.add(boVendorOf(o)+'|'+(o.date||'').slice(0,10));});h=Math.max(6,Math.min(18,7+Math.ceil(g.size*0.9)));}
     return `<div class="grid-stack-item" gs-id="${id}" gs-w="${w}" gs-h="${h}"${s.x!=null?` gs-x="${Math.min(s.x,Math.max(0,cols-w))}"`:''}${s.y!=null?` gs-y="${s.y}"`:''}><div class="grid-stack-item-content"><button class="wx" title="위젯 제거" aria-label="${esc(WIDGET_META[id]||id)} 위젯 제거" onclick="event.stopPropagation();wgToggle('${id}')">×</button>${wRender(id)}</div></div>`;}).join('');
   return `
   <div class="greet">
