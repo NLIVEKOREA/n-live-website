@@ -934,8 +934,15 @@ function boVendorOf(o){const s=skuOf(o.code,o.color,o.size)||STOCK.find(x=>x.cod
 function boInPrice(o){const s=skuOf(o.code,o.color,o.size)||STOCK.find(x=>x.code===o.code);return (s&&s.in_price)||0;}
 function boGroupByVendor(items){const by={};items.forEach(o=>{const v=boVendorOf(o);(by[v]=by[v]||[]).push(o);});return by;}
 function boSetRange(f,t){BO_FROM=f;BO_TO=t;render();}
-function boVendorText(vendor,items){let txt='['+vendor+' 발주 · '+todayStr()+']\n';let q=0,amt=0;
-  items.forEach(o=>{q+=o.qty||0;amt+=boInPrice(o)*(o.qty||0);txt+='· '+(o.disp||prodName(o.code))+' / '+(o.color||'-')+' / '+(o.size||'-')+' / '+(o.qty||0)+'개\n';});
+function boVendorText(vendor,items){
+  /* 같은 품목(코드+색상+사이즈)은 취합해 수량 합산 — 고객이 3명이어도 '3개' 한 줄로 */
+  const map=new Map();
+  items.forEach(o=>{const k=(o.code||'')+'|'+(o.color||'')+'|'+(o.size||'');
+    let g=map.get(k);if(!g){g={disp:o.disp||prodName(o.code),color:o.color||'-',size:o.size||'-',qty:0,in:boInPrice(o)};map.set(k,g);}
+    g.qty+=o.qty||0;});
+  let txt='['+vendor+' 발주 · '+todayStr()+']\n';let q=0,amt=0;
+  [...map.values()].forEach(g=>{q+=g.qty;const line=g.in*g.qty;amt+=line;
+    txt+='· '+g.disp+' / '+g.color+' / '+g.size+' / '+g.qty+'개'+(g.in?(' / 단가 '+won(g.in)+' / '+won(line)):'')+'\n';});
   txt+='─ 총 '+q+'개'+(amt?(' · 입고금액 '+won(amt)):'')+'\n';return txt;}
 function boCopyVendor(vendor){const items=boAll().filter(o=>(o.bo_status!=='ordered')&&boVendorOf(o)===vendor);if(!items.length){toast('복사할 품목이 없습니다');return;}
   const txt=boVendorText(vendor,items);const done=()=>toast('📋 '+vendor+' 발주서 복사 — 거래처 카톡에 붙여넣으세요');
