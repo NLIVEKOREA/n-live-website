@@ -2001,12 +2001,13 @@ async function sendBackOnly(gi){const g=curGroups()[gi];if(!g)return;const chg=g
 async function sendBackAll(gi){const g=curGroups()[gi];if(!g)return;const chg=g.items.filter(o=>o.id!=null);if(!chg.length)return;
   const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req='미송';delete REQDRAFT[o.id];});const ids=chg.map(o=>o.id);
   let ok=true;try{const {error}=await SB.from('orders').update({req:'미송'}).in('id',ids);if(error){console.error('sendBackAll',error);ok=false;}}catch(e){console.error(e);ok=false;}
-  if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else toast('📦 일괄 미송: '+g.cust+' '+ids.length+'건 전체 미송관리로 (재입고 후 한번에 출고)');render();}
+  if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else{toast('📦 일괄 미송: '+g.cust+' '+ids.length+'건 전체 미송관리로 (재입고 후 한번에 출고)');await shipConsolidate(g.cust);}render();}
 /* 합배 배송비 통합: 같은 고객 '출고요청' 묶음은 배송비 1줄만. 금·토·일 방송이 월요일 한 박스로 나가므로 각각 배송비 X.
    규칙 = 무료배송 라인이 있거나 상품합계≥무료기준 → 무료(배송비 삭제, 무료배송 1줄), 아니면 배송비 4,000 1줄. 나머지 배송비 행은 삭제. */
 async function shipConsolidate(cust){
   if(!cust)return false;
-  const set=ORD.filter(o=>o.cust===cust&&o.ship!=='done'&&(o.req==='출고요청'||o.req==='합배요청'));
+  /* 같은 고객의 미출고 주문 전체 = 한 박스(합배) 대상 — 미송이든 출고요청이든 결국 함께 나감 */
+  const set=ORD.filter(o=>o.cust===cust&&o.ship!=='done');
   const ships=set.filter(o=>o.code==='배송비'&&o.id!=null);
   if(ships.length===0)return false;
   const goods=set.filter(o=>o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장');
