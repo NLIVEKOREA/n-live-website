@@ -1913,8 +1913,16 @@ function grpDC(rows){const m={};rows.forEach(o=>{const k=(o.date||'')+'||'+(o.cu
 function curGroups(){return SALETAB==='order'?grpDC(orderRows()):grpDC(shipRows());}
 function saveReq(gi){const g=curGroups()[gi];if(!g)return;let n=0;g.items.forEach(o=>{const d=REQDRAFT[o.id];if(d){o.req=d.req==='없음'?'':d.req;o.reason=d.reason;delete REQDRAFT[o.id];n++;}});toast(n?('💾 '+g.cust+' 저장 ('+n+'건)'):'변경된 요청이 없습니다');render();}
 function bulkShipReq(gi){const g=curGroups()[gi];if(!g)return;let n=0;g.items.forEach(o=>{if(!o.back){if(!REQDRAFT[o.id])REQDRAFT[o.id]={req:o.req||'없음',reason:o.reason||''};REQDRAFT[o.id].req='출고요청';n++;}});toast('📦 '+g.cust+' 미송 제외 '+n+'건 → 출고요청 (저장 눌러 확정)');render();}
-function sendBackOnly(gi){const g=curGroups()[gi];if(!g)return;let n=0;g.items.forEach(o=>{if(o.back){o.req='미송';delete REQDRAFT[o.id];n++;}});toast('⏳ 미송 '+n+'건 → 미송관리로 이동');render();}
-function sendBackAll(gi){const g=curGroups()[gi];if(!g)return;g.items.forEach(o=>{o.req='미송';delete REQDRAFT[o.id];});toast('⏳ '+g.cust+' 전체 '+g.items.length+'건 → 미송관리로 이동');render();}
+/* 출고가능분 먼저: 미송 상품만 미송관리 대기, 나머지는 그대로 출고 진행 · DB 저장(새로고침해도 유지) */
+async function sendBackOnly(gi){const g=curGroups()[gi];if(!g)return;const chg=g.items.filter(o=>o.back&&o.id!=null);if(!chg.length){toast('미송 상품이 없습니다');return;}
+  const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req='미송';delete REQDRAFT[o.id];});const ids=chg.map(o=>o.id);
+  let ok=true;try{const {error}=await SB.from('orders').update({req:'미송'}).in('id',ids);if(error){console.error('sendBackOnly',error);ok=false;}}catch(e){console.error(e);ok=false;}
+  if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else toast('🚚 출고가능분 먼저: 미송 '+ids.length+'건만 미송관리 대기 · 나머지는 출고 진행');render();}
+/* 전체 모아 한번에: 주문 전체를 미송관리에서 대기 → 재입고 후 합배로 함께 출고 · DB 저장 */
+async function sendBackAll(gi){const g=curGroups()[gi];if(!g)return;const chg=g.items.filter(o=>o.id!=null);if(!chg.length)return;
+  const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req='미송';delete REQDRAFT[o.id];});const ids=chg.map(o=>o.id);
+  let ok=true;try{const {error}=await SB.from('orders').update({req:'미송'}).in('id',ids);if(error){console.error('sendBackAll',error);ok=false;}}catch(e){console.error(e);ok=false;}
+  if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else toast('🔗 전체 모아 한번에: '+g.cust+' '+ids.length+'건 미송관리 대기 (재입고 후 함께 출고)');render();}
 function setShipReq(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;if(v==='유지'){o.req='출고요청';o.reason='';}else{o.req=v;const rr=REQ_REASON[v];if(rr&&!rr.includes(o.reason))o.reason=rr[0];}render();}
 function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(o)o.reason=v;render();}
 function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
@@ -1929,7 +1937,7 @@ function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
       <td>${o.back?'<span class="pill p-low">미송 보류</span>':`<select onchange="setReqDraft(${o.id},'req',this.value)" style="padding:6px 7px;font-size:12px;border-radius:7px;font-weight:700">${['없음','출고요청','합배요청'].map(s=>`<option ${dr===s?'selected':''}>${s}</option>`).join('')}</select>`}</td>
     </tr>`}).join('')}
     </tbody></table>
-    <div class="card-act"><button class="btn sm ghost" onclick='editPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>✏️ 전체수정</button><button class="btn sm red ghost" onclick='cancelPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>🗑️ 취소</button><span style="flex:1"></span>${g.items.some(l=>l.back)?`<button class="btn sm" style="background:var(--amber)" onclick="sendBackOnly(${gi})">미송만 미송관리</button><button class="btn sm" style="background:var(--red)" onclick="sendBackAll(${gi})">전체 미송관리</button>`:''}<button class="btn sm ghost" onclick="bulkShipReq(${gi})">일괄 출고요청</button><button class="btn sm" onclick="saveReq(${gi})">저장</button></div>
+    <div class="card-act"><button class="btn sm ghost" onclick='editPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>✏️ 전체수정</button><button class="btn sm red ghost" onclick='cancelPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>🗑️ 취소</button><span style="flex:1"></span>${g.items.some(l=>l.back)?`<button class="btn sm" style="background:var(--amber)" onclick="sendBackOnly(${gi})" title="재고 있는 상품은 지금 출고, 미송만 미송관리에서 대기">🚚 출고가능분 먼저</button><button class="btn sm" style="background:var(--red)" onclick="sendBackAll(${gi})" title="주문 전체를 미송관리에서 대기 → 재입고 후 합배로 한번에 출고">🔗 전체 모아 한번에</button>`:''}<button class="btn sm ghost" onclick="bulkShipReq(${gi})">일괄 출고요청</button><button class="btn sm" onclick="saveReq(${gi})">저장</button></div>
   </div>`;
 }
 function shipCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
@@ -2012,6 +2020,21 @@ function waitCard(list){
     <div class="sg-foot"><input id="trk_wait_${i}" placeholder="송장번호 입력"><button class="btn green" onclick="shipWait(${i})">✅ 출고완료</button></div>
   </div>`).join('')+'</div></div>';
 }
+/* 미송·합배 카드 한 줄(상품) 렌더 — 미송관리 카드와 팝업이 공유 */
+function shipRowHtml(o,cat,isWait){const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=cat==='back'?(progOf(o)==='포장'):(!o.back&&(q==null||q>0)),sel=SHIPCHK.has(o.id);
+  return `<div class="sg-row ${o.back?'dim':''}">
+    ${isWait?'':(canShip?`<button class="sg-pick ${sel?'on':''}" onclick="shipToggle(${o.id})">${sel?'☑ 선택됨':'☐ 출고선택'}</button>`:'<span class="sg-pick no">미송 보류</span>')}
+    <span class="tagbox">${tagShow(o)}</span>
+    <span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}${cat==='back'&&progOf(o)==='포장'?' <span class="pill p-req" style="font-size:10px">📦 포장됨·출고대기</span>':''}${o.back?(o.bo_status==='ordered'?' <span class="pill p-done" style="font-size:10px">🏭 거래처 주문완료</span>':' <span class="pill p-low" style="font-size:10px">발주 전</span>'):''}</span>
+    <span class="sg-qty">${o.qty}개</span>
+    ${isWait?'':`<span class="sg-stk ${(q!=null&&q<=0)?'low':''}">재고 ${q==null?'-':q}</span>`}
+    <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span>
+    ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
+  </div>`;}
+/* 고객 카드 안에서 주문날짜별로 묶어 표시 (합배/미송 여러 주문일 때 날짜 구분) */
+function shipRowsByDate(c,cat,isWait){const byd={};(c.lines||[]).forEach(o=>{const d=(o.date||'-').replace(/\//g,'-');(byd[d]=byd[d]||[]).push(o);});
+  const dates=Object.keys(byd).sort((a,b)=>String(a).localeCompare(String(b)));
+  return dates.map(d=>`<div style="font-size:11px;font-weight:800;color:#334155;background:#eef2f7;padding:4px 9px;border-radius:7px;margin:8px 0 4px">🗓️ ${d} <span class="muted" style="font-weight:400">· ${byd[d].length}건</span></div>`+byd[d].map(o=>shipRowHtml(o,cat,isWait)).join('')).join('');}
 function manageCards(list,cat){
   if(!list.length)return `<div class="card"><div class="muted" style="padding:16px">${cat==='back'?'미송 고객이 없습니다':'합배 대상이 없습니다'}</div></div>`;
   return `<div class="card"><div class="note">💡 ${cat==='back'?'재고 있는 상품만 <b>출고선택</b> → 송장 입력 → [출고완료]. 미송 상품은 고객별로 그대로 남습니다.':'같은 고객의 여러 주문을 <b>출고선택</b>해 한 송장으로 함께 보냅니다.'}</div><div class="sg-grid">`+
@@ -2022,16 +2045,7 @@ function manageCards(list,cat){
       <span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('${cat}',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>
     <div class="sg-rows">
-    ${c.lines.map(o=>{const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=cat==='back'?(progOf(o)==='포장'):(!o.back&&(q==null||q>0)),sel=SHIPCHK.has(o.id);return `
-      <div class="sg-row ${o.back?'dim':''}">
-        ${canShip?`<button class="sg-pick ${sel?'on':''}" onclick="shipToggle(${o.id})">${sel?'☑ 선택됨':'☐ 출고선택'}</button>`:'<span class="sg-pick no">미송 보류</span>'}
-        <span class="tagbox">${tagShow(o)}</span>
-        <span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}${cat==='back'&&progOf(o)==='포장'?' <span class="pill p-req" style="font-size:10px">📦 포장됨·출고대기</span>':''}${o.back?(o.bo_status==='ordered'?' <span class="pill p-done" style="font-size:10px">🏭 거래처 주문완료</span>':' <span class="pill p-low" style="font-size:10px">발주 전</span>'):''}</span>
-        <span class="sg-qty">${o.qty}개</span>
-        <span class="sg-stk ${(q!=null&&q<=0)?'low':''}">재고 ${q==null?'-':q}</span>
-        <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span>
-        ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
-      </div>`}).join('')}
+    ${shipRowsByDate(c,cat,false)}
     </div>
     <div class="sg-foot"><input id="trk_${cat}_${i}" placeholder="송장번호 입력"><button class="btn green" onclick="shipChecked('${cat}',${i})">✅ 출고완료</button></div>
   </div>`).join('')+'</div></div>';
@@ -2073,14 +2087,7 @@ function custPopBody(){
       ${c.dates.size>=2?'<span class="pill p-req">합배 '+c.dates.size+'주문</span>':''}</div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>
     <div class="sg-rows">
-    ${c.lines.map(o=>{const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=cat==='back'?(progOf(o)==='포장'):(!o.back&&(q==null||q>0)),sel=SHIPCHK.has(o.id);return `
-      <div class="sg-row ${o.back?'dim':''}">
-        ${isWait?'':(canShip?`<button class="sg-pick ${sel?'on':''}" onclick="shipToggle(${o.id})">${sel?'☑ 선택됨':'☐ 출고선택'}</button>`:'<span class="sg-pick no">미송 보류</span>')}
-        <span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}${cat==='back'&&progOf(o)==='포장'?' <span class="pill p-req" style="font-size:10px">📦 포장됨·출고대기</span>':''}</span><span class="sg-qty">${o.qty}개</span>
-        ${isWait?'':`<span class="sg-stk ${(q!=null&&q<=0)?'low':''}">재고 ${q==null?'-':q}</span>`}
-        <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span>
-        ${cat==='back'?`<button class="btn sm red ghost" style="padding:3px 9px;font-size:11px;margin-left:4px" onclick="cancelBackOrder(${o.id})" title="배송지연 등으로 취소 · 재고 복원">취소</button>`:''}
-      </div>`}).join('')}
+    ${shipRowsByDate(c,cat,isWait)}
     </div>
     <div class="sg-foot"><input id="ptrk" placeholder="송장번호 입력"><button class="btn green" onclick="shipPopAction()">✅ 출고완료</button></div>`;
 }
