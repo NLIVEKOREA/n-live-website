@@ -1653,6 +1653,7 @@ async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;con
         try{await SB.from('orders').update(upd).eq('id',o.id);}catch(e){console.error(e);}
       }
     }
+    await shipConsolidate(g.cust);/* 합배 배송비 통합 — 같은 고객 여러 주문(주말 누적)이 결제되면 배송비 1줄로 */
     CDATE=(g.date||'').replace(/\//g,'-').slice(0,10)||CDATE;CQ='';toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');}
   else{g.items.forEach((o,i)=>{o.pay=prev[i].pay;o.payway=prev[i].payway;});toast('⚠️ 저장 실패 — 변경이 취소됐어요. 다시 시도하세요');}
   render();}
