@@ -590,7 +590,7 @@ async function dbLoadAll(){
     try{const ls=await SB.from('live_sessions').select('*').order('id',{ascending:false});LIVE_SESS=(ls&&ls.data)||[];
         const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];
         const pi=await SB.from('product_images').select('*');PIMG={};((pi&&pi.data)||[]).forEach(r=>{PIMG[r.code]=r.url;});}catch(e){console.warn('live load',e);LIVE_SESS=LIVE_SESS||[];SESS_PROD=SESS_PROD||[];PIMG=PIMG||{};}
-    if(window.ME&&(ME.scope==='all'||ME.scope==='logi'||(typeof canStockEdit==='function'&&canStockEdit()))){try{const sc=await SB.from('stock_cost').select('*');if(sc&&sc.data){const cm={};sc.data.forEach(r=>cm[r.stock_id]=r.in_price);STOCK.forEach(s=>{s.in_price=(cm[s.id]!=null)?cm[s.id]:(s.in_price||0);});}}catch(e){console.error('cost',e);}}else{STOCK.forEach(s=>{s.in_price=0;});}
+    if(typeof ME!=='undefined'&&ME&&(ME.scope==='all'||ME.scope==='logi'||(typeof canStockEdit==='function'&&canStockEdit()))){try{const sc=await SB.from('stock_cost').select('*');if(sc&&sc.data){const cm={};sc.data.forEach(r=>cm[r.stock_id]=r.in_price);STOCK.forEach(s=>{s.in_price=(cm[s.id]!=null)?cm[s.id]:(s.in_price||0);});}}catch(e){console.error('cost',e);}}else if(typeof ME!=='undefined'&&ME){STOCK.forEach(s=>{s.in_price=0;});}
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
 }
 /* 실시간 동기화 — 다른 사용자의 변경을 자동 반영. 입력 중엔 화면 재렌더 보류(입력값 보호) */
