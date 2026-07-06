@@ -901,7 +901,7 @@ const colorsOf=c=>[...new Set(STOCK.filter(s=>s.code===c).map(s=>s.color))];
 /* 고객용(문자·안내문구): 품목코드 없이 상품명+옵션만 */
 const custLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
 /* 내부 리스트용: 품목코드 + 상품명 + 옵션 (번호표는 각 리스트의 별도 컬럼/태그박스) */
-const itemLabel=o=>{const c=o&&o.code&&!['배송비','적립금','방송상품','낱장'].includes(o.code)?o.code+' ':'';return c+custLabel(o);};
+const itemLabel=o=>{const c=o&&o.code&&!['배송비','적립금','방송상품','낱장'].includes(o.code)?'['+o.code+'] ':'';return c+custLabel(o);};
 /* 샘플 상품(반납대상): 재고에 sample=true인 품목. 내부 화면에만 ⚠️샘플 표시(고객 문자엔 미표시) */
 function isSampleCode(code,color,size){const t=skuOf(code,color,size);return !!(t&&t.sample);}
 function isSampleO(o){if(!o||!o.code)return false;const t=skuOf(o.code,o.color,o.size);if(t)return !!t.sample;return STOCK.some(x=>x.code===o.code&&x.sample);}
