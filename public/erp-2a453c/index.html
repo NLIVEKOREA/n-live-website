@@ -873,7 +873,13 @@ function sizeRank(sz){const s=String(sz==null?'':sz).toUpperCase().replace(/\s/g
 function normCode6(code){const g=String(code==null?'':code).replace(/\D/g,'');return (g.length===5||g.length===6)?g.padStart(6,'0'):String(code==null?'':code);}
 function isFreeSize(sz){return !sz||['F','FREE','FR','ONE','ONESIZE'].includes(String(sz).toUpperCase());}
 function skuFullCode(code,color,size,pool){const raw=String(code==null?'':code);if(raw.includes('-'))return raw;/* 구 데이터: 전체코드가 code에 통째로 저장됨 → 그대로 표시(접미사 재부여 안 함) */const src=pool||STOCK;const same=src.filter(x=>String(x.code)===String(code));const colors=[];same.forEach(x=>{if(x.color&&x.color!=='-'&&colors.indexOf(x.color)<0)colors.push(x.color);});const sizes=[...new Set(same.map(x=>x.size).filter(Boolean))].sort((a,b)=>sizeRank(a)-sizeRank(b));const c6=normCode6(code);const ci=colors.indexOf(color);const cp=ci>=0?'-'+String(ci+1).padStart(2,'0'):'';const si=sizes.indexOf(size);const sp=isFreeSize(size)?'':(si>=0?'-'+String(si+1).padStart(2,'0'):'');return c6+cp+sp;}
-function nextProductCode(){let mx=0;STOCK.forEach(s=>{const g=String(s.code||'').replace(/\D/g,'');if(g.length===5||g.length===6){const n=parseInt(g,10);if(n>mx)mx=n;}});return String(mx+1).padStart(6,'0');}
+function baseOfCode(c){return String(c==null?'':c).split('-')[0].replace(/\D/g,'');}
+function usedBaseNums(){const u=new Set();STOCK.forEach(s=>{const g=baseOfCode(s.code);if(g)u.add(parseInt(g,10));});return u;}
+/* 가장 낮은 빈 6자리 품번(중복없이 최소값) — 빈칸부터 채움 */
+function nextProductCode(){const u=usedBaseNums();let n=1;while(u.has(n))n++;return String(n).padStart(6,'0');}
+function baseTaken(base){const b=parseInt(String(base).replace(/\D/g,''),10);return !isNaN(b)&&usedBaseNums().has(b);}
+/* 정확 중복(메인번호+색상+사이즈) 존재여부 */
+function skuExists(code,color,size,exceptId){const b=parseInt(baseOfCode(code),10);return STOCK.some(s=>s.id!==exceptId&&parseInt(baseOfCode(s.code),10)===b&&(s.color||'')===(color||'')&&(s.size||'')===(size||''));}
 const colorsOf=c=>[...new Set(STOCK.filter(s=>s.code===c).map(s=>s.color))];
 const itemLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
 /* 샘플 상품(반납대상): 재고에 sample=true인 품목. 내부 화면에만 ⚠️샘플 표시(고객 문자엔 미표시) */
@@ -3133,7 +3139,7 @@ function prodFormHTML(s){s=s||{};const cat=s.category||'';const showSeason=CAT_H
 }
 function catChange(){const cat=$('#mp_cat').value;$('#mp_subcat').innerHTML=[''].concat(CAT_TREE[cat]||[]).map(x=>`<option>${x}</option>`).join('');$('#mp_seasonRow').style.display=CAT_HASSEASON(cat)?'':'none';}
 function openProdModal(prefill){prefill=prefill||'';PRODEDIT=null;const isNum=/^\d+$/.test(prefill);
-  $('#modalBox').innerHTML=`<h3>품목 신규 등록</h3><div class="ms">검색에 없어 새로 등록합니다. 저장하면 작업 중인 주문에 바로 추가돼요(화면 유지).</div>${prodFormHTML(isNum?{code:prefill}:{name:prefill})}
+  $('#modalBox').innerHTML=`<h3>품목 신규 등록</h3><div class="ms">검색에 없어 새로 등록합니다. 품번은 <b>가장 낮은 빈 번호</b>가 기본으로 채워져요(수정 가능). 저장하면 작업 중인 주문에 바로 추가돼요(화면 유지).</div>${prodFormHTML(isNum?{code:normCode6(prefill)}:{code:nextProductCode(),name:prefill})}
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveProd()">저장</button></div>`;
   $('#modal').classList.remove('hide');setTimeout(()=>{const el=$('#mp_code');if(el)el.focus();},40);}
 function openProdEdit(id){if(!canStockEdit()){toast('셀러팀은 재고 조회만 가능합니다');return;}const s=STOCK.find(x=>x.id===id);if(!s){toast('품목 정보를 찾을 수 없어요');return;}PRODEDIT=id;
@@ -3143,7 +3149,11 @@ function openProdEdit(id){if(!canStockEdit()){toast('셀러팀은 재고 조회�
 async function saveProd(){if(!canStockEdit()){toast('권한이 없습니다');return;}const code=$('#mp_code').value.trim(),name=$('#mp_name').value.trim();
   if(!code||!name){toast('품목코드·품목명은 필수');return;}
   const d={code,tag:$('#mp_tag').value.trim()||'-',vendor:$('#mp_vendor').value.trim()||null,name,color:$('#mp_color').value.trim()||'-',size:$('#mp_size').value.trim()||'F',in_price:parseInt($('#mp_inprice').value)||0,price:parseInt($('#mp_price').value)||0,category:$('#mp_cat').value||null,subcategory:$('#mp_subcat').value||null,season:(CAT_HASSEASON($('#mp_cat').value)?$('#mp_season').value:'')||null,qty:parseInt($('#mp_qty').value)||0,sample:!!($('#mp_sample')&&$('#mp_sample').checked)};
-  const editing=PRODEDIT!=null;let s;
+  const editing=PRODEDIT!=null;
+  /* 중복 방지: 같은 품번+색상+사이즈 = 차단 / 메인번호만 같으면 옵션추가 확인 */
+  if(skuExists(code,d.color,d.size,editing?PRODEDIT:undefined)){alert('❌ 중복 등록 불가\n\n품번 '+baseOfCode(code)+' · 색상 '+d.color+' · 사이즈 '+d.size+' 은(는) 이미 등록돼 있습니다.\n색상이나 사이즈를 바꾸거나 번호를 확인하세요.');return;}
+  if(!editing&&baseTaken(baseOfCode(code))){if(!confirm('⚠️ 메인번호 '+baseOfCode(code)+' 는 이미 등록된 상품이에요.\n\n색상/사이즈 옵션을 추가하는 게 맞나요?\n[확인] = 옵션(색상/사이즈) 추가로 등록\n[취소] = 다른 새 상품이면 번호를 바꿔주세요'))return;}
+  let s;
   if(editing){s=STOCK.find(x=>x.id===PRODEDIT);if(s)Object.assign(s,d);}
   else{s=Object.assign({},d);STOCK.unshift(s);}
   await saveStockRow(s);
@@ -3383,9 +3393,15 @@ function saveBulk(){const b=BULK;if(!String(b.name).trim()){toast('상품명을 
   let sample=!!b.sample;
   if(!anyQty&&!sample){sample=confirm(SAMPLE_CONFIRM);}/* 수량 0인데 샘플 미체크 → 확인창 fallback */
   /* 선택한 색상×사이즈 전 조합 등록 — 수량 0이어도 등록(샘플·품절/미송 대비) */
-  let n=0;colors.forEach(c=>{sizes.forEach(sz=>{const q=b.qty[c+'|'+sz]||0;STAGED.unshift({chk:true,tag:bulkTag,code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q,sample});n++;});});
-  if(!n){toast('색상·사이즈를 선택하세요');return;}
-  closeModal();toast('✅ '+n+'개 SKU가 입고 목록에 추가됨 — 확인 후 [저장]하세요');render();}
+  const _base=normCode6(String(b.code).trim());
+  /* 중복 방지: 이미 있는 조합은 제외, 메인번호가 이미 있으면 옵션추가 확인 */
+  const _combos=[];colors.forEach(c=>sizes.forEach(sz=>_combos.push([c,sz])));
+  const _dup=_combos.filter(([c,sz])=>skuExists(b.code,c,sz));
+  if(_dup.length===_combos.length){alert('❌ 중복 등록 불가\n\n메인번호 '+_base+' 의 선택한 색상×사이즈 조합이 이미 전부 등록돼 있습니다.');return;}
+  if(baseTaken(_base)){if(!confirm('⚠️ 메인번호 '+_base+' 는 이미 등록된 상품이에요.\n\n색상/사이즈 옵션을 추가하는 게 맞나요?\n[확인] = 옵션 추가로 등록'+(_dup.length?(' (이미 있는 조합 '+_dup.length+'개 자동 제외)'):'')+'\n[취소] = 다른 새 상품이면 번호를 바꿔주세요'))return;}
+  let n=0,skip=0;colors.forEach(c=>{sizes.forEach(sz=>{if(skuExists(b.code,c,sz)){skip++;return;}const q=b.qty[c+'|'+sz]||0;STAGED.unshift({chk:true,tag:bulkTag,code:String(b.code).trim(),vendor:String(b.vendor).trim()||null,name:String(b.name).trim(),color:c,size:sz,in_price:parseInt(b.inprice)||0,price:parseInt(b.price)||0,category:b.cat||null,subcategory:b.subcat||null,season:(CAT_HASSEASON(b.cat)?b.season:'')||null,qty:q,sample});n++;});});
+  if(!n){toast('추가할 새 조합이 없습니다 (모두 이미 등록됨)');return;}
+  closeModal();toast('✅ '+n+'개 SKU 입고목록 추가'+(skip?(' · 중복 '+skip+'개 제외'):'')+' — 확인 후 [저장]하세요');render();}
 const SAMPLE_CONFIRM='재고 0으로 등록됩니다.\n\n이 상품이 샘플(반납 대상)인가요?\n\n[확인] = 샘플로 체크해서 등록 (주문 시 자동 미송·사입 처리)\n[취소] = 일반 상품(0재고)으로 등록';
 function stagedAdd(){
   if(!SFORM.code.trim()||!SFORM.name.trim()){toast('품목코드·품목명은 필수');return;}
