@@ -548,6 +548,7 @@ async function dbFetchAll(table,col,asc){let all=[],f=0;const sz=1000;while(true
 let SHIPPING=[];
 let SCHED=[];
 let PAYROLL_RECORDS=[];
+let PAY_DRAFTS={};/* 급여 드래프트·확정잠금 공용저장 — work_schedules '_payroll' 행(관리자 공유, 개인 PREFS 아님) */
 let LIVE_SESS=[],SESS_PROD=[],PIMG={};/* 라이브 판매: 방송 세션 + 방송 상품 + 품번별 상품사진 */
 const baseCode=c=>String(c||'').split('-')[0];/* 품번 base(색상/사이즈 접미사 제거) */
 /* 번호표 표기: ERP는 #064(3자리·#), 고객화면은 64번. 숫자 아니면(캡처 QAM1 등) 원문 */
@@ -591,7 +592,8 @@ async function dbLoadAll(){
     try{const wsr=await SB.from('work_schedules').select('*');const wrows=(wsr&&wsr.data)||[];
         const pr=wrows.find(r=>r.id==='_emp_perms');EMP_PERMS=(pr&&pr.data)||{};
         const hr=wrows.find(r=>r.id==='_emp_hire');EMP_HIRE=(hr&&hr.data)||{};
-        WORKSCH=wrows.filter(r=>r.id!=='_emp_perms'&&r.id!=='_emp_hire').map(r=>Object.assign({},r.data||{},{id:r.id}));
+        const py=wrows.find(r=>r.id==='_payroll');PAY_DRAFTS=(py&&py.data)||{};
+        WORKSCH=wrows.filter(r=>r.id!=='_emp_perms'&&r.id!=='_emp_hire'&&r.id!=='_payroll').map(r=>Object.assign({},r.data||{},{id:r.id}));
         EMPLOYEES.forEach(e=>{e.perms=EMP_PERMS[e.login_id]||null;e.hire_date=EMP_HIRE[e.login_id]||null;});
         if(ME)ME.perms=EMP_PERMS[ME.id]||null;
     }catch(e){console.warn('work_schedules load',e);WORKSCH=WORKSCH||[];}
@@ -914,7 +916,7 @@ const tagShow=o=>{
     if(o.code==='방송상품')return '캡처';
     if(o.code&&o.code!=='배송비'&&o.code!=='적립금'){const t=tagOf(o.code);return (t!=null&&String(t).trim()!==''&&t!=='-')?t:hashNo(o.code);}}
   return (o.tag&&o.tag!=='-')?o.tag:tagOf(o.code);};
-const amtOf=o=>o.price*o.qty;
+const amtOf=o=>(+o.price||0)*(+o.qty||0);
 const payPill=p=>p==='paid'?'<span class="pill p-done">결제완료</span>':'<span class="pill p-miss">미결제</span>';
 const shipPill=s=>({miss:'<span class="pill p-miss">미송</span>',req:'<span class="pill p-req">출고요청</span>',done:'<span class="pill p-done">출고완료</span>'}[s]);
 const retPill=s=>({wait:'<span class="pill p-miss">환불요청</span>',refund:'<span class="pill p-req">환불완료</span>',done:'<span class="pill p-done">전산처리완료</span>'}[s]);
@@ -1686,7 +1688,7 @@ function paidCards(){
   if(gs.length>show.length)out+=`<div class="muted" style="padding:8px;font-size:12px">… 외 ${gs.length-show.length}건</div>`;
   return out;
 }
-async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';
+async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const _pk='paygrp:'+g.date+'|'+g.cust;if(_busy.has(_pk)){toast('⏳ 처리 중입니다 — 잠시만요');return;}_busy.add(_pk);try{const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';
   const prev=g.items.map(o=>({pay:o.pay,payway:o.payway}));
   g.items.forEach(o=>{o.pay='paid';o.payway=pw;});
   const ids=g.items.map(o=>o.id).filter(x=>x!=null);
@@ -1710,7 +1712,7 @@ async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;con
     await shipConsolidate(g.cust);/* 합배 배송비 통합 — 같은 고객 여러 주문(주말 누적)이 결제되면 배송비 1줄로 */
     CDATE=(g.date||'').replace(/\//g,'-').slice(0,10)||CDATE;CQ='';toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');}
   else{g.items.forEach((o,i)=>{o.pay=prev[i].pay;o.payway=prev[i].payway;});toast('⚠️ 저장 실패 — 변경이 취소됐어요. 다시 시도하세요');}
-  render();}
+  render();}finally{_busy.delete(_pk);}}
 async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(!confirm('입금확인을 취소하시겠습니까?\n\n'+g.cust+' '+g.items.length+'건이 미결제 상태로 돌아갑니다.'))return;
   const prev=g.items.map(o=>o.pay);
   g.items.forEach(o=>{o.pay='unpaid';});
@@ -2180,7 +2182,13 @@ function waitCard(list){
 }
 /* 출고대기 고객이 미송도 보유하면 표시·선택용 */
 function custMisongItems(cust){return mine(ORD).filter(o=>o.cust===cust&&o.ship!=='done'&&(o.req==='미송'||o.back===true)&&!_isSvcLine(o));}
-async function waitMergeMisong(i){const c=shipSort(openCustomers().filter(x=>x.cat==='wait'))[i];if(!c)return;
+/* 출고장 카테고리별 고객카드 목록 — 렌더·핸들러가 반드시 동일 목록·순서·필터를 쓰게. 위치인덱스 오조회(엉뚱한 고객 출고) 원천차단 */
+function catCustList(cat){let list=shipSort(openCustomers().filter(x=>x.cat===cat));
+  if(cat==='back'){const q=(BACKQ||'').trim(),fld=BACKFIELD||'고객명';
+    if(q&&fld==='고객명')list=list.filter(c=>inc(c.cust,q));
+    else if(q&&fld==='사입처')list=list.filter(c=>c.lines.some(l=>inc(boVendorOf(l),q)));}
+  return list;}
+async function waitMergeMisong(i){const c=catCustList('wait')[i];if(!c)return;
   const items=c.lines.filter(o=>o.id!=null);if(!items.length)return;
   const mn=custMisongItems(c.cust).length;
   if(!confirm('🔗 '+c.cust+' 출고대기 '+items.length+'건을 미송과 합쳐 대기시킬까요?\n\n지금 출고 안 하고, 미송('+mn+'건) 재입고되면 '+c.cust+' 전체를 한 박스로 함께 출고합니다.\n(미송관리에서 관리됩니다)'))return;
@@ -2219,7 +2227,7 @@ function manageCards(list,cat){
   </div>`).join('')+'</div></div>';
 }
 function shipToggle(id){if(SHIPCHK.has(id))SHIPCHK.delete(id);else SHIPCHK.add(id);render();}
-async function shipWait(i){const c=shipSort(openCustomers().filter(x=>x.cat==='wait'))[i];if(!c)return;
+async function shipWait(i){const c=catCustList('wait')[i];if(!c)return;
   const trk=($('#trk_wait_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const _td=todayStr();
   const prev=c.lines.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
@@ -2229,7 +2237,7 @@ async function shipWait(i){const c=shipSort(openCustomers().filter(x=>x.cat==='w
   if(ok)toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);
   else{c.lines.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
-async function shipChecked(cat,i){const c=shipSort(openCustomers().filter(x=>x.cat===cat))[i];if(!c)return;
+async function shipChecked(cat,i){const c=catCustList(cat)[i];if(!c)return;
   const picked=c.lines.filter(l=>SHIPCHK.has(l.id));if(!picked.length){toast('출고할 상품을 체크하세요');return;}
   /* 배송비/적립금(서비스 라인)은 리스트엔 안 보이지만 출고 시 함께 완료 처리 — 미출고 배송비 잔존 방지 */
   const svc=c.lines.filter(l=>_isSvcLine(l)&&l.ship!=='done'&&!picked.includes(l));
@@ -2243,7 +2251,7 @@ async function shipChecked(cat,i){const c=shipSort(openCustomers().filter(x=>x.c
   if(ok){sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);}
   else{sel.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
-function openCustPopup(cat,i){const c=shipSort(openCustomers().filter(x=>x.cat===cat))[i];if(!c)return;CUSTPOP={cat,cust:c.cust};render();}
+function openCustPopup(cat,i){const c=catCustList(cat)[i];if(!c)return;CUSTPOP={cat,cust:c.cust};render();}
 /* CUSTPOP은 위치인덱스가 아니라 고객키(cat+cust)로 조회 — 팝업 열린 채 목록이 바뀌어도 엉뚱한 고객 처리 방지 */
 function custPopTarget(){return CUSTPOP&&openCustomers().find(x=>x.cat===CUSTPOP.cat&&x.cust===CUSTPOP.cust);}
 function closeCustPopup(){CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();}
@@ -2311,7 +2319,7 @@ function shipTabBody(){
     const hint=q?'':`<div class="note">고객명·상품·사입처로 검색하세요. <b>상품</b> 검색 시 그 상품이 입고되면 아직 못 받은 고객을 모아 보여줍니다.</div>`;
     const cntNote=(q&&fld!=='상품·번호표')?`<div class="note" style="margin-bottom:8px">🔍 '<b>${esc(q)}</b>' · ${fld} — 미송 <b>${backCs.length}명</b>${backCs.length?'':' (없음)'}</div>`:'';
     const box=`<div class="card" style="margin-bottom:12px"><div class="toolbar">${fsel}<input id="backSearch" placeholder="🔍 ${fld} 입력 후 Enter" value="${esc(q)}" onkeydown="if(event.key==='Enter'){BACKQ=this.value.trim();render()}" style="flex:1">${q?`<button class="btn sm gray" onclick="BACKQ='';render()">초기화</button>`:''}</div>${prodTable||hint}</div>`;
-    return box+cntNote+sortBar(SHIPORDER,'setShipOrder')+manageCards(shipSort(backCs),'back');}
+    return box+cntNote+sortBar(SHIPORDER,'setShipOrder')+manageCards(catCustList('back'),'back');}
   if(SHIPTAB==='bundle')return sortBar(SHIPORDER,'setShipOrder')+manageCards(shipSort(cs.filter(c=>c.cat==='bundle')),'bundle');
   return shipTabDone();
 }
@@ -3346,14 +3354,16 @@ const PAY_RATE={'셀러':10,'보조':3,'서브매니저':3,'운영':0,'물류':0
 let PAY_MONTH=new Date().toISOString().slice(0,7),PAY_EMP='',PAY_TAB='slip',PAY_VIEW='all';
 const _paySub=e=>e.role==='보조'||e.role==='서브매니저';
 /* 급여 매출 집계 기준(엑셀 급여정산서와 동일): 배송비/적립금/합배/택배/운임/무료배송 제외, 낱장·일반상품 포함 */
-function _isPaySales(o){const s=(o.disp||'')+'|'+(o.code||'');return o.code!=='배송비'&&o.code!=='적립금'&&!/배송비|적립금|합배|택배|운임|무료배송|무료나눔|무나/.test(s);}
+/* 서비스라인(배송비/적립금/합배/무료나눔 등)은 code로 판정 — 상품명 부분일치 오탐(예 '택배박스원피스') 방지. code 없으면 disp 정확일치만 제외 */
+const _PAY_SVC_DISP=new Set(['배송비','무료배송','무료나눔','무나','합배','택배','운임','적립금']);
+function _isPaySales(o){if(o.code==='배송비'||o.code==='적립금')return false;return !_PAY_SVC_DISP.has(String(o.disp||'').trim());}
 /* 수수료 귀속 월 판정 — 환불/취소 완전 제외, 교환은 '교환완료' 돼야 인정하고 '완료된 달' 기준, 일반은 주문월.
    반환: 이 주문의 수수료가 잡히는 'YYYY-MM' 또는 null(제외). */
 function _payCommMonth(o){
   if(o.rxtype==='refund'||o.rxtype==='cancel')return null;/* 환불·취소는 판매 취소 → 수수료 제외 */
   if(o.rxtype==='exchange'){
     if(o.rxstat!=='done')return null;/* 교환 진행중 → 아직 판매완료 아님, 제외 */
-    const dd=(typeof rxStepDate==='function'?rxStepDate(o,'done'):null)||o.rxdone||o.rxdate;/* 교환완료 → 완료된 달로 이월 */
+    const dd=(typeof rxStepDate==='function'?rxStepDate(o,'done'):null)||o.rxdone||o.rxdate||o.date;/* 교환완료 → 완료된 달로 이월, 완료일 없으면 주문월 폴백(수수료 누락 방지) */
     return dd?String(dd).replace(/\//g,'-').slice(0,7):null;
   }
   return String(o.date||'').replace(/\//g,'-').slice(0,7);
@@ -3361,11 +3371,14 @@ function _payCommMonth(o){
 const _payMonthRows=(name,ym)=>ORD.filter(o=>o.staff===name&&o.pay==='paid'&&_isPaySales(o)&&_payCommMonth(o)===ym);
 const _paySales=(name,ym)=>_payMonthRows(name,ym).reduce((a,o)=>a+amtOf(o),0);
 const _payRound10=n=>Math.floor(Math.max(0,n)/10)*10;
-function _payDraft(e,ym){PREFS.payroll_drafts=PREFS.payroll_drafts||{};const k=ym+'|'+e.id;let d=PREFS.payroll_drafts[k];
-  if(!d){const saved=PAYROLL_RECORDS.find(x=>x.employee_id===e.id&&x.pay_month===ym);d=saved&&saved.payload?Object.assign({},saved.payload):{};
-    if(!Object.keys(d).length)d={contract:'freelancer',stage:'regular',base:(e.name==='윤진영'?2500000:((e.base_salary!=null&&+e.base_salary>0)?+e.base_salary:(PAY_BASE[e.role]||0))),sellerRate:e.role==='셀러'?10:0,assistRate:_paySub(e)?3:0,ownRate:_paySub(e)?10:0,dependents:1,incentive:0,meal:0,otherPay:0,otherDeduction:0,insuranceBase:0,taxOverride:'',pensionOverride:'',healthOverride:'',careOverride:'',employmentOverride:''};PREFS.payroll_drafts[k]=d;}
-  return d;
-}
+function _payDefaultDraft(e){return {contract:'freelancer',stage:'regular',base:(e.name==='윤진영'?2500000:((e.base_salary!=null&&+e.base_salary>0)?+e.base_salary:(PAY_BASE[e.role]||0))),sellerRate:e.role==='셀러'?10:0,assistRate:_paySub(e)?3:0,ownRate:_paySub(e)?10:0,dependents:1,incentive:0,meal:0,otherPay:0,otherDeduction:0,insuranceBase:0,taxOverride:'',pensionOverride:'',healthOverride:'',careOverride:'',employmentOverride:''};}
+/* 읽기전용 — 계산·렌더용. 저장소에 phantom 드래프트를 만들지 않는다(부작용 없음, PREFS/DB 비대화 방지) */
+function _payDraft(e,ym){const k=ym+'|'+e.id;if(PAY_DRAFTS[k])return PAY_DRAFTS[k];
+  const saved=PAYROLL_RECORDS.find(x=>x.employee_id===e.id&&x.pay_month===ym);if(saved&&saved.payload&&Object.keys(saved.payload).length)return saved.payload;
+  return _payDefaultDraft(e);}
+/* 편집용 — 실제 값 변경/확정 시에만 공용 PAY_DRAFTS에 영속 객체 생성 */
+function _payDraftEditable(e,ym){const k=ym+'|'+e.id;if(!PAY_DRAFTS[k])PAY_DRAFTS[k]=JSON.parse(JSON.stringify(_payDraft(e,ym)));return PAY_DRAFTS[k];}
+async function savePayDrafts(){try{const {error}=await SB.from('work_schedules').upsert({id:'_payroll',data:PAY_DRAFTS,owner:'_payroll',updated_at:new Date().toISOString()});if(error){console.error('savePayDrafts',error);return false;}}catch(e){console.error(e);return false;}return true;}
 function _payTaxEstimate(monthly,dependents){/* 국세청 간이세액표 근사. 저장 전 실제 고지액을 직접 수정할 수 있음 */
   const annual=Math.max(0,monthly*12),earned=Math.min(20000000,annual*.7)+Math.max(0,Math.min(30000000,annual-20000000))*.4+Math.max(0,Math.min(50000000,annual-50000000))*.15+Math.max(0,annual-100000000)*.05;
   const taxable=Math.max(0,annual-earned-1500000*Math.max(1,dependents||1)-1300000);let tax=taxable<=14000000?taxable*.06:taxable<=50000000?840000+(taxable-14000000)*.15:6240000+(taxable-50000000)*.24;
@@ -3403,15 +3416,15 @@ function saveOwnRate(name,val){if(typeof PREFS==='undefined')return;const nv=(va
 function setPayMonth(v){PAY_MONTH=v;render();}
 function setPayEmp(v){PAY_EMP=v;render();}
 function setPayTab(v){PAY_TAB=v;render();}
-function setPayDraft(k,v){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY_EMP));if(!e)return;const d=_payDraft(e,PAY_MONTH);d[k]=v;savePrefs();render();}
+function setPayDraft(k,v){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY_EMP));if(!e)return;const d=_payDraftEditable(e,PAY_MONTH);d[k]=v;savePayDrafts();render();}
 /* 급여 확정 저장 = 현재 계산값을 그 달 확정값으로 잠금(PREFS, 테이블 불필요). 이후 판매 변동에도 그 달 급여 안 바뀜 */
-async function savePayroll(){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY_EMP));if(!e)return;const p=empPay(e,PAY_MONTH),d=_payDraft(e,PAY_MONTH);
+async function savePayroll(){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY_EMP));if(!e)return;const p=empPay(e,PAY_MONTH);
   if(!p.locked&&!confirm(PAY_MONTH+' '+e.name+' 급여를 확정 저장할까요?\n\n실지급 '+won(p.net)+'\n\n확정하면 이 달은 판매가 바뀌어도 급여가 고정됩니다.'))return;
-  const sales=e.role==='셀러'?p.seller:(p.own+p.assist);
+  const sales=e.role==='셀러'?p.seller:(p.own+p.assist),d=_payDraftEditable(e,PAY_MONTH);
   d.locked=true;d.lockBase=p.base;d.lockComm=p.comm;d.lockGross=p.gross;d.lockNet=p.net;d.lockSales=sales;
-  try{await savePrefs();}catch(err){console.error(err);}
-  toast('🔒 '+PAY_MONTH+' '+e.name+' 급여 확정 저장 — 실지급 '+won(p.net));render();}
-function unlockPayroll(){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY_EMP));if(!e)return;const d=_payDraft(e,PAY_MONTH);if(!confirm(PAY_MONTH+' '+e.name+' 확정을 해제하고 다시 자동계산으로 되돌릴까요?'))return;d.locked=false;try{savePrefs();}catch(err){}toast('🔓 '+PAY_MONTH+' 확정 해제 — 자동계산으로 전환');render();}
+  const ok=await savePayDrafts();
+  toast(ok?('🔒 '+PAY_MONTH+' '+e.name+' 급여 확정 저장 — 실지급 '+won(p.net)):'⚠️ 저장 실패 — 다시 시도');render();}
+function unlockPayroll(){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY_EMP));if(!e)return;if(!confirm(PAY_MONTH+' '+e.name+' 확정을 해제하고 다시 자동계산으로 되돌릴까요?'))return;const d=_payDraftEditable(e,PAY_MONTH);d.locked=false;savePayDrafts();toast('🔓 '+PAY_MONTH+' 확정 해제 — 자동계산으로 전환');render();}
 function _payInput(key,val,w){return canSeeAll()?`<input type="number" value="${val}" onchange="setPayDraft('${key}',this.value)" style="width:${w||110}px;text-align:right">`:won(+val||0);}
 function _payRateInput(key,val){return canSeeAll()?`<input type="number" step="0.1" value="${val}" onchange="setPayDraft('${key}',this.value)" style="width:55px;text-align:right">`:val;}
 function _paySalesTable(rows,title,rate){return `<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>${title} <span class="muted" style="font-size:12px">${rate}% · ${rows.length}건</span></h2><b>${won(rows.reduce((a,o)=>a+amtOf(o),0))}</b></div><table><thead><tr><th>일자</th><th>고객</th><th>상품</th><th>옵션</th><th class="num-cell">수량</th><th class="num-cell">판매액</th></tr></thead><tbody>${rows.map(o=>`<tr><td>${esc(o.date||'')}</td><td>${esc(o.cust||'')}</td><td>${esc(o.disp||o.code||'')}</td><td>${esc([o.color,o.size].filter(Boolean).join(' / '))}</td><td class="num-cell">${o.qty||0}</td><td class="num-cell">${won(amtOf(o))}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">해당 월 상품 판매 없음</td></tr>'}</tbody></table></div>`;}
@@ -3432,7 +3445,8 @@ function viewEmp(){
 }
 function payAllView(){
   const ym=PAY_MONTH,list=payEligible();
-  const rows=list.filter(e=>!e.hire_date||String(e.hire_date).slice(0,7)<=ym).map(e=>{const p=empPay(e,ym);return {e,p,sales:_paySalesOf(e,ym)};});
+  /* 매출 컬럼·합계는 본인 직판만(셀러=seller, 보조=own) — 보조의 담당셀러분은 셀러 행에 이미 집계돼 이중계상 방지 */
+  const rows=list.filter(e=>!e.hire_date||String(e.hire_date).slice(0,7)<=ym).map(e=>{const p=empPay(e,ym);return {e,p,sales:(e.role==='셀러'?p.seller:p.own)};});
   const T={base:0,sales:0,comm:0,gross:0,ded:0,net:0};rows.forEach(r=>{T.base+=r.p.base;T.sales+=r.sales;T.comm+=r.p.comm;T.gross+=r.p.gross;T.ded+=r.p.ded;T.net+=r.p.net;});
   const cL=d=>d.contract==='insurance'?'4대보험':'프리 3.3%';
   return `<div class="card"><div class="card-h"><h2>${ym.slice(0,4)}년 ${ym.slice(5)}월 · 전체 직원 급여</h2><b>실지급 합계 ${won(T.net)}</b></div>
@@ -3465,10 +3479,10 @@ function paySlipView(){
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
    <table><thead><tr><th>지급 항목</th><th class="num-cell">산식/금액</th></tr></thead><tbody>
     <tr><td>기본급</td><td class="num-cell">${_payInput('base',p.base)}</td></tr>
-    ${canSeeAll()&&(e.role==='셀러'||_paySub(e))?`<tr style="background:#fffbeb"><td>매출 수동보정 <span class="muted" style="font-size:11px">그 달 전체 매출을 이 값으로 대체 (비우면 자동집계)</span></td><td class="num-cell">${_payInput('salesOverride',d.salesOverride==null?'':d.salesOverride)}</td></tr>
+    ${p.locked?`<tr style="background:#ecfdf5"><td>매출 수수료 <span class="pill p-done" style="font-size:10px">🔒 확정</span></td><td class="num-cell">매출 ${won(p.seller)} → 수수료 <b>${won(p.comm)}</b></td></tr>`:`${canSeeAll()&&(e.role==='셀러'||_paySub(e))?`<tr style="background:#fffbeb"><td>매출 수동보정 <span class="muted" style="font-size:11px">그 달 전체 매출을 이 값으로 대체 (비우면 자동집계)</span></td><td class="num-cell">${_payInput('salesOverride',d.salesOverride==null?'':d.salesOverride)}</td></tr>
     <tr style="background:#fffbeb"><td>＋ 매출 가산 <span class="muted" style="font-size:11px">해외방송 등 판매현황엔 없지만 수수료엔 포함 (자동집계에 더함)</span></td><td class="num-cell">${_payInput('salesAdd',d.salesAdd==null?'':d.salesAdd)}</td></tr>`:''}
     ${e.role==='셀러'?`<tr><td>판매수당 (${p.sellerRate}%)${d.salesOverride!==''&&d.salesOverride!=null?' <span class="pill p-req" style="font-size:10px">수동</span>':''}</td><td class="num-cell">${won(p.seller)} × ${_payRateInput('sellerRate',p.sellerRate)}% = ${won(p.sellerComm)}</td></tr>`:''}
-    ${_paySub(e)?`<tr><td>담당셀러 수당 (${p.assistRate}%)</td><td class="num-cell">${won(p.assist)} × ${_payRateInput('assistRate',p.assistRate)}% = ${won(p.assistComm)}</td></tr><tr><td>본인판매 수당 (${p.ownRate}%)</td><td class="num-cell">${won(p.own)} × ${_payRateInput('ownRate',p.ownRate)}% = ${won(p.ownComm)}</td></tr>`:''}
+    ${_paySub(e)?`<tr><td>담당셀러 수당 (${p.assistRate}%)</td><td class="num-cell">${won(p.assist)} × ${_payRateInput('assistRate',p.assistRate)}% = ${won(p.assistComm)}</td></tr><tr><td>본인판매 수당 (${p.ownRate}%)</td><td class="num-cell">${won(p.own)} × ${_payRateInput('ownRate',p.ownRate)}% = ${won(p.ownComm)}</td></tr>`:''}`}
     <tr><td>인센티브</td><td class="num-cell">${_payInput('incentive',d.incentive)}</td></tr><tr><td>식대(비과세)</td><td class="num-cell">${_payInput('meal',d.meal)}</td></tr><tr><td>기타 지급</td><td class="num-cell">${_payInput('otherPay',d.otherPay)}</td></tr><tr><th>지급 합계</th><th class="num-cell">${won(p.gross)}</th></tr>
    </tbody></table>
    <table><thead><tr><th>공제 항목</th><th class="num-cell">금액</th></tr></thead><tbody>
