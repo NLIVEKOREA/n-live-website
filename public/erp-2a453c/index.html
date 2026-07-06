@@ -3473,10 +3473,14 @@ function renderPermEdit(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const p=PER
 function permToggleMenu(k,on){PERMEDIT.perms.menus[k]=on;renderPermEdit();}
 function permToggleSub(mk,sk,on){PERMEDIT.perms.subs[mk][sk]=on;renderPermEdit();}
 function permAll(on){PERM_MENUS.forEach(mm=>{PERMEDIT.perms.menus[mm.k]=on;if(mm.subs)mm.subs.forEach(s=>PERMEDIT.perms.subs[mm.k][s.k]=on);});renderPermEdit();}
-async function savePerms(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const perms=JSON.parse(JSON.stringify(PERMEDIT.perms));u.perms=perms;
-  if(ME&&ME.id===u.login_id)ME.perms=perms;
-  closeModal();toast('✅ '+u.name+' 메뉴 권한 저장');buildNav();render();
-  try{const {error}=await SB.from('employees').update({perms}).eq('id',u.id);if(error){console.error('perms',error);toast('⚠️ DB 저장 실패 — employees.perms 컬럼이 필요합니다(SQL 1회)');}}catch(e){console.error(e);toast('⚠️ 저장 오류');}}
+async function savePerms(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const perms=JSON.parse(JSON.stringify(PERMEDIT.perms));
+  toast('저장 중…');
+  /* DB에 실제로 들어간 걸 확인한 다음에만 저장됨 표시 — 실패면 적용 안 함(허수 팝업 방지) */
+  try{const {error}=await SB.from('employees').update({perms}).eq('id',u.id);
+    if(error){console.error('perms',error);toast('❌ 저장 실패 — employees.perms 컬럼이 없어요. SQL 1회 실행 필요 (적용 안 됨)');return;}
+  }catch(e){console.error(e);toast('❌ 저장 오류 — 적용 안 됨');return;}
+  u.perms=perms;if(ME&&ME.id===u.login_id)ME.perms=perms;
+  closeModal();toast('✅ '+u.name+' 메뉴 권한 저장됨 (DB 반영 확인)');buildNav();render();}
 async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_name').value.trim();
   if(!name){toast('이름은 필수입니다');return;}
   const team=$('#eu_team').value,scope=$('#eu_scope').value,owner=$('#eu_owner').value.trim();
