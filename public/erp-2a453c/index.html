@@ -828,7 +828,13 @@ const PERM={dash:['all','logi','self'],sns:['all','self'],order:['all','self'],s
   stock:['all','logi','self'],cust:['all','self'],prod:['all'],vendor:['all','logi'],
   revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
 const SUBMGR_MENUS=['ship'];/* 셀러 보조(서브매니저) 추가 허용 메뉴: 출고장(물류와 동일) */
-const menuAllowed=v=>(PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));
+/* 사원별 권한 편집용 메뉴 구조 (대분류 + 소분류 세부탭) */
+const PERM_MENUS=[{k:'dash',l:'대시보드'},{k:'order',l:'주문관리'},{k:'sales',l:'판매관리',subs:[{k:'order',l:'출고대기'},{k:'ship',l:'출고작업·완료'}]},{k:'live',l:'라이브 판매'},{k:'ship',l:'출고장',subs:[{k:'wait',l:'출고대기'},{k:'back',l:'미송관리'},{k:'bundle',l:'합배관리'},{k:'done',l:'출고완료'}]},{k:'bo',l:'미송사입',subs:[{k:'need',l:'주문필요'},{k:'ordered',l:'주문완료·입고전'}]},{k:'shipped',l:'판매현황'},{k:'rx',l:'교환·반품',subs:[{k:'active',l:'진행중'},{k:'archive',l:'완료'},{k:'fault',l:'귀책현황'}]},{k:'stock',l:'재고관리'},{k:'revenue',l:'매출현황'},{k:'sns',l:'SNS 관리'},{k:'cust',l:'고객관리'},{k:'prod',l:'상품현황'},{k:'vendor',l:'사입처관리'},{k:'emp',l:'직원·급여'},{k:'users',l:'사원관리'},{k:'kakao',l:'카카오 연동'}];
+/* 메뉴 접근권한: 사원별 perms(체크박스)가 있으면 그게 우선, 없으면 기존 scope 기본값. 관리자(all)는 사원관리 항상 열림(자기잠금 방지) */
+function menuAllowed(v){if(v==='dash')return true;if(ME&&ME.scope==='all'&&v==='users')return true;if(ME&&ME.perms&&ME.perms.menus)return ME.perms.menus[v]===true;return (PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));}
+/* 소분류(세부탭) 접근권한: 기본 전체허용, perms에서 명시적으로 끈 것만 숨김. 관리자는 항상 전체 */
+function subAllowed(menu,sub){if(!ME||ME.scope==='all')return true;if(ME.perms&&ME.perms.subs&&ME.perms.subs[menu])return ME.perms.subs[menu][sub]!==false;return true;}
+function firstSub(menu,list){const a=list.filter(s=>subAllowed(menu,s));return a[0]||list[0];}
 /* 재고 등록·수정 권한: 관리/물류는 기본 허용, 셀러(self)는 stock_edit 플래그가 켜진 경우만 */
 const canStockEdit=()=>!isSeller()||!!ME.stock_edit;
 function lockBanner(){
@@ -1046,8 +1052,9 @@ function viewBackorder(){
       <span style="display:inline-flex;align-items:center;gap:5px;margin-left:6px"><input type="date" value="${BO_FROM}" onchange="boSetRange(this.value,BO_TO)" style="height:32px;border:1px solid var(--line);border-radius:7px;padding:0 7px">~<input type="date" value="${BO_TO}" onchange="boSetRange(BO_FROM,this.value)" style="height:32px;border:1px solid var(--line);border-radius:7px;padding:0 7px"></span>
     </div>
     <div class="filterbar" style="margin-bottom:12px">
-      <button class="chipf ${BO_TAB==='need'?'on':''}" onclick="BO_TAB='need';render()">주문 필요 (${need.length})</button>
-      <button class="chipf ${BO_TAB==='ordered'?'on':''}" onclick="BO_TAB='ordered';render()">주문완료·입고전 (${ordered.length})</button>
+      ${(!subAllowed('bo',BO_TAB)?(BO_TAB=firstSub('bo',['need','ordered'])):'')&&''}
+      ${subAllowed('bo','need')?`<button class="chipf ${BO_TAB==='need'?'on':''}" onclick="BO_TAB='need';render()">주문 필요 (${need.length})</button>`:''}
+      ${subAllowed('bo','ordered')?`<button class="chipf ${BO_TAB==='ordered'?'on':''}" onclick="BO_TAB='ordered';render()">주문완료·입고전 (${ordered.length})</button>`:''}
     </div>
     ${Object.keys(by).length?`<div class="ord-cards">${Object.keys(by).sort().map(v=>boVendorCard(v,by[v],BO_TAB==='ordered')).join('')}</div>`
       :`<div class="muted" style="padding:20px">${BO_TAB==='ordered'?'주문완료(입고전) 미송이 없습니다.':'이 기간에 발주할 미송이 없습니다. (주문관리에서 미송 처리하면 여기로 모입니다)'}</div>`}`;
@@ -1945,10 +1952,11 @@ function viewSales(){
     <p>💼 <b>여기서 하는 일</b>: 결제완료 주문을 <b>출고 요청·작업</b> · <b>출고 대기</b>(안 나간 주문) → <b>출고 작업·완료</b>(송장입력·출고) · <span class="muted">조회·취소·환불은 <b>판매현황</b> 메뉴에서</span></p></div>
   ${sellerTabs()}
   ${lockBanner()}
+  ${(!subAllowed('sales',SALETAB)?(SALETAB=firstSub('sales',['order','ship'])):'')&&''}
   ${SALETAB==='order'?saleToolbar():''}
   <div class="tabs">
-    <button class="${SALETAB==='order'?'on':''}" onclick="SALETAB='order';render()"><i class="ti ti-package"></i> 출고 대기 ${orderRows().length}</button>
-    <button class="${SALETAB==='ship'?'on':''}" onclick="SALETAB='ship';render()"><i class="ti ti-truck-delivery"></i> 출고 작업·완료 ${shipRows().length}</button>
+    ${subAllowed('sales','order')?`<button class="${SALETAB==='order'?'on':''}" onclick="SALETAB='order';render()"><i class="ti ti-package"></i> 출고 대기 ${orderRows().length}</button>`:''}
+    ${subAllowed('sales','ship')?`<button class="${SALETAB==='ship'?'on':''}" onclick="SALETAB='ship';render()"><i class="ti ti-truck-delivery"></i> 출고 작업·완료 ${shipRows().length}</button>`:''}
   </div>
   ${SALETAB==='order'?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="muted" style="font-size:12px">기간</span><div class="tabs" style="margin:0"><button class="${ORDTAB==='today'?'on':''}" onclick="ORDTAB='today';render()">당일 ${orderRowsToday().length}</button><button class="${ORDTAB==='all'?'on':''}" onclick="ORDTAB='all';render()">전체 ${orderRowsAll().length}</button></div></div>${saleListCards('order')}`:`<div class="card" style="margin-bottom:12px"><div class="toolbar"><span class="muted" style="align-self:center">📅 출고 작업일</span><input type="date" value="${SHIPDATE||todayStr()}" onchange="SHIPDATE=this.value;render()"><button class="btn sm gray" onclick="SHIPDATE='';render()">오늘</button><span class="grow"></span><span class="muted" style="font-size:12px">당일 출고요청·완료 건 · 전체 누적은 <b>판매현황</b> 메뉴</span></div></div>${saleListCards('ship')}`}`;
 }
@@ -2253,7 +2261,7 @@ function openShipModal(){const t={wait:'출고대기',back:'미송관리',bundle
   $('#modalBox').className='modal-box modal-wide';
   $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
     <h3 style="margin:0">🚚 출고장 — ${t[SHIPTAB]}</h3><span style="flex:1"></span>
-    <div class="tabs" style="margin:0">${['wait','back','bundle','done'].map(k=>`<button class="${SHIPTAB===k?'on':''}" onclick="SHIPTAB='${k}';render()">${t[k]}</button>`).join('')}</div>
+    <div class="tabs" style="margin:0">${['wait','back','bundle','done'].filter(k=>subAllowed('ship',k)).map(k=>`<button class="${SHIPTAB===k?'on':''}" onclick="SHIPTAB='${k}';render()">${t[k]}</button>`).join('')}</div>
     <button class="btn gray sm" onclick="closeShipPopup()">✕ 닫기</button></div>
     ${shipTabBody()}`;
   $('#modal').classList.remove('hide');}
@@ -2277,10 +2285,11 @@ function viewShip(){
   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px">
     <button class="btn sm" onclick="openShipScan()" title="바코드로 당일 출고 검수 (오배송 방지)"><i class="ti ti-scan"></i> 출고 검수</button>
     <div class="tabs" style="margin:0">
-      <button class="${SHIPTAB==='wait'?'on':''}" onclick="SHIPTAB='wait';render()">출고대기 ${cnt(wait)}</button>
-      <button class="${SHIPTAB==='back'?'on':''}" onclick="SHIPTAB='back';render()">미송관리 ${back.length}</button>
-      <button class="${SHIPTAB==='bundle'?'on':''}" onclick="SHIPTAB='bundle';render()">합배관리 ${bundle.length}</button>
-      <button class="${SHIPTAB==='done'?'on':''}" onclick="SHIPTAB='done';render()">출고완료</button>
+      ${(!subAllowed('ship',SHIPTAB)?(SHIPTAB=firstSub('ship',['wait','back','bundle','done'])):'')&&''}
+      ${subAllowed('ship','wait')?`<button class="${SHIPTAB==='wait'?'on':''}" onclick="SHIPTAB='wait';render()">출고대기 ${cnt(wait)}</button>`:''}
+      ${subAllowed('ship','back')?`<button class="${SHIPTAB==='back'?'on':''}" onclick="SHIPTAB='back';render()">미송관리 ${back.length}</button>`:''}
+      ${subAllowed('ship','bundle')?`<button class="${SHIPTAB==='bundle'?'on':''}" onclick="SHIPTAB='bundle';render()">합배관리 ${bundle.length}</button>`:''}
+      ${subAllowed('ship','done')?`<button class="${SHIPTAB==='done'?'on':''}" onclick="SHIPTAB='done';render()">출고완료</button>`:''}
       <span style="flex:1"></span><button class="btn sm gray" onclick="shipCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button><button class="btn sm gray" onclick="expAll()"><i class="ti ti-chevrons-down"></i> 모두펼치기</button>
     </div>
   </div>
@@ -2512,7 +2521,8 @@ const rxWhen=o=>((o.rxdate||o.rxdone||o.date||'')+'').replace(/\//g,'-');
 const rxSort=arr=>arr.slice().sort((a,b)=>{const c=String(rxWhen(b)).localeCompare(String(rxWhen(a)));return c!==0?c:(b.id||0)-(a.id||0);});/* 최신 등록이 위로 */
 function viewRx(){const all=mine(ORD).filter(o=>o.rxtype).filter(rxMatch);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=rxSort(RXVIEWTAB==='active'?active:done);
   return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}${sellerTabs()}
-  <div class="tabs"><button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button><button class="${RXVIEWTAB==='archive'||RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='archive';render()">✅ 완료 ${done.length}</button><button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button></div>
+  ${(()=>{const cur=RXVIEWTAB==='done'?'archive':RXVIEWTAB;if(['active','archive','fault'].includes(cur)&&!subAllowed('rx',cur))RXVIEWTAB=firstSub('rx',['active','archive','fault']);return '';})()}
+  <div class="tabs">${subAllowed('rx','active')?`<button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button>`:''}${subAllowed('rx','archive')?`<button class="${RXVIEWTAB==='archive'||RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='archive';render()">✅ 완료 ${done.length}</button>`:''}${subAllowed('rx','fault')?`<button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button>`:''}</div>
   ${rxSearchBox()}${RXQ?`<div class="muted" style="font-size:12px;margin:-4px 0 10px">🔍 "<b>${esc(RXQ)}</b>" (${RXFIELD}) 검색 — 진행중 ${active.length} · 완료 ${done.length}건</div>`:''}
   ${RXVIEWTAB==='fault'?rxFaultBoard(all):(RXVIEWTAB==='archive'||RXVIEWTAB==='done')?rxArchiveView(done):(active.length?`<div class="rx-grid">${rxSort(active).map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">${RXQ?'검색 결과가 없습니다':'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)'}</div></div>`)}`;}
 /* 완료(정리) — 진짜 마무리된 CS를 고객별로 묶어 단계별 날짜와 함께 정리 */
@@ -3444,8 +3454,29 @@ function editUser(i){const u=EMPLOYEES[i];if(!u)return;
       <div><label>권한범위</label><select id="eu_scope">${[['all','전체권한'],['logi','물류범위'],['self','본인자료만']].map(([v,l])=>`<option value="${v}" ${u.scope===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
     <label>담당셀러(보조만)</label><input id="eu_owner" value="${esc(u.owner||'')}">
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:9px;cursor:pointer;font-weight:700"><input type="checkbox" id="eu_stock" ${u.stock_edit?'checked':''} style="width:17px;height:17px"> 📦 재고 등록·수정 권한 <span class="muted" style="font-weight:400;font-size:12px">— 셀러/보조도 재고관리에서 품목 등록·수정·입출고 가능</span></label>
-    <div class="modal-foot"><button class="btn red ghost" onclick="delUser(${i})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveUser(${i})">저장</button></div>`;
+    <div class="modal-foot"><button class="btn red ghost" onclick="delUser(${i})">삭제</button><button class="btn ghost" onclick="openPermEdit(${i})" title="이 사원이 볼 수 있는 메뉴/세부탭 체크">🔑 메뉴 권한</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveUser(${i})">저장</button></div>`;
   $('#modal').classList.remove('hide');}
+/* ===== 사원별 메뉴 권한 편집기 (대분류+소분류 체크박스) ===== */
+let PERMEDIT=null;
+function effPerms(u){const m={},s={};PERM_MENUS.forEach(mm=>{let on;if(u.perms&&u.perms.menus)on=u.perms.menus[mm.k]===true;else on=(mm.k==='dash')||(PERM[mm.k]||['all']).includes(u.scope)||(u.role==='보조'&&SUBMGR_MENUS.includes(mm.k));m[mm.k]=on;if(mm.subs){s[mm.k]={};mm.subs.forEach(sub=>{let son=true;if(u.perms&&u.perms.subs&&u.perms.subs[mm.k])son=u.perms.subs[mm.k][sub.k]!==false;s[mm.k][sub.k]=son;});}});return {menus:m,subs:s};}
+function openPermEdit(i){const u=EMPLOYEES[i];if(!u)return;PERMEDIT={i,perms:effPerms(u)};renderPermEdit();}
+function renderPermEdit(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const p=PERMEDIT.perms;
+  const rows=PERM_MENUS.map(mm=>{const on=p.menus[mm.k];
+    const subHtml=(mm.subs&&on)?`<div style="margin:3px 0 2px 28px;display:flex;flex-wrap:wrap;gap:3px 16px">${mm.subs.map(sub=>`<label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#475569;cursor:pointer"><input type="checkbox" ${p.subs[mm.k][sub.k]?'checked':''} onchange="permToggleSub('${mm.k}','${sub.k}',this.checked)" style="width:15px;height:15px"> ${sub.l}</label>`).join('')}</div>`:'';
+    return `<div style="padding:5px 0;border-bottom:1px solid #f1f5f9"><label style="display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;cursor:pointer"><input type="checkbox" ${on?'checked':''} onchange="permToggleMenu('${mm.k}',this.checked)" style="width:17px;height:17px"> ${mm.l}${mm.k==='users'?' <span class="muted" style="font-size:10px;font-weight:400">(권한관리 포함)</span>':''}</label>${subHtml}</div>`;}).join('');
+  $('#modalBox').innerHTML=`<h3>🔑 ${esc(u.name)} 메뉴 권한 <span style="font-size:12px;color:#64748b;font-weight:500">체크한 메뉴/세부탭만 이 사원에게 보임</span></h3>
+   <div class="ms" style="margin-bottom:6px">대분류(메뉴) 켜면 그 안 소분류(세부탭)도 조절 가능. <b>관리자(전체권한)는 항상 전부</b> 열립니다. 아무것도 저장 안 하면 기존 팀 기본권한 그대로.</div>
+   <div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn sm gray" onclick="permAll(true)">전체 선택</button><button class="btn sm gray" onclick="permAll(false)">전체 해제</button></div>
+   <div style="max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px 12px">${rows}</div>
+   <div class="modal-foot"><button class="btn gray" onclick="editUser(${PERMEDIT.i})">← 뒤로</button><span style="flex:1"></span><button class="btn" onclick="savePerms()">권한 저장</button></div>`;
+  $('#modal').classList.remove('hide');}
+function permToggleMenu(k,on){PERMEDIT.perms.menus[k]=on;renderPermEdit();}
+function permToggleSub(mk,sk,on){PERMEDIT.perms.subs[mk][sk]=on;renderPermEdit();}
+function permAll(on){PERM_MENUS.forEach(mm=>{PERMEDIT.perms.menus[mm.k]=on;if(mm.subs)mm.subs.forEach(s=>PERMEDIT.perms.subs[mm.k][s.k]=on);});renderPermEdit();}
+async function savePerms(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const perms=JSON.parse(JSON.stringify(PERMEDIT.perms));u.perms=perms;
+  if(ME&&ME.id===u.login_id)ME.perms=perms;
+  closeModal();toast('✅ '+u.name+' 메뉴 권한 저장');buildNav();render();
+  try{const {error}=await SB.from('employees').update({perms}).eq('id',u.id);if(error){console.error('perms',error);toast('⚠️ DB 저장 실패 — employees.perms 컬럼이 필요합니다(SQL 1회)');}}catch(e){console.error(e);toast('⚠️ 저장 오류');}}
 async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_name').value.trim();
   if(!name){toast('이름은 필수입니다');return;}
   const team=$('#eu_team').value,scope=$('#eu_scope').value,owner=$('#eu_owner').value.trim();
@@ -3486,7 +3517,7 @@ async function doLogin(){
   if(error){loginErr('아이디 또는 비밀번호가 틀렸습니다. 다시 확인해 주세요.');$('#loginPw').value='';$('#loginPw').focus();loginLoading(false);_logging=false;return;}
   const {data:emp} = await SB.from('employees').select('*').eq('login_id', id).maybeSingle();
   if(!emp||emp.active===false){loginErr('등록되지 않았거나 비활성화된 계정입니다. 관리자에게 문의하세요.');await SB.auth.signOut();loginLoading(false);_logging=false;return;}
-  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id,stock_edit:!!emp.stock_edit};
+  ME = {name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id,stock_edit:!!emp.stock_edit,perms:emp.perms||null};
   await loadPrefs();
   toast('📥 데이터 불러오는 중...');
   await dbLoadAll();
@@ -4042,7 +4073,7 @@ rebuildSwitcher();buildNav();render();
       const id=(data.session.user.email||'').split('@')[0];
       const {data:emp}=await SB.from('employees').select('*').eq('login_id',id).maybeSingle();
       if(!emp||emp.active===false)return;
-      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id,stock_edit:!!emp.stock_edit};
+      ME={name:emp.name,id:emp.login_id,team:emp.team,role:emp.role,scope:emp.scope,owner:emp.owner||emp.name,auth_id:emp.auth_id,stock_edit:!!emp.stock_edit,perms:emp.perms||null};
       $('#login').style.display='none';   // 세션 확인 즉시 숨김 — 데이터 로딩 동안 로그인 화면 깜빡임/튕김 방지
       {const _h=location.hash.slice(1);if(_h&&VIEWS[_h]&&menuAllowed(_h))VIEW=_h;}
       if(!menuAllowed(VIEW))VIEW='dash';
