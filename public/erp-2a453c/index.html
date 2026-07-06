@@ -1670,17 +1670,20 @@ async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;con
   let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({pay:'paid',payway:pw}).in('id',ids);if(error){console.error('payGroup',error);ok=false;}}catch(e){console.error(e);ok=false;}}
   if(ok){
     /* 링크(shop)주문은 가예약만 걸려 있고 재고 미차감 상태 → 입금확인 시 실제 차감(1회). reservation_expires_at로 중복차감 방지 */
+    const _stkFail=[];
     for(const o of g.items){
       if(o.source==='shop'&&o.reservation_expires_at&&o.code&&o.code!=='배송비'&&o.code!=='방송상품'){
         const s=skuOf(o.code,o.color,o.size);
         const samp=isSampleO(o),short=s&&(s.qty||0)<o.qty;/* 샘플·재고부족 → 자동 미송(수기 주문과 동일). 재고 차감 안 함 */
         const upd={reservation_expires_at:null};
         if(samp||short){o.back=true;o.req='미송';upd.back=true;upd.req='미송';}
-        else if(s){await adjustStockDB(s,-o.qty,'라이브 입금확인',o.cust);}
+        else if(s){const okd=await adjustStockDB(s,-o.qty,'라이브 입금확인',o.cust);
+          if(!okd){/* 차감 실패 → 오버셀 방지 위해 미송 강등(재입고/미송사입에서 정상 처리) */o.back=true;o.req='미송';upd.back=true;upd.req='미송';_stkFail.push(itemLabel(o));}}
         o.reservation_expires_at=null;
         try{await SB.from('orders').update(upd).eq('id',o.id);}catch(e){console.error(e);}
       }
     }
+    if(_stkFail.length)toast('⚠️ 재고차감 실패 '+_stkFail.length+'건 → 미송 처리됨(오버셀 방지): '+_stkFail.join(', '));
     await shipConsolidate(g.cust);/* 합배 배송비 통합 — 같은 고객 여러 주문(주말 누적)이 결제되면 배송비 1줄로 */
     CDATE=(g.date||'').replace(/\//g,'-').slice(0,10)||CDATE;CQ='';toast('💳 입금확인('+pw+') → 결제완료: '+g.cust+' '+g.items.length+'건');}
   else{g.items.forEach((o,i)=>{o.pay=prev[i].pay;o.payway=prev[i].payway;});toast('⚠️ 저장 실패 — 변경이 취소됐어요. 다시 시도하세요');}
@@ -1695,7 +1698,8 @@ async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(
     for(const o of g.items){
       if(o.source==='shop'&&!o.reservation_expires_at&&!o.back&&o.code&&o.code!=='배송비'&&o.code!=='방송상품'){
         const s=skuOf(o.code,o.color,o.size);
-        if(s)await adjustStockDB(s,o.qty,'라이브 입금취소 원복',o.cust);
+        const okr=s?await adjustStockDB(s,o.qty,'라이브 입금취소 원복',o.cust):true;
+        if(!okr)continue;/* 원복 실패 → 재예약 안 함(재입금 시 이중차감 방지, 재고는 차감상태 유지) */
         const exp=new Date(Date.now()+30*60000).toISOString();o.reservation_expires_at=exp;
         try{await SB.from('orders').update({reservation_expires_at:exp}).eq('id',o.id);}catch(e){console.error(e);}
       }
@@ -2216,14 +2220,16 @@ async function shipChecked(cat,i){const c=shipSort(openCustomers().filter(x=>x.c
   if(ok){sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);}
   else{sel.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
-function openCustPopup(cat,i){CUSTPOP={cat,i};render();}
+function openCustPopup(cat,i){const c=shipSort(openCustomers().filter(x=>x.cat===cat))[i];if(!c)return;CUSTPOP={cat,cust:c.cust};render();}
+/* CUSTPOP은 위치인덱스가 아니라 고객키(cat+cust)로 조회 — 팝업 열린 채 목록이 바뀌어도 엉뚱한 고객 처리 방지 */
+function custPopTarget(){return CUSTPOP&&openCustomers().find(x=>x.cat===CUSTPOP.cat&&x.cust===CUSTPOP.cust);}
 function closeCustPopup(){CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();}
 function renderCustPop(){$('#modalBox').className='modal-box modal-cust';
   const t={wait:'출고대기',back:'미송관리',bundle:'합배관리'}[CUSTPOP.cat]||'';
   $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">🚚 ${t} · 고객 출고</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeCustPopup()">✕ 닫기</button></div>${custPopBody()}`;
   $('#modal').classList.remove('hide');}
 function custPopBody(){
-  const cat=CUSTPOP.cat,c=shipSort(openCustomers().filter(x=>x.cat===cat))[CUSTPOP.i];
+  const cat=CUSTPOP.cat,c=custPopTarget();
   if(!c)return '<div class="muted" style="padding:14px">처리 완료 — 남은 항목이 없습니다.</div>';
   const isWait=cat==='wait';
   return `<div class="sg-head"><span class="sg-name">${c.cust}</span>
@@ -2236,7 +2242,7 @@ function custPopBody(){
     <div class="sg-foot"><input id="ptrk" placeholder="송장번호 입력"><button class="btn green" onclick="shipPopAction()">✅ 출고완료</button></div>`;
 }
 async function shipPopAction(){
-  const cat=CUSTPOP.cat,c=shipSort(openCustomers().filter(x=>x.cat===cat))[CUSTPOP.i];if(!c)return;
+  const cat=CUSTPOP.cat,c=custPopTarget();if(!c)return;
   const trk=($('#ptrk')?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const picked=cat==='wait'?c.lines:c.lines.filter(l=>SHIPCHK.has(l.id));
   if(!picked.length){toast('출고할 상품을 체크하세요');return;}
@@ -2424,9 +2430,11 @@ function rxSearchBox(){return `<div class="toolbar" style="margin-bottom:12px"><
 /* 귀책 담당자 — 지정값(meta.faultBy) 우선, 없으면 자동판정 */
 function faultByOf(o){return (o.meta&&o.meta.faultBy)||faulteeOf(o);}
 async function setFaultBy(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;
+  const _pf=o.fault,_pm=o.meta;
   o.fault=(v==='고객(무과실)')?'무과실':(/물류|거래처|사무실/.test(v))?'물류':(v==='미지정')?o.fault:'셀러';
   o.meta=Object.assign({},o.meta||{},{faultBy:(v==='미지정')?null:v});
-  toast('귀책 지정: '+o.cust+' → '+(v==='미지정'?'해제':v));render();await saveOrd(o);}
+  toast('귀책 지정: '+o.cust+' → '+(v==='미지정'?'해제':v));render();
+  if(await saveOrd(o)===false){o.fault=_pf;o.meta=_pm;toast('⚠️ 저장 실패 — 되돌렸습니다');render();}}
 function rxOpen(id,type){const o=ORD.find(x=>x.id===id);if(!o)return;RXDRAFT={id,type,reason:RX_REASONS[0].l,fault:RX_REASONS[0].f};renderRxModal(o);}
 function rxPickReason(v){RXDRAFT.reason=v;RXDRAFT.fault=faultOf(v);renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}
 function rxSetFault(v){RXDRAFT.fault=v;renderRxModal(ORD.find(x=>x.id===RXDRAFT.id));}
@@ -3470,10 +3478,16 @@ function editVendor(i){const v=VENDORS[i];if(!v)return;
     <label>메모</label><input id="ve_memo" value="${esc(v.memo||'')}">
     <div class="modal-foot"><button class="btn red ghost" onclick="delVendor(${i})">삭제</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveVendorEdit(${i})">저장</button></div>`;
   $('#modal').classList.remove('hide');}
-async function saveVendorEdit(i){const v=VENDORS[i];if(!v)return;const name=$('#ve_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}v.name=name;v.type=$('#ve_type').value;v.memo=$('#ve_memo').value.trim()||'-';closeModal();toast('✅ 수정: '+name);render();
-  try{if(v.id){const {error}=await SB.from('vendors').update({name:v.name,type:v.type,memo:v.memo}).eq('id',v.id);if(error){console.error('saveVendor',error);toast('⚠️ 저장 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 저장 오류');}}
-async function delVendor(i){const v=VENDORS[i];if(!v)return;if(!confirm(`'${v.name}' 사입처를 삭제할까요?`))return;VENDORS.splice(i,1);closeModal();toast('🗑️ 삭제: '+v.name);render();
-  try{if(v.id){const {error}=await SB.from('vendors').delete().eq('id',v.id);if(error){console.error('delVendor',error);toast('⚠️ 삭제 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류');}}
+async function saveVendorEdit(i){const v=VENDORS[i];if(!v)return;const name=$('#ve_name').value.trim();if(!name){toast('사입처명을 입력하세요');return;}
+  const prev={name:v.name,type:v.type,memo:v.memo};
+  v.name=name;v.type=$('#ve_type').value;v.memo=$('#ve_memo').value.trim()||'-';
+  let ok=true;try{if(v.id){const {error}=await SB.from('vendors').update({name:v.name,type:v.type,memo:v.memo}).eq('id',v.id);if(error){ok=false;console.error('saveVendor',error);}}}catch(e){ok=false;console.error(e);}
+  if(!ok){Object.assign(v,prev);toast('⚠️ 저장 실패 — 되돌렸습니다. 다시 시도하세요');render();return;}
+  closeModal();toast('✅ 수정: '+name);render();}
+async function delVendor(i){const v=VENDORS[i];if(!v)return;if(!confirm(`'${v.name}' 사입처를 삭제할까요?`))return;
+  if(v.id){let ok=true;try{const {error}=await SB.from('vendors').delete().eq('id',v.id);if(error){ok=false;console.error('delVendor',error);}}catch(e){ok=false;console.error(e);}
+    if(!ok){toast('⚠️ 삭제 실패 — 다시 시도하세요');return;}}
+  VENDORS.splice(i,1);closeModal();toast('🗑️ 삭제: '+v.name);render();}
 function toggleEmpForm(){$('#empForm').classList.toggle('hide');}
 async function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value.trim(),pw=$('#f_pw').value.trim();
   if(!name||!id||!pw){toast('이름·아이디·비밀번호를 입력하세요');return;}
@@ -3508,8 +3522,9 @@ function editUser(i){const u=EMPLOYEES[i];if(!u)return;
 /* ===== 사원별 메뉴 권한 편집기 (대분류+소분류 체크박스) ===== */
 let PERMEDIT=null;
 function effPerms(u){const m={},s={};PERM_MENUS.forEach(mm=>{let on;if(u.perms&&u.perms.menus)on=u.perms.menus[mm.k]===true;else on=(mm.k==='dash')||(PERM[mm.k]||['all']).includes(u.scope)||(u.role==='보조'&&SUBMGR_MENUS.includes(mm.k));m[mm.k]=on;if(mm.subs){s[mm.k]={};mm.subs.forEach(sub=>{let son=true;if(u.perms&&u.perms.subs&&u.perms.subs[mm.k])son=u.perms.subs[mm.k][sub.k]!==false;s[mm.k][sub.k]=son;});}});return {menus:m,subs:s};}
-function openPermEdit(i){const u=EMPLOYEES[i];if(!u)return;PERMEDIT={i,perms:effPerms(u)};renderPermEdit();}
-function renderPermEdit(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const p=PERMEDIT.perms;
+function openPermEdit(i){const u=EMPLOYEES[i];if(!u)return;PERMEDIT={uid:u.login_id,perms:effPerms(u)};renderPermEdit();}
+function permEditUser(){return PERMEDIT&&EMPLOYEES.find(e=>e.login_id===PERMEDIT.uid);}/* 위치인덱스 대신 login_id로 조회 — 팝업 열린 채 사원 삭제돼도 엉뚱한 사원에 저장 방지 */
+function renderPermEdit(){const u=permEditUser();if(!u)return;const p=PERMEDIT.perms;
   const rows=PERM_MENUS.map(mm=>{const on=p.menus[mm.k];
     const subHtml=(mm.subs&&on)?`<div style="margin:3px 0 2px 28px;display:flex;flex-wrap:wrap;gap:3px 16px">${mm.subs.map(sub=>`<label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#475569;cursor:pointer"><input type="checkbox" ${p.subs[mm.k][sub.k]?'checked':''} onchange="permToggleSub('${mm.k}','${sub.k}',this.checked)" style="width:15px;height:15px"> ${sub.l}</label>`).join('')}</div>`:'';
     return `<div style="padding:5px 0;border-bottom:1px solid #f1f5f9"><label style="display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;cursor:pointer"><input type="checkbox" ${on?'checked':''} onchange="permToggleMenu('${mm.k}',this.checked)" style="width:17px;height:17px"> ${mm.l}${mm.k==='users'?' <span class="muted" style="font-size:10px;font-weight:400">(권한관리 포함)</span>':''}</label>${subHtml}</div>`;}).join('');
@@ -3517,12 +3532,12 @@ function renderPermEdit(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const p=PER
    <div class="ms" style="margin-bottom:6px">대분류(메뉴) 켜면 그 안 소분류(세부탭)도 조절 가능. <b>관리자(전체권한)는 항상 전부</b> 열립니다. 아무것도 저장 안 하면 기존 팀 기본권한 그대로.</div>
    <div style="display:flex;gap:6px;margin-bottom:8px"><button class="btn sm gray" onclick="permAll(true)">전체 선택</button><button class="btn sm gray" onclick="permAll(false)">전체 해제</button></div>
    <div style="max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px 12px">${rows}</div>
-   <div class="modal-foot"><button class="btn gray" onclick="editUser(${PERMEDIT.i})">← 뒤로</button><span style="flex:1"></span><button class="btn" onclick="savePerms()">권한 저장</button></div>`;
+   <div class="modal-foot"><button class="btn gray" onclick="editUser(${EMPLOYEES.indexOf(u)})">← 뒤로</button><span style="flex:1"></span><button class="btn" onclick="savePerms()">권한 저장</button></div>`;
   $('#modal').classList.remove('hide');}
 function permToggleMenu(k,on){PERMEDIT.perms.menus[k]=on;renderPermEdit();}
 function permToggleSub(mk,sk,on){PERMEDIT.perms.subs[mk][sk]=on;renderPermEdit();}
 function permAll(on){PERM_MENUS.forEach(mm=>{PERMEDIT.perms.menus[mm.k]=on;if(mm.subs)mm.subs.forEach(s=>PERMEDIT.perms.subs[mm.k][s.k]=on);});renderPermEdit();}
-async function savePerms(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const perms=JSON.parse(JSON.stringify(PERMEDIT.perms));
+async function savePerms(){const u=permEditUser();if(!u)return;const perms=JSON.parse(JSON.stringify(PERMEDIT.perms));
   toast('저장 중…');
   /* SQL 불필요 — 이미 열린 work_schedules 테이블의 _emp_perms 행에 사원별 맵으로 저장. DB 성공 확인 후에만 저장됨 표시 */
   const map=Object.assign({},EMP_PERMS,{[u.login_id]:perms});
@@ -3538,10 +3553,12 @@ async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_n
   const stockEdit=!!($('#eu_stock')&&$('#eu_stock').checked);
   const patch={name,team,role:roleMap[team],scope,owner:owner||null,stock_edit:stockEdit};
   const wasMe=ME&&ME.id===u.login_id;
-  Object.assign(u,patch);closeModal();toast('✅ 수정: '+name);
+  const prev={name:u.name,team:u.team,role:u.role,scope:u.scope,owner:u.owner,stock_edit:u.stock_edit};
+  Object.assign(u,patch);
+  let ok=true;try{const {error}=await SB.from('employees').update(patch).eq('id',u.id);if(error){ok=false;console.error('saveUser',error);}}catch(e){ok=false;console.error(e);}
+  if(!ok){Object.assign(u,prev);toast('⚠️ 저장 실패 — 되돌렸습니다. 다시 시도하세요');render();return;}
   if(wasMe){ME.name=u.name;ME.team=u.team;ME.role=u.role;ME.scope=u.scope;ME.owner=u.owner;ME.stock_edit=u.stock_edit;}
-  render();
-  try{const {error}=await SB.from('employees').update(patch).eq('id',u.id);if(error)toast('⚠️ 저장 오류: '+error.message);}catch(e){toast('⚠️ 저장 오류');}}
+  closeModal();toast('✅ 수정: '+name);render();}
 async function changeMyPassword(){
   const np=prompt('새 비밀번호를 입력하세요 (6자 이상)');if(np==null)return;
   if(np.trim().length<6){toast('비밀번호는 6자 이상이어야 합니다');return;}
@@ -4105,7 +4122,7 @@ function enhanceResponsiveUI(root){
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}}
 function render(){_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();enhanceResponsiveUI(_mn);if(VIEW==='dash')setTimeout(initDashGrid,0);updateTopbar();const cv=$('#currentView');if(cv)cv.textContent=VIEW_LABELS[VIEW]||'';if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
-  if(CUSTPOP){const c=shipSort(openCustomers().filter(x=>x.cat===CUSTPOP.cat))[CUSTPOP.i];if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
+  if(CUSTPOP){const c=custPopTarget();if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
 function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuAllowed(b.dataset.v))return;VIEW=b.dataset.v;try{history.replaceState(null,'','#'+VIEW)}catch(e){}buildNav();render();if(innerWidth<1024)closeSideNav();});
