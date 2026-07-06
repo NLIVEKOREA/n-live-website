@@ -2182,7 +2182,7 @@ function manageCards(list,cat){
   </div>`).join('')+'</div></div>';
 }
 function shipToggle(id){if(SHIPCHK.has(id))SHIPCHK.delete(id);else SHIPCHK.add(id);render();}
-async function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];if(!c)return;
+async function shipWait(i){const c=shipSort(openCustomers().filter(x=>x.cat==='wait'))[i];if(!c)return;
   const trk=($('#trk_wait_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const _td=todayStr();
   const prev=c.lines.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
@@ -2192,7 +2192,7 @@ async function shipWait(i){const c=openCustomers().filter(x=>x.cat==='wait')[i];
   if(ok)toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);
   else{c.lines.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
-async function shipChecked(cat,i){const c=openCustomers().filter(x=>x.cat===cat)[i];if(!c)return;
+async function shipChecked(cat,i){const c=shipSort(openCustomers().filter(x=>x.cat===cat))[i];if(!c)return;
   const picked=c.lines.filter(l=>SHIPCHK.has(l.id));if(!picked.length){toast('출고할 상품을 체크하세요');return;}
   /* 배송비/적립금(서비스 라인)은 리스트엔 안 보이지만 출고 시 함께 완료 처리 — 미출고 배송비 잔존 방지 */
   const svc=c.lines.filter(l=>_isSvcLine(l)&&l.ship!=='done'&&!picked.includes(l));
@@ -2213,7 +2213,7 @@ function renderCustPop(){$('#modalBox').className='modal-box modal-cust';
   $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">🚚 ${t} · 고객 출고</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeCustPopup()">✕ 닫기</button></div>${custPopBody()}`;
   $('#modal').classList.remove('hide');}
 function custPopBody(){
-  const cat=CUSTPOP.cat,c=openCustomers().filter(x=>x.cat===cat)[CUSTPOP.i];
+  const cat=CUSTPOP.cat,c=shipSort(openCustomers().filter(x=>x.cat===cat))[CUSTPOP.i];
   if(!c)return '<div class="muted" style="padding:14px">처리 완료 — 남은 항목이 없습니다.</div>';
   const isWait=cat==='wait';
   return `<div class="sg-head"><span class="sg-name">${c.cust}</span>
@@ -2226,7 +2226,7 @@ function custPopBody(){
     <div class="sg-foot"><input id="ptrk" placeholder="송장번호 입력"><button class="btn green" onclick="shipPopAction()">✅ 출고완료</button></div>`;
 }
 async function shipPopAction(){
-  const cat=CUSTPOP.cat,c=openCustomers().filter(x=>x.cat===cat)[CUSTPOP.i];if(!c)return;
+  const cat=CUSTPOP.cat,c=shipSort(openCustomers().filter(x=>x.cat===cat))[CUSTPOP.i];if(!c)return;
   const trk=($('#ptrk')?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const picked=cat==='wait'?c.lines:c.lines.filter(l=>SHIPCHK.has(l.id));
   if(!picked.length){toast('출고할 상품을 체크하세요');return;}
@@ -4095,7 +4095,7 @@ function enhanceResponsiveUI(root){
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}}
 function render(){_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();enhanceResponsiveUI(_mn);if(VIEW==='dash')setTimeout(initDashGrid,0);updateTopbar();const cv=$('#currentView');if(cv)cv.textContent=VIEW_LABELS[VIEW]||'';if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
-  if(CUSTPOP){const c=openCustomers().filter(x=>x.cat===CUSTPOP.cat)[CUSTPOP.i];if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
+  if(CUSTPOP){const c=shipSort(openCustomers().filter(x=>x.cat===CUSTPOP.cat))[CUSTPOP.i];if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
 function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuAllowed(b.dataset.v))return;VIEW=b.dataset.v;try{history.replaceState(null,'','#'+VIEW)}catch(e){}buildNav();render();if(innerWidth<1024)closeSideNav();});
