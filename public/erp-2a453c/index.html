@@ -823,7 +823,20 @@ const mine=arr=>{
   if(SELLERVIEW)return arr.filter(x=>x.staff===SELLERVIEW);
   return arr;
 };
-function sellerList(){return [...new Set(ORD.map(o=>o.staff).filter(Boolean))].sort();}
+/* 등록된 실제 셀러(서브매니저 제외) — 셀러별 자료의 단일 소스 */
+function realSellers(){return EMPLOYEES.filter(e=>e.role==='셀러'&&e.active!==false).map(e=>e.name).filter(Boolean);}
+/* 셀러 목록 = 등록 셀러 ∪ 주문에 찍힌 셀러명(과거분) → 신규 셀러도 주문 0건에 즉시 표시 */
+function sellerList(){return [...new Set([...realSellers(),...ORD.map(o=>o.staff).filter(Boolean)])].sort((a,b)=>String(a).localeCompare(String(b),'ko'));}
+/* 포지션(운영/물류/셀러/서브매니저) ↔ team·role·scope·owner 매핑 (명시 선택식) */
+function posToFields(pos,owner){
+  if(pos==='운영')return{team:'운영팀',role:'운영',scope:'all',owner:null};
+  if(pos==='물류')return{team:'물류팀',role:'물류',scope:'logi',owner:null};
+  if(pos==='서브매니저')return{team:'셀러팀',role:'보조',scope:'self',owner:owner||null};
+  return{team:'셀러팀',role:'셀러',scope:'self',owner:null};/* 셀러 */
+}
+function empPos(u){if(!u)return '셀러';if(u.role==='보조')return '서브매니저';if(u.role==='물류'||u.scope==='logi')return '물류';if(u.role==='운영'||u.role==='관리자'||(u.scope==='all'&&u.team!=='셀러팀'))return '운영';return '셀러';}
+function sellerOptions(sel){return realSellers().map(nm=>`<option ${sel===nm?'selected':''}>${esc(nm)}</option>`).join('');}
+function posOwnerToggle(pfx){const p=$('#'+pfx+'_pos'),w=$('#'+pfx+'_ownerWrap');if(p&&w)w.style.display=(p.value==='서브매니저')?'':'none';}
 function sellerTabs(){
   if(isSeller())return '';                 // 셀러/보조는 본인 것만 → 탭 불필요
   const ss=sellerList();
@@ -1538,7 +1551,7 @@ let OE={cust:null,phone:'',addr:'',staff:null,lines:[]};
 function viewOrder(){
   recalcShip();
   const unpaid=mine(ORD).filter(o=>o.pay==='unpaid');
-  const sellers=USERS.filter(u=>u.team==='셀러팀'&&u.role==='셀러').map(u=>`<option ${OE.staff===u.name?'selected':''}>${u.name}</option>`).join('');
+  const sellers=sellerList().map(nm=>`<option ${OE.staff===nm?'selected':''}>${esc(nm)}</option>`).join('');
   const total=OE.lines.reduce((a,l)=>a+(l.price||0)*(l.qty||0),0),cnt=OE.lines.reduce((a,l)=>a+(l.qty||0),0);
   // 합배 안내 — 선택한 고객의 아직 출고 안 된 주문(합쳐질 대상)
   const priorOrders=OE.cust?mine(ORD).filter(o=>o.cust===OE.cust&&o.ship!=='done'&&o.code!=='배송비'&&o.code!=='적립금'):[];
@@ -3368,12 +3381,11 @@ function viewUsers(){
       <input id="f_name" placeholder="이름" style="width:100px">
       <input id="f_id" placeholder="아이디(영문/숫자)" style="width:140px">
       <input id="f_pw" placeholder="비밀번호(6자 이상)" style="width:150px">
-      <select id="f_team"><option>운영팀</option><option>물류팀</option><option>셀러팀</option></select>
-      <select id="f_scope"><option value="all">전체권한</option><option value="logi">물류범위</option><option value="self">본인자료만</option></select>
-      <input id="f_owner" placeholder="담당셀러(보조만)" style="width:130px">
+      <select id="f_pos" onchange="posOwnerToggle('f')" title="포지션"><option>운영</option><option>물류</option><option selected>셀러</option><option>서브매니저</option></select>
+      <span id="f_ownerWrap" style="display:none;align-items:center;gap:4px"><span class="muted" style="font-size:12px;font-weight:700">담당셀러</span><select id="f_owner" style="width:120px"><option value="">— 선택 —</option>${sellerOptions('')}</select></span>
       <button class="btn" onclick="addEmp()">＋ 등록</button>
     </div>
-    <div class="note">전체=운영팀 / 물류범위=출고·재고·사입처 / 본인자료만=셀러·보조. · 로그인 아이디는 <b>아이디@n-live.co.kr</b> 이메일로 자동 변환됩니다.</div>
+    <div class="note"><b>운영</b>=전체권한 · <b>물류</b>=출고·재고·사입처 · <b>셀러</b>=본인 담당 고객·매출만(독립 판매자) · <b>서브매니저</b>=특정 셀러의 보조(담당셀러 자료 공유, 출고장은 전체). 로그인 아이디는 <b>아이디@n-live.co.kr</b>로 자동 변환됩니다.</div>
   </div>
   <div class="card"><div class="card-h"><h2>사원 목록 (${EMPLOYEES.length}명)</h2></div>
     <table><thead><tr><th>이름</th><th>아이디</th><th>팀</th><th>역할</th><th>권한범위</th><th>담당셀러</th><th style="width:92px"></th></tr></thead><tbody>
@@ -3494,8 +3506,9 @@ async function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value
   if(!/^[A-Za-z0-9._-]+$/.test(id)){toast('아이디는 영문/숫자로만 입력하세요');return;}
   if(pw.length<6){toast('비밀번호는 6자 이상이어야 합니다');return;}
   if(EMPLOYEES.some(u=>u.login_id===id)){toast('❌ 이미 있는 아이디입니다');return;}
-  const team=$('#f_team').value,scope=$('#f_scope').value,owner=$('#f_owner').value.trim();
-  const roleMap={운영팀:'운영',물류팀:'물류',셀러팀:(scope==='self'&&owner)?'보조':'셀러'};
+  const pos=$('#f_pos').value,owner=($('#f_owner')&&$('#f_owner').value.trim())||'';
+  if(pos==='서브매니저'&&!owner){toast('서브매니저는 담당셀러를 선택하세요');return;}
+  const F=posToFields(pos,owner);
   toast('🔐 로그인 계정 생성 중...');
   let authId=null;
   try{const ac=_authClient();const {data,error}=await ac.auth.signUp({email:id+SB_DOMAIN,password:pw});
@@ -3503,7 +3516,7 @@ async function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value
     authId=data&&data.user?data.user.id:null;
     try{await ac.auth.signOut();}catch(e){}
   }catch(e){toast('❌ 계정 생성 오류: '+e.message);return;}
-  const row={login_id:id,name,team,role:roleMap[team],scope,owner:owner||null,auth_id:authId,active:true};
+  const row={login_id:id,name,team:F.team,role:F.role,scope:F.scope,owner:F.owner,auth_id:authId,active:true};
   try{const {data,error}=await SB.from('employees').insert(row).select('*').single();
     if(error){toast('⚠️ 계정은 생성됐으나 직원정보 저장 실패: '+error.message);return;}
     EMPLOYEES.push(data);
@@ -3513,9 +3526,9 @@ async function addEmp(){const name=$('#f_name').value.trim(),id=$('#f_id').value
 function editUser(i){const u=EMPLOYEES[i];if(!u)return;
   $('#modalBox').innerHTML=`<h3>사원 정보 수정</h3><div class="ms">이름·팀·권한을 수정합니다. 아이디는 변경할 수 없어요. 비밀번호는 직원이 로그인 후 우측 상단에서 본인이 변경합니다.</div>
     <div class="modal-row"><div><label>이름</label><input id="eu_name" value="${esc(u.name)}"></div><div><label>아이디(변경불가)</label><input value="${esc(u.login_id)}" disabled style="background:#f1f5f9;color:#94a3b8"></div></div>
-    <div class="modal-row"><div><label>팀</label><select id="eu_team">${['운영팀','물류팀','셀러팀'].map(t=>`<option ${u.team===t?'selected':''}>${t}</option>`).join('')}</select></div>
-      <div><label>권한범위</label><select id="eu_scope">${[['all','전체권한'],['logi','물류범위'],['self','본인자료만']].map(([v,l])=>`<option value="${v}" ${u.scope===v?'selected':''}>${l}</option>`).join('')}</select></div></div>
-    <label>담당셀러(보조만)</label><input id="eu_owner" value="${esc(u.owner||'')}">
+    <div class="modal-row"><div><label>포지션</label><select id="eu_pos" onchange="posOwnerToggle('eu')">${['운영','물류','셀러','서브매니저'].map(p=>`<option ${empPos(u)===p?'selected':''}>${p}</option>`).join('')}</select></div>
+      <div id="eu_ownerWrap" style="${empPos(u)==='서브매니저'?'':'display:none'}"><label>담당셀러</label><select id="eu_owner"><option value="">— 선택 —</option>${sellerOptions(u.owner||'')}</select></div></div>
+    <div class="ms" style="margin:2px 0 8px">운영=전체권한 · 물류=출고·재고 · 셀러=독립 판매자(본인자료) · 서브매니저=담당셀러 보조</div>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:9px;cursor:pointer;font-weight:700"><input type="checkbox" id="eu_stock" ${u.stock_edit?'checked':''} style="width:17px;height:17px"> 📦 재고 등록·수정 권한 <span class="muted" style="font-weight:400;font-size:12px">— 셀러/보조도 재고관리에서 품목 등록·수정·입출고 가능</span></label>
     <div class="modal-foot"><button class="btn red ghost" onclick="delUser(${i})">삭제</button><button class="btn ghost" onclick="openPermEdit(${i})" title="이 사원이 볼 수 있는 메뉴/세부탭 체크">🔑 메뉴 권한</button><span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="saveUser(${i})">저장</button></div>`;
   $('#modal').classList.remove('hide');}
@@ -3548,10 +3561,11 @@ async function savePerms(){const u=permEditUser();if(!u)return;const perms=JSON.
   closeModal();toast('✅ '+u.name+' 메뉴 권한 저장됨 (DB 반영 확인)');buildNav();render();}
 async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_name').value.trim();
   if(!name){toast('이름은 필수입니다');return;}
-  const team=$('#eu_team').value,scope=$('#eu_scope').value,owner=$('#eu_owner').value.trim();
-  const roleMap={운영팀:'운영',물류팀:'물류',셀러팀:(scope==='self'&&owner)?'보조':'셀러'};
+  const pos=$('#eu_pos').value,owner=($('#eu_owner')&&$('#eu_owner').value.trim())||'';
+  if(pos==='서브매니저'&&!owner){toast('서브매니저는 담당셀러를 선택하세요');return;}
+  const F=posToFields(pos,owner);
   const stockEdit=!!($('#eu_stock')&&$('#eu_stock').checked);
-  const patch={name,team,role:roleMap[team],scope,owner:owner||null,stock_edit:stockEdit};
+  const patch={name,team:F.team,role:F.role,scope:F.scope,owner:F.owner,stock_edit:stockEdit};
   const wasMe=ME&&ME.id===u.login_id;
   const prev={name:u.name,team:u.team,role:u.role,scope:u.scope,owner:u.owner,stock_edit:u.stock_edit};
   Object.assign(u,patch);
