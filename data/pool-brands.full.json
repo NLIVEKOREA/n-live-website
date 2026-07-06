@@ -7175,7 +7175,7 @@
   "cat": "fashion",
   "region": "",
   "repProduct": "",
-  "priceRange": "",
+  "priceRange": "₩49,000 ~ ₩259,000",
   "url": "https://www.discovery-expedition.com/",
   "logo": "/brand-images/b59/logo.png",
   "images": [
@@ -7185,7 +7185,7 @@
    "/brand-images/b59/pp4.jpg",
    "/brand-images/b59/pp5.jpg"
   ],
-  "slogan": "고프코어 감성의 라이프스타일 아웃도어 — 스타 앰버서더로 대중 인지도가 높은 대형 국민 브랜드.",
+  "slogan": "고프코어 감성의 아웃도어 패션 — 스타 앰버서더로 대중 인지도가 높은 대형 국민 브랜드.",
   "logoLight": false,
   "score": 9,
   "salesMethod": "",
@@ -7285,37 +7285,79 @@
     "date": ""
    }
   ],
-  "heroImage": "/brand-hero/b59.jpg",
+  "heroImage": "/brand-images/b59/pp1.jpg",
   "pricedProducts": [
    {
     "img": "/brand-images/b59/pp1.jpg",
-    "name": "유니 클라임 그래픽 반팔티셔츠",
-    "price": "",
-    "url": "https://www.discovery-expedition.com/product-detail/DXRS5F063-BES"
+    "name": "여성 프레시벤트 레터링 세미크롭 링거티셔츠",
+    "price": "49,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWRS94063-IVD"
    },
    {
     "img": "/brand-images/b59/pp2.jpg",
-    "name": "여성 프레시벤트2.0 패커블 바람막이",
-    "price": "",
-    "url": "https://www.discovery-expedition.com/product-detail/DWWJ74063-CRS"
+    "name": "여성 프레시벤트 네이처 그래픽 반팔티",
+    "price": "59,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWRS97063-DGS"
    },
    {
     "img": "/brand-images/b59/pp3.jpg",
-    "name": "유니 니트 트레이닝 버뮤다 쇼츠",
-    "price": "",
-    "url": "https://www.discovery-expedition.com/product-detail/DXTB3A061-MGS"
+    "name": "프레시벤트 여성 카고스커트",
+    "price": "119,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWSK91063-BRD"
    },
    {
     "img": "/brand-images/b59/pp4.jpg",
-    "name": "프레시벤트 여성 코튼블랜드 와이드 카고팬츠",
-    "price": "",
-    "url": "https://www.discovery-expedition.com/product-detail/DWPT92063-SIL"
+    "name": "여성 프레시벤트 경량 우븐 트레이닝 스커트",
+    "price": "99,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWTB94063-IVD"
    },
    {
     "img": "/brand-images/b59/pp5.jpg",
-    "name": "여성 프레시벤트 레터링 세미크롭 링거티셔츠",
-    "price": "",
-    "url": "https://www.discovery-expedition.com/product-detail/DWRS94063-IVD"
+    "name": "여성 퍼텍스 러닝 바람막이",
+    "price": "219,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWWJR2063-DWS"
+   },
+   {
+    "img": "/brand-images/b59/pp6.jpg",
+    "name": "프레시벤트 여성 와이드 카고팬츠",
+    "price": "129,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWPT7F063-DWS"
+   },
+   {
+    "img": "/brand-images/b59/pp7.jpg",
+    "name": "여성 2IN1 A라인 셋업 쇼츠",
+    "price": "79,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWSBB2063-DWS"
+   },
+   {
+    "img": "/brand-images/b59/pp8.jpg",
+    "name": "여성 프리마로프트 패딩자켓",
+    "price": "259,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWPD42061-BES"
+   },
+   {
+    "img": "/brand-images/b59/pp9.jpg",
+    "name": "여성 베르텍스 2L 크롭자켓",
+    "price": "179,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWWJ3M061-BKS"
+   },
+   {
+    "img": "/brand-images/b59/pp10.jpg",
+    "name": "여성 프레시벤트 경량 우븐 트레이닝 반팔 후드 아노락",
+    "price": "129,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DWTR93063-IVD"
+   },
+   {
+    "img": "/brand-images/b59/pp11.jpg",
+    "name": "미를론 베스트 백",
+    "price": "99,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DXBZ3076N-GRL"
+   },
+   {
+    "img": "/brand-images/b59/pp12.jpg",
+    "name": "디스커버리 러너즈 립스탑 사이드홀 캡",
+    "price": "49,000원",
+    "url": "https://www.discovery-expedition.com/product-detail/DXCPR036N-DWS"
    }
   ],
   "i18n": {
@@ -7323,44 +7365,72 @@
     "slogan": "Lifestyle outdoor with a gorpcore sensibility — a major national brand with high public recognition led by star ambassadors.",
     "note": "",
     "products": [
-     "Uni Climb Graphic Short-Sleeve Tee",
-     "Women's Freshvent 2.0 Packable Windbreaker",
-     "Uni Knit Training Bermuda Shorts",
-     "Freshvent Women's Cotton-Blend Wide Cargo Pants",
-     "Women's Freshvent Lettering Semi-Crop Ringer Tee"
+     "Women's FRESHVENT Lettering Semi-Crop Ringer T-Shirt",
+     "Women's FRESHVENT Nature Graphic Short-Sleeve T-Shirt",
+     "FRESHVENT Women's Cargo Skirt",
+     "Women's FRESHVENT Lightweight Woven Training Skirt",
+     "Women's Pertex Running Windbreaker",
+     "FRESHVENT Women's Wide Cargo Pants",
+     "Women's 2-in-1 A-Line Set-Up Shorts",
+     "Women's PrimaLoft Padded Jacket",
+     "Women's Vertex 2L Crop Jacket",
+     "Women's FRESHVENT Lightweight Woven Training Short-Sleeve Hooded Anorak",
+     "Mirlon Vest Bag",
+     "Discovery Runners Ripstop Side-Hole Cap"
     ]
    },
    "zh-Hans": {
     "slogan": "融合 gorpcore 格调的生活方式户外品牌 —— 由明星代言、国民认知度极高的大型品牌。",
     "note": "",
     "products": [
-     "男女同款 Climb 图案短袖T恤",
-     "女式 Freshvent 2.0 可收纳风衣",
-     "男女同款针织训练百慕大短裤",
-     "Freshvent 女式棉混纺阔腿工装裤",
-     "女式 Freshvent 字母半短款拼色T恤"
+     "女士 FRESHVENT 字母印花微短款罗纹领T恤",
+     "女士 FRESHVENT 自然图案短袖T恤",
+     "FRESHVENT 女士工装半身裙",
+     "女士 FRESHVENT 轻量梭织训练半身裙",
+     "女士 Pertex 跑步防风衣",
+     "FRESHVENT 女士阔腿工装裤",
+     "女士 2合1 A字套装短裤",
+     "女士 PrimaLoft 棉服夹克",
+     "女士 Vertex 2L 短款夹克",
+     "女士 FRESHVENT 轻量梭织训练短袖连帽套头冲锋衣",
+     "Mirlon 背心包",
+     "Discovery Runners 格纹防撕裂侧孔帽"
     ]
    },
    "zh-Hant": {
     "slogan": "融合 gorpcore 格調的生活方式戶外品牌 —— 由明星代言、國民認知度極高的大型品牌。",
     "note": "",
     "products": [
-     "男女同款 Climb 圖案短袖T恤",
-     "女款 Freshvent 2.0 可收納風衣",
-     "男女同款針織訓練百慕達短褲",
-     "Freshvent 女款棉混紡寬版工裝褲",
-     "女款 Freshvent 字母半短款拼色T恤"
+     "女士 FRESHVENT 字母印花微短版羅紋領T恤",
+     "女士 FRESHVENT 自然圖案短袖T恤",
+     "FRESHVENT 女士工裝短裙",
+     "女士 FRESHVENT 輕量梭織訓練短裙",
+     "女士 Pertex 跑步防風外套",
+     "FRESHVENT 女士寬版工裝褲",
+     "女士 2合1 A字套裝短褲",
+     "女士 PrimaLoft 鋪棉外套",
+     "女士 Vertex 2L 短版外套",
+     "女士 FRESHVENT 輕量梭織訓練短袖連帽套頭衝鋒衣",
+     "Mirlon 背心包",
+     "Discovery Runners 格紋防撕裂側孔帽"
     ]
    },
    "ja": {
     "slogan": "ゴープコア感性のライフスタイルアウトドア — スターアンバサダーで国民的認知度を誇る大型ブランド。",
     "note": "",
     "products": [
-     "ユニ クライム グラフィック 半袖Tシャツ",
-     "ウィメンズ フレッシュベント2.0 パッカブル ウィンドブレーカー",
-     "ユニ ニット トレーニング バミューダショーツ",
-     "フレッシュベント ウィメンズ コットンブレンド ワイド カーゴパンツ",
-     "ウィメンズ フレッシュベント レタリング セミクロップ リンガーTシャツ"
+     "ウィメンズ FRESHVENT レタリング セミクロップ リンガーTシャツ",
+     "ウィメンズ FRESHVENT ネイチャー グラフィック 半袖Tシャツ",
+     "FRESHVENT ウィメンズ カーゴスカート",
+     "ウィメンズ FRESHVENT 軽量ウーブン トレーニングスカート",
+     "ウィメンズ Pertex ランニング ウインドブレーカー",
+     "FRESHVENT ウィメンズ ワイド カーゴパンツ",
+     "ウィメンズ 2WAY Aライン セットアップ ショーツ",
+     "ウィメンズ PrimaLoft パデッドジャケット",
+     "ウィメンズ Vertex 2L クロップジャケット",
+     "ウィメンズ FRESHVENT 軽量ウーブン トレーニング 半袖 フーデッド アノラック",
+     "Mirlon ベストバッグ",
+     "ディスカバリー ランナーズ リップストップ サイドホール キャップ"
     ]
    }
   },
@@ -7386,7 +7456,7 @@
    "/brand-images/b60/pp4.jpg",
    "/brand-images/b60/pp5.jpg"
   ],
-  "slogan": "탐험 정신을 담은 라이프스타일 아웃도어 — 플리스·패딩 시그니처와 스타 앰버서더로 대중 인지도가 높은 대형 국민 브랜드.",
+  "slogan": "탐험 정신을 담은 아웃도어 패션 — 플리스·패딩 시그니처와 스타 앰버서더로 대중 인지도가 높은 대형 국민 브랜드.",
   "logoLight": false,
   "score": 10,
   "salesMethod": "",
