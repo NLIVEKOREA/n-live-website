@@ -1559,7 +1559,7 @@ Object.assign(window.MP_I18N, {
     const logo = b.logo
       ? `<img src="${esc(b.logo)}" alt="${esc(b.realName||'')}" loading="lazy">`
       : `<span class="logo-fallback">${esc((b.realName||'?').slice(0,8))}</span>`;
-    const premium = (b.score >= 10);
+    const premium = (b.pin || b.score >= 10);
     const tags = [];
     if (b.salesMethod) tags.push(`<span class="btag">${esc(valL(b.salesMethod))}</span>`);
     if (b.hasStudio === '유') tags.push(`<span class="btag studio">${esc(tr('tag.studio'))}</span>`);
@@ -1789,7 +1789,7 @@ Object.assign(window.MP_I18N, {
       window.__brandsReady = fetch('/api/brands/').then(function(r){ return r.json(); });
       const data = await window.__brandsReady;
       const brands = (data.brands || []);
-      brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));   // ELITE 최상단 → 점수 높은 순
+      brands.sort((a,b) => ((b.pin?1:0)-(a.pin?1:0)) || ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));   // ELITE 최상단 → 점수 높은 순
       window.__BRANDS_ALL = brands;
       window.__AUTHED = !!data.authed;
       window.renderBrandGrid();
@@ -2282,7 +2282,7 @@ Object.assign(window.MP_I18N, {
       // 인증 성공 → 서버에서 데이터 재요청 (마스터면 숨김+공급률 포함)
       const data = await fetch('/api/brands/', {cache:'no-store'}).then(function(x){ return x.json(); });
       const brands = (data.brands || []);
-      brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
+      brands.sort((a,b) => ((b.pin?1:0)-(a.pin?1:0)) || ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
       window.__BRANDS_ALL = brands; window.__AUTHED = true; window.__ROLE = role;
       session = { role: role, expiresAt: null, reveal: role === 'all' };
       applySession();
@@ -2366,7 +2366,7 @@ Object.assign(window.MP_I18N, {
     try {
       const data = await fetch('/api/brands/', {cache:'no-store'}).then(function(x){ return x.json(); });
       const brands = (data.brands || []);
-      brands.sort((a,b) => ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
+      brands.sort((a,b) => ((b.pin?1:0)-(a.pin?1:0)) || ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
       window.__BRANDS_ALL = brands; window.__AUTHED = false;
     } catch(e) {}
     session = null;

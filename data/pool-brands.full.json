@@ -7203,7 +7203,7 @@
   ],
   "slogan": "고프코어 감성의 라이프스타일 아웃도어 — 스타 앰버서더로 대중 인지도가 높은 대형 국민 브랜드.",
   "logoLight": false,
-  "score": 5,
+  "score": 9,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
@@ -7380,7 +7380,8 @@
     ]
    }
   },
-  "status": "게시완료"
+  "status": "게시완료",
+  "pin": true
  },
  {
   "id": "b60",
@@ -7403,7 +7404,7 @@
   ],
   "slogan": "탐험 정신을 담은 라이프스타일 아웃도어 — 플리스·패딩 시그니처와 스타 앰버서더로 대중 인지도가 높은 대형 국민 브랜드.",
   "logoLight": false,
-  "score": 5,
+  "score": 10,
   "salesMethod": "",
   "hasStudio": "",
   "countries": [
@@ -7573,6 +7574,7 @@
     ]
    }
   },
-  "status": "게시완료"
+  "status": "게시완료",
+  "pin": true
  }
 ]
