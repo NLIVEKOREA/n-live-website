@@ -3362,7 +3362,12 @@ function _payTaxEstimate(monthly,dependents){/* 국세청 간이세액표 근사
   const taxable=Math.max(0,annual-earned-1500000*Math.max(1,dependents||1)-1300000);let tax=taxable<=14000000?taxable*.06:taxable<=50000000?840000+(taxable-14000000)*.15:6240000+(taxable-50000000)*.24;
   return _payRound10(Math.max(0,tax/12));
 }
-function empPay(e,ym){ym=ym||PAY_MONTH;const d=_payDraft(e,ym),base=Math.max(0,+d.base||0),sellerRate=Math.max(0,+d.sellerRate||0),assistRate=Math.max(0,+d.assistRate||0),ownRate=Math.max(0,+d.ownRate||0);
+function empPay(e,ym){ym=ym||PAY_MONTH;const d=_payDraft(e,ym);
+  if(d&&d.locked){/* 과거 실지급 확정값(엑셀 실제 지급분 잠금) — ERP 데이터 불완전월은 이 값 그대로 표시, 재계산 안 함 */
+    const net=Math.round(+d.lockNet||0),gross=Math.round(+d.lockGross||net),ded=Math.max(0,gross-net),sales=Math.round(+d.lockSales||0),comm=Math.round(+d.lockComm||0),lb=Math.round(+d.lockBase||0);
+    return {d,base:lb,seller:e.role==='셀러'?sales:0,own:_paySub(e)?sales:0,assist:0,sellerRate:0,assistRate:0,ownRate:0,sellerComm:0,assistComm:0,ownComm:0,comm,gross,taxable:gross,pension:0,health:0,care:0,employment:0,income:0,local:0,ded,net,locked:true};
+  }
+  const base=Math.max(0,+d.base||0),sellerRate=Math.max(0,+d.sellerRate||0),assistRate=Math.max(0,+d.assistRate||0),ownRate=Math.max(0,+d.ownRate||0);
   let own=_paySub(e)?_paySales(e.name,ym):0,assist=_paySub(e)?_paySales(e.owner||'',ym):0,seller=e.role==='셀러'?_paySales(e.name,ym):0;
   /* 과거월 보정: ERP에 없던 매출(해외원정 등)은 실제 지급액 기준 매출을 수동입력하면 자동집계 대신 그 값으로 수수료 계산 */
   if(d.salesOverride!==''&&d.salesOverride!=null&&!isNaN(+d.salesOverride)){const ov=Math.max(0,+d.salesOverride);if(e.role==='셀러')seller=ov;else if(_paySub(e))own=ov;}
@@ -3439,7 +3444,7 @@ function paySlipView(){
   const subTabs=`<div style="display:flex;gap:6px;margin:6px 0 14px"><button class="btn sm ${PAY_TAB==='slip'?'':'ghost'}" onclick="setPayTab('slip')">급여명세서</button>${(e.role==='셀러'||_paySub(e))?`<button class="btn sm ${PAY_TAB==='sales'?'':'ghost'}" onclick="setPayTab('sales')">판매내역</button>`:''}</div>`;
   if(PAY_TAB==='sales')return cfg+subTabs+(e.role==='셀러'?_paySalesTable(sellerRows,'본인 판매매출',p.sellerRate):_paySalesTable(sellerRows,'본인 판매분',p.ownRate)+_paySalesTable(ownerRows,'담당 셀러 '+esc(e.owner||'-')+' 판매분',p.assistRate));
   return cfg+subTabs+`
-  <div class="card" id="paySlip"><div class="card-h"><h2>${PAY_MONTH.slice(0,4)}년 ${PAY_MONTH.slice(5)}월 급여명세서</h2><b>${esc(e.name)} · ${esc(e.role)}</b></div>
+  <div class="card" id="paySlip"><div class="card-h"><h2>${PAY_MONTH.slice(0,4)}년 ${PAY_MONTH.slice(5)}월 급여명세서 ${p.locked?'<span class="pill p-done" style="font-size:11px">🔒 확정(실지급 잠금)</span>':''}</h2><b>${esc(e.name)} · ${esc(e.role)}</b></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
    <table><thead><tr><th>지급 항목</th><th class="num-cell">산식/금액</th></tr></thead><tbody>
     <tr><td>기본급</td><td class="num-cell">${_payInput('base',p.base)}</td></tr>
