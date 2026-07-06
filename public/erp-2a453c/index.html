@@ -849,14 +849,14 @@ const PERM={dash:['all','logi','self'],sns:['all','self'],order:['all','self'],s
   revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
 const SUBMGR_MENUS=['ship'];/* 셀러 보조(서브매니저) 추가 허용 메뉴: 출고장(물류와 동일) */
 /* 사원별 권한 편집용 메뉴 구조 (대분류 + 소분류 세부탭) */
-const PERM_MENUS=[{k:'dash',l:'대시보드'},{k:'order',l:'주문관리'},{k:'sales',l:'판매관리',subs:[{k:'order',l:'출고대기'},{k:'ship',l:'출고작업·완료'}]},{k:'live',l:'라이브 판매'},{k:'ship',l:'출고장',subs:[{k:'wait',l:'출고대기'},{k:'back',l:'미송관리'},{k:'bundle',l:'합배관리'},{k:'done',l:'출고완료'}]},{k:'bo',l:'미송사입',subs:[{k:'need',l:'주문필요'},{k:'ordered',l:'주문완료·입고전'}]},{k:'shipped',l:'판매현황'},{k:'rx',l:'교환·반품',subs:[{k:'active',l:'진행중'},{k:'archive',l:'완료'},{k:'fault',l:'귀책현황'}]},{k:'stock',l:'재고관리'},{k:'revenue',l:'매출현황'},{k:'sns',l:'SNS 관리'},{k:'cust',l:'고객관리'},{k:'prod',l:'상품현황'},{k:'vendor',l:'사입처관리'},{k:'emp',l:'직원·급여'},{k:'users',l:'사원관리'},{k:'kakao',l:'카카오 연동'}];
+const PERM_MENUS=[{k:'dash',l:'대시보드'},{k:'order',l:'주문관리'},{k:'sales',l:'판매관리',subs:[{k:'order',l:'출고대기'},{k:'ship',l:'출고작업·완료'}]},{k:'live',l:'라이브 판매'},{k:'ship',l:'출고장',subs:[{k:'wait',l:'출고대기'},{k:'back',l:'미송관리'},{k:'bundle',l:'합배관리'},{k:'done',l:'출고완료'}]},{k:'bo',l:'미송사입',subs:[{k:'need',l:'주문필요'},{k:'ordered',l:'주문완료·입고전'}]},{k:'shipped',l:'판매현황'},{k:'rx',l:'교환·반품',subs:[{k:'active',l:'진행중'},{k:'archive',l:'완료'},{k:'fault',l:'귀책현황'}]},{k:'stock',l:'재고관리',subs:[{k:'edit',l:'상품 등록·수정·입출고 (미체크=조회만)'}]},{k:'revenue',l:'매출현황'},{k:'sns',l:'SNS 관리'},{k:'cust',l:'고객관리',subs:[{k:'all',l:'고객 목록'},{k:'dup',l:'번호중복 정리'}]},{k:'prod',l:'상품현황',subs:[{k:'compose',l:'상품 구성'},{k:'sales',l:'판매 분석'}]},{k:'vendor',l:'사입처관리'},{k:'emp',l:'직원·급여'},{k:'users',l:'사원관리'},{k:'kakao',l:'카카오 연동'}];
 /* 메뉴 접근권한: 사원별 perms(체크박스)가 있으면 그게 우선, 없으면 기존 scope 기본값. 관리자(all)는 사원관리 항상 열림(자기잠금 방지) */
 function menuAllowed(v){if(v==='dash')return true;if(ME&&ME.scope==='all'&&v==='users')return true;if(ME&&ME.perms&&ME.perms.menus)return ME.perms.menus[v]===true;return (PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));}
 /* 소분류(세부탭) 접근권한: 기본 전체허용, perms에서 명시적으로 끈 것만 숨김. 관리자는 항상 전체 */
 function subAllowed(menu,sub){if(!ME||ME.scope==='all')return true;if(ME.perms&&ME.perms.subs&&ME.perms.subs[menu])return ME.perms.subs[menu][sub]!==false;return true;}
 function firstSub(menu,list){const a=list.filter(s=>subAllowed(menu,s));return a[0]||list[0];}
 /* 재고 등록·수정 권한: 관리/물류는 기본 허용, 셀러(self)는 stock_edit 플래그가 켜진 경우만 */
-const canStockEdit=()=>!isSeller()||!!ME.stock_edit;
+const canStockEdit=()=>!isSeller()||!!ME.stock_edit||!!(ME.perms&&ME.perms.subs&&ME.perms.subs.stock&&ME.perms.subs.stock.edit===true);
 function lockBanner(){
   if(isSubMgr()&&typeof VIEW!=='undefined'&&VIEW==='ship')return `<div class="lock">🚚 <b>${ME.name}</b> 셀러 보조 · 출고장은 전체 물류 열람·작업 가능</div>`;
   if(isSeller())return `<div class="lock">🔒 <b>${ME.name}</b> 셀러 · 본인 담당 고객·매출만 표시됩니다.</div>`;
@@ -3022,9 +3022,10 @@ function viewCustomers(){
     <button class="btn sm ghost" onclick="custCSV()"><i class="ti ti-download"></i> CSV</button>
     <button class="btn" onclick="openCustModal('')">＋ 고객 등록</button>
   </div></div>
+  ${(!subAllowed('cust',CUSTTAB)?(CUSTTAB=firstSub('cust',['all','dup'])):'')&&''}
   <div class="tabs">
-    <button class="${CUSTTAB==='all'?'on':''}" onclick="CUSTTAB='all';render()">전체 ${CUSTOMERS.length.toLocaleString()}</button>
-    <button class="${CUSTTAB==='dup'?'on':''}" onclick="CUSTTAB='dup';render()">⚠️ 번호중복 ${dup.length}그룹·${dupN}명</button>
+    ${subAllowed('cust','all')?`<button class="${CUSTTAB==='all'?'on':''}" onclick="CUSTTAB='all';render()">전체 ${CUSTOMERS.length.toLocaleString()}</button>`:''}
+    ${subAllowed('cust','dup')?`<button class="${CUSTTAB==='dup'?'on':''}" onclick="CUSTTAB='dup';render()">⚠️ 번호중복 ${dup.length}그룹·${dupN}명</button>`:''}
   </div>
   ${CUSTTAB==='dup'?custDupView(dup,stats):`
   <div class="card">
@@ -3039,12 +3040,13 @@ function viewCustomers(){
   </div>`}`;
 }
 function viewProducts(){
+  if(!subAllowed('prod',PRODTAB))PRODTAB=firstSub('prod',['compose','sales']);
   const tab=PRODTAB;
   return `
   <div class="head"><h1>상품현황 <span class="badge">통계</span></h1><p>상품 구성 + 판매 분석 · 품목 등록/수정은 재고관리에서</p></div>
   <div class="tabs">
-    <button class="${tab==='compose'?'on':''}" onclick="PRODTAB='compose';render()">상품 구성</button>
-    <button class="${tab==='sales'?'on':''}" onclick="PRODTAB='sales';render()">판매 분석</button>
+    ${subAllowed('prod','compose')?`<button class="${tab==='compose'?'on':''}" onclick="PRODTAB='compose';render()">상품 구성</button>`:''}
+    ${subAllowed('prod','sales')?`<button class="${tab==='sales'?'on':''}" onclick="PRODTAB='sales';render()">판매 분석</button>`:''}
   </div>
   ${tab==='sales'?prodSales():prodCompose()}`;
 }
@@ -3534,7 +3536,11 @@ function editUser(i){const u=EMPLOYEES[i];if(!u)return;
   $('#modal').classList.remove('hide');}
 /* ===== 사원별 메뉴 권한 편집기 (대분류+소분류 체크박스) ===== */
 let PERMEDIT=null;
-function effPerms(u){const m={},s={};PERM_MENUS.forEach(mm=>{let on;if(u.perms&&u.perms.menus)on=u.perms.menus[mm.k]===true;else on=(mm.k==='dash')||(PERM[mm.k]||['all']).includes(u.scope)||(u.role==='보조'&&SUBMGR_MENUS.includes(mm.k));m[mm.k]=on;if(mm.subs){s[mm.k]={};mm.subs.forEach(sub=>{let son=true;if(u.perms&&u.perms.subs&&u.perms.subs[mm.k])son=u.perms.subs[mm.k][sub.k]!==false;s[mm.k][sub.k]=son;});}});return {menus:m,subs:s};}
+function effPerms(u){const m={},s={};PERM_MENUS.forEach(mm=>{let on;if(u.perms&&u.perms.menus)on=u.perms.menus[mm.k]===true;else on=(mm.k==='dash')||(PERM[mm.k]||['all']).includes(u.scope)||(u.role==='보조'&&SUBMGR_MENUS.includes(mm.k));m[mm.k]=on;if(mm.subs){s[mm.k]={};mm.subs.forEach(sub=>{let son;const hasP=u.perms&&u.perms.subs&&u.perms.subs[mm.k]&&u.perms.subs[mm.k][sub.k]!==undefined;
+    if(hasP)son=u.perms.subs[mm.k][sub.k]!==false;
+    else if(mm.k==='stock'&&sub.k==='edit')son=(u.role!=='셀러'&&u.role!=='보조')||!!u.stock_edit;/* 재고편집은 셀러/보조 기본 잠금, stock_edit 플래그로만 허용 */
+    else son=true;
+    s[mm.k][sub.k]=son;});}});return {menus:m,subs:s};}
 function openPermEdit(i){const u=EMPLOYEES[i];if(!u)return;PERMEDIT={uid:u.login_id,perms:effPerms(u)};renderPermEdit();}
 function permEditUser(){return PERMEDIT&&EMPLOYEES.find(e=>e.login_id===PERMEDIT.uid);}/* 위치인덱스 대신 login_id로 조회 — 팝업 열린 채 사원 삭제돼도 엉뚱한 사원에 저장 방지 */
 function renderPermEdit(){const u=permEditUser();if(!u)return;const p=PERMEDIT.perms;
@@ -3558,6 +3564,9 @@ async function savePerms(){const u=permEditUser();if(!u)return;const perms=JSON.
     if(error){console.error('perms',error);toast('❌ 저장 실패: '+(error.message||'')+' (적용 안 됨)');return;}
   }catch(e){console.error(e);toast('❌ 저장 오류 — 적용 안 됨');return;}
   EMP_PERMS=map;u.perms=perms;if(ME&&ME.id===u.login_id)ME.perms=perms;
+  /* 재고 등록·수정 체크 → employees.stock_edit 컬럼과 동기화(단일 소스 유지) */
+  const _se=!!(perms.subs&&perms.subs.stock&&perms.subs.stock.edit);
+  if(_se!==!!u.stock_edit){try{await SB.from('employees').update({stock_edit:_se}).eq('id',u.id);}catch(e){console.error(e);}u.stock_edit=_se;if(ME&&ME.id===u.login_id)ME.stock_edit=_se;}
   closeModal();toast('✅ '+u.name+' 메뉴 권한 저장됨 (DB 반영 확인)');buildNav();render();}
 async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_name').value.trim();
   if(!name){toast('이름은 필수입니다');return;}
