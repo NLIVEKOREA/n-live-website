@@ -2254,13 +2254,19 @@ function shipTabDone(){
     ${done.slice(0,300).map(o=>`<tr><td class="muted">${o.shipped_date||o.date||'-'}</td><td>${esc(o.cust||'')}</td><td class="muted">#${o.id}</td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td><td>${o.code==='배송비'?'<span class="pill p-req">배송비</span>':'-'}</td><td class="barcode">${o.track}</td><td class="muted">${esc(o.staff||'-')}</td></tr>`).join('')||'<tr><td colspan="8" class="muted">해당 기간 출고완료 없음</td></tr>'}
     </tbody></table></div>`;
 }
+/* ===== 리스트 정렬 (미송/합배/출고대기·교환반품 공용) ===== */
+function setShipOrder(v){SHIPORDER=v;render();}
+function setRxOrder(v){RXORDER=v;render();}
+function sortBar(cur,setter){return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap"><span class="muted" style="font-size:12px;font-weight:700">정렬</span><div class="tabs" style="margin:0">${[['date','최신 날짜순'],['date_asc','오래된 날짜순'],['name','닉네임 ㄱㄴㄷ']].map(([v,l])=>`<button class="${cur===v?'on':''}" onclick="${setter}('${v}')">${l}</button>`).join('')}</div></div>`;}
+function _cardMaxDate(c){let mx='';(c.lines||[]).forEach(l=>{const d=(l.date||'').replace(/\//g,'-').slice(0,10);if(d>mx)mx=d;});return mx;}
+function shipSort(list){const a=(list||[]).slice();a.sort((x,y)=>{if(SHIPORDER==='name')return String(x.cust||'').localeCompare(String(y.cust||''),'ko');const dx=_cardMaxDate(x),dy=_cardMaxDate(y);return SHIPORDER==='date_asc'?String(dx).localeCompare(String(dy)):String(dy).localeCompare(String(dx));});return a;}
 function shipTabBody(){
   const cs=openCustomers();
-  if(SHIPTAB==='wait')return waitCard(cs.filter(c=>c.cat==='wait'));
+  if(SHIPTAB==='wait')return sortBar(SHIPORDER,'setShipOrder')+waitCard(shipSort(cs.filter(c=>c.cat==='wait')));
   if(SHIPTAB==='back'){const q=(BACKQ||'').trim();
     const box=`<div class="card" style="margin-bottom:12px"><div class="toolbar"><span class="muted" style="align-self:center">🔍 미송 상품</span><input id="backSearch" placeholder="상품명·번호표·코드 입력 후 Enter (예: 다운반바지)" value="${esc(q)}" onkeydown="if(event.key==='Enter'){BACKQ=this.value.trim();render()}" style="flex:1">${q?`<button class="btn sm gray" onclick="BACKQ='';render()">초기화</button>`:''}</div>${q?backSearchResult(q):`<div class="note">상품을 검색하면, 그 상품이 입고됐을 때 <b>아직 못 받은 고객들</b>을 모아서 보여줍니다.</div>`}</div>`;
-    return box+manageCards(cs.filter(c=>c.cat==='back'),'back');}
-  if(SHIPTAB==='bundle')return manageCards(cs.filter(c=>c.cat==='bundle'),'bundle');
+    return box+sortBar(SHIPORDER,'setShipOrder')+manageCards(shipSort(cs.filter(c=>c.cat==='back')),'back');}
+  if(SHIPTAB==='bundle')return sortBar(SHIPORDER,'setShipOrder')+manageCards(shipSort(cs.filter(c=>c.cat==='bundle')),'bundle');
   return shipTabDone();
 }
 function backSearchResult(q){const rows=mine(ORD).filter(o=>o.back&&o.ship!=='done'&&(inc(o.code,q)||inc(itemLabel(o),q)||inc(tagShow(o),q)));
@@ -2532,12 +2538,17 @@ function rxFaultBoard(all){
   <div class="note" style="margin-top:10px;font-size:11.5px">💡 회사귀책 = 회사 과실 건 · 배송비 = 반품 회수 4,000 / 교환 왕복 8,000 · <b style="color:#dc2626">회사부담 배송비</b> = 회사귀책 건 배송비</div></div>`;
   return agg;}
 const rxWhen=o=>((o.rxdate||o.rxdone||o.date||'')+'').replace(/\//g,'-');
-const rxSort=arr=>arr.slice().sort((a,b)=>{const c=String(rxWhen(b)).localeCompare(String(rxWhen(a)));return c!==0?c:(b.id||0)-(a.id||0);});/* 최신 등록이 위로 */
+const rxSort=arr=>arr.slice().sort((a,b)=>{
+  if(RXORDER==='name'){const c=String(a.cust||'').localeCompare(String(b.cust||''),'ko');if(c!==0)return c;}
+  else if(RXORDER==='date_asc'){const c=String(rxWhen(a)).localeCompare(String(rxWhen(b)));if(c!==0)return c;}
+  else{const c=String(rxWhen(b)).localeCompare(String(rxWhen(a)));if(c!==0)return c;}
+  return (b.id||0)-(a.id||0);});
 function viewRx(){const all=mine(ORD).filter(o=>o.rxtype).filter(rxMatch);const active=all.filter(o=>o.rxstat!=='done'),done=all.filter(o=>o.rxstat==='done');const cur=rxSort(RXVIEWTAB==='active'?active:done);
   return `<div class="head"><h1>교환·반품 <span class="badge">CS</span></h1><p>판매현황에서 접수 → 회수신청 → 회수입고(재고+) → 재발송/환불 → 완료 · 사유별 셀러/물류 귀책 기록</p></div>${lockBanner()}${sellerTabs()}
   ${(()=>{const cur=RXVIEWTAB==='done'?'archive':RXVIEWTAB;if(['active','archive','fault'].includes(cur)&&!subAllowed('rx',cur))RXVIEWTAB=firstSub('rx',['active','archive','fault']);return '';})()}
   <div class="tabs">${subAllowed('rx','active')?`<button class="${RXVIEWTAB==='active'?'on':''}" onclick="RXVIEWTAB='active';render()">진행중 ${active.length}</button>`:''}${subAllowed('rx','archive')?`<button class="${RXVIEWTAB==='archive'||RXVIEWTAB==='done'?'on':''}" onclick="RXVIEWTAB='archive';render()">✅ 완료 ${done.length}</button>`:''}${subAllowed('rx','fault')?`<button class="${RXVIEWTAB==='fault'?'on':''}" onclick="RXVIEWTAB='fault';render()">귀책현황</button>`:''}</div>
   ${rxSearchBox()}${RXQ?`<div class="muted" style="font-size:12px;margin:-4px 0 10px">🔍 "<b>${esc(RXQ)}</b>" (${RXFIELD}) 검색 — 진행중 ${active.length} · 완료 ${done.length}건</div>`:''}
+  ${RXVIEWTAB==='active'?sortBar(RXORDER,'setRxOrder'):''}
   ${RXVIEWTAB==='fault'?rxFaultBoard(all):(RXVIEWTAB==='archive'||RXVIEWTAB==='done')?rxArchiveView(done):(active.length?`<div class="rx-grid">${rxSort(active).map(rxCard).join('')}</div>`:`<div class="card"><div class="muted" style="padding:16px">${RXQ?'검색 결과가 없습니다':'진행중인 교환·반품 건이 없습니다 (판매현황에서 접수하세요)'}</div></div>`)}`;}
 /* 완료(정리) — 진짜 마무리된 CS를 고객별로 묶어 단계별 날짜와 함께 정리 */
 function rxArchiveView(done){
@@ -3637,7 +3648,7 @@ function kakaoBot(){return `
 }
 
 /* ===== 라우팅 ===== */
-let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',SHPSTATUS='all',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',STOCKSORT={f:'qty',d:1},STOCKPAGE=1,STOCKFILTER='',STOCKVENDOR='',PRODTAB='compose',DONEPERIOD='week',SALESUB='req',ORDTAB='all',REVPERIOD='week',RXSUB='exchange',RXPERIOD='all',SHIPDATE='';
+let VIEW='dash',SALETAB='order',RXTAB='ret',STAB='list',bundleSeq=1,SALEFROM,SALETO,SHIPTAB='wait',BACKQ='',CDATE=todayStr(),CQ='',SHIPPOP=false,CUSTPOP=null,SALEQ='',SALEFIELD='닉네임',SALEPOP=null,SHPFROM,SHPTO,SHPQ='',SHPFIELD='닉네임',SHPSTATUS='all',KAKAOTAB='set',PRODEDIT=null,STAGED=[],SFORM={tag:'',code:'',name:'',color:'',size:'',vendor:'',inprice:'',price:'',cat:'',subcat:'',season:'',qty:''},STOCKFIELD='전체',STOCKSORT={f:'qty',d:1},STOCKPAGE=1,STOCKFILTER='',STOCKVENDOR='',PRODTAB='compose',DONEPERIOD='week',SALESUB='req',ORDTAB='all',REVPERIOD='week',RXSUB='exchange',RXPERIOD='all',SHIPDATE='',RXORDER='date',SHIPORDER='date';
 const STOCK_PGSIZE=100;
 function stockFilterSort(){const q=($('#stockSearch')&&$('#stockSearch').value||'').trim(),fld=STOCKFIELD;
   const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
