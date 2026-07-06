@@ -547,6 +547,7 @@ const ORD2DB=o=>{const r={order_date:_toDate(o.date),staff:o.staff,cust:o.cust,p
 async function dbFetchAll(table,col,asc){let all=[],f=0;const sz=1000;while(true){const {data,error}=await SB.from(table).select('*').order(col,{ascending:asc!==false}).range(f,f+sz-1);if(error){console.error(table,error);break;}all=all.concat(data||[]);if(!data||data.length<sz)break;f+=sz;}return all;}
 let SHIPPING=[];
 let SCHED=[];
+let PAYROLL_RECORDS=[];
 let LIVE_SESS=[],SESS_PROD=[],PIMG={};/* 라이브 판매: 방송 세션 + 방송 상품 + 품번별 상품사진 */
 const baseCode=c=>String(c||'').split('-')[0];/* 품번 base(색상/사이즈 접미사 제거) */
 /* 번호표 표기: ERP는 #064(3자리·#), 고객화면은 64번. 숫자 아니면(캡처 QAM1 등) 원문 */
@@ -575,6 +576,7 @@ async function dbLoadAll(){
     const or=await dbFetchAll('orders','id',false);
     const sh=await SB.from('shipping').select('*').order('month');
     const em=await SB.from('employees').select('*').order('id');
+    try{const pr=await SB.from('payroll_records').select('*').order('pay_month',{ascending:false});PAYROLL_RECORDS=(pr&&pr.data)||[];}catch(e){PAYROLL_RECORDS=[];console.warn('payroll_records load',e);}
     const bs=await SB.from('broadcast_schedule').select('*').order('date');
     const vn=await SB.from('vendors').select('*').order('name');
     if(vn&&vn.data){VENDORS.length=0;vn.data.forEach(r=>VENDORS.push(r));}
@@ -3324,21 +3326,35 @@ function revenueCSV(){const rp=periodRange(REVPERIOD);let paid=mine(ORD).filter(
   downloadCSV(rows,'매출_'+REVPERIOD);}
 
 /* ===== 직원·급여 / 사원관리 ===== */
-/* 급여 — 사원별 기본급/수당률(매출%) 수정 가능. 미설정 시 직급별 기본값. 판매실적은 당월 자동연동 */
-const PAY_BASE={'셀러':2000000,'보조':2300000,'운영':2300000,'물류':2300000,'관리자':3000000};
-const PAY_RATE={'셀러':10,'보조':3,'운영':0,'물류':0,'관리자':0};
-function _staffSalesBy(field,name){return ORD.filter(o=>o[field]===name&&o.pay==='paid'&&_inRange(o,'month')&&_isGoods(o)).reduce((a,o)=>a+amtOf(o),0);}
-function _staffSales(name){return _staffSalesBy('staff',name);}/* 셀러 실적 = 담당(staff) */
-function empPay(e){const base=(e.base_salary!=null&&e.base_salary!==''&&+e.base_salary>0)?+e.base_salary:(PAY_BASE[e.role]||0);const rate=(e.comm_rate!=null&&e.comm_rate!==''&&+e.comm_rate>=0&&String(e.comm_rate)!=='')?+e.comm_rate:(PAY_RATE[e.role]||0);
-  if(e.role==='보조'){
-    const own=_staffSalesBy('staff',e.name);/* 본인 판매(매출귀속=본인) */
-    const assist=ORD.filter(o=>o.staff===(e.owner||'')&&e.auth_id&&o.created_by===e.auth_id&&o.pay==='paid'&&_inRange(o,'month')&&_isGoods(o)).reduce((a,o)=>a+amtOf(o),0);/* 담당셀러 라방 중 본인 처리분(created_by=auth_id uuid 매칭) */
-    const _pr=(typeof PREFS!=='undefined'&&PREFS.emp_own_rate&&PREFS.emp_own_rate[e.name]);
-    const ownRate=(_pr!=null&&_pr!=='')?+_pr:((e.own_rate!=null&&e.own_rate!==''&&+e.own_rate>=0&&String(e.own_rate)!=='')?+e.own_rate:(PAY_RATE['셀러']||10)),assistRate=rate;
-    const comm=Math.round(own*ownRate/100+assist*assistRate/100);
-    return {base:base,rate:assistRate,sales:own+assist,comm:comm,total:base+comm,own:own,assist:assist,ownRate:ownRate,assistRate:assistRate};
-  }
-  const sales=e.role==='셀러'?_staffSalesBy('staff',e.name):0;const comm=Math.round(sales*rate/100);return {base:base,rate:rate,sales:sales,comm:comm,total:base+comm};}
+const PAY_BASE={'셀러':2000000,'보조':2300000,'서브매니저':2300000,'운영':2300000,'물류':2300000,'관리자':3000000};
+const PAY_RATE={'셀러':10,'보조':3,'서브매니저':3,'운영':0,'물류':0,'관리자':0};
+let PAY_MONTH=new Date().toISOString().slice(0,7),PAY_EMP='',PAY_TAB='slip';
+const _paySub=e=>e.role==='보조'||e.role==='서브매니저';
+const _payMonthRows=(name,ym)=>ORD.filter(o=>o.staff===name&&o.pay==='paid'&&String(o.date||'').replace(/\//g,'-').slice(0,7)===ym&&_isGoods(o));
+const _paySales=(name,ym)=>_payMonthRows(name,ym).reduce((a,o)=>a+amtOf(o),0);
+const _payRound10=n=>Math.floor(Math.max(0,n)/10)*10;
+function _payDraft(e,ym){PREFS.payroll_drafts=PREFS.payroll_drafts||{};const k=ym+'|'+e.id;let d=PREFS.payroll_drafts[k];
+  if(!d){const saved=PAYROLL_RECORDS.find(x=>x.employee_id===e.id&&x.pay_month===ym);d=saved&&saved.payload?Object.assign({},saved.payload):{};
+    if(!Object.keys(d).length)d={contract:'freelancer',stage:'regular',base:(e.name==='윤진영'?2500000:((e.base_salary!=null&&+e.base_salary>0)?+e.base_salary:(PAY_BASE[e.role]||0))),sellerRate:e.role==='셀러'?10:0,assistRate:_paySub(e)?3:0,ownRate:_paySub(e)?10:0,dependents:1,incentive:0,meal:0,otherPay:0,otherDeduction:0,insuranceBase:0,taxOverride:'',pensionOverride:'',healthOverride:'',careOverride:'',employmentOverride:''};PREFS.payroll_drafts[k]=d;}
+  return d;
+}
+function _payTaxEstimate(monthly,dependents){/* 국세청 간이세액표 근사. 저장 전 실제 고지액을 직접 수정할 수 있음 */
+  const annual=Math.max(0,monthly*12),earned=Math.min(20000000,annual*.7)+Math.max(0,Math.min(30000000,annual-20000000))*.4+Math.max(0,Math.min(50000000,annual-50000000))*.15+Math.max(0,annual-100000000)*.05;
+  const taxable=Math.max(0,annual-earned-1500000*Math.max(1,dependents||1)-1300000);let tax=taxable<=14000000?taxable*.06:taxable<=50000000?840000+(taxable-14000000)*.15:6240000+(taxable-50000000)*.24;
+  return _payRound10(Math.max(0,tax/12));
+}
+function empPay(e,ym){ym=ym||PAY_MONTH;const d=_payDraft(e,ym),base=Math.max(0,+d.base||0),sellerRate=Math.max(0,+d.sellerRate||0),assistRate=Math.max(0,+d.assistRate||0),ownRate=Math.max(0,+d.ownRate||0);
+  const own=_paySub(e)?_paySales(e.name,ym):0,assist=_paySub(e)?_paySales(e.owner||'',ym):0,seller=e.role==='셀러'?_paySales(e.name,ym):0;
+  const sellerComm=Math.round(seller*sellerRate/100),assistComm=Math.round(assist*assistRate/100),ownComm=Math.round(own*ownRate/100),comm=sellerComm+assistComm+ownComm;
+  const gross=base+comm+(+d.incentive||0)+(+d.meal||0)+(+d.otherPay||0),taxable=Math.max(0,(+d.insuranceBase||0)||gross-(+d.meal||0));
+  let pension=0,health=0,care=0,employment=0,income=0;
+  if(d.contract==='insurance'){pension=_payRound10(taxable*.0475);health=_payRound10(taxable*.03595);care=_payRound10(health*(.9448/7.19));employment=_payRound10(taxable*.009);income=_payTaxEstimate(taxable,+d.dependents||1);}
+  else income=_payRound10(gross*.03);
+  const ov=(key,v)=>d[key]!==''&&d[key]!=null?Math.max(0,+d[key]||0):v;
+  pension=ov('pensionOverride',pension);health=ov('healthOverride',health);care=ov('careOverride',care);employment=ov('employmentOverride',employment);income=ov('taxOverride',income);
+  const local=_payRound10(income*.1),ded=pension+health+care+employment+income+local+(+d.otherDeduction||0);
+  return {d,base,seller,own,assist,sellerRate,assistRate,ownRate,sellerComm,assistComm,ownComm,comm,gross,taxable,pension,health,care,employment,income,local,ded,net:gross-ded};
+}
 function saveEmpPay(idx,field,val){const e=EMPLOYEES[idx];if(!e)return;const nv=(val===''?null:Math.max(0,parseFloat(val)||0));const oldv=e[field];const label=field==='base_salary'?'기본급':field==='comm_rate'?'라이브 수당률':'수당률';
   const suspect=(field==='base_salary'&&oldv>0&&nv!=null&&(nv>oldv*3||nv<oldv/3))||(field==='comm_rate'&&nv!=null&&nv>50);
   if(suspect&&!confirm('⚠️ 값이 크게 바뀝니다 — 오타 확인\n\n'+e.name+' · '+label+'\n'+(oldv==null?'-':(+oldv).toLocaleString())+' → '+(nv==null?'-':nv.toLocaleString())+'\n\n이대로 저장할까요?')){render();return;}
@@ -3347,30 +3363,37 @@ function saveEmpPay(idx,field,val){const e=EMPLOYEES[idx];if(!e)return;const nv=
 function saveOwnRate(name,val){if(typeof PREFS==='undefined')return;const nv=(val===''?null:Math.max(0,parseFloat(val)||0));
   if(nv!=null&&nv>50&&!confirm('⚠️ 직접판매율이 '+nv+'%로 큽니다 — 오타 확인\n\n이대로 저장할까요?')){render();return;}
   PREFS.emp_own_rate=PREFS.emp_own_rate||{};PREFS.emp_own_rate[name]=nv;if(typeof savePrefs==='function')savePrefs();toast('💾 직접판매율 저장');render();}
-function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&(canSeeAll()||e.name===ME.name));
-  const isMgmt=e=>e.role==='관리자'||e.role==='운영';
-  const mgmt=list.filter(isMgmt),payList=list.filter(e=>!isMgmt(e));
-  return `
-  <div class="head"><h1>직원 · 급여</h1><p>당월 판매실적 자동연동 · <b>기본급·수당률은 사원마다 수정</b> (셀러 수습 100만+10% / 정규 200만 / 보조 230만+3% — 입력칸에서 바로 조정)</p></div>
-  ${canSeeAll()?`<div class="note">💡 기본급/수당률 칸을 고치면 그 사원에게 바로 저장됩니다. 셀러 수습은 기본급 100만·수당률 10으로, 정규는 200만으로 입력하세요.</div>`:`<div class="lock">🔒 ${ME.name} — <b>본인 급여만</b> 표시됩니다.</div>`}
-  ${mgmt.length?`<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>운영진 <span class="muted" style="font-size:12px;font-weight:400">급여 산정 대상 아님</span></h2></div>
-    <table><thead><tr><th>직원</th><th>직급</th><th>팀</th></tr></thead><tbody>
-    ${mgmt.map(e=>`<tr><td><b>${esc(e.name)}</b></td><td class="muted">${esc(e.role||'')}</td><td class="muted">${esc(e.team||'')}</td></tr>`).join('')}
-    </tbody></table></div>`:''}
-  <div class="card"><div class="card-h"><h2>이번달 급여 (자동 산정)</h2></div>
-    <table><thead><tr><th>직원</th><th>직급</th><th class="num-cell">기본급</th><th class="num-cell">수당률%</th><th class="num-cell">당월매출</th><th class="num-cell">판매수당</th><th class="num-cell">지급액</th></tr></thead><tbody>
-    ${payList.length?payList.map(e=>{const p=empPay(e),idx=EMPLOYEES.indexOf(e);return `<tr>
-      <td><b>${esc(e.name)}</b></td><td class="muted">${esc(e.role||'')}</td>
-      <td class="num-cell">${canSeeAll()?`<input type="number" value="${p.base}" onchange="saveEmpPay(${idx},'base_salary',this.value)" style="width:104px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:won(p.base)}</td>
-      <td class="num-cell">${e.role==='보조'
-        ?`<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
-            <span style="font-size:11px;color:#64748b;white-space:nowrap">라이브 ${canSeeAll()?`<input type="number" value="${p.assistRate}" onchange="saveEmpPay(${idx},'comm_rate',this.value)" style="width:44px;text-align:right;padding:3px 5px;border:1px solid var(--line);border-radius:6px">`:p.assistRate}%</span>
-            <span style="font-size:11px;color:#64748b;white-space:nowrap">직접 ${canSeeAll()?`<input type="number" value="${p.ownRate}" onchange="saveOwnRate('${escAttr(e.name)}',this.value)" style="width:44px;text-align:right;padding:3px 5px;border:1px solid var(--line);border-radius:6px">`:p.ownRate}%</span>
-          </div>`
-        :(canSeeAll()&&e.role==='셀러')?`<input type="number" value="${p.rate}" onchange="saveEmpPay(${idx},'comm_rate',this.value)" style="width:58px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px">`:p.rate+'%'}</td>
-      <td class="num-cell">${won(p.sales)}${e.role==='보조'&&p.own!=null?`<div class="muted" style="font-size:10px">내판매 ${won(p.own)} · 라방 ${won(p.assist)}</div>`:''}</td><td class="num-cell up">+${won(p.comm)}</td><td class="num-cell"><b>${won(p.total)}</b></td></tr>`;}).join(''):'<tr><td colspan="7" class="muted">직원 데이터 없음 (사원관리에서 등록)</td></tr>'}
-    </tbody></table>
-  </div>`;
+function setPayMonth(v){PAY_MONTH=v;render();}
+function setPayEmp(v){PAY_EMP=v;render();}
+function setPayTab(v){PAY_TAB=v;render();}
+function setPayDraft(k,v){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY_EMP));if(!e)return;const d=_payDraft(e,PAY_MONTH);d[k]=v;savePrefs();render();}
+async function savePayroll(){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY_EMP));if(!e)return;const p=empPay(e,PAY_MONTH),row={employee_id:e.id,pay_month:PAY_MONTH,employee_name:e.name,payload:p.d,gross_pay:p.gross,deductions:p.ded,net_pay:p.net,updated_at:new Date().toISOString()};
+  const {data,error}=await SB.from('payroll_records').upsert(row,{onConflict:'employee_id,pay_month'}).select('*').single();if(error){toast('⚠️ 급여기록 저장 실패: DB 설정을 확인하세요');console.error(error);return;}const i=PAYROLL_RECORDS.findIndex(x=>x.employee_id===e.id&&x.pay_month===PAY_MONTH);if(i>=0)PAYROLL_RECORDS[i]=data;else PAYROLL_RECORDS.push(data);toast('💾 '+PAY_MONTH+' 급여기록 저장 완료');}
+function _payInput(key,val,w){return canSeeAll()?`<input type="number" value="${val}" onchange="setPayDraft('${key}',this.value)" style="width:${w||110}px;text-align:right">`:won(+val||0);}
+function _paySalesTable(rows,title,rate){return `<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>${title} <span class="muted" style="font-size:12px">${rate}% · ${rows.length}건</span></h2><b>${won(rows.reduce((a,o)=>a+amtOf(o),0))}</b></div><table><thead><tr><th>일자</th><th>고객</th><th>상품</th><th>옵션</th><th class="num-cell">수량</th><th class="num-cell">판매액</th></tr></thead><tbody>${rows.map(o=>`<tr><td>${esc(o.date||'')}</td><td>${esc(o.cust||'')}</td><td>${esc(o.disp||o.code||'')}</td><td>${esc([o.color,o.size].filter(Boolean).join(' / '))}</td><td class="num-cell">${o.qty||0}</td><td class="num-cell">${won(amtOf(o))}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">해당 월 상품 판매 없음</td></tr>'}</tbody></table></div>`;}
+function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&e.role!=='관리자'&&e.role!=='운영'&&(canSeeAll()||e.name===ME.name));if(!PAY_EMP||!list.some(e=>String(e.id)===String(PAY_EMP)))PAY_EMP=list[0]?String(list[0].id):'';const e=list.find(x=>String(x.id)===String(PAY_EMP));if(!e)return '<div class="head"><h1>직원 · 급여</h1></div><div class="card">급여 대상 직원이 없습니다.</div>';
+  const p=empPay(e,PAY_MONTH),d=p.d,readonly=!canSeeAll(),sellerRows=_payMonthRows(e.name,PAY_MONTH),ownerRows=_paySub(e)?_payMonthRows(e.owner||'',PAY_MONTH):[];
+  const tabs=`<div style="display:flex;gap:6px;margin:14px 0"><button class="btn ${PAY_TAB==='slip'?'':'ghost'}" onclick="setPayTab('slip')">급여명세서</button>${(e.role==='셀러'||_paySub(e))?`<button class="btn ${PAY_TAB==='sales'?'':'ghost'}" onclick="setPayTab('sales')">판매내역</button>`:''}</div>`;
+  if(PAY_TAB==='sales')return `<div class="head"><h1>직원 · 급여</h1><p>배송비·적립금·낱장 등 상품이 아닌 매출은 제외됩니다.</p></div><div class="card"><div class="form-grid"><label>급여 월 <input type="month" value="${PAY_MONTH}" onchange="setPayMonth(this.value)"></label>${canSeeAll()?`<label>직원 <select onchange="setPayEmp(this.value)">${list.map(x=>`<option value="${x.id}" ${x===e?'selected':''}>${esc(x.name)} · ${esc(x.role)}</option>`).join('')}</select></label>`:''}</div></div>${tabs}${e.role==='셀러'?_paySalesTable(sellerRows,'본인 판매매출',p.sellerRate):_paySalesTable(sellerRows,'본인 판매분',p.ownRate)+_paySalesTable(ownerRows,'담당 셀러 '+esc(e.owner||'-')+' 판매분',p.assistRate)}`;
+  return `<div class="head"><h1>직원 · 급여</h1><p>과거 월 선택 · 판매실적 자동연동 · 급여기록 저장 및 명세서 출력</p></div>
+  <div class="card"><div class="form-grid"><label>급여 월 <input type="month" value="${PAY_MONTH}" onchange="setPayMonth(this.value)"></label>${canSeeAll()?`<label>직원 <select onchange="setPayEmp(this.value)">${list.map(x=>`<option value="${x.id}" ${x===e?'selected':''}>${esc(x.name)} · ${esc(x.role)}</option>`).join('')}</select></label>`:''}
+  <label>지급형태 <select onchange="setPayDraft('contract',this.value)" ${readonly?'disabled':''}><option value="freelancer" ${d.contract==='freelancer'?'selected':''}>3.3% 프리랜서</option><option value="insurance" ${d.contract==='insurance'?'selected':''}>4대보험 근로자</option></select></label>
+  ${e.role==='셀러'?`<label>근무구분 <select onchange="setPayDraft('stage',this.value);setPayDraft('base',this.value==='probation'?1000000:2000000)" ${readonly?'disabled':''}><option value="probation" ${d.stage==='probation'?'selected':''}>수습</option><option value="regular" ${d.stage!=='probation'?'selected':''}>정규</option></select></label>`:''}</div></div>${tabs}
+  <div class="card" id="paySlip"><div class="card-h"><h2>${PAY_MONTH.replace('-','년 ')}월 급여명세서</h2><b>${esc(e.name)} · ${esc(e.role)}</b></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+   <table><thead><tr><th>지급 항목</th><th class="num-cell">산식/금액</th></tr></thead><tbody>
+    <tr><td>기본급</td><td class="num-cell">${_payInput('base',p.base)}</td></tr>
+    ${e.role==='셀러'?`<tr><td>판매수당 (${p.sellerRate}%)</td><td class="num-cell">${won(p.seller)} × ${_payInput('sellerRate',p.sellerRate,55)}% = ${won(p.sellerComm)}</td></tr>`:''}
+    ${_paySub(e)?`<tr><td>담당셀러 수당 (${p.assistRate}%)</td><td class="num-cell">${won(p.assist)} × ${_payInput('assistRate',p.assistRate,55)}% = ${won(p.assistComm)}</td></tr><tr><td>본인판매 수당 (${p.ownRate}%)</td><td class="num-cell">${won(p.own)} × ${_payInput('ownRate',p.ownRate,55)}% = ${won(p.ownComm)}</td></tr>`:''}
+    <tr><td>인센티브</td><td class="num-cell">${_payInput('incentive',d.incentive)}</td></tr><tr><td>식대(비과세)</td><td class="num-cell">${_payInput('meal',d.meal)}</td></tr><tr><td>기타 지급</td><td class="num-cell">${_payInput('otherPay',d.otherPay)}</td></tr><tr><th>지급 합계</th><th class="num-cell">${won(p.gross)}</th></tr>
+   </tbody></table>
+   <table><thead><tr><th>공제 항목</th><th class="num-cell">금액</th></tr></thead><tbody>
+    ${d.contract==='insurance'?`<tr><td>국민연금 4.75%</td><td class="num-cell">${_payInput('pensionOverride',d.pensionOverride===''?p.pension:d.pensionOverride)}</td></tr><tr><td>건강보험 3.595%</td><td class="num-cell">${_payInput('healthOverride',d.healthOverride===''?p.health:d.healthOverride)}</td></tr><tr><td>장기요양보험</td><td class="num-cell">${_payInput('careOverride',d.careOverride===''?p.care:d.careOverride)}</td></tr><tr><td>고용보험 0.9%</td><td class="num-cell">${_payInput('employmentOverride',d.employmentOverride===''?p.employment:d.employmentOverride)}</td></tr><tr><td>근로소득세 <span class="muted">(부양 ${canSeeAll()?`<input type="number" min="1" max="11" value="${d.dependents}" onchange="setPayDraft('dependents',this.value)" style="width:44px">`:d.dependents}명)</span></td><td class="num-cell">${_payInput('taxOverride',d.taxOverride===''?p.income:d.taxOverride)}</td></tr>`:`<tr><td>사업소득세 3%</td><td class="num-cell">${won(p.income)}</td></tr>`}
+    <tr><td>지방소득세 (소득세의 10%)</td><td class="num-cell">${won(p.local)}</td></tr><tr><td>기타 공제</td><td class="num-cell">${_payInput('otherDeduction',d.otherDeduction)}</td></tr><tr><th>공제 합계</th><th class="num-cell">${won(p.ded)}</th></tr>
+   </tbody></table>
+  </div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:18px;background:#eff6ff;border-radius:10px"><b>실수령액</b><strong style="font-size:24px;color:var(--blue)">${won(p.net)}</strong></div>
+  <div class="note">4대보험은 2026 근로자 부담률로 자동 계산되며 실제 고지액과 차이가 있으면 각 공제액을 직접 수정할 수 있습니다. 판매수당은 결제완료된 상품 매출만 반영합니다.</div>
+  ${canSeeAll()?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn ghost" onclick="window.print()">명세서 출력</button><button class="btn" onclick="savePayroll()">급여기록 저장</button></div>`:`<div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn" onclick="window.print()">명세서 출력</button></div>`}</div>`;
 }
 function viewUsers(){
   const scopeL={all:'전체권한',logi:'물류범위',self:'본인자료만'};
