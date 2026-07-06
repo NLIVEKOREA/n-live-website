@@ -874,12 +874,12 @@ function normCode6(code){const g=String(code==null?'':code).replace(/\D/g,'');re
 function isFreeSize(sz){return !sz||['F','FREE','FR','ONE','ONESIZE'].includes(String(sz).toUpperCase());}
 function skuFullCode(code,color,size,pool){const raw=String(code==null?'':code);if(raw.includes('-'))return raw;/* 구 데이터: 전체코드가 code에 통째로 저장됨 → 그대로 표시(접미사 재부여 안 함) */const src=pool||STOCK;const same=src.filter(x=>String(x.code)===String(code));const colors=[];same.forEach(x=>{if(x.color&&x.color!=='-'&&colors.indexOf(x.color)<0)colors.push(x.color);});const sizes=[...new Set(same.map(x=>x.size).filter(Boolean))].sort((a,b)=>sizeRank(a)-sizeRank(b));const c6=normCode6(code);const ci=colors.indexOf(color);const cp=ci>=0?'-'+String(ci+1).padStart(2,'0'):'';const si=sizes.indexOf(size);const sp=isFreeSize(size)?'':(si>=0?'-'+String(si+1).padStart(2,'0'):'');return c6+cp+sp;}
 function baseOfCode(c){return String(c==null?'':c).split('-')[0].replace(/\D/g,'');}
-function usedBaseNums(){const u=new Set();STOCK.forEach(s=>{const g=baseOfCode(s.code);if(g)u.add(parseInt(g,10));});return u;}
+function usedBaseNums(){const u=new Set();STOCK.forEach(s=>{const g=baseOfCode(s.code);if(g)u.add(parseInt(g,10));});(typeof STAGED!=='undefined'?STAGED:[]).forEach(s=>{const g=baseOfCode(s.code);if(g)u.add(parseInt(g,10));});return u;}
 /* 가장 낮은 빈 6자리 품번(중복없이 최소값) — 빈칸부터 채움 */
 function nextProductCode(){const u=usedBaseNums();let n=1;while(u.has(n))n++;return String(n).padStart(6,'0');}
 function baseTaken(base){const b=parseInt(String(base).replace(/\D/g,''),10);return !isNaN(b)&&usedBaseNums().has(b);}
 /* 정확 중복(메인번호+색상+사이즈) 존재여부 */
-function skuExists(code,color,size,exceptId){const b=parseInt(baseOfCode(code),10);return STOCK.some(s=>s.id!==exceptId&&parseInt(baseOfCode(s.code),10)===b&&(s.color||'')===(color||'')&&(s.size||'')===(size||''));}
+function skuExists(code,color,size,exceptId){const b=parseInt(baseOfCode(code),10);const hit=x=>parseInt(baseOfCode(x.code),10)===b&&(x.color||'')===(color||'')&&(x.size||'')===(size||'');return STOCK.some(s=>s.id!==exceptId&&hit(s))||(typeof STAGED!=='undefined'&&STAGED.some(hit));}
 const colorsOf=c=>[...new Set(STOCK.filter(s=>s.code===c).map(s=>s.color))];
 const itemLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
 /* 샘플 상품(반납대상): 재고에 sample=true인 품목. 내부 화면에만 ⚠️샘플 표시(고객 문자엔 미표시) */
@@ -2788,6 +2788,7 @@ function viewShipped(){
 /* ===== 재고관리 ===== */
 function viewStock(){
   const q=($('#stockSearch')?.value||'').trim(),can=canStockEdit(),fld=STOCKFIELD;
+  if(can&&!String(SFORM.code||'').trim())SFORM.code=nextProductCode();/* 품목코드 기본값=가장 낮은 빈번호 자동 채움 */
   const smatch=s=>!q||(fld==='번호표'?inc(s.tag,q):fld==='품목코드'?inc(s.code,q):fld==='품목명'?inc(s.name,q):inc(s.tag+s.name+s.code+s.color,q));
   const flist=stockFilterSort();const stotal=flist.length;const spages=Math.max(1,Math.ceil(stotal/STOCK_PGSIZE));const spg=Math.min(STOCKPAGE,spages);const sfrom=(spg-1)*STOCK_PGSIZE;const rows=flist.slice(sfrom,sfrom+STOCK_PGSIZE);
   const selN=STAGED.filter(x=>x.chk).length;
@@ -3405,6 +3406,9 @@ function saveBulk(){const b=BULK;if(!String(b.name).trim()){toast('상품명을 
 const SAMPLE_CONFIRM='재고 0으로 등록됩니다.\n\n이 상품이 샘플(반납 대상)인가요?\n\n[확인] = 샘플로 체크해서 등록 (주문 시 자동 미송·사입 처리)\n[취소] = 일반 상품(0재고)으로 등록';
 function stagedAdd(){
   if(!SFORM.code.trim()||!SFORM.name.trim()){toast('품목코드·품목명은 필수');return;}
+  {const _c=SFORM.code.trim(),_col=SFORM.color.trim()||'-',_sz=SFORM.size.trim()||'F';
+   if(skuExists(_c,_col,_sz)){alert('❌ 중복 등록 불가\n\n품번 '+baseOfCode(_c)+' · 색상 '+_col+' · 사이즈 '+_sz+' 은(는) 이미 등록됐거나 목록에 있습니다.');return;}
+   if(baseTaken(baseOfCode(_c))){if(!confirm('⚠️ 메인번호 '+baseOfCode(_c)+' 는 이미 등록된 상품이에요.\n\n색상/사이즈 옵션을 추가하는 게 맞나요?\n[확인] 옵션 추가 · [취소] 번호 변경'))return;}}
   const q=parseInt(SFORM.qty)||0;let sample=!!SFORM.sample;
   if(q<=0&&!sample){sample=confirm(SAMPLE_CONFIRM);}/* 재고 0인데 샘플 미체크 → 확인창 fallback */
   STAGED.unshift({chk:true,tag:SFORM.tag.trim()||'-',code:SFORM.code.trim(),vendor:SFORM.vendor.trim()||null,name:SFORM.name.trim(),color:SFORM.color.trim()||'-',size:SFORM.size.trim()||'F',in_price:parseInt(SFORM.inprice)||0,price:parseInt(SFORM.price)||0,category:SFORM.cat||null,subcategory:SFORM.subcat||null,season:(CAT_HASSEASON(SFORM.cat)?SFORM.season:'')||null,qty:q,sample});
