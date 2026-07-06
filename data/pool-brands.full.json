@@ -7560,5 +7560,693 @@
   },
   "status": "게시완료",
   "pin": true
+ },
+ {
+  "id": "b61",
+  "no": 61,
+  "realName": "에린블랙 (ERIN BLACK)",
+  "nickname": "K-브랜드 #B61",
+  "category": "컨템포러리 여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩67,000 ~ ₩255,000",
+  "url": "https://erinblack.co.kr/",
+  "logo": "/brand-images/b61/logo.png",
+  "images": [
+   "/brand-images/b61/pp1.jpg",
+   "/brand-images/b61/pp2.jpg",
+   "/brand-images/b61/pp3.jpg",
+   "/brand-images/b61/pp4.jpg",
+   "/brand-images/b61/pp5.jpg"
+  ],
+  "slogan": "절제된 드레이프와 우아한 실루엣의 컨템포러리 데일리 우먼웨어.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://erinblack.co.kr/product/list.html?cate_no=24",
+  "snsUrls": [
+   "https://www.instagram.com/erinblack1000/"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "type": "review",
+    "title": "잘 차려입지 않아도 데일리룩 완성 — 에린블랙이 만드는 데일리룩",
+    "source": "Instagram @erinblack1000",
+    "url": "https://www.instagram.com/erinblack1000/p/DGfstk2JDh_/",
+    "date": "",
+    "thumb": ""
+   }
+  ],
+  "heroImage": "/brand-images/b61/pp1.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b61/pp1.jpg",
+    "name": "SOFT DRAPE SLEEVELESS TOP _GRAY/BROWN",
+    "price": "67,400원",
+    "url": "https://erinblack.co.kr/product/72237soft-drape-sleeveless-top-graybrown/3435/category/24/display/1/"
+   },
+   {
+    "img": "/brand-images/b61/pp2.jpg",
+    "name": "SOFT DRAPE MAXI SKIRT _GRAY/BROWN",
+    "price": "96,600원",
+    "url": "https://erinblack.co.kr/product/72224soft-drape-maxi-skirt-graybrown/3434/category/24/display/1/"
+   },
+   {
+    "img": "/brand-images/b61/pp3.jpg",
+    "name": "LAYERED SLEEVELESS _BEIGE",
+    "price": "73,700원",
+    "url": "https://erinblack.co.kr/product/73254layered-sleeveless-beige/3433/category/24/display/1/"
+   },
+   {
+    "img": "/brand-images/b61/pp4.jpg",
+    "name": "FLOWING MAXI SKIRT _BEIGE",
+    "price": "179,000원",
+    "url": "https://erinblack.co.kr/product/72228flowing-maxi-skirt-beige/3432/category/24/display/1/"
+   },
+   {
+    "img": "/brand-images/b61/pp5.jpg",
+    "name": "ASYMMETRIC DRAPE BLOUSE",
+    "price": "255,000원",
+    "url": "https://erinblack.co.kr/product/73214asymmetric-drape-blouse/3431/category/24/display/1/"
+   },
+   {
+    "img": "/brand-images/b61/pp6.jpg",
+    "name": "COTTON BERMUDA PANTS",
+    "price": "152,000원",
+    "url": "https://erinblack.co.kr/product/73214cotton-bermuda-pants/3430/category/24/display/1/"
+   },
+   {
+    "img": "/brand-images/b61/pp7.jpg",
+    "name": "LACE TRIM VEST",
+    "price": "228,000원",
+    "url": "https://erinblack.co.kr/product/73290lace-trim-vest/3429/category/24/display/1/"
+   },
+   {
+    "img": "/brand-images/b61/pp8.jpg",
+    "name": "CUPRA MIDI WIDE PANTS",
+    "price": "219,000원",
+    "url": "https://erinblack.co.kr/product/73281cupra-midi-wide-pants/3428/category/24/display/1/"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Contemporary daily womenswear with restrained drape and an elegant silhouette.",
+    "products": [
+     "SOFT DRAPE SLEEVELESS TOP – GRAY/BROWN",
+     "SOFT DRAPE MAXI SKIRT – GRAY/BROWN",
+     "LAYERED SLEEVELESS TOP – BEIGE",
+     "FLOWING MAXI SKIRT – BEIGE",
+     "ASYMMETRIC DRAPE BLOUSE",
+     "COTTON BERMUDA PANTS",
+     "LACE TRIM VEST",
+     "CUPRO MIDI WIDE PANTS"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以克制垂坠感与优雅廓形打造的当代日常女装。",
+    "products": [
+     "柔垂无袖上衣 – 灰/棕",
+     "柔垂长半身裙 – 灰/棕",
+     "叠层无袖上衣 – 米色",
+     "飘逸长半身裙 – 米色",
+     "不对称垂坠衬衫",
+     "纯棉百慕大短裤",
+     "蕾丝边马甲",
+     "铜氨中长阔腿裤"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以克制垂墜感與優雅廓形打造的當代日常女裝。",
+    "products": [
+     "柔垂無袖上衣 – 灰/棕",
+     "柔垂長半身裙 – 灰/棕",
+     "疊層無袖上衣 – 米色",
+     "飄逸長半身裙 – 米色",
+     "不對稱垂墜襯衫",
+     "純棉百慕達短褲",
+     "蕾絲邊背心",
+     "銅氨中長寬褲"
+    ]
+   },
+   "ja": {
+    "slogan": "抑制されたドレープとエレガントなシルエットのコンテンポラリー・デイリーウィメンズウェア。",
+    "products": [
+     "ソフトドレープ ノースリーブトップ – グレー/ブラウン",
+     "ソフトドレープ マキシスカート – グレー/ブラウン",
+     "レイヤード ノースリーブトップ – ベージュ",
+     "フローイング マキシスカート – ベージュ",
+     "アシンメトリー ドレープブラウス",
+     "コットン バミューダパンツ",
+     "レーストリム ベスト",
+     "キュプラ ミディワイドパンツ"
+    ]
+   }
+  },
+  "status": "게시완료"
+ },
+ {
+  "id": "b62",
+  "no": 62,
+  "realName": "하우스므세 (housemce)",
+  "nickname": "K-브랜드 #B62",
+  "category": "컨템포러리 여성의류",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩139,000 ~ ₩289,000",
+  "url": "https://housemce.com/",
+  "logo": "/brand-images/b62/logo.png",
+  "images": [
+   "/brand-images/b62/pp1.jpg",
+   "/brand-images/b62/pp2.jpg",
+   "/brand-images/b62/pp3.jpg",
+   "/brand-images/b62/pp4.jpg",
+   "/brand-images/b62/pp5.jpg"
+  ],
+  "slogan": "구조적인 실루엣과 감도 높은 소재의 컨템포러리 우먼웨어.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://housemce.com/product/list.html?cate_no=33",
+  "snsUrls": [
+   "https://www.instagram.com/housemce/"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [],
+  "marketingItems": [],
+  "heroImage": "/brand-images/b62/pp1.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b62/pp1.jpg",
+    "name": "FREE-FORM COAT pale yellow",
+    "price": "289,000원",
+    "url": "https://housemce.com/product/free-form-coat-pale-yellow/350/category/33/display/1/"
+   },
+   {
+    "img": "/brand-images/b62/pp2.jpg",
+    "name": "FREE-FORM COAT olive",
+    "price": "289,000원",
+    "url": "https://housemce.com/product/free-form-coat-olive/349/category/33/display/1/"
+   },
+   {
+    "img": "/brand-images/b62/pp3.jpg",
+    "name": "FREE-FORM COAT navy",
+    "price": "289,000원",
+    "url": "https://housemce.com/product/free-form-coat-navy/348/category/33/display/1/"
+   },
+   {
+    "img": "/brand-images/b62/pp4.jpg",
+    "name": "NAPOLEON CARDIGAN beige",
+    "price": "139,000원",
+    "url": "https://housemce.com/product/napoleon-cardigan-beige/347/category/33/display/1/"
+   },
+   {
+    "img": "/brand-images/b62/pp5.jpg",
+    "name": "NAPOLEON CARDIGAN black",
+    "price": "139,000원",
+    "url": "https://housemce.com/product/napoleon-cardigan-black/346/category/33/display/1/"
+   },
+   {
+    "img": "/brand-images/b62/pp6.jpg",
+    "name": "RIB SNAP DETAIL PANTS indigo",
+    "price": "176,000원",
+    "url": "https://housemce.com/product/rib-snap-detail-pants-indigo/345/category/33/display/1/"
+   },
+   {
+    "img": "/brand-images/b62/pp7.jpg",
+    "name": "RIB SNAP DETAIL PANTS black",
+    "price": "176,000원",
+    "url": "https://housemce.com/product/rib-snap-detail-pants-black/344/category/33/display/1/"
+   },
+   {
+    "img": "/brand-images/b62/pp8.jpg",
+    "name": "ETHNIC REVERSIBLE SKIRT white",
+    "price": "166,000원",
+    "url": "https://housemce.com/product/ethnic-reversible-skirt-white/343/category/33/display/1/"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Contemporary womenswear defined by structured silhouettes and refined, high-sensibility materials.",
+    "products": [
+     "FREE-FORM COAT – Pale Yellow",
+     "FREE-FORM COAT – Olive",
+     "FREE-FORM COAT – Navy",
+     "NAPOLEON CARDIGAN – Beige",
+     "NAPOLEON CARDIGAN – Black",
+     "RIB SNAP DETAIL PANTS – Indigo",
+     "RIB SNAP DETAIL PANTS – Black",
+     "ETHNIC REVERSIBLE SKIRT – White"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "以结构化廓形与高质感面料诠释的当代女装。",
+    "products": [
+     "自由廓形大衣 – 浅黄",
+     "自由廓形大衣 – 橄榄绿",
+     "自由廓形大衣 – 藏青",
+     "拿破仑针织开衫 – 米色",
+     "拿破仑针织开衫 – 黑色",
+     "罗纹按扣细节长裤 – 靛蓝",
+     "罗纹按扣细节长裤 – 黑色",
+     "民族风双面半身裙 – 白色"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "以結構廓形與高質感面料詮釋的當代女裝。",
+    "products": [
+     "自由廓形大衣 – 淺黃",
+     "自由廓形大衣 – 橄欖綠",
+     "自由廓形大衣 – 藏青",
+     "拿破崙針織外套 – 米色",
+     "拿破崙針織外套 – 黑色",
+     "羅紋按扣細節長褲 – 靛藍",
+     "羅紋按扣細節長褲 – 黑色",
+     "民族風雙面半身裙 – 白色"
+    ]
+   },
+   "ja": {
+    "slogan": "構築的なシルエットと感度の高い素材によるコンテンポラリー・ウィメンズウェア。",
+    "products": [
+     "フリーフォームコート – ペールイエロー",
+     "フリーフォームコート – オリーブ",
+     "フリーフォームコート – ネイビー",
+     "ナポレオンカーディガン – ベージュ",
+     "ナポレオンカーディガン – ブラック",
+     "リブ スナップディテールパンツ – インディゴ",
+     "リブ スナップディテールパンツ – ブラック",
+     "エスニック リバーシブルスカート – ホワイト"
+    ]
+   }
+  },
+  "status": "게시완료"
+ },
+ {
+  "id": "b63",
+  "no": 63,
+  "realName": "베스티 (BESTY)",
+  "nickname": "K-브랜드 #B63",
+  "category": "패션잡화 (헤어 액세서리·백)",
+  "cat": "fashion",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩21,000 ~ ₩129,000",
+  "url": "https://www.besty.co.kr/",
+  "logo": "/brand-images/b63/logo.png",
+  "images": [
+   "/brand-images/b63/pp1.jpg",
+   "/brand-images/b63/pp2.jpg",
+   "/brand-images/b63/pp3.jpg",
+   "/brand-images/b63/pp4.jpg",
+   "/brand-images/b63/pp5.jpg"
+  ],
+  "slogan": "일상에 프렌들리 럭셔리를 더하는 헤어 액세서리·백 브랜드.",
+  "logoLight": false,
+  "score": 5,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://www.besty.co.kr/product/list.html?cate_no=50",
+  "snsUrls": [
+   "https://www.instagram.com/besty_kr/",
+   "https://www.youtube.com/@besty_kr"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "type": "ambassador",
+    "title": "배우 임지연, SBS 드라마 <멋진 신세계>에 BESTY 가방 등장",
+    "source": "Instagram @besty_kr",
+    "url": "https://www.instagram.com/p/DYbCHelmuwP/",
+    "date": "2025-11",
+    "thumb": ""
+   },
+   {
+    "type": "ambassador",
+    "title": "<멋진 신세계> 임지연 배우 착용 베스티 가방 스페셜오더",
+    "source": "Instagram",
+    "url": "https://www.instagram.com/p/DYWur9_Ecoe/",
+    "date": "2025-11",
+    "thumb": ""
+   },
+   {
+    "type": "press",
+    "title": "THE MOST Valuables 2024 브랜드 라인업 — 베스티(BESTY)",
+    "source": "THE MOST Valuables",
+    "url": "https://www.themostshow.kr/line-up-2024/?bmode=view&idx=93897204",
+    "date": "2024",
+    "thumb": "/brand-pr/b63/pr1.jpg"
+   },
+   {
+    "type": "youtube",
+    "title": "BESTY 공식 유튜브 채널 (헤어 스타일링·헤어 액세서리)",
+    "source": "YouTube",
+    "url": "https://www.youtube.com/@besty_kr",
+    "date": "",
+    "thumb": ""
+   },
+   {
+    "type": "review",
+    "title": "베스티(BESTY) 무신사 브랜드관",
+    "source": "무신사 (MUSINSA)",
+    "url": "https://www.musinsa.com/brand/besty",
+    "date": "",
+    "thumb": "/brand-pr/b63/pr2.jpg"
+   }
+  ],
+  "heroImage": "/brand-images/b63/pp1.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b63/pp1.jpg",
+    "name": "아뜰리에 립 참 (Atelier Lip Charm)",
+    "price": "24,000원",
+    "url": "https://www.besty.co.kr/product/아뜰리에-립-참-atelier-lip-charm/233/category/50/display/1/"
+   },
+   {
+    "img": "/brand-images/b63/pp2.jpg",
+    "name": "아뜰리에 미니 포켓 (Atelier Mini Pocket)",
+    "price": "28,000원",
+    "url": "https://www.besty.co.kr/product/아뜰리에-미니-포켓-atelier-mini-pocket/232/category/50/display/1/"
+   },
+   {
+    "img": "/brand-images/b63/pp3.jpg",
+    "name": "아뜰리에 드레이프 헤어커프 (Atelier Drape Hair Cuff)",
+    "price": "21,000원",
+    "url": "https://www.besty.co.kr/product/아뜰리에-드레이프-헤어커프-atelier-drape-hair-cuff/230/category/50/display/1/"
+   },
+   {
+    "img": "/brand-images/b63/pp4.jpg",
+    "name": "포춘 버킷백 (FORTUNE BUCKET BAG)",
+    "price": "109,000원",
+    "url": "https://www.besty.co.kr/product/포춘-버킷백-fortune-bucket-bag/229/category/50/display/1/"
+   },
+   {
+    "img": "/brand-images/b63/pp5.jpg",
+    "name": "케이 모던 버킷백 (K-MODERN BUCKET BAG)",
+    "price": "129,000원",
+    "url": "https://www.besty.co.kr/product/케이-모던-버킷백-k-modern-bucket-bag/228/category/50/display/1/"
+   },
+   {
+    "img": "/brand-images/b63/pp6.jpg",
+    "name": "아뜰리에 프린지 헤어커프 (Atelier Fringe Hair Cuff)",
+    "price": "27,000원",
+    "url": "https://www.besty.co.kr/product/아뜰리에-프린지-헤어커프-atelier-fringe-hair-cuff/227/category/50/display/1/"
+   },
+   {
+    "img": "/brand-images/b63/pp7.jpg",
+    "name": "헤리티지 블룸 헤어밴드 (Heritage Bloom Hairband)",
+    "price": "38,000원",
+    "url": "https://www.besty.co.kr/product/헤리티지-블룸-헤어밴드-heritage-bloom-hairband/226/category/50/display/1/"
+   },
+   {
+    "img": "/brand-images/b63/pp8.jpg",
+    "name": "골든 스파클 헤어핀 (Golden Sparkle Hairpin)",
+    "price": "23,000원",
+    "url": "https://www.besty.co.kr/product/골든-스파클-헤어핀-golden-sparkle-hairpin/224/category/50/display/1/"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "A hair accessory and bag brand adding friendly luxury to everyday life.",
+    "products": [
+     "Atelier Lip Charm",
+     "Atelier Mini Pocket",
+     "Atelier Drape Hair Cuff",
+     "Fortune Bucket Bag",
+     "K-Modern Bucket Bag",
+     "Atelier Fringe Hair Cuff",
+     "Heritage Bloom Hairband",
+     "Golden Sparkle Hairpin"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "为日常增添亲和轻奢的发饰与手袋品牌。",
+    "products": [
+     "工坊唇形挂饰",
+     "工坊迷你口袋包",
+     "工坊垂坠发箍",
+     "福运水桶包",
+     "K-摩登水桶包",
+     "工坊流苏发箍",
+     "传承花漾发带",
+     "金色闪耀发夹"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "為日常增添親和輕奢的髮飾與手袋品牌。",
+    "products": [
+     "工坊唇形吊飾",
+     "工坊迷你口袋包",
+     "工坊垂墜髮箍",
+     "福運水桶包",
+     "K-摩登水桶包",
+     "工坊流蘇髮箍",
+     "傳承花漾髮帶",
+     "金色閃耀髮夾"
+    ]
+   },
+   "ja": {
+    "slogan": "日常にフレンドリーラグジュアリーを添えるヘアアクセサリー・バッグブランド。",
+    "products": [
+     "アトリエ リップチャーム",
+     "アトリエ ミニポケット",
+     "アトリエ ドレープ ヘアカフ",
+     "フォーチュン バケットバッグ",
+     "K-モダン バケットバッグ",
+     "アトリエ フリンジ ヘアカフ",
+     "ヘリテージ ブルーム ヘアバンド",
+     "ゴールデン スパークル ヘアピン"
+    ]
+   }
+  },
+  "status": "게시완료"
+ },
+ {
+  "id": "b64",
+  "no": 64,
+  "realName": "리아옴 (LYAXOME)",
+  "nickname": "K-브랜드 #B64",
+  "category": "뷰티 디바이스·스킨케어",
+  "cat": "beauty",
+  "region": "",
+  "repProduct": "",
+  "priceRange": "₩80,000 ~ ₩1,530,000",
+  "url": "https://lyaxome.co.kr/",
+  "logo": "/brand-images/b64/logo.png",
+  "images": [
+   "/brand-images/b64/pp1.jpg",
+   "/brand-images/b64/pp2.jpg",
+   "/brand-images/b64/pp3.jpg",
+   "/brand-images/b64/pp4.jpg",
+   "/brand-images/b64/pp5.jpg"
+  ],
+  "slogan": "배우 이영애와 함께하는 엑소좀 재생 기술 기반 프리미엄 홈 뷰티 디바이스·앰플.",
+  "logoLight": false,
+  "score": 7,
+  "salesMethod": "",
+  "hasStudio": "",
+  "countries": [
+   "대한민국"
+  ],
+  "note": "",
+  "shopUrl": "https://lyaxome.co.kr/product/list.html?cate_no=28",
+  "snsUrls": [
+   "https://www.instagram.com/lyaxome_official/"
+  ],
+  "repProductUrls": [],
+  "marketingUrls": [],
+  "shopProducts": [],
+  "marketingItems": [
+   {
+    "type": "ambassador",
+    "title": "이영애의 리아좀, 롯데홈쇼핑 첫 론칭 완판",
+    "source": "뉴스톱",
+    "url": "https://www.newstopkorea.com/news/articleView.html?idxno=43712",
+    "date": "2026-03",
+    "thumb": "/brand-pr/b64/pr1.jpg"
+   },
+   {
+    "type": "ambassador",
+    "title": "'이영애 뷰티 기기' 리아좀, 롯데홈쇼핑서 2회 연속 완판",
+    "source": "네이트뉴스",
+    "url": "https://news.nate.com/view/20260504n21777",
+    "date": "2026-05",
+    "thumb": "/brand-pr/b64/pr2.jpg"
+   },
+   {
+    "type": "news",
+    "title": "'저속노화' 프리미엄 뷰티디바이스 '리아좀', 롯데홈쇼핑 론칭",
+    "source": "이데일리",
+    "url": "https://edaily.co.kr/News/Read?mediaCodeNo=257&newsId=03857286645380696",
+    "date": "2026-03",
+    "thumb": "/brand-pr/b64/pr3.jpg"
+   },
+   {
+    "type": "news",
+    "title": "리아좀, 엑소좀 앰플 기술로 차별화…동결건조 SRLV로 재생 효과",
+    "source": "마이데일리",
+    "url": "https://www.mydaily.co.kr/page/view/2026020616093477095",
+    "date": "2026-02",
+    "thumb": "/brand-pr/b64/pr4.jpg"
+   },
+   {
+    "type": "news",
+    "title": "리아좀, 롯데홈쇼핑 2차 방송서 매진…기술력이 주효",
+    "source": "네이트뉴스",
+    "url": "https://news.nate.com/view/20260504n21367",
+    "date": "2026-05",
+    "thumb": "/brand-pr/b64/pr5.jpg"
+   },
+   {
+    "type": "press",
+    "title": "하이엔드 홈뷰티 '리아좀', 롯데홈쇼핑 첫 생방송 매진 기록",
+    "source": "서울경제TV",
+    "url": "https://www.sentv.co.kr/article/view/sentv202604300076?d=pc",
+    "date": "2026-04",
+    "thumb": "/brand-pr/b64/pr6.jpg"
+   },
+   {
+    "type": "news",
+    "title": "피부·두피 통합 케어 디바이스 '리아좀', 홈쇼핑 판매 소진 이어가",
+    "source": "이넷뉴스",
+    "url": "https://www.enetnews.co.kr/news/articleView.html?idxno=51302",
+    "date": "2026-05",
+    "thumb": "/brand-pr/b64/pr7.jpg"
+   },
+   {
+    "type": "press",
+    "title": "프리미엄 홈 뷰티 디바이스 '리아좀', 롯데홈쇼핑서 론칭",
+    "source": "네이트뉴스",
+    "url": "https://news.nate.com/view/20260307n04318",
+    "date": "2026-03",
+    "thumb": "/brand-pr/b64/pr8.jpg"
+   }
+  ],
+  "heroImage": "/brand-images/b64/pp1.jpg",
+  "pricedProducts": [
+   {
+    "img": "/brand-images/b64/pp1.jpg",
+    "name": "리아좀 엑소 아크 앰플",
+    "price": "80,000원",
+    "url": "https://lyaxome.co.kr/product/리아좀-엑소-아크-앰플/21/category/28/display/1/"
+   },
+   {
+    "img": "/brand-images/b64/pp2.jpg",
+    "name": "리아좀 엑소 링클 앰플",
+    "price": "80,000원",
+    "url": "https://lyaxome.co.kr/product/리아좀-엑소-링클-앰플/22/category/28/display/1/"
+   },
+   {
+    "img": "/brand-images/b64/pp3.jpg",
+    "name": "리아좀 엑소 스칼프 앰플",
+    "price": "80,000원",
+    "url": "https://lyaxome.co.kr/product/리아좀-엑소-스칼프-앰플/23/category/28/display/1/"
+   },
+   {
+    "img": "/brand-images/b64/pp4.jpg",
+    "name": "리아좀 엑소 링클 앰플 3박스",
+    "price": "240,000원",
+    "url": "https://lyaxome.co.kr/product/리아좀-엑소-링클-앰플-3박스/25/category/28/display/1/"
+   },
+   {
+    "img": "/brand-images/b64/pp5.jpg",
+    "name": "리아좀 엑소 스칼프 앰플 3박스",
+    "price": "240,000원",
+    "url": "https://lyaxome.co.kr/product/리아좀-엑소-스칼프-앰플-3박스/26/category/28/display/1/"
+   },
+   {
+    "img": "/brand-images/b64/pp6.jpg",
+    "name": "리아좀 엑소 아크 앰플 3박스",
+    "price": "240,000원",
+    "url": "https://lyaxome.co.kr/product/리아좀-엑소-아크-앰플-3박스/24/category/28/display/1/"
+   },
+   {
+    "img": "/brand-images/b64/pp7.jpg",
+    "name": "리아좀 디바이스",
+    "price": "1,290,000원",
+    "url": "https://lyaxome.co.kr/product/리아좀-디바이스/27/category/28/display/1/"
+   },
+   {
+    "img": "/brand-images/b64/pp8.jpg",
+    "name": "리아좀 디바이스 프레스티지 패키지",
+    "price": "1,530,000원",
+    "url": "https://lyaxome.co.kr/product/리아좀-디바이스-프레스티지-패키지/20/category/28/display/1/"
+   }
+  ],
+  "i18n": {
+   "en": {
+    "slogan": "Premium home beauty devices and ampoules powered by exosome regeneration technology, with actress Lee Young-ae.",
+    "products": [
+     "LYAXOME Exo Arc Ampoule",
+     "LYAXOME Exo Wrinkle Ampoule",
+     "LYAXOME Exo Scalp Ampoule",
+     "LYAXOME Exo Wrinkle Ampoule (3 Boxes)",
+     "LYAXOME Exo Scalp Ampoule (3 Boxes)",
+     "LYAXOME Exo Arc Ampoule (3 Boxes)",
+     "LYAXOME Device",
+     "LYAXOME Device Prestige Package"
+    ]
+   },
+   "zh-Hans": {
+    "slogan": "携手演员李英爱，基于外泌体再生科技的高端家用美容仪与安瓶。",
+    "products": [
+     "LYAXOME 外泌体 Arc 安瓶",
+     "LYAXOME 外泌体抗皱安瓶",
+     "LYAXOME 外泌体头皮安瓶",
+     "LYAXOME 外泌体抗皱安瓶 3盒",
+     "LYAXOME 外泌体头皮安瓶 3盒",
+     "LYAXOME 外泌体 Arc 安瓶 3盒",
+     "LYAXOME 美容仪",
+     "LYAXOME 美容仪尊享套装"
+    ]
+   },
+   "zh-Hant": {
+    "slogan": "攜手演員李英愛，以外泌體再生科技打造的高端家用美容儀與安瓶。",
+    "products": [
+     "LYAXOME 外泌體 Arc 安瓶",
+     "LYAXOME 外泌體抗皺安瓶",
+     "LYAXOME 外泌體頭皮安瓶",
+     "LYAXOME 外泌體抗皺安瓶 3盒",
+     "LYAXOME 外泌體頭皮安瓶 3盒",
+     "LYAXOME 外泌體 Arc 安瓶 3盒",
+     "LYAXOME 美容儀",
+     "LYAXOME 美容儀尊享套裝"
+    ]
+   },
+   "ja": {
+    "slogan": "女優イ・ヨンエとともに、エクソソーム再生技術を基盤としたプレミアムホームビューティーデバイス・アンプル。",
+    "products": [
+     "LYAXOME エクソ アーク アンプル",
+     "LYAXOME エクソ リンクル アンプル",
+     "LYAXOME エクソ スカルプ アンプル",
+     "LYAXOME エクソ リンクル アンプル 3箱",
+     "LYAXOME エクソ スカルプ アンプル 3箱",
+     "LYAXOME エクソ アーク アンプル 3箱",
+     "LYAXOME デバイス",
+     "LYAXOME デバイス プレステージパッケージ"
+    ]
+   }
+  },
+  "status": "게시완료"
  }
 ]
