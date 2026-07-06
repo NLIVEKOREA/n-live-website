@@ -3338,7 +3338,18 @@ let PAY_MONTH=new Date().toISOString().slice(0,7),PAY_EMP='',PAY_TAB='slip',PAY_
 const _paySub=e=>e.role==='보조'||e.role==='서브매니저';
 /* 급여 매출 집계 기준(엑셀 급여정산서와 동일): 배송비/적립금/합배/택배/운임/무료배송 제외, 낱장·일반상품 포함 */
 function _isPaySales(o){const s=(o.disp||'')+'|'+(o.code||'');return o.code!=='배송비'&&o.code!=='적립금'&&!/배송비|적립금|합배|택배|운임|무료배송|무료나눔|무나/.test(s);}
-const _payMonthRows=(name,ym)=>ORD.filter(o=>o.staff===name&&o.pay==='paid'&&String(o.date||'').replace(/\//g,'-').slice(0,7)===ym&&_isPaySales(o));
+/* 수수료 귀속 월 판정 — 환불/취소 완전 제외, 교환은 '교환완료' 돼야 인정하고 '완료된 달' 기준, 일반은 주문월.
+   반환: 이 주문의 수수료가 잡히는 'YYYY-MM' 또는 null(제외). */
+function _payCommMonth(o){
+  if(o.rxtype==='refund'||o.rxtype==='cancel')return null;/* 환불·취소는 판매 취소 → 수수료 제외 */
+  if(o.rxtype==='exchange'){
+    if(o.rxstat!=='done')return null;/* 교환 진행중 → 아직 판매완료 아님, 제외 */
+    const dd=(typeof rxStepDate==='function'?rxStepDate(o,'done'):null)||o.rxdone||o.rxdate;/* 교환완료 → 완료된 달로 이월 */
+    return dd?String(dd).replace(/\//g,'-').slice(0,7):null;
+  }
+  return String(o.date||'').replace(/\//g,'-').slice(0,7);
+}
+const _payMonthRows=(name,ym)=>ORD.filter(o=>o.staff===name&&o.pay==='paid'&&_isPaySales(o)&&_payCommMonth(o)===ym);
 const _paySales=(name,ym)=>_payMonthRows(name,ym).reduce((a,o)=>a+amtOf(o),0);
 const _payRound10=n=>Math.floor(Math.max(0,n)/10)*10;
 function _payDraft(e,ym){PREFS.payroll_drafts=PREFS.payroll_drafts||{};const k=ym+'|'+e.id;let d=PREFS.payroll_drafts[k];
@@ -3352,7 +3363,9 @@ function _payTaxEstimate(monthly,dependents){/* 국세청 간이세액표 근사
   return _payRound10(Math.max(0,tax/12));
 }
 function empPay(e,ym){ym=ym||PAY_MONTH;const d=_payDraft(e,ym),base=Math.max(0,+d.base||0),sellerRate=Math.max(0,+d.sellerRate||0),assistRate=Math.max(0,+d.assistRate||0),ownRate=Math.max(0,+d.ownRate||0);
-  const own=_paySub(e)?_paySales(e.name,ym):0,assist=_paySub(e)?_paySales(e.owner||'',ym):0,seller=e.role==='셀러'?_paySales(e.name,ym):0;
+  let own=_paySub(e)?_paySales(e.name,ym):0,assist=_paySub(e)?_paySales(e.owner||'',ym):0,seller=e.role==='셀러'?_paySales(e.name,ym):0;
+  /* 과거월 보정: ERP에 없던 매출(해외원정 등)은 실제 지급액 기준 매출을 수동입력하면 자동집계 대신 그 값으로 수수료 계산 */
+  if(d.salesOverride!==''&&d.salesOverride!=null&&!isNaN(+d.salesOverride)){const ov=Math.max(0,+d.salesOverride);if(e.role==='셀러')seller=ov;else if(_paySub(e))own=ov;}
   const sellerComm=Math.round(seller*sellerRate/100),assistComm=Math.round(assist*assistRate/100),ownComm=Math.round(own*ownRate/100),comm=sellerComm+assistComm+ownComm;
   const gross=base+comm+(+d.incentive||0)+(+d.meal||0)+(+d.otherPay||0),taxable=Math.max(0,(+d.insuranceBase||0)||gross-(+d.meal||0));
   let pension=0,health=0,care=0,employment=0,income=0;
@@ -3430,7 +3443,8 @@ function paySlipView(){
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
    <table><thead><tr><th>지급 항목</th><th class="num-cell">산식/금액</th></tr></thead><tbody>
     <tr><td>기본급</td><td class="num-cell">${_payInput('base',p.base)}</td></tr>
-    ${e.role==='셀러'?`<tr><td>판매수당 (${p.sellerRate}%)</td><td class="num-cell">${won(p.seller)} × ${_payRateInput('sellerRate',p.sellerRate)}% = ${won(p.sellerComm)}</td></tr>`:''}
+    ${canSeeAll()&&(e.role==='셀러'||_paySub(e))?`<tr style="background:#fffbeb"><td>매출 수동보정 <span class="muted" style="font-size:11px">과거월·해외원정 등 ERP 미반영분 (비우면 자동집계)</span></td><td class="num-cell">${_payInput('salesOverride',d.salesOverride==null?'':d.salesOverride)}</td></tr>`:''}
+    ${e.role==='셀러'?`<tr><td>판매수당 (${p.sellerRate}%)${d.salesOverride!==''&&d.salesOverride!=null?' <span class="pill p-req" style="font-size:10px">수동</span>':''}</td><td class="num-cell">${won(p.seller)} × ${_payRateInput('sellerRate',p.sellerRate)}% = ${won(p.sellerComm)}</td></tr>`:''}
     ${_paySub(e)?`<tr><td>담당셀러 수당 (${p.assistRate}%)</td><td class="num-cell">${won(p.assist)} × ${_payRateInput('assistRate',p.assistRate)}% = ${won(p.assistComm)}</td></tr><tr><td>본인판매 수당 (${p.ownRate}%)</td><td class="num-cell">${won(p.own)} × ${_payRateInput('ownRate',p.ownRate)}% = ${won(p.ownComm)}</td></tr>`:''}
     <tr><td>인센티브</td><td class="num-cell">${_payInput('incentive',d.incentive)}</td></tr><tr><td>식대(비과세)</td><td class="num-cell">${_payInput('meal',d.meal)}</td></tr><tr><td>기타 지급</td><td class="num-cell">${_payInput('otherPay',d.otherPay)}</td></tr><tr><th>지급 합계</th><th class="num-cell">${won(p.gross)}</th></tr>
    </tbody></table>
