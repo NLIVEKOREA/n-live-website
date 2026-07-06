@@ -3334,9 +3334,11 @@ function revenueCSV(){const rp=periodRange(REVPERIOD);let paid=mine(ORD).filter(
 /* ===== 직원·급여 / 사원관리 ===== */
 const PAY_BASE={'셀러':2000000,'보조':2300000,'서브매니저':2300000,'운영':2300000,'물류':2300000,'관리자':3000000};
 const PAY_RATE={'셀러':10,'보조':3,'서브매니저':3,'운영':0,'물류':0,'관리자':0};
-let PAY_MONTH=new Date().toISOString().slice(0,7),PAY_EMP='',PAY_TAB='slip';
+let PAY_MONTH=new Date().toISOString().slice(0,7),PAY_EMP='',PAY_TAB='slip',PAY_VIEW='all';
 const _paySub=e=>e.role==='보조'||e.role==='서브매니저';
-const _payMonthRows=(name,ym)=>ORD.filter(o=>o.staff===name&&o.pay==='paid'&&String(o.date||'').replace(/\//g,'-').slice(0,7)===ym&&_isGoods(o));
+/* 급여 매출 집계 기준(엑셀 급여정산서와 동일): 배송비/적립금/합배/택배/운임/무료배송 제외, 낱장·일반상품 포함 */
+function _isPaySales(o){const s=(o.disp||'')+'|'+(o.code||'');return o.code!=='배송비'&&o.code!=='적립금'&&!/배송비|적립금|합배|택배|운임|무료배송|무료나눔|무나/.test(s);}
+const _payMonthRows=(name,ym)=>ORD.filter(o=>o.staff===name&&o.pay==='paid'&&String(o.date||'').replace(/\//g,'-').slice(0,7)===ym&&_isPaySales(o));
 const _paySales=(name,ym)=>_payMonthRows(name,ym).reduce((a,o)=>a+amtOf(o),0);
 const _payRound10=n=>Math.floor(Math.max(0,n)/10)*10;
 function _payDraft(e,ym){PREFS.payroll_drafts=PREFS.payroll_drafts||{};const k=ym+'|'+e.id;let d=PREFS.payroll_drafts[k];
@@ -3378,14 +3380,52 @@ async function savePayroll(){const e=EMPLOYEES.find(x=>String(x.id)===String(PAY
 function _payInput(key,val,w){return canSeeAll()?`<input type="number" value="${val}" onchange="setPayDraft('${key}',this.value)" style="width:${w||110}px;text-align:right">`:won(+val||0);}
 function _payRateInput(key,val){return canSeeAll()?`<input type="number" step="0.1" value="${val}" onchange="setPayDraft('${key}',this.value)" style="width:55px;text-align:right">`:val;}
 function _paySalesTable(rows,title,rate){return `<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>${title} <span class="muted" style="font-size:12px">${rate}% · ${rows.length}건</span></h2><b>${won(rows.reduce((a,o)=>a+amtOf(o),0))}</b></div><table><thead><tr><th>일자</th><th>고객</th><th>상품</th><th>옵션</th><th class="num-cell">수량</th><th class="num-cell">판매액</th></tr></thead><tbody>${rows.map(o=>`<tr><td>${esc(o.date||'')}</td><td>${esc(o.cust||'')}</td><td>${esc(o.disp||o.code||'')}</td><td>${esc([o.color,o.size].filter(Boolean).join(' / '))}</td><td class="num-cell">${o.qty||0}</td><td class="num-cell">${won(amtOf(o))}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">해당 월 상품 판매 없음</td></tr>'}</tbody></table></div>`;}
-function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&e.role!=='관리자'&&e.role!=='운영'&&(canSeeAll()||e.name===ME.name));if(!PAY_EMP||!list.some(e=>String(e.id)===String(PAY_EMP)))PAY_EMP=list[0]?String(list[0].id):'';const e=list.find(x=>String(x.id)===String(PAY_EMP));if(!e)return '<div class="head"><h1>직원 · 급여</h1></div><div class="card">급여 대상 직원이 없습니다.</div>';
+function setPayView(v){PAY_VIEW=v;render();}
+function openSlip(id){PAY_EMP=String(id);PAY_VIEW='slip';PAY_TAB='slip';render();}
+function payEligible(){return EMPLOYEES.filter(e=>e.active!==false&&e.role!=='관리자'&&e.role!=='운영'&&(canSeeAll()||e.name===ME.name));}
+function _paySalesOf(e,ym){const p=empPay(e,ym);return e.role==='셀러'?p.seller:(p.own+p.assist);}
+function payMonthBar(){return `<div class="card"><div class="form-grid"><label>급여 월 <input type="month" value="${PAY_MONTH}" onchange="setPayMonth(this.value)"></label>${(PAY_VIEW==='slip'&&canSeeAll())?`<label>직원 <select onchange="setPayEmp(this.value)">${payEligible().map(x=>`<option value="${x.id}" ${String(x.id)===String(PAY_EMP)?'selected':''}>${esc(x.name)} · ${esc(x.role)}</option>`).join('')}</select></label>`:''}</div></div>`;}
+function payViewTabs(){const T=[['all','📊 당월 전체'],['slip','📄 개인 명세서'],['monthly','📅 월별 누적']];return `<div style="display:flex;gap:6px;margin:14px 0;flex-wrap:wrap">${T.filter(([v])=>v!=='all'||canSeeAll()).map(([v,l])=>`<button class="btn ${PAY_VIEW===v?'':'ghost'}" onclick="setPayView('${v}')">${l}</button>`).join('')}</div>`;}
+function viewEmp(){
+  const list=payEligible();
+  if(!list.length)return '<div class="head"><h1>직원 · 급여</h1></div><div class="card">급여 대상 직원이 없습니다.</div>';
+  if(!canSeeAll()&&PAY_VIEW==='all')PAY_VIEW='slip';
+  const head=`<div class="head"><h1>직원 · 급여</h1><p>당월 전체 한눈에 · 개인 명세서 · 월별 누적 · 엑셀(급여정산서+매출자료) 다운로드</p></div>`+payMonthBar()+payViewTabs();
+  if(PAY_VIEW==='monthly')return head+payMonthlyView();
+  if(PAY_VIEW==='all'&&canSeeAll())return head+payAllView();
+  return head+paySlipView();
+}
+function payAllView(){
+  const ym=PAY_MONTH,list=payEligible();
+  const rows=list.map(e=>{const p=empPay(e,ym);return {e,p,sales:_paySalesOf(e,ym)};});
+  const T={base:0,sales:0,comm:0,gross:0,ded:0,net:0};rows.forEach(r=>{T.base+=r.p.base;T.sales+=r.sales;T.comm+=r.p.comm;T.gross+=r.p.gross;T.ded+=r.p.ded;T.net+=r.p.net;});
+  const cL=d=>d.contract==='insurance'?'4대보험':'프리 3.3%';
+  return `<div class="card"><div class="card-h"><h2>${ym.slice(0,4)}년 ${ym.slice(5)}월 · 전체 직원 급여</h2><b>실지급 합계 ${won(T.net)}</b></div>
+   <div class="table-wrap"><table><thead><tr><th>직원</th><th>포지션</th><th>계약</th><th class="num-cell">기본급</th><th class="num-cell">매출</th><th class="num-cell">수수료</th><th class="num-cell">지급합계</th><th class="num-cell">공제</th><th class="num-cell">실지급</th><th style="width:160px"></th></tr></thead><tbody>
+   ${rows.map(r=>`<tr><td><b class="prod-link" onclick="openSlip(${r.e.id})" title="명세서 열기">${esc(r.e.name)}</b></td><td class="muted">${esc(r.e.role)}${r.e.owner?`<span style="font-size:11px"> ·${esc(r.e.owner)}</span>`:''}</td><td class="muted">${cL(r.p.d)}</td><td class="num-cell">${won(r.p.base)}</td><td class="num-cell">${won(r.sales)}</td><td class="num-cell">${won(r.p.comm)}</td><td class="num-cell"><b>${won(r.p.gross)}</b></td><td class="num-cell" style="color:#b91c1c">-${won(r.p.ded)}</td><td class="num-cell"><strong style="color:var(--blue)">${won(r.p.net)}</strong></td>
+     <td><div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm ghost" onclick="openSlip(${r.e.id})">명세서</button><button class="btn sm" onclick="downloadPayXlsx(${r.e.id},'${ym}')">⬇ 엑셀</button></div></td></tr>`).join('')}
+   </tbody><tfoot><tr style="font-weight:800;background:#f8fafc"><td colspan="3">합계 ${rows.length}명</td><td class="num-cell">${won(T.base)}</td><td class="num-cell">${won(T.sales)}</td><td class="num-cell">${won(T.comm)}</td><td class="num-cell">${won(T.gross)}</td><td class="num-cell" style="color:#b91c1c">-${won(T.ded)}</td><td class="num-cell"><strong>${won(T.net)}</strong></td><td></td></tr></tfoot></table></div>
+   <div class="note">💡 이름/[명세서] 클릭 → 상세, [⬇ 엑셀] → 급여정산서+매출자료 2시트 엑셀 다운로드. 매출·수수료는 결제완료 판매 자동집계(배송비·합배·택배·운임 제외, 낱장 포함).</div></div>`;
+}
+function payMonthlyView(){
+  const list=payEligible(),months=[];
+  {let y=+PAY_MONTH.slice(0,4),m=+PAY_MONTH.slice(5);for(let i=0;i<12;i++){months.push(y+'-'+String(m).padStart(2,'0'));m--;if(m<1){m=12;y--;}}}
+  const empTot={};list.forEach(e=>empTot[e.id]=0);let grand=0;
+  const body=months.map(mo=>{let mt=0;const cells=list.map(e=>{const net=empPay(e,mo).net;empTot[e.id]+=net;mt+=net;return net;});grand+=mt;
+    return `<tr><td style="white-space:nowrap"><b>${mo.slice(0,4)}.${mo.slice(5)}</b> <button class="btn sm ghost" style="padding:1px 6px;font-size:10px" onclick="setPayMonth('${mo}');setPayView('all')">보기</button></td>${cells.map(n=>`<td class="num-cell">${n?won(n):'<span class="muted">-</span>'}</td>`).join('')}<td class="num-cell"><b>${won(mt)}</b></td></tr>`;}).join('');
+  return `<div class="card"><div class="card-h"><h2>월별 · 직원별 실지급 누적 (최근 12개월)</h2><b>총 ${won(grand)}</b></div>
+   <div class="table-wrap"><table><thead><tr><th>월</th>${list.map(e=>`<th class="num-cell">${esc(e.name)}<div class="muted" style="font-size:10px;font-weight:400">${esc(e.role)}</div></th>`).join('')}<th class="num-cell">월 합계</th></tr></thead><tbody>${body}</tbody>
+   <tfoot><tr style="font-weight:800;background:#f8fafc"><td>직원 누적</td>${list.map(e=>`<td class="num-cell">${won(empTot[e.id])}</td>`).join('')}<td class="num-cell"><strong>${won(grand)}</strong></td></tr></tfoot></table></div>
+   <div class="note">각 월 [보기]로 그 달 전체 명세를 엽니다. 저장된 급여기록이 없는 달은 현재 설정·판매 기준 추정치예요.</div></div>`;
+}
+function paySlipView(){
+  const list=payEligible();if(!PAY_EMP||!list.some(e=>String(e.id)===String(PAY_EMP)))PAY_EMP=list[0]?String(list[0].id):'';
+  const e=list.find(x=>String(x.id)===String(PAY_EMP));if(!e)return '<div class="card"><div class="muted" style="padding:16px">직원을 선택하세요.</div></div>';
   const p=empPay(e,PAY_MONTH),d=p.d,readonly=!canSeeAll(),sellerRows=_payMonthRows(e.name,PAY_MONTH),ownerRows=_paySub(e)?_payMonthRows(e.owner||'',PAY_MONTH):[];
-  const tabs=`<div style="display:flex;gap:6px;margin:14px 0"><button class="btn ${PAY_TAB==='slip'?'':'ghost'}" onclick="setPayTab('slip')">급여명세서</button>${(e.role==='셀러'||_paySub(e))?`<button class="btn ${PAY_TAB==='sales'?'':'ghost'}" onclick="setPayTab('sales')">판매내역</button>`:''}</div>`;
-  if(PAY_TAB==='sales')return `<div class="head"><h1>직원 · 급여</h1><p>배송비·적립금·낱장 등 상품이 아닌 매출은 제외됩니다.</p></div><div class="card"><div class="form-grid"><label>급여 월 <input type="month" value="${PAY_MONTH}" onchange="setPayMonth(this.value)"></label>${canSeeAll()?`<label>직원 <select onchange="setPayEmp(this.value)">${list.map(x=>`<option value="${x.id}" ${x===e?'selected':''}>${esc(x.name)} · ${esc(x.role)}</option>`).join('')}</select></label>`:''}</div></div>${tabs}${e.role==='셀러'?_paySalesTable(sellerRows,'본인 판매매출',p.sellerRate):_paySalesTable(sellerRows,'본인 판매분',p.ownRate)+_paySalesTable(ownerRows,'담당 셀러 '+esc(e.owner||'-')+' 판매분',p.assistRate)}`;
-  return `<div class="head"><h1>직원 · 급여</h1><p>과거 월 선택 · 판매실적 자동연동 · 급여기록 저장 및 명세서 출력</p></div>
-  <div class="card"><div class="form-grid"><label>급여 월 <input type="month" value="${PAY_MONTH}" onchange="setPayMonth(this.value)"></label>${canSeeAll()?`<label>직원 <select onchange="setPayEmp(this.value)">${list.map(x=>`<option value="${x.id}" ${x===e?'selected':''}>${esc(x.name)} · ${esc(x.role)}</option>`).join('')}</select></label>`:''}
-  <label>지급형태 <select onchange="setPayDraft('contract',this.value)" ${readonly?'disabled':''}><option value="freelancer" ${d.contract==='freelancer'?'selected':''}>3.3% 프리랜서</option><option value="insurance" ${d.contract==='insurance'?'selected':''}>4대보험 근로자</option></select></label>
-  ${e.role==='셀러'?`<label>근무구분 <select onchange="setPayDraft('stage',this.value);setPayDraft('base',this.value==='probation'?1000000:2000000)" ${readonly?'disabled':''}><option value="probation" ${d.stage==='probation'?'selected':''}>수습</option><option value="regular" ${d.stage!=='probation'?'selected':''}>정규</option></select></label>`:''}</div></div>${tabs}
+  const cfg=`<div class="card"><div class="form-grid">${canSeeAll()?`<label>직원 <select onchange="setPayEmp(this.value)">${list.map(x=>`<option value="${x.id}" ${x===e?'selected':''}>${esc(x.name)} · ${esc(x.role)}</option>`).join('')}</select></label>`:''}<label>지급형태 <select onchange="setPayDraft('contract',this.value)" ${readonly?'disabled':''}><option value="freelancer" ${d.contract==='freelancer'?'selected':''}>3.3% 프리랜서</option><option value="insurance" ${d.contract==='insurance'?'selected':''}>4대보험 근로자</option></select></label>${e.role==='셀러'?`<label>근무구분 <select onchange="setPayDraft('stage',this.value);setPayDraft('base',this.value==='probation'?1000000:2000000)" ${readonly?'disabled':''}><option value="probation" ${d.stage==='probation'?'selected':''}>수습</option><option value="regular" ${d.stage!=='probation'?'selected':''}>정규</option></select></label>`:''}<span style="flex:1"></span>${canSeeAll()?`<button class="btn" onclick="downloadPayXlsx(${e.id},'${PAY_MONTH}')">⬇ 엑셀 다운로드</button>`:''}</div></div>`;
+  const subTabs=`<div style="display:flex;gap:6px;margin:6px 0 14px"><button class="btn sm ${PAY_TAB==='slip'?'':'ghost'}" onclick="setPayTab('slip')">급여명세서</button>${(e.role==='셀러'||_paySub(e))?`<button class="btn sm ${PAY_TAB==='sales'?'':'ghost'}" onclick="setPayTab('sales')">판매내역</button>`:''}</div>`;
+  if(PAY_TAB==='sales')return cfg+subTabs+(e.role==='셀러'?_paySalesTable(sellerRows,'본인 판매매출',p.sellerRate):_paySalesTable(sellerRows,'본인 판매분',p.ownRate)+_paySalesTable(ownerRows,'담당 셀러 '+esc(e.owner||'-')+' 판매분',p.assistRate));
+  return cfg+subTabs+`
   <div class="card" id="paySlip"><div class="card-h"><h2>${PAY_MONTH.slice(0,4)}년 ${PAY_MONTH.slice(5)}월 급여명세서</h2><b>${esc(e.name)} · ${esc(e.role)}</b></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
    <table><thead><tr><th>지급 항목</th><th class="num-cell">산식/금액</th></tr></thead><tbody>
@@ -3401,6 +3441,61 @@ function viewEmp(){const list=EMPLOYEES.filter(e=>e.active!==false&&e.role!=='�
   </div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:18px;background:#eff6ff;border-radius:10px"><b>실수령액</b><strong style="font-size:24px;color:var(--blue)">${won(p.net)}</strong></div>
   <div class="note">4대보험은 2026 근로자 부담률로 자동 계산되며 실제 고지액과 차이가 있으면 각 공제액을 직접 수정할 수 있습니다. 판매수당은 결제완료된 상품 매출만 반영합니다.</div>
   ${canSeeAll()?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn ghost" onclick="window.print()">명세서 출력</button><button class="btn" onclick="savePayroll()">급여기록 저장</button></div>`:`<div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn" onclick="window.print()">명세서 출력</button></div>`}</div>`;
+}
+/* ===== 급여 엑셀(급여정산서 + 매출자료 2시트) 다운로드 ===== */
+function _payXlsxReady(){return typeof XLSX!=='undefined'&&XLSX.utils&&XLSX.writeFile;}
+function loadXlsxLib(cb){if(_payXlsxReady())return cb();toast('엑셀 모듈 불러오는 중…');const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js';s.onload=()=>{ _payXlsxReady()?cb():toast('⚠️ 엑셀 모듈 초기화 실패'); };s.onerror=()=>toast('⚠️ 엑셀 모듈 로드 실패 — 인터넷 확인');document.head.appendChild(s);}
+function _payLastDay(ym){const y=+ym.slice(0,4),m=+ym.slice(5);return new Date(y,m,0).getDate();}
+function downloadPayXlsx(empId,ym){const e=EMPLOYEES.find(x=>String(x.id)===String(empId));if(!e){toast('직원을 찾을 수 없어요');return;}loadXlsxLib(function(){try{_buildPayXlsx(e,ym);}catch(err){console.error('payXlsx',err);toast('⚠️ 엑셀 생성 오류: '+(err.message||err));}});}
+function _buildPayXlsx(e,ym){
+  const S=XLSX.utils,p=empPay(e,ym),d=p.d,Y=ym.slice(0,4),M=ym.slice(5),ld=_payLastDay(ym);
+  const range=`${Y}.${M}.01~${M}.${String(ld).padStart(2,'0')}`,contractLabel=d.contract==='insurance'?'4대보험 근로자':'프리랜서(3.3%)';
+  const rate=(e.role==='셀러'?p.sellerRate:(p.ownRate||p.assistRate))||0;
+  let salesRows=_payMonthRows(e.name,ym).slice();if(_paySub(e)&&e.owner)salesRows=salesRows.concat(_payMonthRows(e.owner,ym));
+  salesRows.sort((a,b)=>String(a.date||'').localeCompare(String(b.date||'')));
+  const salesSum=salesRows.reduce((a,o)=>a+amtOf(o),0);
+  /* ---- 급여정산서 ---- */
+  const A=[];for(let i=0;i<20;i++)A[i]=['','','','','','',''];
+  A[0]=['','※ 작성기준일: '+Y+'.'+M];
+  A[1]=['','급 여 정 산 서'];
+  A[3]=['','성   명',e.name,'직   위',e.role,'소속/부서',e.team||''];
+  A[4]=['','지급기간',range,'지급일','','계약형태',contractLabel];
+  A[5]=['','매출수수료율',rate/100,'부양가족수',(+d.dependents||1),'비과세(식대)',(+d.meal||0)];
+  A[7]=['','■ 지급내역','','','■ 공제내역','',''];
+  A[8]=['','항  목','내    역','금  액','항  목','내    역','금  액'];
+  A[9]=['','기본급','용역대금/근로대가',p.base,'국민연금','',p.pension];
+  A[10]=['','매출 합계','정산대상 (배송비/합배 제외·낱장 포함)',salesSum,'건강보험','',p.health];
+  A[11]=['','매출 수수료','매출합계 × '+rate+'%',p.comm,'장기요양','',p.care];
+  A[12]=['','인센티브','실적 인센티브',(+d.incentive||0),'고용보험','',p.employment];
+  A[13]=['','식대(비과세)','월 한도 20만',(+d.meal||0),'소득세',(d.contract==='insurance'?'간이세액':'사업 3%'),p.income];
+  A[14]=['','기타 지급','',(+d.otherPay||0),'지방소득세','소득세 × 10%',p.local];
+  A[15]=['','','','','기타공제','',(+d.otherDeduction||0)];
+  A[17]=['','지 급  합 계','',p.gross,'공 제  합 계','',p.ded];
+  A[19]=['','차 감 후  실 지 급 액','',p.net];
+  const ws1=S.aoa_to_sheet(A);
+  ws1['!cols']=[{wch:2},{wch:14},{wch:24},{wch:13},{wch:12},{wch:14},{wch:13}];
+  ws1['!merges']=[{s:{r:1,c:1},e:{r:1,c:6}},{s:{r:7,c:1},e:{r:7,c:3}},{s:{r:7,c:4},e:{r:7,c:6}},{s:{r:17,c:1},e:{r:17,c:2}},{s:{r:17,c:4},e:{r:17,c:5}},{s:{r:19,c:1},e:{r:19,c:2}},{s:{r:19,c:3},e:{r:19,c:6}}];
+  const bd={top:{style:'thin',color:{rgb:'FFBFBFBF'}},bottom:{style:'thin',color:{rgb:'FFBFBFBF'}},left:{style:'thin',color:{rgb:'FFBFBFBF'}},right:{style:'thin',color:{rgb:'FFBFBFBF'}}};
+  Object.keys(ws1).forEach(k=>{if(k[0]==='!')return;const c=ws1[k];c.s=c.s||{};c.s.border=bd;c.s.alignment=Object.assign({vertical:'center'},c.s.alignment);if(typeof c.v==='number'){c.z='#,##0';c.s.numFmt='#,##0';c.s.alignment.horizontal='right';}});
+  if(ws1['C6'])ws1['C6'].z='0.0%',ws1['C6'].s.numFmt='0.0%';
+  const bold=(a,sz,fill)=>{if(!ws1[a])return;ws1[a].s=ws1[a].s||{};ws1[a].s.font={bold:true,sz:sz||11};if(fill)ws1[a].s.fill={fgColor:{rgb:fill}};ws1[a].s.border=bd;ws1[a].s.alignment=Object.assign({vertical:'center'},ws1[a].s.alignment);};
+  bold('B2',16);ws1['B2'].s.alignment={horizontal:'center',vertical:'center'};
+  ['B8','C8','D8','E8','F8','G8'].forEach(a=>bold(a,11,'FFF1F5F9'));bold('B8');
+  ['B18','D18','E18','G18','B20','D20'].forEach(a=>bold(a,11,'FFEFF6FF'));bold('B10','G18');
+  ['B9','B10','B11','B12','B13','B14','E9','E10','E11','E12','E13','E14','E15','B4','B5','B6','D4','D5','D6','F4','F5','F6','B7','E7'].forEach(a=>bold(a));
+  bold('D20',13);
+  /* ---- 매출자료 ---- */
+  const H=['일자-No.','담당자명','거래처명','검색창내용','품목코드','품목명(규격)','색상','규격','수량','단가','공급가액','합계'];
+  const A2=[['회사명 : 엔라이브 / '+Y+'/'+M+'/01 ~ '+Y+'/'+M+'/'+String(ld).padStart(2,'0')],H];
+  salesRows.forEach(o=>{A2.push([(o.date||'')+' '+(typeof orderNoOf==='function'?orderNoOf(o.date,o.cust):''),o.staff||'',o.cust||'',tagShow(o),o.code||'',o.disp||prodName(o.code)||'',o.color||'',o.size||'',o.qty||0,o.price||0,(o.price||0)*(o.qty||0),amtOf(o)]);});
+  A2.push(['','','','','','','','','','','합계',salesSum]);
+  const ws2=S.aoa_to_sheet(A2);
+  ws2['!cols']=[{wch:16},{wch:9},{wch:17},{wch:12},{wch:12},{wch:26},{wch:8},{wch:6},{wch:5},{wch:9},{wch:10},{wch:10}];
+  Object.keys(ws2).forEach(k=>{if(k[0]==='!')return;const c=ws2[k];c.s=c.s||{};if(typeof c.v==='number'){c.z='#,##0';c.s.numFmt='#,##0';c.s.alignment={horizontal:'right'};}});
+  H.forEach((_,i)=>{const a=S.encode_cell({r:1,c:i});if(ws2[a]){ws2[a].s={font:{bold:true},fill:{fgColor:{rgb:'FFF1F5F9'}},alignment:{horizontal:'center'}};}});
+  const wb=S.book_new();S.book_append_sheet(wb,ws1,'급여정산서');S.book_append_sheet(wb,ws2,'매출자료');
+  const fname=e.name+' '+M+'월 급여 명세서 ('+Y.slice(2)+'년).xlsx';
+  XLSX.writeFile(wb,fname);toast('⬇ '+fname+' 다운로드 완료');
 }
 function viewUsers(){
   const scopeL={all:'전체권한',logi:'물류범위',self:'본인자료만'};
