@@ -898,11 +898,16 @@ function baseTaken(base){const b=parseInt(String(base).replace(/\D/g,''),10);ret
 /* 정확 중복(메인번호+색상+사이즈) 존재여부 */
 function skuExists(code,color,size,exceptId){const b=parseInt(baseOfCode(code),10);const hit=x=>parseInt(baseOfCode(x.code),10)===b&&(x.color||'')===(color||'')&&(x.size||'')===(size||'');return STOCK.some(s=>s.id!==exceptId&&hit(s))||(typeof STAGED!=='undefined'&&STAGED.some(hit));}
 const colorsOf=c=>[...new Set(STOCK.filter(s=>s.code===c).map(s=>s.color))];
-const itemLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
+/* 고객용(문자·안내문구): 품목코드 없이 상품명+옵션만 */
+const custLabel=o=>o.disp?o.disp:`${prodName(o.code)} ${o.color} ${o.size}`;
+/* 내부 리스트용: 품목코드 + 상품명 + 옵션 (번호표는 각 리스트의 별도 컬럼/태그박스) */
+const itemLabel=o=>{const c=o&&o.code&&!['배송비','적립금','방송상품','낱장'].includes(o.code)?o.code+' ':'';return c+custLabel(o);};
 /* 샘플 상품(반납대상): 재고에 sample=true인 품목. 내부 화면에만 ⚠️샘플 표시(고객 문자엔 미표시) */
 function isSampleCode(code,color,size){const t=skuOf(code,color,size);return !!(t&&t.sample);}
 function isSampleO(o){if(!o||!o.code)return false;const t=skuOf(o.code,o.color,o.size);if(t)return !!t.sample;return STOCK.some(x=>x.code===o.code&&x.sample);}
 function sampleBadge(o){return isSampleO(o)?' <span class="pill" style="background:#fff7ed;color:#c2410c;border:1px solid #fdba74;font-size:10px;font-weight:800">⚠️샘플</span>':'';}
+/* 담당 셀러 배지 — 어떤 셀러가 판매했는지 표시 (o.staff / 그룹 staff) */
+function staffBadge(st){return st?` <span class="pill" style="background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe;font-size:10.5px;font-weight:800" title="담당 셀러">🎙 ${esc(st)}</span>`:'';}
 const tagShow=o=>{
   if(o&&o.source==='shop'){/* 링크주문: 실제 재고 번호표(stock.tag) 우선 — 고객이 부르는 번호·수정표와 동일하게. 없으면 품번번호로 폴백 */
     if(o.code==='방송상품')return '캡처';
@@ -1649,7 +1654,7 @@ function orderStatusCards(pay){
     <div class="ord-cards">
     ${arr.map(g=>{const idx=all.indexOf(g),tot=g.items.reduce((a,o)=>a+amtOf(o),0);const payw=(g.items.find(o=>o.payway)||{}).payway||'';const isShop=g.items.some(o=>o.source==='shop');return `
       <div class="ord-card${COLLAPSED.has('os:'+pay+g.date+g.cust)?' collapsed':''}${isShop?' shop-order':''}">
-        <div class="oc-head">${collBtn('os:'+pay+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
+        <div class="oc-head">${collBtn('os:'+pay+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}${staffBadge(g.staff)}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
         ${g.phone||(isShop&&payw)?`<div class="oc-sub">${g.phone?'📞 '+g.phone:''}${isShop&&payw?` · 💳 고객선택: <b>${esc(payw)}</b>${payw==='카드'?' (결제링크 발송 필요)':''}`:''}</div>`:''}
         <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="muted">${o.qty}개</span><span class="oc-amt">${won(amtOf(o))}</span></div>`).join('')}</div>
         ${pay==='unpaid'
@@ -1669,7 +1674,7 @@ function paidCards(){
   if(!show.length)return '<div class="muted" style="padding:12px">해당 날짜·닉네임 결제완료 없음</div>';
   let html=show.map(g=>{const idx=all.indexOf(g),tot=g.items.reduce((a,o)=>a+amtOf(o),0);return `
     <div class="ord-card${COLLAPSED.has('pd:'+g.date+g.cust)?' collapsed':''}${g.items.some(o=>o.source==='shop')?' shop-order':''}">
-      <div class="oc-head">${collBtn('pd:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}<span class="pill p-done">결제완료</span><span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
+      <div class="oc-head">${collBtn('pd:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}<span class="pill p-done">결제완료</span>${staffBadge(g.staff)}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
       <div class="oc-sub">${g.date||''}${g.phone?' · '+g.phone:''} · 💳 ${g.items[0].payway||'-'}</div>
       <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="muted">${o.qty}개</span></div>`).join('')}</div>
       <div class="oc-btns"><button class="btn sm gray" style="flex:1" onclick="unpayGroup(${idx})">↩ 입금확인 취소</button></div>
@@ -2074,7 +2079,7 @@ async function setShipReq(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;cons
 async function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev=o.reason;o.reason=v;if(await saveOrd(o)===false){o.reason=prev;toast('⚠️ 저장 실패 — 되돌렸습니다');}render();}
 function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   return `<div class="card${COLLAPSED.has('so:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:80px">상태</th><th style="width:130px">요청</th></tr></thead><tbody>
     ${g.items.map(o=>{const dr=reqDraftOf(o);return `<tr ${o.back?'style="background:#fffaf3"':''}>
@@ -2089,7 +2094,7 @@ function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
 }
 function shipCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   return `<div class="card${COLLAPSED.has('sp:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('sp:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${payBadge(g.items[0]&&g.items[0].payway)}
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('sp:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:92px">출고상태</th><th style="width:120px">송장번호</th><th style="width:108px">반품/교환</th><th style="width:130px">사유</th></tr></thead><tbody>
     ${g.items.map(o=>{const sel=RXSET.includes(o.req)?o.req:'유지';return `<tr>
@@ -2376,8 +2381,9 @@ function shipGuideText(date,cust){
   const trk=(done.find(o=>o.track)||{}).track||'';
   const bundle=new Set(done.map(o=>o.date)).size>1;
   let t='안녕하세요, '+cust+' 고객님 :)\n금일 출고 완료된 상품 안내드립니다.\n\n[출고완료]\n';
-  t+=(done.length?done.map(o=>'· '+itemLabel(o)+' / '+o.qty+'개').join('\n'):'· (없음)');
-  if(miss.length)t+='\n\n[미송 — 입고 후 순차 발송]\n'+miss.map(o=>'· '+itemLabel(o)+' / '+o.qty+'개').join('\n');
+  const gl=o=>{const tg=tagShow(o);return '· '+((tg&&tg!=='-')?'['+tg+'] ':'')+custLabel(o)+' / '+o.qty+'개';};
+  t+=(done.length?done.map(gl).join('\n'):'· (없음)');
+  if(miss.length)t+='\n\n[미송 — 입고 후 순차 발송]\n'+miss.map(gl).join('\n');
   if(bundle)t+='\n\n※ 여러 주문 합배송 처리되었습니다.';
   t+='\n\n택배사: \n송장번호: '+trk+'\n\n감사합니다 ♡';
   return t;
@@ -2391,7 +2397,7 @@ function openShipGuide(date,cust){
 function copySG(){const ta=$('#sgText');if(!ta)return;ta.select();try{document.execCommand('copy');}catch(e){}if(navigator.clipboard)navigator.clipboard.writeText(ta.value);toast('📋 안내문구 복사됨 — 카톡/문자에 붙여넣기');}
 function shippedCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='sd:'+g.date+g.cust;
   return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}${staffBadge(g.staff)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>송장번호</th><th>CS처리</th></tr></thead><tbody>
     ${g.items.map(o=>`<tr><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td><td class="num-cell">${won(amtOf(o))}</td><td class="barcode muted">${o.track||'-'}</td><td>${o.rxtype?`<span class="pill ${o.rxstat==='done'?'':'p-req'}">${RX_TYPES[o.rxtype].l}${o.rxstat==='done'?' 완료':' 진행'}</span>`:`<div style="display:flex;gap:3px"><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'refund')">반품</button><button class="btn sm ghost" style="padding:3px 7px;font-size:11px" onclick="rxOpen(${o.id},'cancel')">취소</button></div>`}</td></tr>`).join('')}
     </tbody></table></div>`;
@@ -2528,7 +2534,7 @@ async function rxEditSave(id){const o=ORD.find(x=>x.id===id);if(!o)return;
 function rxStepBar(o){const flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat);return flow.map((s,si)=>{const c=si<i?'background:#dcfce7;color:#166534':si===i?'background:#dbeafe;color:#2563eb':'background:#f1f5f9;color:#94a3b8';const dt=(si<=i)?rxStepDate(o,s):'';return `<span style="display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;text-align:center;line-height:1.25;${c}">${si<i?'✓ ':''}${RX_STEPL[s]}${dt?`<br><span style="font-size:9px;font-weight:500;opacity:.85">${String(dt).slice(5)}</span>`:''}</span>`;}).join('<span style="color:#cbd5e1;margin:0 2px">›</span>');}
 function rxCard(o){const t=RX_TYPES[o.rxtype],flow=rxFlow(o.rxtype),i=flow.indexOf(o.rxstat),next=flow[i+1];const nextL={recall:'택배 회수신청',gotback:`회수입고 (재고 +${o.qty||1})`,reship:`새상품 재발송 (재고 −${o.qty||1})`,refunded:'환불완료',done:'완료처리'};
   return `<div class="card" style="margin-bottom:12px"><div class="card-h"><h2 style="margin:0">${t.ic} ${t.l} · ${o.cust} <span class="muted" style="font-size:12px;font-weight:400">${o.date||''} · 담당 ${o.staff||'-'}</span></h2>${payBadge(o.payway)}<span class="pill ${o.fault==='무과실'?'':'p-low'}">${o.fault==='무과실'?'고객귀책':'귀책: '+faulteeOf(o)}</span></div>
-  <table><tbody><tr><td class="muted" style="width:64px">상품</td><td>${itemLabel(o)} <span class="muted">×${o.qty} · ${won(amtOf(o))}</span></td></tr><tr><td class="muted">연락처</td><td>📞 ${esc(o.phone||'-')}</td></tr><tr><td class="muted">주소</td><td>📍 ${esc(o.addr||'-')}</td></tr><tr><td class="muted">사유</td><td>${o.rxreason||'-'}</td></tr>${o.rxtype==='exchange'&&o.rxnew?`<tr><td class="muted">교환→</td><td>${o.rxnew.tag?'['+o.rxnew.tag+'] ':''}${o.rxnew.name||o.rxnew.code||'-'} ${o.rxnew.color||''} ${o.rxnew.size||''}</td></tr>`:''}<tr><td class="muted">진행</td><td style="line-height:2.2">${rxStepBar(o)}</td></tr></tbody></table>
+  <table><tbody><tr><td class="muted" style="width:64px">상품</td><td><span class="tagbox">${tagShow(o)}</span> ${itemLabel(o)} <span class="muted">×${o.qty} · ${won(amtOf(o))}</span></td></tr><tr><td class="muted">연락처</td><td>📞 ${esc(o.phone||'-')}</td></tr><tr><td class="muted">주소</td><td>📍 ${esc(o.addr||'-')}</td></tr><tr><td class="muted">사유</td><td>${o.rxreason||'-'}</td></tr>${o.rxtype==='exchange'&&o.rxnew?`<tr><td class="muted">교환→</td><td>${o.rxnew.tag?'['+o.rxnew.tag+'] ':''}${o.rxnew.name||o.rxnew.code||'-'} ${o.rxnew.color||''} ${o.rxnew.size||''}</td></tr>`:''}<tr><td class="muted">진행</td><td style="line-height:2.2">${rxStepBar(o)}</td></tr></tbody></table>
   ${(()=>{const st=o.rxtype==='refund'&&o.meta&&o.meta.settle;return st?`<div class="note" style="margin-top:8px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46">${st.method==='적립금'?'💰 적립금 적립':'💵 계좌환불'} · 실환불 <b>${won(st.net)}</b> (환불 ${won(st.refund)} − 차감 ${won(st.deduct)})${st.method==='적립금'?'':` · 계좌 <b>${esc(st.account||'-')}</b>`} <button class="btn sm ghost" style="margin-left:6px" onclick="copyRefund(${o.id})">📋 복사</button></div>`:'';})()}
   <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end">
     <span style="margin-right:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
@@ -2594,7 +2600,7 @@ function rxArchiveView(done){
   const td='padding:7px 8px;font-size:11.5px;vertical-align:middle';
   const dcell=(o,s)=>{const d=rxStepDate(o,s);return `<td style="${td};text-align:center;color:#64748b">${d?String(d).slice(5):'·'}</td>`;};
   const rows=custs.map(cust=>{const items=byCust[cust].slice().sort((a,b)=>Number(dk(b))-Number(dk(a)));
-    return `<tr><td colspan="9" style="background:#f1f5f9;font-weight:800;padding:8px 10px;border-top:2px solid #e2e8f0">${esc(cust)} <span class="muted" style="font-weight:400;font-size:11px">· CS ${items.length}건</span></td></tr>`+
+    return `<tr><td colspan="9" style="background:#f1f5f9;font-weight:800;padding:8px 10px;border-top:2px solid #e2e8f0">${esc(cust)} <span class="muted" style="font-weight:400;font-size:11px">· CS ${items.length}건</span>${staffBadge((items[0]||{}).staff)}</td></tr>`+
     items.map(o=>{const st=o.meta&&o.meta.settle,proc=o.rxtype==='exchange'?'reship':'refunded';return `<tr style="border-bottom:1px solid #f1f5f9">
       <td style="${td};white-space:nowrap;font-weight:700">${(RX_TYPES[o.rxtype]||{}).ic||''} ${rxTypeLabel(o)}</td>
       <td style="${td};overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escAttr(itemLabel(o)+(o.rxtype==='exchange'&&o.rxnew?' → '+((o.rxnew.tag?'['+o.rxnew.tag+'] ':'')+(o.rxnew.name||o.rxnew.code||'')+' '+(o.rxnew.color||'')+(o.rxnew.size||'')):''))}">${esc(itemLabel(o))}${o.rxtype==='exchange'&&o.rxnew?` <span class="muted">→ ${esc((o.rxnew.tag?'['+o.rxnew.tag+'] ':'')+(o.rxnew.name||o.rxnew.code||''))}</span>`:''}</td>
