@@ -2142,15 +2142,25 @@ function waitCard(list){
   if(!list.length)return '<div class="card"><div class="muted" style="padding:16px">출고대기 없음 (미송·합배 제외한 단일주문이 여기 표시됩니다)</div></div>';
   return `<div class="card"><div class="note">💡 바로 출고 가능한 단일주문입니다. 송장 입력 후 [출고완료].</div><div class="sg-grid">`+
   list.map((c,i)=>`<div class="sg-card${COLLAPSED.has('w:'+c.cust)?' collapsed':''}">
-    <div class="sg-head">${collBtn('w:'+c.cust)}<span class="sg-name">${c.cust}</span>${payBadge(c.lines[0]&&c.lines[0].payway)}<span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('wait',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
+    <div class="sg-head">${collBtn('w:'+c.cust)}<span class="sg-name">${c.cust}</span>${(()=>{const n=custMisongItems(c.cust).length;return n?` <span class="pill p-low" style="font-size:10px" title="이 고객 미송 ${n}건 보유 — 지금 출고할지, 미송과 합쳐 보낼지 선택">📦 미송 ${n}건도 있음</span>`:'';})()}${payBadge(c.lines[0]&&c.lines[0].payway)}<span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('wait',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>
     <div class="sg-rows">
     ${c.lines.filter(o=>!_isSvcLine(o)).map(o=>`<div class="sg-row"><span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="sg-qty">${o.qty}개</span>
       <span class="seg">${[['미포장','pu'],['포장','pp'],['미송','pb']].map(([p,cl])=>`<button class="${progOf(o)===p?'on '+cl:''}" onclick="setProg(${o.id},'${p}')">${p}</button>`).join('')}</span></div>`).join('')}
     </div>
-    <div class="sg-foot"><input id="trk_wait_${i}" placeholder="송장번호 입력"><button class="btn green" onclick="shipWait(${i})">✅ 출고완료</button></div>
+    <div class="sg-foot"><input id="trk_wait_${i}" placeholder="송장번호 입력"><button class="btn green" onclick="shipWait(${i})">✅ 출고완료</button>${custMisongItems(c.cust).length?`<button class="btn sm" style="background:var(--amber);color:#fff" onclick="waitMergeMisong(${i})" title="이 출고대기 건을 미송과 합쳐서 재입고 후 함께 출고">🔗 미송과 합쳐 대기</button>`:''}</div>
   </div>`).join('')+'</div></div>';
 }
+/* 출고대기 고객이 미송도 보유하면 표시·선택용 */
+function custMisongItems(cust){return mine(ORD).filter(o=>o.cust===cust&&o.ship!=='done'&&(o.req==='미송'||o.back===true)&&!_isSvcLine(o));}
+async function waitMergeMisong(i){const c=shipSort(openCustomers().filter(x=>x.cat==='wait'))[i];if(!c)return;
+  const items=c.lines.filter(o=>o.id!=null);if(!items.length)return;
+  const mn=custMisongItems(c.cust).length;
+  if(!confirm('🔗 '+c.cust+' 출고대기 '+items.length+'건을 미송과 합쳐 대기시킬까요?\n\n지금 출고 안 하고, 미송('+mn+'건) 재입고되면 '+c.cust+' 전체를 한 박스로 함께 출고합니다.\n(미송관리에서 관리됩니다)'))return;
+  const prev=items.map(o=>o.req);items.forEach(o=>{o.req='미송';});const ids=items.map(o=>o.id);
+  let ok=true;try{const {error}=await SB.from('orders').update({req:'미송'}).in('id',ids);if(error){console.error('waitMerge',error);ok=false;}}catch(e){console.error(e);ok=false;}
+  if(!ok){items.forEach((o,k)=>o.req=prev[k]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else{toast('🔗 '+c.cust+' 출고대기 → 미송과 합쳐 대기 (재입고 후 함께 출고)');await shipConsolidate(c.cust);}
+  render();}
 /* 미송·합배 카드 한 줄(상품) 렌더 — 미송관리 카드와 팝업이 공유 */
 function shipRowHtml(o,cat,isWait){const q=(skuOf(o.code,o.color,o.size)||{}).qty,canShip=cat==='back'?(progOf(o)==='포장'):(!o.back&&(q==null||q>0)),sel=SHIPCHK.has(o.id);
   return `<div class="sg-row ${o.back?'dim':''}">
