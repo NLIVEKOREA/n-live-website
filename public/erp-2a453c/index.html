@@ -586,7 +586,12 @@ async function dbLoadAll(){
     SHIPPING=sh.data||[];
     EMPLOYEES.length=0;(em.data||[]).forEach(r=>EMPLOYEES.push(r));
     SCHED=(bs&&bs.data)||[];
-    try{const wsr=await SB.from('work_schedules').select('*');WORKSCH=((wsr&&wsr.data)||[]).map(r=>Object.assign({},r.data||{},{id:r.id}));}catch(e){console.warn('work_schedules load',e);WORKSCH=WORKSCH||[];}
+    try{const wsr=await SB.from('work_schedules').select('*');const wrows=(wsr&&wsr.data)||[];
+        const pr=wrows.find(r=>r.id==='_emp_perms');EMP_PERMS=(pr&&pr.data)||{};
+        WORKSCH=wrows.filter(r=>r.id!=='_emp_perms').map(r=>Object.assign({},r.data||{},{id:r.id}));
+        EMPLOYEES.forEach(e=>{e.perms=EMP_PERMS[e.login_id]||null;});
+        if(ME)ME.perms=EMP_PERMS[ME.id]||null;
+    }catch(e){console.warn('work_schedules load',e);WORKSCH=WORKSCH||[];}
     try{const ls=await SB.from('live_sessions').select('*').order('id',{ascending:false});LIVE_SESS=(ls&&ls.data)||[];
         const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];
         const pi=await SB.from('product_images').select('*');PIMG={};((pi&&pi.data)||[]).forEach(r=>{PIMG[r.code]=r.url;});}catch(e){console.warn('live load',e);LIVE_SESS=LIVE_SESS||[];SESS_PROD=SESS_PROD||[];PIMG=PIMG||{};}
@@ -1258,6 +1263,7 @@ const WORK_STATUS={confirmed:'확정',pending:'대기',completed:'완료',cancel
 const WORK_ROLE_LABEL={admin:'관리자',owner:'대표',operation:'운영팀',seller_manager:'셀러매니저',logistics:'물류팀',seller:'셀러'};
 let WORK_UI={date:null,month:null,range:'today',q:'',cat:'all',status:'all',important:false,editing:null};
 let WORKSCH=[];/* 공용 업무일정 — work_schedules 테이블에서 로드(전 사원 공유) */
+let EMP_PERMS={};/* 사원별 메뉴권한 맵(login_id→perms) — work_schedules의 _emp_perms 행에 저장(SQL 불필요) */
 let _workSearchT=null;
 const WORK_ROLES_ALL=['admin','owner','operation','seller_manager','logistics','seller'];
 function workUserRole(){return ({'관리자':'admin','운영':'operation','물류':'logistics','셀러':'seller','보조':'seller_manager'})[ME.role]||'admin';}
@@ -3475,11 +3481,12 @@ function permToggleSub(mk,sk,on){PERMEDIT.perms.subs[mk][sk]=on;renderPermEdit()
 function permAll(on){PERM_MENUS.forEach(mm=>{PERMEDIT.perms.menus[mm.k]=on;if(mm.subs)mm.subs.forEach(s=>PERMEDIT.perms.subs[mm.k][s.k]=on);});renderPermEdit();}
 async function savePerms(){const u=EMPLOYEES[PERMEDIT.i];if(!u)return;const perms=JSON.parse(JSON.stringify(PERMEDIT.perms));
   toast('저장 중…');
-  /* DB에 실제로 들어간 걸 확인한 다음에만 저장됨 표시 — 실패면 적용 안 함(허수 팝업 방지) */
-  try{const {error}=await SB.from('employees').update({perms}).eq('id',u.id);
-    if(error){console.error('perms',error);toast('❌ 저장 실패 — employees.perms 컬럼이 없어요. SQL 1회 실행 필요 (적용 안 됨)');return;}
+  /* SQL 불필요 — 이미 열린 work_schedules 테이블의 _emp_perms 행에 사원별 맵으로 저장. DB 성공 확인 후에만 저장됨 표시 */
+  const map=Object.assign({},EMP_PERMS,{[u.login_id]:perms});
+  try{const {error}=await SB.from('work_schedules').upsert({id:'_emp_perms',data:map,owner:'_perms',updated_at:new Date().toISOString()});
+    if(error){console.error('perms',error);toast('❌ 저장 실패: '+(error.message||'')+' (적용 안 됨)');return;}
   }catch(e){console.error(e);toast('❌ 저장 오류 — 적용 안 됨');return;}
-  u.perms=perms;if(ME&&ME.id===u.login_id)ME.perms=perms;
+  EMP_PERMS=map;u.perms=perms;if(ME&&ME.id===u.login_id)ME.perms=perms;
   closeModal();toast('✅ '+u.name+' 메뉴 권한 저장됨 (DB 반영 확인)');buildNav();render();}
 async function saveUser(i){const u=EMPLOYEES[i];if(!u)return;const name=$('#eu_name').value.trim();
   if(!name){toast('이름은 필수입니다');return;}
