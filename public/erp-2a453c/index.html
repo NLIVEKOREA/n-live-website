@@ -2040,7 +2040,7 @@ function orderRowsToday(){const t=todayStr();return orderRowsAll().filter(o=>(o.
 function orderRows(){return ORDTAB==='today'?orderRowsToday():orderRowsAll();}
 function shipRows(){const d=SHIPDATE||todayStr();return mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-').slice(0,10)===d&&!RXSET.includes(o.req)&&((o.req==='출고요청'||o.req==='합배요청')||o.ship==='done'));}
 function rxAll(){return baseRows().filter(o=>o.req==='교환요청'||o.req==='환불요청');}
-function grpDC(rows){const m={};rows.forEach(o=>{const k=(o.date||'')+'||'+(o.cust||'');(m[k]=m[k]||{date:o.date,cust:o.cust,phone:o.phone,items:[]}).items.push(o);});return Object.values(m).sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
+function grpDC(rows){const m={};rows.forEach(o=>{const k=(o.date||'')+'||'+(o.cust||'');(m[k]=m[k]||{date:o.date,cust:o.cust,phone:o.phone,staff:o.staff,items:[]}).items.push(o);});return Object.values(m).sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
 function curGroups(){return SALETAB==='order'?grpDC(orderRows()):grpDC(shipRows());}
 async function saveReq(gi){const g=curGroups()[gi];if(!g)return;const chg=[];const prev=[];
   g.items.forEach(o=>{const d=REQDRAFT[o.id];if(d&&o.id!=null){prev.push({o,req:o.req,reason:o.reason});o.req=d.req==='없음'?'':d.req;o.reason=d.reason;chg.push(o);}});
