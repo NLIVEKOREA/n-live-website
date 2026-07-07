@@ -1852,7 +1852,8 @@ async function cancelGroupObj(g,restoreStock){if(!g)return;const removed=[];g.it
   for(const {o,s,dq} of removed){await delOrd(o);if((restoreStock?!o.back:true)&&s&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장')await adjustStockDB(s,dq,'주문취소',o.cust);}}
 
 /* ===== 주문서(고객 안내문) ===== */
-const ACCOUNTS={'박시연':'기업은행 49907863201015',_default:'기업은행 49907863201015'};
+/* 셀러별 입금계좌 (주문서 복사·라이브 계좌안내에 g.staff/셀러 기준 자동매칭) · 예금주 나영식 */
+const ACCOUNTS={'박시연':'기업은행 49907863201015 (예금주 나영식)','류지우':'국민은행 591502-04-078662 (예금주 나영식)',_default:'기업은행 49907863201015 (예금주 나영식)'};
 let OSHEET={idx:-1,remote:false,pay:'현금'};
 function openOrderSheet(idx){const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';OSHEET={idx,remote:false,pay:pw};renderOrderSheet();$('#modal').classList.remove('hide');}
 function orderSheetText(){
