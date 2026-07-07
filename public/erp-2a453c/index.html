@@ -2451,17 +2451,22 @@ function viewShip(){
     <div class="kpi"><div><div class="lab">합배 고객</div><div class="num">${bundle.length}</div><div class="sub">묶음배송</div></div><div class="ic ic-p"><i class="ti ti-packages"></i></div></div>
     <div class="kpi"><div><div class="lab">출고완료(송장)</div><div class="num">${done.length}</div><div class="sub up">처리됨</div></div><div class="ic ic-g"><i class="ti ti-circle-check"></i></div></div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px">
-    <button class="btn sm" onclick="openShipScan()" title="송장→상품 연속 스캔으로 출고완료 처리 (오배송·오포장 방지)"><i class="ti ti-scan"></i> 📷 바코드 검수</button>
-    <button class="btn sm gray" onclick="cjExportShip()" title="출고대기·합배 고객을 CJ 접수 엑셀로 내려받기"><i class="ti ti-download"></i> CJ접수 엑셀</button>
-    <button class="btn sm gray" onclick="cjImportShip()" title="CJ에서 송장 채워진 결과 엑셀을 올려 각 주문에 송장번호 연결"><i class="ti ti-upload"></i> CJ송장 가져오기</button>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px">
     <div class="tabs" style="margin:0">
       ${(!subAllowed('ship',SHIPTAB)?(SHIPTAB=firstSub('ship',['wait','back','bundle','done'])):'')&&''}
       ${subAllowed('ship','wait')?`<button class="${SHIPTAB==='wait'?'on':''}" onclick="SHIPTAB='wait';render()">출고대기 ${cnt(wait)}</button>`:''}
       ${subAllowed('ship','back')?`<button class="${SHIPTAB==='back'?'on':''}" onclick="SHIPTAB='back';render()">미송관리 ${back.length}</button>`:''}
       ${subAllowed('ship','bundle')?`<button class="${SHIPTAB==='bundle'?'on':''}" onclick="SHIPTAB='bundle';render()">합배관리 ${bundle.length}</button>`:''}
       ${subAllowed('ship','done')?`<button class="${SHIPTAB==='done'?'on':''}" onclick="SHIPTAB='done';render()">출고완료</button>`:''}
-      <span style="flex:1"></span><button class="btn sm gray" onclick="shipCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button><button class="btn sm gray" onclick="expAll()"><i class="ti ti-chevrons-down"></i> 모두펼치기</button>
+    </div>
+    <span style="flex:1"></span>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <button class="btn sm" onclick="openShipScan()" title="송장→상품 연속 스캔으로 출고완료 처리 (오배송·오포장 방지)"><i class="ti ti-scan"></i> 바코드 검수</button>
+      <button class="btn sm gray" onclick="cjExportShip()" title="출고대기·합배 고객을 CJ 접수 엑셀로 내려받기"><i class="ti ti-download"></i> CJ접수 엑셀</button>
+      <button class="btn sm gray" onclick="cjImportShip()" title="CJ에서 송장 채워진 결과 엑셀을 올려 각 주문에 송장번호 연결"><i class="ti ti-upload"></i> CJ송장 가져오기</button>
+      <span style="width:1px;height:22px;background:var(--line);margin:0 3px"></span>
+      <button class="btn sm gray" onclick="shipCollAll()" title="모두 접기"><i class="ti ti-chevrons-up"></i></button>
+      <button class="btn sm gray" onclick="expAll()" title="모두 펼치기"><i class="ti ti-chevrons-down"></i></button>
     </div>
   </div>
   ${shipTabBody()}`;
@@ -3349,9 +3354,9 @@ function receiptPicked(input){const f=input.files&&input.files[0];if(!f)return;r
 function shrinkImage(file,maxSide){return new Promise((resolve,reject)=>{const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{URL.revokeObjectURL(url);let{width:w,height:h}=img;const m=maxSide||1600;if(Math.max(w,h)>m){const r=m/Math.max(w,h);w=Math.round(w*r);h=Math.round(h*r);}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);resolve(cv.toDataURL('image/jpeg',0.82));};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('이미지를 읽지 못했어요'));};img.src=url;});}
 function receiptNum(v){v=String(v||'').replace(/[^\d]/g,'');return v?parseInt(v,10):0;}
 function receiptSkipLine(s){return !s||/^(품명|상품명|단가|수량|금액|판매|발송|소계|합계|total|현금|카드|전화|계좌|은행|입금|세금|카카오|kakao|instagram|wechat|거래처|상호|주소|대표|사업자|barcode|qr)/i.test(s)||/(판매소계|발송소계|당일합계|총\s*\d+|VAT|반납|교환|불량|기간|문의|귀하|공급받는자)/i.test(s);}
-function receiptCleanName(s){return String(s||'').replace(/^[\*\-\s]+/,'').replace(/\s{2,}/g,' ').replace(/[|]+/g,'/').trim();}
+function receiptCleanName(s){return String(s||'').replace(/^[^가-힣A-Za-z0-9]+/,'').replace(/\s{2,}/g,' ').replace(/[|]+/g,'/').trim();}
 function receiptLooksProduct(s){s=receiptCleanName(s);return s.includes('/')&&/[가-힣A-Za-z]/.test(s)&&!receiptSkipLine(s);}
-function receiptSplitProduct(raw){const clean=receiptCleanName(raw).replace(/\s*\/\s*/g,'/');const p=clean.split('/').map(x=>x.trim()).filter(Boolean);let name=clean,color='-',size='F';
+function receiptSplitProduct(raw){const clean=receiptCleanName(raw).replace(/\s*\/\s*/g,'/');const p=clean.split('/').map(x=>x.trim().replace(/^[^가-힣A-Za-z0-9]+|[^가-힣A-Za-z0-9]+$/g,'')).filter(Boolean);let name=clean,color='-',size='F';
   if(p.length>=3){size=p[p.length-1]||'F';color=p[p.length-2]||'-';name=p.slice(0,-2).join('/')||clean;}
   else if(p.length===2){name=p[0]||clean;color=p[1]||'-';}
   return {name,color,size};
