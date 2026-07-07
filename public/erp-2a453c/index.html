@@ -2178,7 +2178,7 @@ function waitCard(list){
   if(!list.length)return '<div class="card"><div class="muted" style="padding:16px">출고대기 없음 (미송·합배 제외한 단일주문이 여기 표시됩니다)</div></div>';
   return `<div class="card"><div class="note">💡 바로 출고 가능한 단일주문입니다. 송장 입력 후 [출고완료].</div><div class="sg-grid">`+
   list.map((c,i)=>`<div class="sg-card${COLLAPSED.has('w:'+c.cust)?' collapsed':''}">
-    <div class="sg-head">${collBtn('w:'+c.cust)}<span class="sg-name">${c.cust}</span>${(()=>{const n=custMisongItems(c.cust).length;return n?` <span class="pill p-low" style="font-size:10px" title="이 고객 미송 ${n}건 보유 — 지금 출고할지, 미송과 합쳐 보낼지 선택">📦 미송 ${n}건도 있음</span>`:'';})()}${payBadge(c.lines[0]&&c.lines[0].payway)}<span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('wait',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
+    <div class="sg-head">${collBtn('w:'+c.cust)}<span class="sg-name">${c.cust}</span>${onoBadge((c.lines[0]||{}).date,c.cust)}${staffBadge((c.lines[0]||{}).staff)}${(()=>{const n=custMisongItems(c.cust).length;return n?` <span class="pill p-low" style="font-size:10px" title="이 고객 미송 ${n}건 보유 — 지금 출고할지, 미송과 합쳐 보낼지 선택">📦 미송 ${n}건도 있음</span>`:'';})()}${payBadge(c.lines[0]&&c.lines[0].payway)}<span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('wait',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>${shipMemoBar(c.cust)}
     <div class="sg-rows">
     ${c.lines.filter(o=>!_isSvcLine(o)).map(o=>`<div class="sg-row"><span class="tagbox">${tagShow(o)}</span><span class="sg-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="sg-qty">${o.qty}개</span>
@@ -2233,7 +2233,7 @@ function manageCards(list,cat){
   if(!list.length)return `<div class="card"><div class="muted" style="padding:16px">${cat==='back'?'미송 고객이 없습니다':'합배 대상이 없습니다'}</div></div>`;
   return `<div class="card"><div class="note">💡 ${cat==='back'?'재고 있는 상품만 <b>출고선택</b> → 송장 입력 → [출고완료]. 미송 상품은 고객별로 그대로 남습니다.':'같은 고객의 여러 주문을 <b>출고선택</b>해 한 송장으로 함께 보냅니다.'}</div><div class="sg-grid">`+
   list.map((c,i)=>`<div class="sg-card${COLLAPSED.has('m:'+cat+c.cust)?' collapsed':''}">
-    <div class="sg-head">${collBtn('m:'+cat+c.cust)}<span class="sg-name">${c.cust}</span>${payBadge(c.lines[0]&&c.lines[0].payway)}
+    <div class="sg-head">${collBtn('m:'+cat+c.cust)}<span class="sg-name">${c.cust}</span>${onoBadge((c.lines[0]||{}).date,c.cust)}${staffBadge((c.lines[0]||{}).staff)}${payBadge(c.lines[0]&&c.lines[0].payway)}
       ${c.lines.filter(l=>l.back).length?'<span class="pill p-low">미송 '+c.lines.filter(l=>l.back).length+'</span>':''}
       ${c.dates.size>=2?'<span class="pill p-req">합배 '+c.dates.size+'주문</span>':''}
       <span style="flex:1"></span><button class="ico-btn" onclick="openCustPopup('${cat}',${i})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>
@@ -2281,7 +2281,7 @@ function custPopBody(){
   const cat=CUSTPOP.cat,c=custPopTarget();
   if(!c)return '<div class="muted" style="padding:14px">처리 완료 — 남은 항목이 없습니다.</div>';
   const isWait=cat==='wait';
-  return `<div class="sg-head"><span class="sg-name">${c.cust}</span>
+  return `<div class="sg-head"><span class="sg-name">${c.cust}</span>${onoBadge((c.lines[0]||{}).date,c.cust)}${staffBadge((c.lines[0]||{}).staff)}
       ${c.lines.filter(l=>l.back).length?'<span class="pill p-low">미송 '+c.lines.filter(l=>l.back).length+'</span>':''}
       ${c.dates.size>=2?'<span class="pill p-req">합배 '+c.dates.size+'주문</span>':''}</div>
     <div class="sg-sub">📞 ${c.phone||'-'}　📍 ${c.addr||'-'}</div>${shipMemoBar(c.cust)}
