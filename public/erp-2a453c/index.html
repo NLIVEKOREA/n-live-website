@@ -736,13 +736,19 @@ function _cjExport(){const cs=openCustomers().filter(function(c){return c.cat===
 function cjImportShip(){const inp=document.createElement('input');inp.type='file';inp.accept='.xlsx,.xls';inp.onchange=function(){const f=inp.files&&inp.files[0];if(!f)return;loadXlsxLib(function(){const rd=new FileReader();rd.onload=function(ev){try{_cjImport(ev.target.result);}catch(e){console.error(e);toast('⚠️ 파일 읽기 실패: '+(e.message||e));}};rd.readAsArrayBuffer(f);});};inp.click();}
 async function _cjImport(buf){const wb=XLSX.read(new Uint8Array(buf),{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});if(!rows.length){toast('빈 파일입니다');return;}
   const hdr=rows[0].map(function(x){return String(x).replace(/\s/g,'');});
-  const iName=hdr.findIndex(function(h){return /받는분성명|수취인|고객|성명|이름|받는분/.test(h);});
-  const iPh=hdr.findIndex(function(h){return /전화|연락처|휴대폰|핸드폰/.test(h);});
-  const iTrk=hdr.findIndex(function(h){return /송장|운송장/.test(h);});
-  if(iTrk<0||iName<0){toast('⚠️ 송장번호/받는분성명 컬럼을 못 찾았어요 — 헤더 확인');return;}
+  /* 받는분 = 발송/보내는이 아닌 수취인(CJ는 "닉네임(실명)" 형식) */
+  let iName=hdr.findIndex(function(h){return /받는분|수취인/.test(h)&&!/발송|보내/.test(h);});
+  if(iName<0)iName=hdr.findIndex(function(h){return /고객명|성명|이름/.test(h)&&!/발송|보내/.test(h);});
+  const iTrk=hdr.findIndex(function(h){return /운송장|송장/.test(h);});
+  /* 받는분 전화 = 받는분 컬럼 뒤쪽 전화(발송인 전화 회피) · CJ는 마스킹(010-2403-****)이라 앞7자리만 사용 */
+  let iPh=-1;for(let c=(iName>=0?iName+1:0);c<hdr.length;c++){if(/전화|휴대폰|핸드폰|연락처/.test(hdr[c])){iPh=c;break;}}
+  if(iPh<0)iPh=hdr.findIndex(function(h){return /전화|휴대폰|핸드폰|연락처/.test(h);});
+  if(iTrk<0||iName<0){toast('⚠️ 운송장번호/받는분 컬럼을 못 찾았어요 — 헤더 확인');return;}
+  const _n=function(s){return String(s||'').replace(/\D/g,'');};
   let matched=0,miss=0;const todo=[];
-  for(let r=1;r<rows.length;r++){const row=rows[r]||[];const nm=String(row[iName]||'').trim();const ph=String(iPh>=0?(row[iPh]||''):'').replace(/\D/g,'');const trk=String(row[iTrk]||'').trim();if(!nm||!trk)continue;
-    const lines=mine(ORD).filter(function(o){return o.ship!=='done'&&o.cust===nm&&(!ph||String(o.phone||'').replace(/\D/g,'')===ph)&&inShipPipeline(o);});
+  for(let r=1;r<rows.length;r++){const row=rows[r]||[];const raw=String(row[iName]||'').trim();const nm=raw.split('(')[0].trim();const ph7=_n(iPh>=0?row[iPh]:'').slice(0,7);const trk=String(row[iTrk]||'').trim();if(!raw||!trk)continue;
+    let lines=mine(ORD).filter(function(o){return o.ship!=='done'&&inShipPipeline(o)&&(o.cust===nm||o.cust===raw)&&(!ph7||_n(o.phone).slice(0,7)===ph7);});
+    if(!lines.length&&ph7)lines=mine(ORD).filter(function(o){return o.ship!=='done'&&inShipPipeline(o)&&(o.cust===nm||o.cust===raw);});
     if(!lines.length){miss++;continue;}lines.forEach(function(o){o.track=trk;});matched+=lines.length;lines.forEach(function(o){if(o.id!=null)todo.push({id:o.id,track:trk});});}
   let ok=0;for(const u of todo){try{const res=await SB.from('orders').update({track:u.track}).eq('id',u.id);if(!res.error)ok++;}catch(e){console.error(e);}}
   toast('🔗 송장 연결: '+matched+'건'+(miss?(' · 미매칭 '+miss+'행(이름/전화 확인)'):'')+' · DB '+ok+'건 반영');render();}
