@@ -2145,6 +2145,15 @@ async function sendBackAll(gi){const g=curGroups()[gi];if(!g)return;const chg=g.
   const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req='미송';delete REQDRAFT[o.id];});const ids=chg.map(o=>o.id);
   let ok=true;try{const {error}=await SB.from('orders').update({req:'미송'}).in('id',ids);if(error){console.error('sendBackAll',error);ok=false;}}catch(e){console.error(e);ok=false;}
   if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else{toast('📦 일괄 미송: '+g.cust+' '+ids.length+'건 전체 미송관리로 (재입고 후 한번에 출고)');await shipConsolidate(g.cust);}render();}
+/* 이미 미송 보유한 고객: 이번 주문을 기존 미송과 합쳐 미송관리에서 대기 → 재입고 후 한 박스로 함께 출고 (출고장 waitMergeMisong의 판매관리 버전) */
+async function mergeToMisong(gi){const g=curGroups()[gi];if(!g)return;
+  const prior=custMisongItems(g.cust).filter(o=>!g.items.some(x=>x.id===o.id));
+  const chg=g.items.filter(o=>o.id!=null&&!_isSvcLine(o)&&o.req!=='미송');
+  if(!chg.length){toast('미송과 합칠 상품이 없습니다');return;}
+  if(!confirm('🔗 '+g.cust+' 이번 주문 '+chg.length+'건을 기존 미송('+prior.length+'건)과 합쳐서 대기시킬까요?\n\n지금 출고하지 않고, 미송이 재입고되면 '+g.cust+' 전체를 한 박스로 함께 출고합니다.\n(물류 미송관리에서 처리)'))return;
+  const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req='미송';delete REQDRAFT[o.id];});const ids=chg.map(o=>o.id);
+  let ok=true;try{const {error}=await SB.from('orders').update({req:'미송'}).in('id',ids);if(error){console.error('mergeToMisong',error);ok=false;}}catch(e){console.error(e);ok=false;}
+  if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else{toast('🔗 '+g.cust+' 이번 주문 → 미송과 합쳐 대기 (재입고 후 함께 출고)');await shipConsolidate(g.cust);}render();}
 /* 합배 배송비 통합: 같은 고객 '출고요청' 묶음은 배송비 1줄만. 금·토·일 방송이 월요일 한 박스로 나가므로 각각 배송비 X.
    규칙 = 무료배송 라인이 있거나 상품합계≥무료기준 → 무료(배송비 삭제, 무료배송 1줄), 아니면 배송비 4,000 1줄. 나머지 배송비 행은 삭제. */
 async function shipConsolidate(cust){
@@ -2167,8 +2176,9 @@ async function shipConsolidate(cust){
 async function setShipReq(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev={req:o.req,reason:o.reason};if(v==='유지'){o.req='출고요청';o.reason='';}else{o.req=v;const rr=REQ_REASON[v];if(rr&&!rr.includes(o.reason))o.reason=rr[0];}render();if(await saveOrd(o)===false){o.req=prev.req;o.reason=prev.reason;toast('⚠️ 저장 실패 — 되돌렸습니다');render();}}
 async function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev=o.reason;o.reason=v;if(await saveOrd(o)===false){o.reason=prev;toast('⚠️ 저장 실패 — 되돌렸습니다');}render();}
 function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
+  const priorMi=custMisongItems(g.cust).filter(o=>!g.items.some(x=>x.id===o.id));
   return `<div class="card${COLLAPSED.has('so:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}${priorMi.length?`<span class="pill p-low" style="font-size:10px" title="이 고객은 미송관리에 ${priorMi.length}건 대기 중 — 이번 주문을 합쳐 한 박스로 보낼 수 있어요">📦 미송 ${priorMi.length}건 보유</span>`:''}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>${shipMemoBar(g.cust)}
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:80px">상태</th><th style="width:130px">요청</th></tr></thead><tbody>
     ${g.items.map(o=>{const dr=reqDraftOf(o);return `<tr ${o.back?'style="background:#fffaf3"':''}>
@@ -2178,7 +2188,7 @@ function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
       <td>${o.back?'<span class="pill p-low">미송 보류</span>':`<select onchange="setReqDraft(${o.id},'req',this.value)" style="padding:6px 7px;font-size:12px;border-radius:7px;font-weight:700">${['없음','출고요청','합배요청'].map(s=>`<option ${dr===s?'selected':''}>${s}</option>`).join('')}</select>`}</td>
     </tr>`}).join('')}
     </tbody></table>
-    <div class="card-act"><button class="btn sm ghost" onclick='editPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>✏️ 전체수정</button><button class="btn sm red ghost" onclick='cancelPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>🗑️ 취소</button><span style="flex:1"></span>${g.items.some(l=>l.back)?`<button class="btn sm" style="background:var(--amber)" onclick="sendBackOnly(${gi})" title="재고 있는 상품은 지금 출고요청, 재고부족(미송)만 미송관리로">🚚 있는 물건만 출고</button><button class="btn sm" style="background:var(--red)" onclick="sendBackAll(${gi})" title="주문 전체를 미송관리에서 대기 → 재입고 후 한번에 출고">📦 일괄 미송</button>`:''}<button class="btn sm ghost" onclick="bulkShipReq(${gi})">일괄 출고요청</button><button class="btn sm" onclick="saveReq(${gi})">저장</button></div>
+    <div class="card-act"><button class="btn sm ghost" onclick='editPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>✏️ 전체수정</button><button class="btn sm red ghost" onclick='cancelPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>🗑️ 취소</button><span style="flex:1"></span>${g.items.some(l=>l.back)?`<button class="btn sm" style="background:var(--amber)" onclick="sendBackOnly(${gi})" title="재고 있는 상품은 지금 출고요청, 재고부족(미송)만 미송관리로">🚚 있는 물건만 출고</button><button class="btn sm" style="background:var(--red)" onclick="sendBackAll(${gi})" title="주문 전체를 미송관리에서 대기 → 재입고 후 한번에 출고">📦 일괄 미송</button>`:''}${priorMi.length?`<button class="btn sm" style="background:var(--amber);color:#fff" onclick="mergeToMisong(${gi})" title="이번 주문을 기존 미송 ${priorMi.length}건과 합쳐 미송관리에서 대기 → 재입고 후 한 박스로 함께 출고">🔗 미송과 합쳐 대기</button>`:''}<button class="btn sm ghost" onclick="bulkShipReq(${gi})">일괄 출고요청</button><button class="btn sm" onclick="saveReq(${gi})">저장</button></div>
   </div>`;
 }
 function shipCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
