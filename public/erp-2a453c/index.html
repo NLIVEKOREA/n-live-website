@@ -2941,7 +2941,7 @@ function viewStock(){
     <p>대량 입고는 아래 <b>품목 등록</b>에서 작업 · 빠른 수정은 재고현황의 품목 클릭(팝업) · 바코드 스캔 입출고</p></div>
   ${isSeller()?(canStockEdit()?`<div class="lock" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46">🔑 셀러팀 ${ME.name} — <b>재고 등록·수정 권한</b>이 부여되어 있습니다 (조회+편집)</div>`:`<div class="lock">🔒 셀러팀 ${ME.name} — 재고는 <b>조회만</b> 가능</div>`):''}
   ${can?`<div class="card" style="margin-bottom:16px">
-    <div class="card-h"><h2>＋ 품목 등록 <span class="muted" style="font-size:12px;font-weight:400">색상·사이즈 조합은 [일괄 등록] · 낱개는 아래 입력</span></h2><div style="display:flex;gap:8px"><button class="btn sm ghost" onclick="openReceiptScan()" title="사입 영수증 사진을 올리면 AI가 품목을 자동으로 읽어 입고목록에 채웁니다">📸 영수증 자동입고</button><button class="btn sm" onclick="openBulkAdd()"><i class="ti ti-layout-grid-add"></i> 상품 일괄등록</button></div></div>
+    <div class="card-h"><h2>＋ 품목 등록 <span class="muted" style="font-size:12px;font-weight:400">색상·사이즈 조합은 [일괄 등록] · 낱개는 아래 입력</span></h2><div style="display:flex;gap:8px"><button class="btn sm ghost" onclick="openReceiptScan()" title="사입 영수증 사진을 무료 OCR로 읽어 입고목록에 채웁니다">📸 영수증 자동입고</button><button class="btn sm" onclick="openBulkAdd()"><i class="ti ti-layout-grid-add"></i> 상품 일괄등록</button></div></div>
     <input id="receiptFile" type="file" accept="image/*" capture="environment" style="display:none" onchange="receiptPicked(this)">
     <div class="form-grid">
       <input id="sf_tag" placeholder="번호표" value="${esc(SFORM.tag)}" oninput="SFORM.tag=this.value" style="width:78px">
