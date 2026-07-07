@@ -2127,12 +2127,15 @@ async function saveReq(gi){const g=curGroups()[gi];if(!g)return;const chg=[];con
   else{chg.forEach(o=>delete REQDRAFT[o.id]);toast('💾 '+g.cust+' 저장 ('+chg.length+'건) — 판매현황·출고작업으로 이동');}
   render();}
 async function bulkShipReq(gi){const g=curGroups()[gi];if(!g)return;const chg=g.items.filter(o=>!o.back&&o.id!=null);if(!chg.length){toast('출고요청할 상품이 없습니다');return;}
+  if(!confirm('📦 '+g.cust+' '+chg.length+'건을 전부 출고요청으로 넘길까요?\n\n물류 출고작업(출고대기)으로 이동합니다.'))return;
   const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req='출고요청';delete REQDRAFT[o.id];});const ids=chg.map(o=>o.id);
   let ok=true;try{const {error}=await SB.from('orders').update({req:'출고요청'}).in('id',ids);if(error){console.error('bulkShipReq',error);ok=false;}}catch(e){console.error(e);ok=false;}
   if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else{toast('📦 '+g.cust+' '+ids.length+'건 → 출고요청 (판매현황·출고작업으로 이동)');await shipConsolidate(g.cust);}
   render();}
 /* 있는 물건만 출고: 재고 있는 상품→출고요청(출고대기), 재고부족(미송)→미송관리 · DB 저장(새로고침해도 유지) */
 async function sendBackOnly(gi){const g=curGroups()[gi];if(!g)return;const chg=g.items.filter(o=>o.id!=null);if(!chg.length)return;
+  const _ship=chg.filter(o=>!o.back).length,_miss=chg.filter(o=>o.back).length;
+  if(!confirm('🚚 '+g.cust+'\n\n재고 있는 '+_ship+'건 → 지금 출고요청\n재고부족(미송) '+_miss+'건 → 미송관리로 보류\n\n진행할까요?'))return;
   const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req=o.back?'미송':'출고요청';delete REQDRAFT[o.id];});
   const missIds=chg.filter(o=>o.back).map(o=>o.id),shipIds=chg.filter(o=>!o.back).map(o=>o.id);
   let ok=true;try{
@@ -2142,6 +2145,7 @@ async function sendBackOnly(gi){const g=curGroups()[gi];if(!g)return;const chg=g
   if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else{toast('🚚 있는 물건만 출고: 출고요청 '+shipIds.length+'건 · 미송 '+missIds.length+'건 미송관리로');await shipConsolidate(g.cust);}render();}
 /* 전체 모아 한번에: 주문 전체를 미송관리에서 대기 → 재입고 후 합배로 함께 출고 · DB 저장 */
 async function sendBackAll(gi){const g=curGroups()[gi];if(!g)return;const chg=g.items.filter(o=>o.id!=null);if(!chg.length)return;
+  if(!confirm('📦 '+g.cust+' '+chg.length+'건 전체를 미송관리로 보낼까요?\n\n지금 출고하지 않고, 재입고되면 한 박스로 함께 출고합니다.'))return;
   const prev=chg.map(o=>o.req);chg.forEach(o=>{o.req='미송';delete REQDRAFT[o.id];});const ids=chg.map(o=>o.id);
   let ok=true;try{const {error}=await SB.from('orders').update({req:'미송'}).in('id',ids);if(error){console.error('sendBackAll',error);ok=false;}}catch(e){console.error(e);ok=false;}
   if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else{toast('📦 일괄 미송: '+g.cust+' '+ids.length+'건 전체 미송관리로 (재입고 후 한번에 출고)');await shipConsolidate(g.cust);}render();}
