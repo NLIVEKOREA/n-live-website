@@ -3705,9 +3705,23 @@ function _buildPayXlsx(e,ym){
   salesRows.forEach(o=>{A2.push([(o.date||'')+' '+(typeof orderNoOf==='function'?orderNoOf(o.date,o.cust):''),o.staff||'',o.cust||'',tagShow(o),o.code||'',o.disp||prodName(o.code)||'',o.color||'',o.size||'',o.qty||0,o.price||0,(o.price||0)*(o.qty||0),amtOf(o)]);});
   A2.push(['','','','','','','','','','','합계',salesSum]);
   const ws2=S.aoa_to_sheet(A2);
-  ws2['!cols']=[{wch:16},{wch:9},{wch:17},{wch:12},{wch:12},{wch:26},{wch:8},{wch:6},{wch:5},{wch:9},{wch:10},{wch:10}];
-  Object.keys(ws2).forEach(k=>{if(k[0]==='!')return;const c=ws2[k];c.s=c.s||{};if(typeof c.v==='number'){c.z='#,##0';c.s.numFmt='#,##0';c.s.alignment={horizontal:'right'};}});
-  H.forEach((_,i)=>{const a=S.encode_cell({r:1,c:i});if(ws2[a]){ws2[a].s={font:{bold:true},fill:{fgColor:{rgb:'FFF1F5F9'}},alignment:{horizontal:'center'}};}});
+  ws2['!cols']=[{wch:17},{wch:9},{wch:16},{wch:12},{wch:12},{wch:26},{wch:8},{wch:6},{wch:6},{wch:10},{wch:11},{wch:11}];
+  const NC=H.length,totIdx=A2.length-1;
+  const numC={8:1,9:1,10:1,11:1};/* 수량·단가·공급가액·합계 */
+  const stTitle={fill:{patternType:'solid',fgColor:{rgb:NAVY}},font:{bold:true,sz:12,color:{rgb:'FFFFFFFF'}},alignment:lft,border:BALL};
+  const stHead=F(BLUE,'FFFFFFFF',10,true);
+  const stTot={fill:{patternType:'solid',fgColor:{rgb:SUMF}},font:{bold:true,sz:10.5,color:{rgb:NAVY}},border:BALL};
+  const mkCell=(align,shade)=>{const s={font:{sz:9.5,color:{rgb:'FF222222'}},alignment:{horizontal:align,vertical:'center'},border:BALL};if(shade)s.fill={patternType:'solid',fgColor:{rgb:shade}};return s;};
+  /* 제목행 병합 */
+  ws2['!merges']=[{s:{r:0,c:0},e:{r:0,c:NC-1}}];const tA=S.encode_cell({r:0,c:0});if(ws2[tA])ws2[tA].s=stTitle;
+  /* 헤더행 */
+  for(let c=0;c<NC;c++){const a=S.encode_cell({r:1,c});if(!ws2[a])ws2[a]={t:'s',v:''};ws2[a].s=stHead;}
+  /* 데이터행(줄무늬) */
+  for(let r=2;r<totIdx;r++){const shade=(r%2===0)?'FFF6F9FE':null;
+    for(let c=0;c<NC;c++){const a=S.encode_cell({r,c});if(!ws2[a])ws2[a]={t:'s',v:''};const align=numC[c]?'right':((c===1||c===4||c===6||c===7)?'center':'left');ws2[a].s=mkCell(align,shade);if(numC[c])ws2[a].z='#,##0';}}
+  /* 합계행 */
+  for(let c=0;c<NC;c++){const a=S.encode_cell({r:totIdx,c});if(!ws2[a])ws2[a]={t:'s',v:''};ws2[a].s=Object.assign({},stTot,{alignment:{horizontal:numC[c]?'right':'center',vertical:'center'}});if(numC[c])ws2[a].z='#,##0';}
+  ws2['!rows']=[{hpt:24},{hpt:22}];
   const wb=S.book_new();S.book_append_sheet(wb,ws1,'급여정산서');S.book_append_sheet(wb,ws2,'매출자료');
   const fname=e.name+' '+M+'월 급여 명세서 ('+Y.slice(2)+'년).xlsx';
   XLSX.writeFile(wb,fname);toast('⬇ '+fname+' 다운로드 완료');
