@@ -604,9 +604,14 @@ async function dbLoadAll(){
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
 }
 /* 실시간 동기화 — 다른 사용자의 변경을 자동 반영. 입력 중엔 화면 재렌더 보류(입력값 보호) */
-let _rt=null,_rtTimer=null;
+let _rt=null,_rtTimer=null,_localActAt=0,_fromRt=false;
 function isTyping(){const a=document.activeElement;if(a&&['INPUT','TEXTAREA','SELECT'].includes(a.tagName))return true;const m=$('#modal');if(m&&!m.classList.contains('hide'))return true;return false;}
-function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(async()=>{if(_committing)return;await dbLoadAll();if(!isTyping())render();},700);}).subscribe();}catch(e){console.error('realtime',e);}}
+/* realtime 동기화 — 내 작업 직후/작업 중엔 리로드를 미룬다(replica 지연으로 인한 사라졌다 다시뜨는 깜빡임 방지). 손 멈추면 한 번만 조용히 재로딩 */
+function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(function tick(){
+  if(_committing||isTyping()){clearTimeout(_rtTimer);_rtTimer=setTimeout(tick,1400);return;}/* 입력/모달/커밋 중엔 대기 */
+  if(Date.now()-_localActAt<1800){clearTimeout(_rtTimer);_rtTimer=setTimeout(tick,1800);return;}/* 내 최근 조작 여파 — 조용해질 때까지 미룸 */
+  dbLoadAll().then(function(){if(!isTyping()){_fromRt=true;try{render();}finally{_fromRt=false;}}});
+},900);}).subscribe();}catch(e){console.error('realtime',e);}}
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){const {error}=await SB.from('orders').update(row).eq('id',o.id);if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 새로고침 후 다시 시도하세요');return false;}}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 다시 시도하세요');return false;}if(data)o.id=data.id;}return true;}catch(e){console.error(e);toast('⚠️ 저장 오류 — 인터넷 연결을 확인하세요');return false;}}
 /* ===== 동시/이중 처리 안전장치 ===== 같은 작업키가 처리 중이면 재실행 차단(더블클릭·동시처리 방지) */
 const _busy=new Set();
@@ -4345,7 +4350,7 @@ function enhanceResponsiveUI(root){
 }
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}}
-function render(){_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();enhanceResponsiveUI(_mn);if(VIEW==='dash')setTimeout(initDashGrid,0);updateTopbar();const cv=$('#currentView');if(cv)cv.textContent=VIEW_LABELS[VIEW]||'';if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
+function render(){if(!_fromRt)_localActAt=Date.now();/* 내 조작(클릭·저장·이동) 시각 기록 — realtime 리로드가 이 직후엔 안 끼어들게 */_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();enhanceResponsiveUI(_mn);if(VIEW==='dash')setTimeout(initDashGrid,0);updateTopbar();const cv=$('#currentView');if(cv)cv.textContent=VIEW_LABELS[VIEW]||'';if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
   if(CUSTPOP){const c=custPopTarget();if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
 function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
