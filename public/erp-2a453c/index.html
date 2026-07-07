@@ -1883,7 +1883,9 @@ function entrySearch(v){const d=$('#entryDrop');if(!d)return;v=v.trim();if(!v){d
   d.innerHTML=codes.length?codes.slice(0,20).map(c=>{const p=STOCK.find(s=>s.code===c),tot=STOCK.filter(s=>s.code===c).reduce((a,s)=>a+s.qty,0);
     return `<div class="drop-i" onclick="addLineByCode('${c}')"><span class="tagbox">${p.tag}</span><b>${c}</b> ${p.name}<span class="muted" style="margin-left:auto">재고 ${tot}</span></div>`;}).join('')
     :`<div class="drop-i" onclick="openProdModal('${v}')">검색결과 없음 · <b style="color:var(--blue)">＋ 신규품목 '${v}' 팝업등록</b></div>`;dropPos(d,$('#entryIn'));}
+function addLineBySku(sk){OE.lines.push({code:sk.code,name:prodName(sk.code),color:sk.color,size:sk.size,qty:1,price:sk.price,back:(sk.qty||0)<=0});render();}
 function entryKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!v)return;
+  const _bid=skuFromBarcode(v);if(_bid!=null){const sk=STOCK.find(x=>x.id===_bid);const d=$('#entryDrop');if(d)d.innerHTML='';e.target.value='';if(sk){addLineBySku(sk);toast('📷 담기: '+prodName(sk.code)+' '+(sk.color||'')+' '+(sk.size||''));}else toast('❌ QR 품목 없음: '+v);setTimeout(()=>$('#entryIn')&&$('#entryIn').focus(),20);return;}
   const exactTag=[...new Set(STOCK.filter(s=>s.tag===v).map(s=>s.code))];
   const codes=[...new Set(STOCK.filter(s=>inc(s.tag,v)||inc(s.code,v)||inc(s.name,v)).map(s=>s.code))];
   if(exactTag.length===1)addLineByCode(exactTag[0]);else if(codes.includes(v))addLineByCode(v);else if(codes.length===1)addLineByCode(codes[0]);}
@@ -2908,10 +2910,11 @@ function viewStock(){
     <div class="card-h"><h2>재고 현황 <span class="muted" style="font-size:12px;font-weight:400">${STOCK.length} SKU</span></h2><button class="btn sm ghost" onclick="stockCSV()"><i class="ti ti-download"></i> CSV</button></div>
     <div class="note">💡 <b>품목코드·품목명을 클릭</b>하면 빠르게 수정(팝업) · 번호표는 표에서 바로 수정 · <b>헤더 클릭 정렬</b></div>
     ${can?`<div class="toolbar">
-      <input id="scan" class="barcode" placeholder="📷 바코드 (예: 10012검정F)" style="width:200px">
-      <input id="scanQty" type="number" value="1" min="1" style="width:60px">
-      <button class="btn ghost sm" onclick="scanMove(1)">＋입고</button>
-      <button class="btn ghost sm" onclick="scanMove(-1)">－출고</button>
+      <span class="muted" style="align-self:center;font-size:12px;font-weight:700">스캔모드</span>
+      <button class="btn sm ${SCAN_DIR>0?'':'ghost'}" style="${SCAN_DIR>0?'background:#059669':''}" onclick="SCAN_DIR=1;render();setTimeout(()=>$('#scan')&&$('#scan').focus(),30)">＋입고</button>
+      <button class="btn sm ${SCAN_DIR<0?'':'ghost'}" style="${SCAN_DIR<0?'background:var(--red)':''}" onclick="SCAN_DIR=-1;render();setTimeout(()=>$('#scan')&&$('#scan').focus(),30)">－출고</button>
+      <input id="scan" class="barcode" placeholder="📷 QR/바코드 스캔 후 Enter (${SCAN_DIR>0?'입고':'출고'})" onkeydown="if(event.key==='Enter'){event.preventDefault();scanMove(SCAN_DIR);}" style="width:230px">
+      <span class="muted" style="align-self:center;font-size:12px">수량</span><input id="scanQty" type="number" value="1" min="1" style="width:60px">
       <span class="grow"></span>
       ${searchBox}
     </div>`:`<div class="toolbar"><span class="grow"></span>${searchBox}</div>`}
@@ -3674,10 +3677,12 @@ async function stagedSave(){
   toast('✅ '+sel.length+'건 재고현황에 등록 완료');render();
 }
 async function setTag(code,val){const t=val.trim();STOCK.filter(s=>s.code===code).forEach(s=>s.tag=t);toast('🏷️ 번호표 변경: '+prodName(code)+' → '+t);render();try{const {error}=await SB.from('stock').update({tag:t}).eq('code',code);if(error){console.error('setTag',error);toast('⚠️ 번호표 저장 실패 — 다시 시도하세요');}}catch(e){console.error(e);toast('⚠️ 번호표 저장 오류');}}
-async function scanMove(dir){const raw=$('#scan').value.trim().replace(/\s/g,''),q=parseInt($('#scanQty').value)||1;
-  const s=STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'')===raw)||STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'').includes(raw));
-  if(!s){toast('❌ 일치 품목 없음: '+raw);return;}if(dir<0&&s.qty<q){toast('⚠️ 재고 부족! 현재고 '+s.qty);return;}
-  await adjustStockDB(s,dir*q,dir>0?'바코드 입고':'바코드 출고');toast((dir>0?'＋입고 ':'－출고 ')+s.name+' '+s.color+' '+Math.abs(dir*q)+'개 → 현재고 '+s.qty);$('#scan').value='';render();}
+let SCAN_DIR=1;/* 재고 스캔 방향 모드(입고+1/출고-1) — 스캐너 Enter 연속스캔용 */
+async function scanMove(dir){const raw=$('#scan').value.trim().replace(/\s/g,''),q=parseInt($('#scanQty').value)||1;if(!raw)return;
+  let s=null;const _bid=skuFromBarcode(raw);/* QR 라벨(N000123) 우선 해석 */if(_bid!=null)s=STOCK.find(x=>x.id===_bid);
+  if(!s)s=STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'')===raw)||STOCK.find(x=>(x.code+x.color+x.size).replace(/\s/g,'').includes(raw));
+  if(!s){toast('❌ 일치 품목 없음: '+raw);$('#scan').value='';setTimeout(()=>$('#scan')&&$('#scan').focus(),20);return;}if(dir<0&&s.qty<q){toast('⚠️ 재고 부족! 현재고 '+s.qty);return;}
+  await adjustStockDB(s,dir*q,dir>0?'바코드 입고':'바코드 출고');toast((dir>0?'＋입고 ':'－출고 ')+s.name+' '+s.color+' '+Math.abs(dir*q)+'개 → 현재고 '+s.qty);const _sv=$('#scan');if(_sv)_sv.value='';render();setTimeout(()=>$('#scan')&&$('#scan').focus(),30);/* 연속 스캔 위해 재포커스 */}
 async function stockAdjust(){const idx=parseInt($('#a_code').value),d=parseInt($('#a_qty').value)||0,s=STOCK[idx];
   if(!s||!d){toast('품목·수량을 확인하세요');return;}await adjustStockDB(s,d,'수량조정');toast('🔧 재고조정: '+s.name+' '+s.color+' '+(d>0?'+':'')+d+' → 현재고 '+s.qty);render();}
 function addStock(){const code=$('#n_code').value.trim(),name=$('#n_name').value.trim();
