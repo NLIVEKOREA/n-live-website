@@ -117,24 +117,24 @@
   .head p{color:var(--gray);font-size:12.5px;margin-top:5px}
   .badge{display:inline-block;background:var(--amber-s);color:var(--amber);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;vertical-align:middle;margin-left:6px}
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
-  .kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;box-shadow:0 1px 2px rgba(15,23,42,.03);min-height:124px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;box-shadow:0 1px 2px rgba(15,23,42,.04),0 3px 8px rgba(15,23,42,.04);min-height:124px}
   .kpi .lab{font-size:12.5px;color:var(--gray);margin-bottom:10px}
   .kpi .num{font-size:25px;font-weight:800;letter-spacing:-1px}
   .kpi .sub{font-size:12px;margin-top:8px;font-weight:600}
-  .kpi .ic{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
+  .kpi .ic{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
   .ic-b{background:var(--blue-s)} .ic-g{background:var(--green-s)} .ic-p{background:var(--purple-s)} .ic-a{background:var(--amber-s)} .ic-r{background:var(--red-s)}
   .up{color:var(--green)} .down{color:var(--red)} .warn{color:var(--amber)}
   .row{display:grid;gap:16px;margin-bottom:18px}
   .row.r-2-1{grid-template-columns:2fr 1fr}
   .row.r-3{grid-template-columns:repeat(3,1fr)}
-  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 3px 8px rgba(15,23,42,.04)}
   .card-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
   .card-h h2{font-size:15px;letter-spacing:-.3px}
   .card-h .more{font-size:12px;color:var(--gray);cursor:pointer}
   .alist{display:flex;flex-direction:column;gap:2px}
   .ai{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid #f1f5f9;font-size:13px}
   .ai:last-child{border:0}
-  .tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0}
+  .tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;flex-shrink:0}
   .t-b{background:var(--blue-s);color:var(--blue)} .t-g{background:var(--green-s);color:var(--green)}
   .t-a{background:var(--amber-s);color:var(--amber)} .t-p{background:var(--purple-s);color:var(--purple)} .t-r{background:var(--red-s);color:var(--red)}
   .ai .tx{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -152,30 +152,30 @@
   tr:last-child td{border-bottom:0}
   tbody tr:hover td{background:#fafcff}
   .num-cell{text-align:right;font-variant-numeric:tabular-nums}
-  .pill,.item-chip{display:inline-flex;align-items:center;justify-content:center;min-height:var(--chip-h);font-size:12px;font-weight:800;line-height:1;padding:0 9px;border-radius:7px;white-space:nowrap;background:#eef2f7;color:#475569}
+  .pill,.item-chip{display:inline-flex;align-items:center;justify-content:center;min-height:var(--chip-h);font-size:12px;font-weight:800;line-height:1;padding:0 9px;border-radius:8px;white-space:nowrap;background:#eef2f7;color:#475569}
   .p-miss{background:var(--amber-s);color:var(--amber)} .p-req{background:var(--blue-s);color:var(--blue)}
   .p-done{background:var(--green-s);color:var(--green)} .p-low{background:var(--red-s);color:var(--red)}
   .p-gray{background:#eef1f6;color:#475569} .p-purple{background:#f1ebfe;color:#6d28d9}
-  .tagbox{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:var(--chip-h);background:#fde68a;color:#7c3f06;border:1.5px solid #f59e0b;font-weight:900;font-size:13px;line-height:1;padding:0 10px;border-radius:7px;font-family:'Courier New',monospace;letter-spacing:.5px;white-space:nowrap}
+  .tagbox{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:var(--chip-h);background:#fde68a;color:#7c3f06;border:1.5px solid #f59e0b;font-weight:900;font-size:13px;line-height:1;padding:0 10px;border-radius:8px;font-family:'Courier New',monospace;letter-spacing:.5px;white-space:nowrap}
   .stock-low{color:var(--red);font-weight:800} .stock-ok{font-weight:700}
   .muted{color:var(--gray)} .barcode{font-family:'Courier New',monospace;letter-spacing:.5px}
   .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-  input,select,textarea{font-family:inherit;font-size:13px;min-height:var(--control-h);padding:8px 12px;border:1px solid var(--line);border-radius:9px;outline:none;background:#fff}
+  input,select,textarea{font-family:inherit;font-size:13px;min-height:var(--control-h);padding:8px 12px;border:1px solid var(--line);border-radius:10px;outline:none;background:#fff}
   input[type=checkbox],input[type=radio]{min-height:0;width:16px;height:16px;padding:0;border-radius:4px;accent-color:#2563eb;flex:0 0 auto;vertical-align:middle;cursor:pointer}
   input:focus,select:focus,textarea:focus,.btn:focus-visible,.ico-btn:focus-visible,.tabs button:focus-visible,.side-toggle:focus-visible{border-color:var(--blue);outline:3px solid rgba(37,99,235,.18);outline-offset:1px}
-  .btn{min-height:var(--control-h);display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;border:0;padding:8px 16px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+  .btn{min-height:var(--control-h);display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;border:0;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
   .btn:hover{background:var(--blue-d)}
   .btn.ghost{background:#fff;color:var(--blue);border:1.5px solid #bdd3ff}
   .btn.gray{background:#fff;color:var(--gray);border:1.5px solid var(--line)}
   .btn.red{background:#fff;color:var(--red);border:1.5px solid #f3b4b4}
   .btn.green{background:#059669;color:#fff;border:0}.btn.green:hover{background:#047857}
-  .btn.sm{min-height:var(--control-sm-h);padding:5px 11px;font-size:12px;border-radius:7px}
+  .btn.sm{min-height:var(--control-sm-h);padding:5px 11px;font-size:12px;border-radius:8px}
   .grow{flex:1}
   .tabs{display:flex;gap:6px;margin-bottom:16px}
-  .tabs button{border:1px solid var(--line);background:#fff;padding:8px 16px;border-radius:9px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--gray)}
+  .tabs button{border:1px solid var(--line);background:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--gray)}
   .tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .note{background:var(--blue-s);border:1px dashed #bdd3ff;color:var(--blue-d);font-size:12px;padding:10px 14px;border-radius:10px;margin-bottom:14px;line-height:1.6}
-  .lock{background:#fff7ed;border:1px solid #fed7aa;color:#c2620c;font-size:12.5px;padding:11px 14px;border-radius:10px;margin-bottom:16px;font-weight:600}
+  .note{background:var(--blue-s);border:1px dashed #bdd3ff;color:var(--blue-d);font-size:12px;padding:10px 14px;border-radius:12px;margin-bottom:14px;line-height:1.6}
+  .lock{background:#fff7ed;border:1px solid #fed7aa;color:#c2620c;font-size:12.5px;padding:11px 14px;border-radius:12px;margin-bottom:16px;font-weight:600}
   .hide{display:none}
   #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;transition:.3s;z-index:99;box-shadow:0 8px 28px rgba(0,0,0,.25);max-width:90%}
   #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
@@ -844,39 +844,7 @@ let ORD=(window.ERP_DATA&&ERP_DATA.SALES&&ERP_DATA.SALES.length)?ERP_DATA.SALES.
   {id:6,date:'06/27',staff:'박시연',cust:'Leehj(이현정)',phone:'',addr:'',code:'10006',color:'중청',size:'M',qty:1,price:31000,pay:'paid',ship:'done'},
 ];
 let ordSeq=Math.max(0,...ORD.map(o=>o.id||0))+1;
-// 실제 데이터가 있으면 데모용 미결제 주문 2건 추가(실재고·실고객 사용 → 주문→결제 흐름 시연)
-if(window.ERP_DATA&&ERP_DATA.SALES&&ERP_DATA.SALES.length&&STOCK.length&&CUSTOMERS.length){
-  const C=CUSTOMERS[0],C2=CUSTOMERS[1]||CUSTOMERS[0];
-  const s=STOCK.find(x=>x.qty>0)||STOCK[0],s2=STOCK.find(x=>x.qty>0&&x.code!==s.code)||STOCK[1]||s;
-  ORD.unshift(
-    {id:ordSeq++,date:'2026/06/29',staff:'박시연',cust:C.name,phone:C.phone,addr:C.addr,code:s.code,disp:s.name,tag:s.tag,color:s.color,size:s.size,qty:1,price:s.price,pay:'unpaid',ship:'miss'},
-    {id:ordSeq++,date:'2026/06/29',staff:'박시연',cust:C2.name,phone:C2.phone,addr:C2.addr,code:s2.code,disp:s2.name,tag:s2.tag,color:s2.color,size:s2.size,qty:1,price:s2.price,pay:'unpaid',ship:'miss'}
-  );
-  // 미송 데모: 재고0(품절)인데 결제완료된 주문
-  const so=STOCK.find(x=>x.qty<=0);
-  if(so)ORD.unshift({id:ordSeq++,date:'2026/06/29',staff:'박시연',cust:C.name,phone:C.phone,addr:C.addr,code:so.code,disp:so.name,tag:so.tag,color:so.color,size:so.size,qty:1,price:so.price,pay:'paid',ship:'miss',back:true});
-  // 합배 데모: 같은 고객(C2) 출고대기 결제완료 2건
-  const b1=STOCK.find(x=>x.qty>0),b2=STOCK.find(x=>x.qty>0&&x.code!==(b1&&b1.code));
-  if(b1&&b2)ORD.unshift(
-    {id:ordSeq++,date:'2026/06/27',staff:'박시연',cust:C2.name,phone:C2.phone,addr:C2.addr,code:b1.code,disp:b1.name,tag:b1.tag,color:b1.color,size:b1.size,qty:1,price:b1.price,pay:'paid',ship:'miss'},
-    {id:ordSeq++,date:'2026/06/28',staff:'박시연',cust:C2.name,phone:C2.phone,addr:C2.addr,code:b2.code,disp:b2.name,tag:b2.tag,color:b2.color,size:b2.size,qty:1,price:b2.price,pay:'paid',ship:'miss'}
-  );
-  // 출고장 데모: 출고요청(req) 상태 주문 (물류가 내보낼 것)
-  const r1=STOCK.find(x=>x.qty>0),r2=STOCK.find(x=>x.qty>0&&x.code!==(r1&&r1.code));
-  const RC=CUSTOMERS[2]||C, RC2=CUSTOMERS[3]||C2;
-  if(r1)ORD.unshift({id:ordSeq++,date:'2026/06/29',staff:'박시연',cust:RC.name,phone:RC.phone,addr:RC.addr,code:r1.code,disp:r1.name,tag:r1.tag,color:r1.color,size:r1.size,qty:2,price:r1.price,pay:'paid',ship:'req'});
-  if(r2)ORD.unshift({id:ordSeq++,date:'2026/06/29',staff:'박시연',cust:RC2.name,phone:RC2.phone,addr:RC2.addr,code:r2.code,disp:r2.name,tag:r2.tag,color:r2.color,size:r2.size,qty:1,price:r2.price,pay:'paid',ship:'req'});
-}
-let RET=[
-  {date:'06/26',staff:'박시연',cust:'썬이썬이',item:'펠라자켓 먹색 F',reason:'개인사유(사이즈)',pay:'카드',bank:'-',amt:65000,status:'done'},
-  {date:'06/26',staff:'박시연',cust:'옐로(김선혜)',item:'볼륨업데님 흑청 S',reason:'재봉불량',pay:'현금',bank:'하나 370910228...',amt:31000,status:'refund'},
-  {date:'06/27',staff:'박시연',cust:'전국부동산',item:'아워패드T 블랙 F',reason:'단순변심',pay:'현금',bank:'신한 110-283-...',amt:27000,status:'wait'},
-];
-let EXC=[
-  {date:'06/26',staff:'박시연',cust:'갱이(한은경)',from:'슬랙스 블랙 L',to:'블랙 M',reason:'사이즈교환',status:'done'},
-  {date:'06/27',staff:'박시연',cust:'은주김(김은주)',from:'아워패드T 블랙',to:'아이',reason:'오발주',status:'req'},
-  {date:'06/27',staff:'박시연',cust:'은주(유은주)',from:'펠라자켓 먹색',to:'(미정)',reason:'다른제품 교환',status:'wait'},
-];
+/* (데모용 예시 데이터 제거됨 — 실데이터는 dbLoadAll에서 로드) */
 let VENDORS=[
   {name:'중국대련',memo:'주력 사입처(라이브 발주)',type:'해외'},
   {name:'동대문 청바지나라',memo:'국내 데님 사입',type:'국내'},
@@ -3763,7 +3731,6 @@ async function cancelOrder(id,reason){const i=ORD.findIndex(x=>x.id===id);if(i<0
 /* 미송 상품 취소 — 배송지연 등. 적립금 적립 여부 포함한 취소/환불 모달로 연결 */
 function cancelBackOrder(id){cancelSale(id,'취소');}
 function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o.cust+' → '+({req:'출고요청',done:'출고완료'})[st]);render();}
-function doRefund(i){RET[i].status='refund';toast('✅ 환불완료 ('+won(RET[i].amt)+') → 재고 +재입고');render();}
 /* 상품 일괄등록 — 6자리 자동번호 + 색상·사이즈 매트릭스 → SKU 자동생성 */
 let BULK={};
 /* ===== 사입처 검색+신규등록 콤보 (긴 datalist 대체) ===== */
