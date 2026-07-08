@@ -1,11 +1,11 @@
 [
  {
   "id": "w1",
-  "name": "쇼라이브",
-  "en": "SHOW LIVE",
+  "name": "K-소싱 허브 #1",
+  "en": "K-Sourcing Hub #1",
   "type": "선품창고",
   "tagline": "소싱·촬영·라이브를 한 곳에서 — 정식·덤핑 재고를 상시 보유한 라이브커머스 소싱 창고",
-  "hero": "/warehouse-images/showlive/hero.jpg",
+  "hero": "/warehouse-images/w1/hero.jpg",
   "location": "경기 OO시",
   "stats": {
    "brands": "120+",
@@ -38,32 +38,32 @@
   ],
   "gallery": [
    {
-    "img": "/warehouse-images/showlive/hero.jpg",
+    "img": "/warehouse-images/w1/hero.jpg",
     "zone": "창고 전경",
     "cap": "의류·리빙 메인홀"
    },
    {
-    "img": "/warehouse-images/showlive/g1.jpg",
+    "img": "/warehouse-images/w1/g1.jpg",
     "zone": "뷰티 브랜드 진열존",
     "cap": "브랜드별 쇼케이스"
    },
    {
-    "img": "/warehouse-images/showlive/g3.jpg",
+    "img": "/warehouse-images/w1/g3.jpg",
     "zone": "Skin & Beauty 스튜디오",
     "cap": "화장품 진열·촬영"
    },
    {
-    "img": "/warehouse-images/showlive/g2.jpg",
+    "img": "/warehouse-images/w1/g2.jpg",
     "zone": "라이브 스튜디오",
     "cap": "촬영·방송 세팅"
    },
    {
-    "img": "/warehouse-images/showlive/g4.jpg",
+    "img": "/warehouse-images/w1/g4.jpg",
     "zone": "뷰티 소싱존",
     "cap": "다브랜드 상품 진열"
    },
    {
-    "img": "/warehouse-images/showlive/g6.jpg",
+    "img": "/warehouse-images/w1/g6.jpg",
     "zone": "검수·보관",
     "cap": "출고 전 검수·포장"
    }
@@ -104,7 +104,7 @@
    "정산"
   ],
   "trust": [
-   "법인 · 주식회사 쇼라이브",
+   "법인 사업자 · 정식 등록 소싱 창고",
    "대규모 소싱·물류 창고 운영",
    "출고 전 상품 검수·포장",
    "경기 OO시 · 방문 소싱 가능"
@@ -201,7 +201,7 @@
      "Settlement"
     ],
     "trust": [
-     "Incorporated · Show Live Co., Ltd.",
+     "Registered corporation · verified sourcing warehouse",
      "Operating a large-scale sourcing & logistics warehouse",
      "Pre-shipment product inspection & packing",
      "OO-si, Gyeonggi-do · On-site sourcing visits welcome"
@@ -298,7 +298,7 @@
      "结算"
     ],
     "trust": [
-     "法人 · 株式会社 Show Live",
+     "法人企业 · 正规注册选品仓",
      "运营大型选品·物流仓",
      "出库前商品质检·包装",
      "京畿道OO市 · 可到场选品"
@@ -395,7 +395,7 @@
      "結算"
     ],
     "trust": [
-     "法人 · 株式會社 Show Live",
+     "法人企業 · 正規註冊選品倉",
      "營運大型選品·物流倉",
      "出貨前商品檢驗·包裝",
      "京畿道OO市 · 可到場選品"
@@ -492,7 +492,7 @@
      "精算"
     ],
     "trust": [
-     "法人 · 株式会社 Show Live",
+     "法人事業者 · 正規登録の仕入れ倉庫",
      "大規模な仕入れ·物流倉庫を運営",
      "出荷前の商品検品·梱包",
      "京畿道OO市 · 訪問仕入れ可能"
