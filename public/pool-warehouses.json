@@ -499,5 +499,528 @@
     ]
    }
   }
+ },
+ {
+  "id": "w2",
+  "no": 2,
+  "name": "K-헬스뷰티 소싱센터",
+  "en": "K-Health & Beauty Sourcing Center",
+  "type": "선품창고",
+  "tagline": "K-뷰티·건강식품 정식 상품을 한 쇼룸에서 — 소량 소싱·상담·방문 픽업까지 원스톱",
+  "hero": "/warehouse-images/w2/hero.jpg",
+  "location": "경기 파주시",
+  "stats": {
+   "brands": "80+",
+   "studio": "",
+   "cats": "K-뷰티 · 건강식품 · 스킨케어",
+   "margin": "40~70%"
+  },
+  "chips": [
+   "정식",
+   "소량 가능",
+   "방문 소싱",
+   "다브랜드 쇼룸"
+  ],
+  "ranges": [
+   {
+    "cat": "스킨케어·화장품",
+    "icon": "beauty",
+    "range": "소싱가 4,000~25,000원 · 마진 50~70%"
+   },
+   {
+    "cat": "홍삼·건강기능식품",
+    "icon": "home",
+    "range": "소싱가 10,000~60,000원 · 마진 40~60%"
+   },
+   {
+    "cat": "색조·바디",
+    "icon": "beauty",
+    "range": "소싱가 3,000~18,000원 · 마진 55~75%"
+   }
+  ],
+  "gallery": [
+   {
+    "img": "/warehouse-images/w2/hero.jpg",
+    "zone": "쇼룸 전경",
+    "cap": "K-뷰티·건강식품 진열 쇼룸"
+   },
+   {
+    "img": "/warehouse-images/w2/g1.jpg",
+    "zone": "상담·미팅 공간",
+    "cap": "셀러 소싱 상담존"
+   },
+   {
+    "img": "/warehouse-images/w2/g2.jpg",
+    "zone": "뷰티·건강 진열존",
+    "cap": "스킨케어·건강식품 구성"
+   },
+   {
+    "img": "/warehouse-images/w2/g3.jpg",
+    "zone": "코스메틱 쇼케이스",
+    "cap": "브랜드별 상품 진열"
+   },
+   {
+    "img": "/warehouse-images/w2/g4.jpg",
+    "zone": "스킨케어 진열",
+    "cap": "다브랜드 상품 구성"
+   },
+   {
+    "img": "/warehouse-images/w2/g5.jpg",
+    "zone": "소싱존",
+    "cap": "소량·샘플 상품"
+   },
+   {
+    "img": "/warehouse-images/w2/g6.jpg",
+    "zone": "리셉션·안내",
+    "cap": "방문 소싱 안내데스크"
+   }
+  ],
+  "process": [
+   "소싱",
+   "촬영",
+   "라이브",
+   "검수",
+   "출고"
+  ],
+  "perks": [
+   [
+    "무재고 소싱",
+    "재고 부담 0, 팔린 만큼만"
+   ],
+   [
+    "소량도 가능",
+    "소량·다품종 대응"
+   ],
+   [
+    "정식 상품 상시",
+    "K-뷰티·건강식품 정품 구성"
+   ],
+   [
+    "방문 소싱",
+    "현장에서 직접 보고 선택"
+   ],
+   [
+    "고마진 딜",
+    "셀러 마진 최대 75%"
+   ]
+  ],
+  "steps": [
+   "셀러 등록",
+   "소싱 상담",
+   "라이브 판매",
+   "정산"
+  ],
+  "trust": [
+   "법인 등록 소싱 창고",
+   "K-뷰티·건강식품 다브랜드 상시 보유",
+   "출고 전 상품 검수·포장",
+   "경기 파주시 · 방문 소싱 가능"
+  ],
+  "i18n": {
+   "en": {
+    "tagline": "Authentic K-Beauty & health foods in one showroom — small-MOQ sourcing, consultation and on-site pickup, all in one stop",
+    "location": "Paju, Gyeonggi-do",
+    "stats": {
+     "brands": "80+",
+     "studio": "",
+     "cats": "K-Beauty · Health Foods · Skincare",
+     "margin": "40~70%"
+    },
+    "chips": [
+     "Authentic",
+     "Small MOQ OK",
+     "On-site Sourcing",
+     "Multi-brand Showroom"
+    ],
+    "ranges": [
+     [
+      "Skincare & Cosmetics",
+      "Sourcing 4,000~25,000 KRW · Margin 50~70%"
+     ],
+     [
+      "Red Ginseng & Health Supplements",
+      "Sourcing 10,000~60,000 KRW · Margin 40~60%"
+     ],
+     [
+      "Color & Body",
+      "Sourcing 3,000~18,000 KRW · Margin 55~75%"
+     ]
+    ],
+    "gallery": [
+     [
+      "Showroom Overview",
+      "K-Beauty & health food display showroom"
+     ],
+     [
+      "Consultation & Meeting Space",
+      "Seller sourcing consultation zone"
+     ],
+     [
+      "Beauty & Health Display Zone",
+      "Skincare & health food lineup"
+     ],
+     [
+      "Cosmetic Showcase",
+      "Product display by brand"
+     ],
+     [
+      "Skincare Display",
+      "Multi-brand product lineup"
+     ],
+     [
+      "Sourcing Zone",
+      "Small-MOQ & sample products"
+     ],
+     [
+      "Reception & Info",
+      "On-site sourcing help desk"
+     ]
+    ],
+    "process": [
+     "Sourcing",
+     "Shooting",
+     "Live",
+     "Inspection",
+     "Shipping"
+    ],
+    "perks": [
+     [
+      "Zero-inventory Sourcing",
+      "No stock burden — pay only for what sells"
+     ],
+     [
+      "Small MOQ Welcome",
+      "Handles small volumes & wide variety"
+     ],
+     [
+      "Authentic Stock Always",
+      "Genuine K-Beauty & health food lineup"
+     ],
+     [
+      "On-site Sourcing",
+      "See and select in person at the site"
+     ],
+     [
+      "High-margin Deals",
+      "Seller margins up to 75%"
+     ]
+    ],
+    "steps": [
+     "Seller Registration",
+     "Sourcing Consultation",
+     "Live Selling",
+     "Settlement"
+    ],
+    "trust": [
+     "Incorporated sourcing warehouse",
+     "Multi-brand K-Beauty & health food always in stock",
+     "Product inspection & packing before shipping",
+     "Paju, Gyeonggi-do · On-site sourcing available"
+    ]
+   },
+   "zh-Hans": {
+    "tagline": "正品 K-Beauty 与健康食品，尽在同一展厅——小量选品、咨询、到店提货一站搞定",
+    "location": "京畿道坡州市",
+    "stats": {
+     "brands": "80+",
+     "studio": "",
+     "cats": "K-Beauty · 健康食品 · 护肤",
+     "margin": "40~70%"
+    },
+    "chips": [
+     "正品",
+     "可小量",
+     "到店选品",
+     "多品牌展厅"
+    ],
+    "ranges": [
+     [
+      "护肤·化妆品",
+      "选品价 4,000~25,000韩元 · 毛利 50~70%"
+     ],
+     [
+      "红参·保健食品",
+      "选品价 10,000~60,000韩元 · 毛利 40~60%"
+     ],
+     [
+      "彩妆·身体护理",
+      "选品价 3,000~18,000韩元 · 毛利 55~75%"
+     ]
+    ],
+    "gallery": [
+     [
+      "展厅全景",
+      "K-Beauty 与健康食品陈列展厅"
+     ],
+     [
+      "咨询·洽谈区",
+      "卖家选品咨询区"
+     ],
+     [
+      "美妆·健康陈列区",
+      "护肤与健康食品组合"
+     ],
+     [
+      "美妆展示柜",
+      "按品牌陈列商品"
+     ],
+     [
+      "护肤陈列",
+      "多品牌商品组合"
+     ],
+     [
+      "选品区",
+      "小量·样品商品"
+     ],
+     [
+      "接待·引导",
+      "到店选品咨询台"
+     ]
+    ],
+    "process": [
+     "选品",
+     "拍摄",
+     "直播",
+     "验货",
+     "发货"
+    ],
+    "perks": [
+     [
+      "无库存选品",
+      "零库存压力，卖多少拿多少"
+     ],
+     [
+      "支持小量",
+      "应对小量·多品类"
+     ],
+     [
+      "正品常备",
+      "正品 K-Beauty 与健康食品组合"
+     ],
+     [
+      "到店选品",
+      "现场亲眼查看后挑选"
+     ],
+     [
+      "高毛利货源",
+      "卖家毛利最高 75%"
+     ]
+    ],
+    "steps": [
+     "卖家注册",
+     "选品咨询",
+     "直播销售",
+     "结算"
+    ],
+    "trust": [
+     "法人注册选品仓库",
+     "多品牌 K-Beauty 与健康食品常备",
+     "发货前商品验货·打包",
+     "京畿道坡州市 · 支持到店选品"
+    ]
+   },
+   "zh-Hant": {
+    "tagline": "正品 K-Beauty 與健康食品，盡在同一展廳——小量選品、諮詢、到店取貨一站搞定",
+    "location": "京畿道坡州市",
+    "stats": {
+     "brands": "80+",
+     "studio": "",
+     "cats": "K-Beauty · 健康食品 · 護膚",
+     "margin": "40~70%"
+    },
+    "chips": [
+     "正品",
+     "可小量",
+     "到店選品",
+     "多品牌展廳"
+    ],
+    "ranges": [
+     [
+      "護膚·化妝品",
+      "選品價 4,000~25,000韓元 · 毛利 50~70%"
+     ],
+     [
+      "紅蔘·保健食品",
+      "選品價 10,000~60,000韓元 · 毛利 40~60%"
+     ],
+     [
+      "彩妝·身體護理",
+      "選品價 3,000~18,000韓元 · 毛利 55~75%"
+     ]
+    ],
+    "gallery": [
+     [
+      "展廳全景",
+      "K-Beauty 與健康食品陳列展廳"
+     ],
+     [
+      "諮詢·洽談區",
+      "賣家選品諮詢區"
+     ],
+     [
+      "美妝·健康陳列區",
+      "護膚與健康食品組合"
+     ],
+     [
+      "美妝展示櫃",
+      "依品牌陳列商品"
+     ],
+     [
+      "護膚陳列",
+      "多品牌商品組合"
+     ],
+     [
+      "選品區",
+      "小量·樣品商品"
+     ],
+     [
+      "接待·引導",
+      "到店選品諮詢台"
+     ]
+    ],
+    "process": [
+     "選品",
+     "拍攝",
+     "直播",
+     "驗貨",
+     "出貨"
+    ],
+    "perks": [
+     [
+      "無庫存選品",
+      "零庫存壓力，賣多少拿多少"
+     ],
+     [
+      "支援小量",
+      "因應小量·多品類"
+     ],
+     [
+      "正品常備",
+      "正品 K-Beauty 與健康食品組合"
+     ],
+     [
+      "到店選品",
+      "現場親眼查看後挑選"
+     ],
+     [
+      "高毛利貨源",
+      "賣家毛利最高 75%"
+     ]
+    ],
+    "steps": [
+     "賣家註冊",
+     "選品諮詢",
+     "直播銷售",
+     "結算"
+    ],
+    "trust": [
+     "法人註冊選品倉庫",
+     "多品牌 K-Beauty 與健康食品常備",
+     "出貨前商品驗貨·包裝",
+     "京畿道坡州市 · 支援到店選品"
+    ]
+   },
+   "ja": {
+    "tagline": "正規のK-Beauty・健康食品を一つのショールームで——小ロット仕入れ・相談・来店ピックアップまでワンストップ",
+    "location": "京畿道坡州市",
+    "stats": {
+     "brands": "80+",
+     "studio": "",
+     "cats": "K-Beauty · 健康食品 · スキンケア",
+     "margin": "40~70%"
+    },
+    "chips": [
+     "正規品",
+     "小ロット可",
+     "来店仕入れ",
+     "マルチブランドショールーム"
+    ],
+    "ranges": [
+     [
+      "スキンケア・化粧品",
+      "仕入れ価格 4,000~25,000ウォン · マージン 50~70%"
+     ],
+     [
+      "紅参・健康機能食品",
+      "仕入れ価格 10,000~60,000ウォン · マージン 40~60%"
+     ],
+     [
+      "メイク・ボディ",
+      "仕入れ価格 3,000~18,000ウォン · マージン 55~75%"
+     ]
+    ],
+    "gallery": [
+     [
+      "ショールーム全景",
+      "K-Beauty・健康食品の陳列ショールーム"
+     ],
+     [
+      "相談・ミーティングスペース",
+      "セラー仕入れ相談ゾーン"
+     ],
+     [
+      "ビューティー・健康陳列ゾーン",
+      "スキンケア・健康食品の構成"
+     ],
+     [
+      "コスメショーケース",
+      "ブランド別の商品陳列"
+     ],
+     [
+      "スキンケア陳列",
+      "マルチブランド商品の構成"
+     ],
+     [
+      "仕入れゾーン",
+      "小ロット・サンプル商品"
+     ],
+     [
+      "受付・案内",
+      "来店仕入れ案内デスク"
+     ]
+    ],
+    "process": [
+     "仕入れ",
+     "撮影",
+     "ライブ",
+     "検品",
+     "出荷"
+    ],
+    "perks": [
+     [
+      "無在庫仕入れ",
+      "在庫負担ゼロ、売れた分だけ"
+     ],
+     [
+      "小ロットも可能",
+      "小ロット・多品種に対応"
+     ],
+     [
+      "正規品を常時",
+      "正規のK-Beauty・健康食品の構成"
+     ],
+     [
+      "来店仕入れ",
+      "現場で直接見て選べる"
+     ],
+     [
+      "高マージンディール",
+      "セラーマージン最大75%"
+     ]
+    ],
+    "steps": [
+     "セラー登録",
+     "仕入れ相談",
+     "ライブ販売",
+     "精算"
+    ],
+    "trust": [
+     "法人登録の仕入れ倉庫",
+     "マルチブランドK-Beauty・健康食品を常時保有",
+     "出荷前の商品検品・梱包",
+     "京畿道坡州市 · 来店仕入れ可能"
+    ]
+   }
+  }
  }
 ]
