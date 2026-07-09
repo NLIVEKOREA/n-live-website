@@ -4071,7 +4071,7 @@ function stockCSV(){const list=stockFilterSort();const rows=[['품목코드','�
 const LIVE_BASE='https://www.n-live.co.kr';
 let LIVEEDIT=null;/* 관리중인 방송 id (null이면 목록) */
 function liveMine(){const arr=(LIVE_SESS||[]).slice();return isSeller()?arr.filter(s=>s.seller===(ME.owner||ME.name)):arr;}
-function liveSellers(){const set=new Set();(LIVE_SESS||[]).forEach(s=>{if(s.seller)set.add(s.seller);});(SCHED||[]).forEach(s=>{if(s.seller)set.add(s.seller);});if(ME.owner)set.add(ME.owner);set.add(ME.name);return [...set];}
+function liveSellers(){const set=new Set(realSellers());/* 등록된 모든 셀러(직원 role='셀러') 포함 */(LIVE_SESS||[]).forEach(s=>{if(s.seller)set.add(s.seller);});(SCHED||[]).forEach(s=>{if(s.seller)set.add(s.seller);});if(ME.owner)set.add(ME.owner);if(ME.name)set.add(ME.name);return [...set].filter(Boolean).sort((a,b)=>String(a).localeCompare(String(b),'ko'));}
 function liveSlugify(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);}
 function liveStatusPill(st){return st==='open'?'<span class="pill p-done">● LIVE 판매중</span>':st==='closed'?'<span class="pill p-low">마감</span>':'<span class="pill p-miss">초안</span>';}
 function bTypeBadge(s){if(!s||!s.broadcast_type)return '';const f=s.broadcast_type==='원정';return `<span class="pill" style="background:${f?'#fff4e5':'#eef2ff'};color:${f?'#b45309':'#4338ca'};font-size:11px">${f?'🚚 원정':'🏢 사무실'}</span>`;}

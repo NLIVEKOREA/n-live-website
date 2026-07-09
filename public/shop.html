@@ -153,6 +153,8 @@ button,input,select,textarea{font:inherit}
 .livefallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-decoration:none;background:linear-gradient(140deg,#2a2140,#ff2e50 135%);color:#fff}
 .livefallback .lfplay{width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.85);display:grid;place-items:center;font-size:26px;padding-left:4px;box-shadow:0 0 0 0 rgba(255,255,255,.5);animation:hpl 1.7s infinite}
 .livefallback b{font-size:18px;font-weight:800;margin-top:8px}.livefallback small{font-size:12px;opacity:.85}
+.hcollapse{position:absolute;left:12px;bottom:12px;z-index:4;background:rgba(0,0,0,.6);color:#fff;border:0;font-size:12px;font-weight:700;padding:7px 12px;border-radius:100px;backdrop-filter:blur(4px);cursor:pointer}
+#infoblock.collapsed{display:none}
 .ndetwrap{margin:18px 16px 0}.ndetwrap .ndet{margin:0}
 .social{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin:15px 16px 2px}
 .sicon{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;text-decoration:none;box-shadow:0 3px 11px rgba(20,22,28,.16);transition:transform .12s}
@@ -195,6 +197,7 @@ let SEL={color:null,size:null,qty:1};
 let DONE=null;        // 주문완료 결과
 let CUST={receiver:'',nick:'',phone:'',addr:'',addr_detail:'',agree:false};
 let PAYM='현금';        // 결제방법: 현금 | 카드
+let INFO_OPEN=true;   // 홈 프로필/공지/소셜 블록 펼침 여부(영상 하단 접기버튼)
 
 const $=s=>document.querySelector(s);
 const won=n=>'₩'+Number(n||0).toLocaleString();
@@ -304,6 +307,7 @@ function heroHtml(s){
   else media=`<div class="hmedia hgrad"></div>`;
   return `<div class="hero${vert?' vert':''}">${media}<div class="hshade"></div>
     <div class="htop">${live?'<span class="livep"><i></i> LIVE</span>':''}</div>
+    <button class="hcollapse" id="infoToggle" onclick="toggleInfo()">${INFO_OPEN?'정보 접기 ▾':'정보 펼치기 ▴'}</button>
     ${live?`<a class="livewatch" href="${esc((s.youtube||'').trim())}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`:''}</div>`;
 }
 function renderHome(){
@@ -329,8 +333,9 @@ function renderHome(){
        <div class="pn">${esc(p.name)}</div><div class="pp">${won(p.live_price)}</div></button>`;}).join('')}</div>`
    :`<div class="center" style="min-height:180px">등록된 상품이 곧 올라옵니다.</div>`;
   $('#app').innerHTML=
-    heroHtml(s)+prof
-    +`<div class="homewrap">${notice}${feat}${grid}</div>`
+    heroHtml(s)
+    +`<div id="infoblock"${INFO_OPEN?'':' class="collapsed"'}>${prof}${notice}</div>`
+    +`<div class="homewrap">${feat}${grid}</div>`
     +(cartCount()?`<div class="cbar"><button onclick="go('cart')">🛒 장바구니 보기 <span class="cb">${cartCount()}개 · ${won(subtotal()+shipFee())}</span></button></div>`:'')
     +`<div class="tabbar"><a class="on"><i>🏠</i>홈</a><a onclick="go('orders')"><i>📦</i>내주문</a><a onclick="go('cart')"><i>🛒</i>장바구니</a><a onclick="contactKakao()"><i>💬</i>문의</a></div>`;
   if(live)ensureLivePlayer(s.youtube);
@@ -355,6 +360,7 @@ function socialLinks(s,ytLink){
   return `<div class="social">${it.map(i=>`<a class="sicon" style="background:${i.bg};color:${i.fg}" href="${esc(i.u)}" target="_blank" rel="noopener" aria-label="${esc(i.n)}" title="${esc(i.n)}">${i.s}</a>`).join('')}</div>`;
 }
 function contactKakao(){const u=SHOP&&SHOP.session&&SHOP.session.kakao_url;if(u){window.open(u,'_blank','noopener');}else{toast('문의는 방송 채팅이나 카톡 채널로 남겨주세요 🙏');}}
+function toggleInfo(){INFO_OPEN=!INFO_OPEN;const b=document.getElementById('infoblock');if(b)b.classList.toggle('collapsed',!INFO_OPEN);const t=document.getElementById('infoToggle');if(t)t.textContent=INFO_OPEN?'정보 접기 ▾':'정보 펼치기 ▴';}
 /* ===== 내 주문 조회 (ERP 상태 실시간 연동) ===== */
 const MO_STAGES=[
   {t:'입금 확인중',c:'#b45309',bg:'#fff7ed',d:'입금이 확인되면 상품 준비를 시작해요.'},
@@ -523,7 +529,7 @@ function shopZoom(url){if(!url)return;let o=document.getElementById('zoomOv');if
 function go(v){VIEW=v;window.scrollTo(0,0);render();updatePip();}
 window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSize;window.qc=qc;window.addCart=addCart;
 window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;window.shopZoom=shopZoom;window.ytToggleSize=ytToggleSize;window.ytClose=ytClose;
-window.contactKakao=contactKakao;window.lookupOrders=lookupOrders;window.trackShip=trackShip;
+window.contactKakao=contactKakao;window.lookupOrders=lookupOrders;window.trackShip=trackShip;window.toggleInfo=toggleInfo;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 load();
 </script>
