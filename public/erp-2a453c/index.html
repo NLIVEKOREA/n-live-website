@@ -233,6 +233,8 @@
   .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:300}
   .modal-bg.hide{display:none}
   .modal-box{background:#fff;border-radius:16px;padding:24px 26px;width:min(430px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 30px 70px rgba(0,0,0,.32)}
+  .modal-box.modal-photo{width:min(560px,94vw);resize:both;min-width:340px;max-width:96vw;min-height:340px;max-height:94vh}
+  .modal-box.modal-photo::-webkit-resizer{background:linear-gradient(135deg,transparent 46%,var(--blue) 46% 54%,transparent 54%)}
   .modal-box h3{font-size:18px;margin-bottom:4px}
   .modal-box .ms{color:var(--gray);font-size:12px;margin-bottom:14px}
   .modal-box label{display:block;font-size:12px;color:var(--gray);font-weight:700;margin:11px 0 5px}
@@ -3253,7 +3255,7 @@ function prodCompose(){
 }
 
 /* ===== 신규등록 팝업(모달) ===== */
-function closeModal(){try{if(typeof imgClearCropListeners==='function')imgClearCropListeners();}catch(e){}$('#modal').classList.add('hide');$('#modalBox').innerHTML='';}
+function closeModal(){try{if(typeof imgClearCropListeners==='function')imgClearCropListeners();}catch(e){}$('#modal').classList.add('hide');const mb=$('#modalBox');if(mb){mb.innerHTML='';mb.className='modal-box';mb.style.width='';mb.style.height='';}}
 let CUSTEDIT=null;
 function openCustModal(prefill){prefill=prefill||'';CUSTEDIT=null;
   $('#modalBox').innerHTML=`
@@ -4313,10 +4315,11 @@ function liveSearchRun(){
 /* 품번별 상품사진 등록(물류팀 입고사진 · 영구보관 · 방송연결 시 자동 사용) */
 function livePhotoModal(base){
   window._photoBase=base;const cur=PIMG[base]||'';
+  $('#modalBox').className='modal-box modal-photo';
   $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📷 상품사진 · 품번 ${esc(base)}</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
-    <div class="muted" style="font-size:12px;margin-bottom:10px">한 번 등록하면 이 품번(${esc(base)})의 모든 방송에서 자동으로 사용됩니다. (입고 때 미리 등록해두면 편해요)</div>
+    <div class="muted" style="font-size:12px;margin-bottom:10px">한 번 등록하면 이 품번(${esc(base)})의 모든 방송에서 자동으로 사용됩니다. · <span style="color:var(--blue)">↘ 창 모서리를 드래그하면 크게 볼 수 있어요</span></div>
     ${imgPickerHtml('pm')}
-    ${cur?`<div class="muted" style="font-size:11px;margin-top:8px">현재 등록된 사진:</div><img alt="" src="${esc(cur)}" style="display:block;max-width:100%;max-height:150px;border-radius:8px;border:1px solid var(--line);margin-top:4px">`:''}
+    ${cur?`<div class="muted" style="font-size:11px;margin-top:8px">현재 등록된 사진:</div><img alt="" src="${esc(cur)}" style="display:block;max-width:100%;max-height:min(42vh,380px);border-radius:8px;border:1px solid var(--line);margin-top:4px">`:''}
     <div class="modal-foot">${cur?`<button class="btn red ghost" onclick="livePhotoDelete('${escAttr(base)}')">사진 삭제</button>`:''}<span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="pm_save" onclick="livePhotoSave()">저장</button></div>`;
   $('#modal').classList.remove('hide');imgPickerBind('pm');
 }
@@ -4358,7 +4361,8 @@ async function liveAddStock(base){
 /* --- 상품 추가: 캡처 이미지 --- */
 function liveAddCapture(sid){
   window._liveAddSid=sid;
-  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">🖼️ 캡처 이미지 상품</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+  $('#modalBox').className='modal-box modal-photo';
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">🖼️ 캡처 이미지 상품 <span style="font-size:11px;color:var(--blue);font-weight:500">↘ 모서리 드래그로 크게</span></h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
     <div class="form2">
       <label>상품명</label><input id="lc_name" placeholder="예: 크롭 니트 가디건">
       <div class="row2"><div><label>방송가(원)</label><input id="lc_price" type="number" placeholder="39000"></div>
@@ -4383,7 +4387,7 @@ function imgPickerHtml(prefix){return `
     <label class="btn sm gray" style="cursor:pointer;margin:0">📁 파일/카메라<input id="${prefix}_img" type="file" accept="image/*" style="display:none"></label>
     <input id="${prefix}_url" placeholder="이미지 주소(URL) 붙여넣고 Enter" style="flex:1;min-width:150px;height:32px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font-size:12px">
   </div>
-  <img id="${prefix}_prev" alt="" onclick="imgZoom(this.src)" title="클릭하면 크게 보기" style="display:none;max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--line);margin-top:8px;cursor:zoom-in">`;}
+  <img id="${prefix}_prev" alt="" onclick="imgZoom(this.src)" title="클릭하면 크게 보기" style="display:none;max-width:100%;max-height:min(56vh,520px);border-radius:8px;border:1px solid var(--line);margin-top:8px;cursor:zoom-in">`;}
 function imgPreview(prefix,blob){const pv=$('#'+prefix+'_prev');if(pv){pv.src=URL.createObjectURL(blob);pv.style.display='block';}}
 function imgSetShareStat(prefix){const el=$('#'+prefix+'_shstat');if(!el)return;el.innerHTML=(window._capStream&&window._capStream.active)?`🟢 방송화면 공유중 · <a onclick="imgReshare('${prefix}')" style="cursor:pointer;text-decoration:underline">다른창</a> · <a onclick="imgStopShare('${prefix}')" style="cursor:pointer;text-decoration:underline">중지</a>`:'';}
 function imgReshare(prefix){imgStopShare(prefix);imgStartCapture(prefix);}
@@ -4429,7 +4433,7 @@ async function imgStartCapture(prefix){
 function imgRenderCropStage(prefix){const stage=$('#'+prefix+'_capstage');if(!stage||!window._capFrame)return;
   stage.style.display='block';
   stage.innerHTML=`<div class="muted" style="font-size:12px;margin-bottom:6px">🖱️ 저장할 <b>영역을 드래그</b> (원본 고화질에서 잘라냄) · <button type="button" class="btn sm gray" style="padding:2px 8px" onclick="imgUseWhole('${prefix}')">전체 사용</button></div>
-    <div id="${prefix}_cropbox" style="position:relative;width:100%;max-width:620px;user-select:none;touch-action:none;border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:crosshair">
+    <div id="${prefix}_cropbox" style="position:relative;width:100%;user-select:none;touch-action:none;border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:crosshair">
       <div id="${prefix}_holder"></div>
       <div id="${prefix}_sel" style="position:absolute;border:2px dashed #2563eb;background:rgba(37,99,235,.15);display:none;pointer-events:none"></div>
     </div>`;
