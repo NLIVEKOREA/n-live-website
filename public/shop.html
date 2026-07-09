@@ -268,8 +268,10 @@ function renderHome(){
   const live=!!ytEmbedUrl(s.youtube);
   const ytLink=live?s.youtube:(ytEmbedUrl(s.hero_video)?s.hero_video:'');
   const noticeTxt=s.notice||`🚚 배송비 ${won(s.ship_fee)}${s.free_ship_min>0?` · ${won(s.free_ship_min)} 이상 무료배송`:''}\n주문 후 직원이 계좌이체 안내 또는 결제링크를 보내드립니다.`;
-  const prof=`<div class="profwrap"><div class="profav">${s.seller_photo?`<img src="${esc(s.seller_photo)}">`:esc((s.seller||'N')[0])}</div>
-    <div class="profname">${esc(s.seller||'N-LIVE')}</div>${s.title?`<div class="proftitle">${esc(s.title)}</div>`:''}
+  const nm=s.display_name||s.seller||'N-LIVE';/* 고객 노출명: 표시명 우선(내부 seller 노출 안 함) */
+  const tagline=(s.title&&nm&&s.title.indexOf(nm)<0)?s.title:'';/* 채널명 중복 방지 */
+  const prof=`<div class="profwrap"><div class="profav">${s.seller_photo?`<img src="${esc(s.seller_photo)}">`:esc(nm[0])}</div>
+    <div class="profname">${esc(nm)}</div>${tagline?`<div class="proftitle">${esc(tagline)}</div>`:''}
     <div class="profsub">상품 ${ps.length}개 · ${live?'🔴 실시간 방송중':'판매중'}</div></div>`;
   const notice=`<div class="noticerow"><details class="ndet"><summary><span class="chip">공지</span>배송 · 교환/반품 안내<span class="arw">▾</span></summary><div class="nbody">${esc(noticeTxt)}</div></details>${ytLink?`<a class="ytbtn2" href="${esc(ytLink)}" target="_blank" rel="noopener">▶ 유튜브</a>`:''}</div>`;
   const feat=nowP?`<div class="shead"><h2>${live?'🔴 지금 소개중':'⭐ 대표 상품'}</h2><small>${live?'방송에서 소개 중':'추천 상품'}</small></div>

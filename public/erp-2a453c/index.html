@@ -4165,8 +4165,9 @@ function liveDetail(s){
     <div class="card2" style="margin-bottom:14px">
       <h3 style="margin:0 0 10px">⚙️ 방송 설정</h3>
       <div class="row2"><div><label class="lbl">방송 제목</label><input id="ld_title" value="${escAttr(s.title||'')}"></div>
-        <div><label class="lbl">담당 셀러</label><input id="ld_seller" value="${escAttr(s.seller)}" ${isSeller()?'readonly':''}></div></div>
-      <label class="lbl">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
+        <div><label class="lbl">담당 셀러 <span class="muted" style="font-weight:400;font-size:11px">(정산기준·비공개)</span></label><input id="ld_seller" value="${escAttr(s.seller)}" ${isSeller()?'readonly':''}></div></div>
+      <label class="lbl" style="margin-top:8px">🙋 채널 표시명 <span class="muted" style="font-weight:400;font-size:11px">(고객에게 보이는 이름·비우면 담당 셀러로 표시)</span></label><input id="ld_display" value="${escAttr(s.display_name||'')}" placeholder="예: 연시언니">
+      <label class="lbl" style="margin-top:8px">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
       <div class="row2" style="margin-top:8px"><div><label class="lbl">배송비</label><input id="ld_ship" type="number" value="${s.ship_fee}"></div>
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
       <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
@@ -4174,8 +4175,8 @@ function liveDetail(s){
       <label class="lbl" style="margin-top:10px">🖼️ 셀러 프로필 사진 (홈 상단 표시)</label>
       <div style="display:flex;align-items:center;gap:10px">${s.seller_photo?`<img src="${esc(s.seller_photo)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex:0 0 auto">`:'<span class="muted" style="font-size:11px">미등록</span>'}<input id="ld_seller_photo" type="file" accept="image/*" style="flex:1"></div>
       <label class="lbl" style="margin-top:10px">🎬 평소 히어로 영상 <span class="muted" style="font-weight:400;font-size:11px">(방송 안 할 때 홈 상단에서 자동재생·반복)</span></label>
-      <input id="ld_hero_url" value="${escAttr(s.hero_video&&!/\.(mp4|webm|mov)$/i.test(s.hero_video)?s.hero_video:'')}" placeholder="유튜브 영상 링크 붙여넣기 (youtube.com/watch?v=...)">
-      <div class="muted" style="font-size:11px;margin:3px 0 4px">또는 아래에 영상파일(mp4) 업로드${s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video)?' · <b style="color:#059669">현재 mp4 등록됨</b>':''} · 인스타/틱톡 영상은 다운받아 mp4로 올리세요 (짧게·30MB↓ 권장)</div>
+      <input id="ld_hero_url" value="${escAttr(s.hero_video&&!/\.(mp4|webm|mov)$/i.test(s.hero_video)?s.hero_video:'')}" placeholder="유튜브 일반영상 링크 (youtube.com/watch?v=...)">
+      <div class="muted" style="font-size:11px;margin:3px 0 4px">또는 아래에 영상파일(mp4) 업로드${s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video)?' · <b style="color:#059669">현재 mp4 등록됨</b>':''} · <b style="color:#dc2626">유튜브 쇼츠(youtube.com/shorts/…)는 삽입 불가</b> → mp4로 올리세요 · 인스타/틱톡도 다운받아 mp4 (짧게·30MB↓ 권장)</div>
       <input id="ld_hero_file" type="file" accept="video/*">
       <div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn sm" id="ld_save_btn" onclick="liveSaveSettings(${s.id})">설정 저장</button></div>
     </div>
@@ -4224,7 +4225,7 @@ async function liveSaveSettings(id){
     if(vf&&vf.files&&vf.files[0]){if(btn)btn.textContent='영상 업로드 중...';const u=await liveUploadFile(id,vf.files[0],'hero');if(u)hero_video=u;}
     else if(urlVal){hero_video=urlVal;}      /* 유튜브 URL */
     else if(!existMp4){hero_video=null;}      /* URL 비우고 기존이 mp4 아니면 해제 */
-    const row={title:$('#ld_title').value.trim(),seller:$('#ld_seller').value.trim(),notice:$('#ld_notice').value.trim()||null,
+    const row={title:$('#ld_title').value.trim(),seller:$('#ld_seller').value.trim(),display_name:(($('#ld_display')&&$('#ld_display').value.trim())||null),notice:$('#ld_notice').value.trim()||null,
       ship_fee:+$('#ld_ship').value||0,free_ship_min:+$('#ld_free').value||0,pay_info:($('#ld_payinfo')&&$('#ld_payinfo').value.trim())||null,
       youtube:($('#ld_youtube')&&$('#ld_youtube').value.trim())||null,hero_video:hero_video,seller_photo:seller_photo};
     const {error}=await SB.from('live_sessions').update(row).eq('id',id);
