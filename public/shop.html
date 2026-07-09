@@ -246,27 +246,27 @@ function ensureLivePlayer(raw){LIVE_URL=(raw||'').trim();const box=document.getE
 function heroLiveFallback(){const box=document.getElementById('livehero');if(!box)return;
   box.outerHTML='<a class="hmedia livefallback" href="'+esc(LIVE_URL)+'" target="_blank" rel="noopener"><span class="lfplay">▶</span><b>지금 LIVE 방송 중</b><small>눌러서 유튜브에서 보기</small></a>';
   ytHidePip();}
-function mountYouTube(raw){const src=ytEmbedUrl(raw);window.__ytUrl=raw;
-  if(!src){return;}
-  if(document.getElementById('ytfloat')||document.getElementById('ytreopen'))return;
+let PIP_CLOSED=false;/* 사용자가 미니창을 닫았는지(선택지) */
+function mountYouTube(raw){const src=ytEmbedUrl(raw);if(!src)return;
+  if(document.getElementById('ytfloat'))return;
   const d=document.createElement('div');d.id='ytfloat';d.className='mini';
   d.innerHTML=`<div class="ythead"><span class="ytlive">● LIVE</span><span style="flex:1"></span>
       <button class="ytbtn" onclick="ytToggleSize()" title="크게/작게">⤢</button>
-      <button class="ytbtn" onclick="ytClose()" title="닫기">✕</button></div>
+      <button class="ytbtn" onclick="pipClose()" title="닫기">✕</button></div>
     <div class="ytbox"><iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen frameborder="0"></iframe></div>`;
   document.body.appendChild(d);}
-/* 홈 상단(히어로 보일 때)=인라인 영상만 / 스크롤 내리거나 다른 화면=미니 PiP로 라이브 계속 */
+function ytHidePip(){const d=document.getElementById('ytfloat');if(d)d.remove();}
+function ytToggleSize(){const d=document.getElementById('ytfloat');if(d)d.classList.toggle('mini');}
+function pipClose(){PIP_CLOSED=true;ytHidePip();}/* 선택지: 닫으면 다시 위로 올려야 재등장 */
+/* 히어로 보이면 인라인만 / 스크롤 내리거나 다른 화면=미니 PiP로 라이브 계속.
+   같은 영상 2중임베드=153 → PiP 뜰 땐 히어로 플레이어를 비우고, 위로 오면 다시 심음. */
 function updatePip(){const raw=SHOP&&SHOP.session&&SHOP.session.youtube;if(!ytEmbedUrl(raw))return;
-  if(LIVE_OK===false)return;/* 임베드 불가 라이브 → PiP 없이 히어로 'LIVE 보기' 커버로만 */
+  if(LIVE_OK===false){ytHidePip();return;}/* 임베드 불가 라이브 → 커버만, PiP 없음 */
   const hero=document.querySelector('.hero');
   const past=(VIEW!=='home')||!hero||(hero.getBoundingClientRect().bottom<64);
-  if(past)mountYouTube(raw);else ytHidePip();}
-function ytHidePip(){const d=document.getElementById('ytfloat');if(d)d.remove();const r=document.getElementById('ytreopen');if(r)r.remove();}
-function ytToggleSize(){const d=document.getElementById('ytfloat');if(d)d.classList.toggle('mini');}
-function ytClose(){const d=document.getElementById('ytfloat');if(d)d.remove();
-  if(document.getElementById('ytreopen'))return;
-  const c=document.createElement('button');c.id='ytreopen';c.textContent='▶ LIVE 보기';
-  c.onclick=function(){c.remove();mountYouTube(window.__ytUrl);};document.body.appendChild(c);}
+  if(!past)PIP_CLOSED=false;
+  if(past&&!PIP_CLOSED){const hb=document.getElementById('livehero');if(hb&&hb.firstChild)hb.innerHTML='';mountYouTube(raw);}
+  else{ytHidePip();const hb=document.getElementById('livehero');if(hb&&!hb.firstChild&&LIVE_URL){LIVE_OK=null;ensureLivePlayer(LIVE_URL);}}}
 function renderClosed(msg){
   $('#app').innerHTML=`<div class="appbar"><b>N-LIVE</b></div>
    <div class="center"><div><div style="font-size:44px;margin-bottom:10px">🌙</div>
@@ -338,7 +338,7 @@ function renderHome(){
     +`<div class="homewrap">${feat}${grid}</div>`
     +(cartCount()?`<div class="cbar"><button onclick="go('cart')">🛒 장바구니 보기 <span class="cb">${cartCount()}개 · ${won(subtotal()+shipFee())}</span></button></div>`:'')
     +`<div class="tabbar"><a class="on"><i>🏠</i>홈</a><a onclick="go('orders')"><i>📦</i>내주문</a><a onclick="go('cart')"><i>🛒</i>장바구니</a><a onclick="contactKakao()"><i>💬</i>문의</a></div>`;
-  if(live)ensureLivePlayer(s.youtube);
+  if(live&&!document.getElementById('ytfloat'))ensureLivePlayer(s.youtube);
   updatePip();
 }
 /* 셀러 SNS/카톡 공식 아이콘 바로가기 (공지 아래) */
@@ -528,7 +528,7 @@ function renderDone(){
 function shopZoom(url){if(!url)return;let o=document.getElementById('zoomOv');if(!o){o=document.createElement('div');o.id='zoomOv';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);display:grid;place-items:center;z-index:9999;cursor:zoom-out;padding:12px';o.onclick=function(){o.style.display='none';};o.innerHTML='<img style="max-width:96vw;max-height:96vh;border-radius:8px">';document.body.appendChild(o);}o.querySelector('img').src=url;o.style.display='grid';}
 function go(v){VIEW=v;window.scrollTo(0,0);render();updatePip();}
 window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSize;window.qc=qc;window.addCart=addCart;
-window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;window.shopZoom=shopZoom;window.ytToggleSize=ytToggleSize;window.ytClose=ytClose;
+window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;window.shopZoom=shopZoom;window.ytToggleSize=ytToggleSize;window.pipClose=pipClose;
 window.contactKakao=contactKakao;window.lookupOrders=lookupOrders;window.trackShip=trackShip;window.toggleInfo=toggleInfo;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 load();
