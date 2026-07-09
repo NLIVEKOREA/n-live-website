@@ -4125,11 +4125,20 @@ function viewLive(){
       </div>`;}).join('')}</div>`:`<div class="muted" style="padding:20px">아직 만든 셀러 페이지가 없습니다. [셀러 페이지 만들기]로 시작하세요.</div>`}`;
 }
 
-/* 파일첨부 한 줄(라벨+현재미리보기+강조버튼+파일명) · first면 상단선 없음 */
-function upRow(label,id,accept,curHtml,first){
+/* 파일첨부 한 줄(라벨+현재미리보기+강조버튼+파일명[+삭제]) · first면 상단선 없음 · del=삭제 onclick(현재값 있을때만) */
+function upRow(label,id,accept,curHtml,first,del){
   return `<div class="uprow${first?' first':''}"><span class="ul">${label}</span>${curHtml||''}
     <label class="upbtn">＋ 파일 선택<input type="file" id="${id}" accept="${accept}" style="display:none" onchange="upName('${id}')"></label>
-    <span class="upname" id="${id}_nm">선택된 파일 없음</span></div>`;
+    <span class="upname" id="${id}_nm">선택된 파일 없음</span>
+    ${(del&&curHtml)?`<button type="button" class="btn sm red ghost" style="flex:0 0 auto;padding:5px 10px" onclick="${del}">🗑 삭제</button>`:''}</div>`;
+}
+/* 홈 화면 미디어(메인이미지·영상·프로필) 개별 삭제 */
+async function liveMediaDel(id,col){
+  const nm={cover_url:'메인 이미지',hero_video:'메인 영상',seller_photo:'프로필 사진'}[col]||'파일';
+  if(!confirm(nm+'을(를) 삭제할까요?'))return;
+  try{const upd={};upd[col]=null;const {error}=await SB.from('live_sessions').update(upd).eq('id',id);
+    if(error){console.error(error);toast('⚠️ 삭제 실패: '+(error.message||''));return;}
+    toast('🗑️ '+nm+' 삭제됨');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
 }
 function upName(id){const el=$('#'+id),nm=$('#'+id+'_nm');if(!el||!nm)return;const f=el.files&&el.files[0];nm.textContent=f?f.name:'선택된 파일 없음';nm.className='upname'+(f?' has':'');}
 function liveNew(){
@@ -4199,9 +4208,9 @@ function liveDetail(s){
         <div><label class="lbl">담당 셀러 <span class="muted" style="font-weight:400;font-size:11px">(정산기준·비공개)</span></label><input id="ld_seller" value="${escAttr(s.seller)}" ${isSeller()?'readonly':''}></div></div>
       <label class="lbl" style="margin-top:8px">🙋 채널 표시명 <span class="muted" style="font-weight:400;font-size:11px">(고객에게 보이는 이름·비우면 담당 셀러로 표시)</span></label><input id="ld_display" value="${escAttr(s.display_name||'')}" placeholder="예: 연시언니">
       <div class="upgrp"><div class="gh">📎 홈 화면 미디어 <span class="muted" style="font-weight:400;font-size:11px">· 방송 안 할 때 상단에 표시</span></div>
-        ${upRow('메인 이미지','ld_cover_file','image/*', s.cover_url?`<img class="upthumb" src="${esc(s.cover_url)}">`:'', true)}
-        ${upRow('메인 영상','ld_hero_file','video/*', s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video)?'<span class="upthumb" style="display:grid;place-items:center;background:#0f172a;color:#fff">🎬</span>':'')}
-        ${upRow('프로필 사진','ld_seller_photo','image/*', s.seller_photo?`<img class="upthumb" style="border-radius:50%" src="${esc(s.seller_photo)}">`:'')}
+        ${upRow('메인 이미지','ld_cover_file','image/*', s.cover_url?`<img class="upthumb" src="${esc(s.cover_url)}">`:'', true, s.cover_url?`liveMediaDel(${s.id},'cover_url')`:'')}
+        ${upRow('메인 영상','ld_hero_file','video/*', s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video)?'<span class="upthumb" style="display:grid;place-items:center;background:#0f172a;color:#fff">🎬</span>':'', false, (s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video))?`liveMediaDel(${s.id},'hero_video')`:'')}
+        ${upRow('프로필 사진','ld_seller_photo','image/*', s.seller_photo?`<img class="upthumb" style="border-radius:50%" src="${esc(s.seller_photo)}">`:'', false, s.seller_photo?`liveMediaDel(${s.id},'seller_photo')`:'')}
         <div class="muted" style="font-size:11px;margin-top:7px">메인 영상은 <b>mp4</b>만(유튜브 쇼츠 불가) · 짧게·30MB↓ 권장</div>
       </div>
       <label class="lbl" style="margin-top:10px">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
