@@ -4175,6 +4175,7 @@ function liveDetail(s){
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
       <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
       <label class="lbl" style="margin-top:8px">▶️ 유튜브 라이브 (채널ID UC… 또는 영상 링크)</label><input id="ld_youtube" value="${escAttr(s.youtube||'')}" placeholder="UC... 또는 youtube.com/watch?v=...">
+      ${s.youtube?`<div style="margin-top:6px"><button type="button" class="btn sm" style="background:#0f172a;color:#fff" onclick="liveEndLive(${s.id})">🔴 라이브 종료 → 평소화면(mp4·이미지)으로 전환</button><div class="muted" style="font-size:11px;margin-top:3px">상품·주문은 그대로 유지되고 상단 영상만 평소화면으로 바뀝니다. (방송 자체를 닫으려면 [방송 마감])</div></div>`:''}
       <label class="lbl" style="margin-top:8px">🔗 <b>${esc(s.seller)}</b> 셀러 SNS·문의 바로가기 <span class="muted" style="font-weight:400;font-size:11px">(이 셀러의 모든 방송에 자동 적용·홈 공지 아래 아이콘·비우면 숨김)</span></label>
       ${(()=>{const ss=(SELLER_SNS&&SELLER_SNS[s.seller])||{};return `
       <input id="ld_ytch" value="${escAttr(ss.sns_youtube||'')}" placeholder="유튜브 채널 URL (구독·방문용 · 라이브영상 아님)">
@@ -4253,6 +4254,14 @@ async function liveOpen(id){
   try{const {error}=await SB.from('live_sessions').update({status:'open',opened_at:new Date().toISOString()}).eq('id',id);
     if(error){console.error(error);toast('⚠️ 시작 실패 — 같은 셀러/주소로 이미 진행중인 방송이 있는지 확인하세요 ('+(error.message||'')+')');return;}
     toast('▶ 판매 시작! 고객 URL이 열렸습니다');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
+}
+/* 라이브만 종료(세션은 열어둠) → 유튜브칸 비워 상단이 평소화면(mp4·이미지)으로 폴백 */
+async function liveEndLive(id){
+  if(!confirm('🔴 라이브를 종료하고 평소화면으로 전환할까요?\n\n· 상품·주문은 그대로 유지되어 계속 판매됩니다.\n· 상단 영상만 라이브 → 평소영상(mp4)/기본이미지로 바뀝니다.\n\n(방송 자체를 완전히 닫으려면 [방송 마감]을 쓰세요)'))return;
+  try{const {error}=await SB.from('live_sessions').update({youtube:null}).eq('id',id);
+    if(error){console.error(error);toast('⚠️ 전환 실패: '+(error.message||''));return;}
+    const inp=$('#ld_youtube');if(inp)inp.value='';
+    toast('🔴 라이브 종료 · 평소화면으로 전환됨');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
 }
 async function liveClose(id){
   if(!confirm('방송을 마감할까요?\n고객 주문페이지가 닫힙니다. (이미 들어온 주문·데이터는 그대로 유지)'))return;
