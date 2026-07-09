@@ -189,9 +189,9 @@ async function load(){
 /* ---- 유튜브 라이브: 화면 넘나들어도 계속 재생되는 미니 플레이어(#app 바깥 body에 고정) ---- */
 function ytEmbedUrl(v){v=(v||'').trim();if(!v)return '';
   let m=v.match(/[?&]v=([A-Za-z0-9_-]{6,})/)||v.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/)||v.match(/youtube\.com\/live\/([A-Za-z0-9_-]{6,})/)||v.match(/youtube\.com\/embed\/([A-Za-z0-9_-]{6,})/)||v.match(/youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/);
-  if(m)return 'https://www.youtube.com/embed/'+m[1]+'?autoplay=1&mute=1&playsinline=1&rel=0';
+  if(m)return 'https://www.youtube.com/embed/'+m[1]+'?autoplay=1&mute=1&playsinline=1&rel=0&origin='+encodeURIComponent(location.origin);
   let c=v.match(/channel\/(UC[A-Za-z0-9_-]{18,})/)||v.match(/^(UC[A-Za-z0-9_-]{18,})$/);
-  if(c)return 'https://www.youtube.com/embed/live_stream?channel='+c[1]+'&autoplay=1&mute=1&playsinline=1&rel=0';
+  if(c)return 'https://www.youtube.com/embed/live_stream?channel='+c[1]+'&autoplay=1&mute=1&playsinline=1&rel=0&origin='+encodeURIComponent(location.origin);
   return '';/* @handle 등은 임베드 불가 → 채널ID/영상링크 안내 */}
 function mountYouTube(raw){const src=ytEmbedUrl(raw);window.__ytUrl=raw;
   if(!src){return;}
