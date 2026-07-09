@@ -682,8 +682,10 @@ function askLabel(id){const c=prompt('출력할 라벨 장수를 입력하세요
 let SCAN=null; /* {cur:dg, order:[dg], tr:{dg:{cust,phone,staff,items:[{lid,code,color,size,label,need,got}],extra:[]}}} */
 function _scanClass(v){v=String(v||'').trim();if(!v)return['',''];const id=skuFromBarcode(v);if(id!=null)return['prod',id];const dg=v.replace(/\D/g,'');if(dg.length>=9)return['track',dg];return['?',v];}
 /* 이 송장(track)으로 오늘 나갈 준비된 라인만 — 미송/보류는 제외(박스에 없는 물건이 검수목록에 뜨는 것 방지) */
-function _trackLines(dg){return mine(ORD).filter(o=>o.ship!=='done'&&String(o.track||'').replace(/\D/g,'')===dg&&inShipPipeline(o)&&o.req!=='미송'&&!o.back);}
-function _scanRoster(){const m={};mine(ORD).filter(o=>o.ship!=='done'&&o.track&&!_isSvcLine(o)&&inShipPipeline(o)).forEach(o=>{const dg=String(o.track).replace(/\D/g,'');if(!dg)return;(m[dg]=m[dg]||{dg,cust:o.cust,staff:o.staff,need:0,got:0}).need+=(o.qty||0);m[dg].got+=Math.min((o.meta&&o.meta.scanGot)||0,o.qty||0);});return Object.values(m).sort((a,b)=>a.cust.localeCompare(b.cust));}
+/* 출고 준비된 라인 = 미출고 · 재고있음(back=false) · 파이프라인(출고요청/합배요청/미송). 미송도 '포장'표시로 back=false되면 여기 포함되어 바코드 검수 대상이 됨 */
+function _shipReady(o){return o&&o.ship!=='done'&&!o.back&&(o.req==='출고요청'||o.req==='합배요청'||o.req==='미송');}
+function _trackLines(dg){return mine(ORD).filter(o=>_shipReady(o)&&String(o.track||'').replace(/\D/g,'')===dg);}
+function _scanRoster(){const m={};mine(ORD).filter(o=>_shipReady(o)&&o.track&&!_isSvcLine(o)).forEach(o=>{const dg=String(o.track).replace(/\D/g,'');if(!dg)return;(m[dg]=m[dg]||{dg,cust:o.cust,staff:o.staff,need:0,got:0}).need+=(o.qty||0);m[dg].got+=Math.min((o.meta&&o.meta.scanGot)||0,o.qty||0);});return Object.values(m).sort((a,b)=>a.cust.localeCompare(b.cust));}
 function openShipScan(){SCAN={cur:null,order:[],tr:{}};$('#modalBox').className='modal-box modal-wide';renderScan();$('#modal').classList.remove('hide');_scanFocus();}
 function _scanFocus(){setTimeout(function(){const el=$('#scanIn');if(el)el.focus();},80);}
 function closeShipScan(){SCAN=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');render();}
@@ -740,9 +742,9 @@ async function saveScanShip(){if(!SCAN)return;
   render();renderScan();_scanFocus();}
 /* ===== CJ대한통운 접수 엑셀 내보내기 / 송장 가져오기 ===== */
 function cjExportShip(){loadXlsxLib(function(){try{_cjExport();}catch(e){console.error(e);toast('⚠️ '+(e.message||e));}});}
-function _cjExport(){const cs=openCustomers().filter(function(c){return c.cat==='wait'||c.cat==='bundle';});if(!cs.length){toast('오늘 CJ로 내보낼 출고대기/합배 고객이 없습니다');return;}
+function _cjExport(){const cs=openCustomers().filter(function(c){return c.lines.some(function(l){return _shipReady(l)&&!_isSvcLine(l);});});if(!cs.length){toast('오늘 CJ로 내보낼 출고대기/합배/미송재입고 고객이 없습니다');return;}
   const H=['받는분성명','받는분전화번호','받는분주소(전체, 분할)','품목명','배송메세지1'];const rows=[H];
-  cs.forEach(function(c){const prods=c.lines.filter(function(l){return !_isSvcLine(l);});const nm=prods.length?(custLabel(prods[0])+(prods.length>1?(' 외 '+(prods.length-1)+'건'):'')):'의류';rows.push([c.cust,c.phone||'',c.addr||'',nm,custShipMemo(c.cust)||'']);});
+  cs.forEach(function(c){const prods=c.lines.filter(function(l){return !_isSvcLine(l)&&_shipReady(l);});const nm=prods.length?(custLabel(prods[0])+(prods.length>1?(' 외 '+(prods.length-1)+'건'):'')):'의류';rows.push([c.cust,c.phone||'',c.addr||'',nm,custShipMemo(c.cust)||'']);});
   const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:10},{wch:15},{wch:44},{wch:26},{wch:22}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'CJ접수');XLSX.writeFile(wb,'CJ출고접수_'+todayStr()+'.xlsx');
   toast('📥 CJ 접수 엑셀 '+cs.length+'명 다운로드 — CJ 프로그램에 업로드 후, 송장 채워진 결과를 [CJ송장 가져오기]로 올리세요');}
 function cjImportShip(){const inp=document.createElement('input');inp.type='file';inp.accept='.xlsx,.xls';inp.onchange=function(){const f=inp.files&&inp.files[0];if(!f)return;loadXlsxLib(function(){const rd=new FileReader();rd.onload=function(ev){try{_cjImport(ev.target.result);}catch(e){console.error(e);toast('⚠️ 파일 읽기 실패: '+(e.message||e));}};rd.readAsArrayBuffer(f);});};inp.click();}
@@ -758,7 +760,7 @@ async function _cjImport(buf){const wb=XLSX.read(new Uint8Array(buf),{type:'arra
   if(iTrk<0||iName<0){toast('⚠️ 운송장번호/받는분 컬럼을 못 찾았어요 — 헤더 확인');return;}
   const _n=function(s){return String(s||'').replace(/\D/g,'');};
   /* 송장은 오늘 나갈 준비된 라인(출고요청/합배요청)에만 붙임 — 미송/보류엔 안 붙임 */
-  const _ready=function(o){return o.ship!=='done'&&(o.req==='출고요청'||o.req==='합배요청')&&!o.back;};
+  const _ready=_shipReady;/* 재입고된 미송(back=false)도 송장 배정 대상에 포함 */
   let matched=0,miss=0,ambig=0;const todo=[];
   for(let r=1;r<rows.length;r++){const row=rows[r]||[];const raw=String(row[iName]||'').trim();const nm=raw.split('(')[0].trim();const ph7=_n(iPh>=0?row[iPh]:'').slice(0,7);const trk=String(row[iTrk]||'').trim();if(!raw||!trk)continue;
     let lines=mine(ORD).filter(function(o){return _ready(o)&&(o.cust===nm||o.cust===raw)&&(!ph7||_n(o.phone).slice(0,7)===ph7);});
