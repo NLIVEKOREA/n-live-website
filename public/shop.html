@@ -149,6 +149,10 @@ button,input,select,textarea{font:inherit}
 .noticerow{display:flex;gap:8px;align-items:stretch;margin:18px 16px 0}
 .noticerow .ndet{margin:0;flex:1}
 .ytbtn2{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:0 15px;border-radius:14px;background:#ff0000;color:#fff;font-weight:800;font-size:12.5px;text-decoration:none;white-space:nowrap}
+.livewatch{position:absolute;right:12px;bottom:12px;z-index:4;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:700;padding:7px 12px;border-radius:100px;text-decoration:none;backdrop-filter:blur(4px)}
+.livefallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-decoration:none;background:linear-gradient(140deg,#2a2140,#ff2e50 135%);color:#fff}
+.livefallback .lfplay{width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.85);display:grid;place-items:center;font-size:26px;padding-left:4px;box-shadow:0 0 0 0 rgba(255,255,255,.5);animation:hpl 1.7s infinite}
+.livefallback b{font-size:18px;font-weight:800;margin-top:8px}.livefallback small{font-size:12px;opacity:.85}
 .ndetwrap{margin:18px 16px 0}.ndetwrap .ndet{margin:0}
 .social{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin:15px 16px 2px}
 .sicon{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;text-decoration:none;box-shadow:0 3px 11px rgba(20,22,28,.16);transition:transform .12s}
@@ -220,6 +224,25 @@ function ytEmbedUrl(v){v=(v||'').trim();if(!v)return '';
   let c=v.match(/channel\/(UC[A-Za-z0-9_-]{18,})/)||v.match(/^(UC[A-Za-z0-9_-]{18,})$/);
   if(c)return 'https://www.youtube.com/embed/live_stream?channel='+c[1]+'&autoplay=1&mute=1&playsinline=1&rel=0&origin='+encodeURIComponent(location.origin);
   return '';/* @handle 등은 임베드 불가 → 채널ID/영상링크 안내 */}
+/* 라이브 영상ID 추출(watch?v=/youtu.be/live/embed/shorts). 채널ID만 있으면 '' */
+function ytVideoId(v){v=(v||'').trim();const m=v.match(/[?&]v=([A-Za-z0-9_-]{6,})/)||v.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/)||v.match(/youtube\.com\/live\/([A-Za-z0-9_-]{6,})/)||v.match(/youtube\.com\/embed\/([A-Za-z0-9_-]{6,})/)||v.match(/youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/);return m?m[1]:'';}
+/* ===== 라이브 히어로: 임베드 되면 인라인 재생, 막히면(153/폰라이브) 'LIVE 보기' 커버로 자동전환 ===== */
+let YT_API_LOADING=false,LIVE_PLAYER=null,LIVE_OK=null,LIVE_URL='';
+function loadYTApi(cb){if(window.YT&&window.YT.Player){cb();return;}
+  if(!YT_API_LOADING){YT_API_LOADING=true;const t=document.createElement('script');t.src='https://www.youtube.com/iframe_api';document.head.appendChild(t);}
+  const iv=setInterval(function(){if(window.YT&&window.YT.Player){clearInterval(iv);cb();}},120);setTimeout(function(){clearInterval(iv);},9000);}
+function ensureLivePlayer(raw){LIVE_URL=(raw||'').trim();const box=document.getElementById('livehero');if(!box)return;
+  const vid=ytVideoId(raw);
+  if(!vid){const src=ytEmbedUrl(raw);if(src)box.innerHTML='<iframe class="hmedia" src="'+src+'" allow="autoplay; encrypted-media; picture-in-picture" frameborder="0"></iframe>';return;}/* 채널ID 자동라이브 */
+  LIVE_OK=null;
+  loadYTApi(function(){if(!document.getElementById('livehero'))return;
+    try{LIVE_PLAYER=new YT.Player('livehero',{videoId:vid,
+      playerVars:{autoplay:1,mute:1,playsinline:1,rel:0,modestbranding:1,origin:location.origin},
+      events:{onReady:function(){LIVE_OK=true;updatePip();},onError:function(){LIVE_OK=false;heroLiveFallback();}}});
+    }catch(e){LIVE_OK=false;heroLiveFallback();}});}
+function heroLiveFallback(){const box=document.getElementById('livehero');if(!box)return;
+  box.outerHTML='<a class="hmedia livefallback" href="'+esc(LIVE_URL)+'" target="_blank" rel="noopener"><span class="lfplay">▶</span><b>지금 LIVE 방송 중</b><small>눌러서 유튜브에서 보기</small></a>';
+  ytHidePip();}
 function mountYouTube(raw){const src=ytEmbedUrl(raw);window.__ytUrl=raw;
   if(!src){return;}
   if(document.getElementById('ytfloat')||document.getElementById('ytreopen'))return;
@@ -231,6 +254,7 @@ function mountYouTube(raw){const src=ytEmbedUrl(raw);window.__ytUrl=raw;
   document.body.appendChild(d);}
 /* 홈 상단(히어로 보일 때)=인라인 영상만 / 스크롤 내리거나 다른 화면=미니 PiP로 라이브 계속 */
 function updatePip(){const raw=SHOP&&SHOP.session&&SHOP.session.youtube;if(!ytEmbedUrl(raw))return;
+  if(LIVE_OK===false)return;/* 임베드 불가 라이브 → PiP 없이 히어로 'LIVE 보기' 커버로만 */
   const hero=document.querySelector('.hero');
   const past=(VIEW!=='home')||!hero||(hero.getBoundingClientRect().bottom<64);
   if(past)mountYouTube(raw);else ytHidePip();}
@@ -273,13 +297,14 @@ function heroHtml(s){
   const live=ytEmbedUrl(s.youtube),hv=(s.hero_video||'').trim(),hvYt=ytLoopUrl(hv);
   const vert=/\/shorts\//.test(s.youtube||'')||/\/shorts\//.test(hv)||/vert|9x16|_v\./i.test(hv);/* 세로(쇼츠) 영상 */
   let media;
-  if(live)media=`<iframe class="hmedia" src="${live}" allow="autoplay; encrypted-media; picture-in-picture" frameborder="0"></iframe>`;/* 방송중 라이브 */
+  if(live)media=`<div class="hmedia" id="livehero"></div>`;/* 방송중 라이브: ensureLivePlayer가 채움(실패시 커버로 전환) */
   else if(hvYt)media=`<iframe class="hmedia" src="${hvYt}" allow="autoplay; encrypted-media" frameborder="0"></iframe>`;/* 평소 고정영상=유튜브 루프 */
   else if(hv)media=`<video class="hmedia" src="${esc(hv)}" autoplay muted loop playsinline></video>`;/* 평소 고정영상=mp4 */
   else if(s.cover_url)media=`<img class="hmedia" src="${esc(s.cover_url)}">`;
   else media=`<div class="hmedia hgrad"></div>`;
   return `<div class="hero${vert?' vert':''}">${media}<div class="hshade"></div>
-    <div class="htop">${live?'<span class="livep"><i></i> LIVE</span>':''}</div></div>`;
+    <div class="htop">${live?'<span class="livep"><i></i> LIVE</span>':''}</div>
+    ${live?`<a class="livewatch" href="${esc((s.youtube||'').trim())}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`:''}</div>`;
 }
 function renderHome(){
   const s=SHOP.session,ps=SHOP.products||[];
@@ -308,6 +333,7 @@ function renderHome(){
     +`<div class="homewrap">${notice}${feat}${grid}</div>`
     +(cartCount()?`<div class="cbar"><button onclick="go('cart')">🛒 장바구니 보기 <span class="cb">${cartCount()}개 · ${won(subtotal()+shipFee())}</span></button></div>`:'')
     +`<div class="tabbar"><a class="on"><i>🏠</i>홈</a><a onclick="go('orders')"><i>📦</i>내주문</a><a onclick="go('cart')"><i>🛒</i>장바구니</a><a onclick="contactKakao()"><i>💬</i>문의</a></div>`;
+  if(live)ensureLivePlayer(s.youtube);
   updatePip();
 }
 /* 셀러 SNS/카톡 공식 아이콘 바로가기 (공지 아래) */
