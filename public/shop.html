@@ -156,6 +156,10 @@ button,input,select,textarea{font:inherit}
 .livefallback b{font-size:18px;font-weight:800;margin-top:8px}.livefallback small{font-size:12px;opacity:.85}
 .hcollapse{position:absolute;left:12px;bottom:12px;z-index:4;background:rgba(0,0,0,.6);color:#fff;border:0;font-size:12px;font-weight:700;padding:7px 12px;border-radius:100px;backdrop-filter:blur(4px);cursor:pointer}
 #infoblock.collapsed{display:none}
+.infobar{display:flex;align-items:center;gap:10px;margin:22px 16px 2px}
+.infotog{flex:1;border:1px solid var(--line);background:#fff;color:#475467;font-weight:700;font-size:12.5px;padding:11px;border-radius:12px;cursor:pointer}
+.infotog:active{background:#f7f8fb}
+.ytgo{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;background:#ff0000;color:#fff;font-weight:800;font-size:12.5px;padding:11px 15px;border-radius:12px;text-decoration:none}
 .ndetwrap{margin:18px 16px 0}.ndetwrap .ndet{margin:0}
 .social{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin:15px 16px 2px}
 .sicon{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;text-decoration:none;box-shadow:0 3px 11px rgba(20,22,28,.16);transition:transform .12s}
@@ -219,6 +223,7 @@ async function load(){
     if(!SHOP||SHOP.status!=='open'){renderClosed();return;}
     render();
     window.addEventListener('scroll',updatePip,{passive:true});updatePip();
+    startPoll();/* 실시간 상품 갱신 */
   }catch(e){console.error(e);renderClosed('연결에 실패했습니다. 인터넷을 확인해 주세요.');}
 }
 /* ---- 유튜브 라이브: 화면 넘나들어도 계속 재생되는 미니 플레이어(#app 바깥 body에 고정) ---- */
@@ -308,9 +313,25 @@ function heroHtml(s){
   else if(s.cover_url)media=`<img class="hmedia" src="${esc(s.cover_url)}">`;
   else media=`<div class="hmedia hgrad"></div>`;
   return `<div class="hero${vert?' vert':''}">${media}<div class="hshade"></div>
-    <div class="htop">${live?'<span class="livep"><i></i> LIVE</span>':''}</div>
-    <button class="hcollapse" id="infoToggle" onclick="toggleInfo()">${INFO_OPEN?'정보 접기 ▾':'정보 펼치기 ▴'}</button>
-    ${live?`<a class="livewatch" href="${esc((s.youtube||'').trim())}" target="_blank" rel="noopener">유튜브에서 보기 ↗</a>`:''}</div>`;
+    <div class="htop">${live?'<span class="livep"><i></i> LIVE</span>':''}</div></div>`;
+}
+/* 전체상품 위 컨트롤바: 정보 접기/펼치기 + 유튜브 바로가기(iframe 위가 아니라 일반영역 → 확실히 눌림) */
+function productsHtml(s,ps){
+  const live=!!ytEmbedUrl(s.youtube);
+  const ytLink=live?s.youtube:(ytEmbedUrl(s.hero_video)?s.hero_video:'');
+  const nowP=ps.find(p=>p.is_now&&!prodSoldOut(p));
+  const feat=nowP?`<div class="shead"><h2>${live?'🔴 지금 소개중':'⭐ 대표 상품'}</h2><small>${live?'방송에서 소개 중':'추천 상품'}</small></div>
+    <button class="feat" onclick="openProduct(${nowP.id})">${live?'<span class="nowtag"><i></i> LIVE 소개중</span>':''}
+      ${nowP.image_url?`<img src="${esc(nowP.image_url)}">`:`<div class="fimg-ph">상품이미지</div>`}
+      <div class="fmeta"><div><div class="fn">${esc(nowP.name)}</div><div class="fp">${won(nowP.live_price)}</div></div><span class="fadd">담기</span></div></button>`:'';
+  const infobar=`<div class="infobar"><button class="infotog" id="infoToggle" onclick="toggleInfo()">${INFO_OPEN?'▲ 프로필·공지 접기':'▼ 프로필·공지 펼치기'}</button>${ytLink?`<a class="ytgo" href="${esc(ytLink)}" target="_blank" rel="noopener">▶ 유튜브에서 보기</a>`:''}</div>`;
+  const grid=ps.length?`<div class="shead"><h2>전체 상품</h2><small>${ps.length}</small></div>
+   <div class="grid2">${ps.map(p=>{const so=prodSoldOut(p);
+     return `<button class="pcard ${so?'sold':''}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
+       <div class="pi">${(p.tag||p.code)?`<span class="num">${esc(numLabel(p.tag||p.code))}</span>`:''}${p.image_url?`<img src="${esc(p.image_url)}">`:`<div class="pi-ph">상품이미지</div>`}</div>
+       <div class="pn">${esc(p.name)}</div><div class="pp">${won(p.live_price)}</div></button>`;}).join('')}</div>`
+   :`<div class="center" style="min-height:180px">등록된 상품이 곧 올라옵니다.</div>`;
+  return feat+infobar+grid;
 }
 function renderHome(){
   const s=SHOP.session,ps=SHOP.products||[];
@@ -324,20 +345,11 @@ function renderHome(){
     <div class="profname">${esc(nm)}</div>${tagline?`<div class="proftitle">${esc(tagline)}</div>`:''}
     <div class="profsub">상품 ${ps.length}개 · ${live?'🔴 실시간 방송중':'판매중'}</div></div>`;
   const notice=`<div class="ndetwrap"><details class="ndet"><summary><span class="chip">공지</span>배송 · 교환/반품 안내<span class="arw">▾</span></summary><div class="nbody">${esc(noticeTxt)}</div></details></div>${socialLinks(s,ytLink)}`;
-  const feat=nowP?`<div class="shead"><h2>${live?'🔴 지금 소개중':'⭐ 대표 상품'}</h2><small>${live?'방송에서 소개 중':'추천 상품'}</small></div>
-    <button class="feat" onclick="openProduct(${nowP.id})">${live?'<span class="nowtag"><i></i> LIVE 소개중</span>':''}
-      ${nowP.image_url?`<img src="${esc(nowP.image_url)}">`:`<div class="fimg-ph">상품이미지</div>`}
-      <div class="fmeta"><div><div class="fn">${esc(nowP.name)}</div><div class="fp">${won(nowP.live_price)}</div></div><span class="fadd">담기</span></div></button>`:'';
-  const grid=ps.length?`<div class="shead"><h2>전체 상품</h2><small>${ps.length}</small></div>
-   <div class="grid2">${ps.map(p=>{const so=prodSoldOut(p);
-     return `<button class="pcard ${so?'sold':''}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
-       <div class="pi">${(p.tag||p.code)?`<span class="num">${esc(numLabel(p.tag||p.code))}</span>`:''}${p.image_url?`<img src="${esc(p.image_url)}">`:`<div class="pi-ph">상품이미지</div>`}</div>
-       <div class="pn">${esc(p.name)}</div><div class="pp">${won(p.live_price)}</div></button>`;}).join('')}</div>`
-   :`<div class="center" style="min-height:180px">등록된 상품이 곧 올라옵니다.</div>`;
+  _prodSig=prodSig(ps);/* 실시간 갱신 비교 기준 */
   $('#app').innerHTML=
     heroHtml(s)
     +`<div id="infoblock"${INFO_OPEN?'':' class="collapsed"'}>${prof}${notice}</div>`
-    +`<div class="homewrap">${feat}${grid}</div>`
+    +`<div class="homewrap"><div id="prodzone">${productsHtml(s,ps)}</div></div>`
     +(cartCount()?`<div class="cbar"><button onclick="go('cart')">🛒 장바구니 보기 <span class="cb">${cartCount()}개 · ${won(subtotal()+shipFee())}</span></button></div>`:'')
     +`<div class="tabbar"><a class="on"><i>🏠</i>홈</a><a onclick="go('orders')"><i>📦</i>내주문</a><a onclick="go('cart')"><i>🛒</i>장바구니</a><a onclick="contactKakao()"><i>💬</i>문의</a></div>`;
   if(live&&!document.getElementById('ytfloat'))ensureLivePlayer(s.youtube);
@@ -362,7 +374,23 @@ function socialLinks(s,ytLink){
   return `<div class="social">${it.map(i=>`<a class="sicon" style="background:${i.bg};color:${i.fg}" href="${esc(i.u)}" target="_blank" rel="noopener" aria-label="${esc(i.n)}" title="${esc(i.n)}">${i.s}</a>`).join('')}</div>`;
 }
 function contactKakao(){const u=SHOP&&SHOP.session&&SHOP.session.kakao_url;if(u){window.open(u,'_blank','noopener');}else{toast('문의는 방송 채팅이나 카톡 채널로 남겨주세요 🙏');}}
-function toggleInfo(){INFO_OPEN=!INFO_OPEN;const b=document.getElementById('infoblock');if(b)b.classList.toggle('collapsed',!INFO_OPEN);const t=document.getElementById('infoToggle');if(t)t.textContent=INFO_OPEN?'정보 접기 ▾':'정보 펼치기 ▴';}
+function toggleInfo(){INFO_OPEN=!INFO_OPEN;const b=document.getElementById('infoblock');if(b)b.classList.toggle('collapsed',!INFO_OPEN);const t=document.getElementById('infoToggle');if(t)t.textContent=INFO_OPEN?'▲ 프로필·공지 접기':'▼ 프로필·공지 펼치기';}
+/* ===== 실시간 상품 갱신: 방송 중 셀러가 상품 추가/수정하면 새로고침 없이 반영 ===== */
+let POLL_T=null,_prodSig='';
+function prodSig(ps){return (ps||[]).map(p=>p.id+':'+p.live_price+':'+(p.image_url||'')+':'+(p.is_now?1:0)+':'+esc(p.name||'')+':'+(p.options||[]).map(o=>(o.color||'')+(o.size||'')+(o.available?1:0)).join(',')).join('|');}
+async function pollShop(){
+  if(!SHOP||document.hidden)return;
+  try{const {data,error}=await SB.rpc('get_live_shop',{p_slug:SLUG});
+    if(error||!data)return;
+    if(data.status!=='open'){if(POLL_T){clearInterval(POLL_T);POLL_T=null;}SHOP=data;if(VIEW==='home')renderClosed();return;}
+    SHOP.session=data.session;const sig=prodSig(data.products);
+    if(sig!==_prodSig){_prodSig=sig;SHOP.products=data.products||[];
+      if(VIEW==='home'){const z=document.getElementById('prodzone');if(z)z.innerHTML=productsHtml(SHOP.session,SHOP.products);const ps=document.querySelector('.profsub');if(ps)ps.innerHTML='상품 '+SHOP.products.length+'개 · '+(ytEmbedUrl(SHOP.session.youtube)?'🔴 실시간 방송중':'판매중');}
+    }
+  }catch(e){}
+}
+function startPoll(){if(POLL_T)clearInterval(POLL_T);POLL_T=setInterval(pollShop,15000);}
+document.addEventListener('visibilitychange',function(){if(!document.hidden)pollShop();});
 /* ===== 내 주문 조회 (ERP 상태 실시간 연동) ===== */
 const MO_STAGES=[
   {t:'입금 확인중',c:'#b45309',bg:'#fff7ed',d:'입금이 확인되면 상품 준비를 시작해요.'},
