@@ -235,6 +235,17 @@
   .modal-box{background:#fff;border-radius:16px;padding:24px 26px;width:min(430px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 30px 70px rgba(0,0,0,.32)}
   .modal-box.modal-photo{width:min(560px,94vw);resize:both;min-width:340px;max-width:96vw;min-height:340px;max-height:94vh}
   .modal-box.modal-photo::-webkit-resizer{background:linear-gradient(135deg,transparent 46%,var(--blue) 46% 54%,transparent 54%)}
+  /* 파일첨부 묶음(오와열 맞춤 + ERP톤 강조버튼) */
+  .upgrp{border:1px solid var(--line);border-radius:12px;padding:11px 13px 12px;margin-top:8px;background:#f8fafc}
+  .upgrp>.gh{font-size:12.5px;font-weight:800;color:#334155;margin-bottom:6px}
+  .uprow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed #e5eaf1}
+  .uprow.first{border-top:0}
+  .uprow .ul{flex:0 0 96px;font-size:12px;color:#475569;font-weight:700}
+  .upbtn{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;font-weight:800;font-size:12px;padding:8px 15px;border-radius:9px;cursor:pointer;box-shadow:0 2px 7px rgba(37,99,235,.30);white-space:nowrap;flex:0 0 auto}
+  .upbtn:active{transform:translateY(1px)}
+  .upname{font-size:11.5px;color:#a3adba;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .upname.has{color:#059669;font-weight:700}
+  .upthumb{width:46px;height:46px;border-radius:8px;object-fit:cover;flex:0 0 auto;border:1px solid var(--line)}
   .modal-box h3{font-size:18px;margin-bottom:4px}
   .modal-box .ms{color:var(--gray);font-size:12px;margin-bottom:14px}
   .modal-box label{display:block;font-size:12px;color:var(--gray);font-weight:700;margin:11px 0 5px}
@@ -4099,33 +4110,40 @@ function viewLive(){
   return `<div class="head"><h1>라이브 판매 <span class="badge">방송 주문수집</span></h1>
     <p>카카오 채널에 셀러 고정 URL을 걸어두면, 방송마다 여기서 상품만 바꿔 공개합니다. 고객 주문은 <b>주문관리 · 미결제</b>로 자동 수집됩니다. (결제 자동연동 없음 — 입금확인은 직원이)</p></div>
     ${lockBanner()}
-    <div style="margin:8px 0 16px"><button class="btn" onclick="liveNew()"><i class="ti ti-plus"></i> 새 방송 만들기</button></div>
+    <div style="margin:8px 0 16px"><button class="btn" onclick="liveNew()"><i class="ti ti-plus"></i> 셀러 페이지 만들기</button></div>
     ${list.length?`<div class="ord-cards">${list.map(s=>{const pc=liveProdsOf(s.id).length;return `
       <div class="ord-card">
         <div class="oc-head"><b>${esc(s.title||'(제목없음)')}</b> ${liveStatusPill(s.status)}${bTypeBadge(s)}<span class="grow"></span><span class="muted" style="font-size:12px">${esc(s.seller)}</span></div>
         <div class="oc-sub">🔗 <b>${esc(liveUrl(s.slug))}</b> · 상품 ${pc}개 · 배송비 ${won(s.ship_fee)}${s.free_ship_min>0?' · '+won(s.free_ship_min)+'↑무료':''}</div>
         <div class="oc-btns" style="flex-wrap:wrap">
           <button class="btn sm" onclick="liveManage(${s.id})">📦 상품·설정 관리</button>
-          ${s.status==='open'?`<button class="btn sm red" onclick="liveClose(${s.id})">방송 마감</button>`:`<button class="btn sm green" onclick="liveOpen(${s.id})">▶ 판매 시작</button>`}
+          ${s.status==='open'?`<button class="btn sm red" onclick="liveClose(${s.id})">판매 종료</button>`:`<button class="btn sm green" onclick="liveOpen(${s.id})">▶ 판매 시작</button>`}
           <button class="btn sm ghost" onclick="liveCopyUrl('${escAttr(s.slug)}')">URL 복사</button>
           <button class="btn sm ghost" onclick="liveDup(${s.id})">복제</button>
           <button class="btn sm red ghost" onclick="liveDelete(${s.id})">🗑️ 삭제</button>
         </div>
-      </div>`;}).join('')}</div>`:`<div class="muted" style="padding:20px">아직 만든 방송이 없습니다. [새 방송 만들기]로 시작하세요.</div>`}`;
+      </div>`;}).join('')}</div>`:`<div class="muted" style="padding:20px">아직 만든 셀러 페이지가 없습니다. [셀러 페이지 만들기]로 시작하세요.</div>`}`;
 }
 
+/* 파일첨부 한 줄(라벨+현재미리보기+강조버튼+파일명) · first면 상단선 없음 */
+function upRow(label,id,accept,curHtml,first){
+  return `<div class="uprow${first?' first':''}"><span class="ul">${label}</span>${curHtml||''}
+    <label class="upbtn">＋ 파일 선택<input type="file" id="${id}" accept="${accept}" style="display:none" onchange="upName('${id}')"></label>
+    <span class="upname" id="${id}_nm">선택된 파일 없음</span></div>`;
+}
+function upName(id){const el=$('#'+id),nm=$('#'+id+'_nm');if(!el||!nm)return;const f=el.files&&el.files[0];nm.textContent=f?f.name:'선택된 파일 없음';nm.className='upname'+(f?' has':'');}
 function liveNew(){
   const sellers=liveSellers();
   const defSeller=isSeller()?(ME.owner||ME.name):(sellers[0]||'');
   const lastSlug=(LIVE_SESS.find(s=>s.seller===defSeller)||{}).slug||'';
-  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">🎥 새 방송 만들기</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">🎥 셀러 페이지 만들기</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
     <div class="form2">
-      <label>방송 유형</label>
+      <label>판매 유형</label>
       <div class="paysel" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px">
-        <button type="button" id="bt_office" class="btn sm" onclick="liveSetBType('사무실')">🏢 사무실 방송</button>
-        <button type="button" id="bt_field" class="btn sm gray" onclick="liveSetBType('원정')">🚚 원정 방송</button></div>
-      <div class="muted" style="font-size:11px;margin-bottom:6px">원정 방송은 보통 [개별상품(미재고)]으로 등록합니다. (기능은 동일, 구분용)</div>
-      <label>방송 제목</label><input id="lv_title" placeholder="예: 여름 코디 특가 LIVE">
+        <button type="button" id="bt_office" class="btn sm" onclick="liveSetBType('사무실')">🏢 사무실 판매</button>
+        <button type="button" id="bt_field" class="btn sm gray" onclick="liveSetBType('원정')">🚚 원정 판매</button></div>
+      <div class="muted" style="font-size:11px;margin-bottom:6px">원정 판매는 보통 [개별상품(미재고)]으로 등록합니다. (기능은 동일, 구분용)</div>
+      <label>페이지 제목</label><input id="lv_title" placeholder="예: 여름 코디 특가 LIVE">
       <label>담당 셀러</label>${isSeller()?`<input id="lv_seller" value="${escAttr(defSeller)}" readonly>`:`<input id="lv_seller" list="lv_sellers" value="${escAttr(defSeller)}"><datalist id="lv_sellers">${sellers.map(s=>`<option value="${escAttr(s)}">`).join('')}</datalist>`}
       <label>고정 주소(slug) — 카카오 채널에 걸 URL</label><input id="lv_slug" value="${escAttr(lastSlug)}" placeholder="park-siyeon" oninput="this.value=liveSlugify(this.value)">
       <div class="muted" style="font-size:12px;margin:2px 0 8px">→ ${esc(LIVE_BASE)}/shop/<b id="lv_slugp">${esc(lastSlug||'...')}</b> <span style="color:#999">(셀러마다 고정, 방송 바뀌어도 그대로)</span></div>
@@ -4171,33 +4189,35 @@ function liveDetail(s){
           <div style="font-weight:800;font-size:15px;word-break:break-all;margin:4px 0 8px">${esc(url)}</div>
           <button class="btn sm" onclick="liveCopyUrl('${escAttr(s.slug)}')">🔗 URL 복사</button>
           <a class="btn sm ghost" href="${esc(url)}" target="_blank" rel="noopener">미리보기 열기</a>
-          ${s.status==='open'?`<button class="btn sm red" onclick="liveClose(${s.id})">방송 마감</button>`:`<button class="btn sm green" onclick="liveOpen(${s.id})">▶ 판매 시작</button>`}
+          ${s.status==='open'?`<button class="btn sm red" onclick="liveClose(${s.id})">판매 종료</button>`:`<button class="btn sm green" onclick="liveOpen(${s.id})">▶ 판매 시작</button>`}
         </div>
       </div>
     </div>
     <div class="card2" style="margin-bottom:14px">
-      <h3 style="margin:0 0 10px">⚙️ 방송 설정</h3>
-      <div class="row2"><div><label class="lbl">방송 제목</label><input id="ld_title" value="${escAttr(s.title||'')}"></div>
+      <h3 style="margin:0 0 10px">⚙️ 셀러 페이지 설정</h3>
+      <div class="row2"><div><label class="lbl">페이지 제목</label><input id="ld_title" value="${escAttr(s.title||'')}"></div>
         <div><label class="lbl">담당 셀러 <span class="muted" style="font-weight:400;font-size:11px">(정산기준·비공개)</span></label><input id="ld_seller" value="${escAttr(s.seller)}" ${isSeller()?'readonly':''}></div></div>
       <label class="lbl" style="margin-top:8px">🙋 채널 표시명 <span class="muted" style="font-weight:400;font-size:11px">(고객에게 보이는 이름·비우면 담당 셀러로 표시)</span></label><input id="ld_display" value="${escAttr(s.display_name||'')}" placeholder="예: 연시언니">
-      <label class="lbl" style="margin-top:8px">🖼️ 메인화면 이미지 <span class="muted" style="font-weight:400;font-size:11px">(방송 안 할 때 홈 상단 표시)</span></label>
-      <div style="display:flex;align-items:center;gap:10px">${s.cover_url?`<img src="${esc(s.cover_url)}" style="width:64px;height:44px;border-radius:8px;object-fit:cover;flex:0 0 auto">`:'<span class="muted" style="font-size:11px">미등록</span>'}<input id="ld_cover_file" type="file" accept="image/*" style="flex:1"></div>
-      <label class="lbl" style="margin-top:8px">🎬 메인 영상(mp4) <span class="muted" style="font-weight:400;font-size:11px">(방송 안 할 때 홈 상단 자동재생·반복 · 짧게·30MB↓)</span></label>
-      <div class="muted" style="font-size:11px;margin-bottom:3px">${s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video)?'<b style="color:#059669">현재 mp4 등록됨</b> · ':''}유튜브 쇼츠는 삽입 불가 → <b>mp4 파일</b>로 올리세요</div>
-      <input id="ld_hero_file" type="file" accept="video/*">
-      <label class="lbl" style="margin-top:8px">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
+      <div class="upgrp"><div class="gh">📎 홈 화면 미디어 <span class="muted" style="font-weight:400;font-size:11px">· 방송 안 할 때 상단에 표시</span></div>
+        ${upRow('메인 이미지','ld_cover_file','image/*', s.cover_url?`<img class="upthumb" src="${esc(s.cover_url)}">`:'', true)}
+        ${upRow('메인 영상','ld_hero_file','video/*', s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video)?'<span class="upthumb" style="display:grid;place-items:center;background:#0f172a;color:#fff">🎬</span>':'')}
+        ${upRow('프로필 사진','ld_seller_photo','image/*', s.seller_photo?`<img class="upthumb" style="border-radius:50%" src="${esc(s.seller_photo)}">`:'')}
+        <div class="muted" style="font-size:11px;margin-top:7px">메인 영상은 <b>mp4</b>만(유튜브 쇼츠 불가) · 짧게·30MB↓ 권장</div>
+      </div>
+      <label class="lbl" style="margin-top:10px">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
       <div class="row2" style="margin-top:8px"><div><label class="lbl">배송비</label><input id="ld_ship" type="number" value="${s.ship_fee}"></div>
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
       <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
-      <label class="lbl" style="margin-top:8px">▶️ 유튜브 라이브 (채널ID UC… 또는 영상 링크)</label><input id="ld_youtube" value="${escAttr(s.youtube||'')}" placeholder="UC... 또는 youtube.com/watch?v=...">
-      ${s.youtube?`<div style="margin-top:6px"><button type="button" class="btn sm" style="background:#0f172a;color:#fff" onclick="liveEndLive(${s.id})">🔴 라이브 종료 → 평소화면(mp4·이미지)으로 전환</button><div class="muted" style="font-size:11px;margin-top:3px">상품·주문은 그대로 유지되고 상단 영상만 평소화면으로 바뀝니다. (방송 자체를 닫으려면 [방송 마감])</div></div>`:''}
-      <label class="lbl" style="margin-top:8px">💬 <b>${esc(s.seller)}</b> 문의 카톡 채널 URL <span class="muted" style="font-weight:400;font-size:11px">(홈 문의 버튼·이 셀러 모든 방송 적용)</span></label>
+      <label class="lbl" style="margin-top:8px">🔴 유튜브 라이브 링크 <span class="muted" style="font-weight:400;font-size:11px">(채널ID UC… 또는 영상 링크 · 아래 [라이브 시작]을 눌러야 방송 표시)</span></label><input id="ld_youtube" value="${escAttr(s.youtube||'')}" placeholder="UC... 또는 youtube.com/watch?v=...">
+      <label class="lbl" style="margin-top:8px">💬 <b>${esc(s.seller)}</b> 문의 카톡 채널 URL <span class="muted" style="font-weight:400;font-size:11px">(홈 문의 버튼·이 셀러 모든 페이지 적용)</span></label>
       ${(()=>{const ss=(SELLER_SNS&&SELLER_SNS[s.seller])||{};const has=p=>ss[p]?'<b style="color:#059669">연동됨</b>':'<span style="color:#cbd5e1">미등록</span>';return `
       <input id="ld_kakao" value="${escAttr(ss.kakao_url||'')}" placeholder="카카오톡 채널 URL (예: http://pf.kakao.com/_xxxx)">
       <div class="muted" style="font-size:11px;margin-top:5px">🔗 유튜브·인스타·틱톡·밴드 아이콘은 <b>[SNS 관리]에 등록한 URL이 자동 연동</b>됩니다 — 유튜브 ${has('sns_youtube')} · 인스타 ${has('sns_instagram')} · 틱톡 ${has('sns_tiktok')} · 밴드 ${has('band_url')}</div>`;})()}
-      <label class="lbl" style="margin-top:10px">🖼️ 셀러 프로필 사진 (홈 상단 표시)</label>
-      <div style="display:flex;align-items:center;gap:10px">${s.seller_photo?`<img src="${esc(s.seller_photo)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex:0 0 auto">`:'<span class="muted" style="font-size:11px">미등록</span>'}<input id="ld_seller_photo" type="file" accept="image/*" style="flex:1"></div>
-      <div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn sm" id="ld_save_btn" onclick="liveSaveSettings(${s.id})">설정 저장</button></div>
+      <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+        ${s.youtube?`<button class="btn sm" style="background:#dc2626;color:#fff" onclick="liveEndLive(${s.id})">🔴 라이브 종료</button>`:`<button class="btn sm green" onclick="liveStartLive(${s.id})">▶ 라이브 시작</button>`}
+        <span class="muted" style="font-size:11px;flex:1;min-width:0">${s.youtube?'상단에 라이브 방송중 · 종료하면 평소화면(영상/이미지)으로':'유튜브 링크 입력 후 [라이브 시작]'}</span>
+        <button class="btn" id="ld_save_btn" onclick="liveSaveSettings(${s.id})">설정 저장</button>
+      </div>
     </div>
     <div class="card2">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap"><h3 style="margin:0">📦 방송 상품 <span class="muted" style="font-weight:400;font-size:12px">${prods.length}개</span></h3>
@@ -4261,18 +4281,26 @@ async function liveOpen(id){
     if(error){console.error(error);toast('⚠️ 시작 실패 — 같은 셀러/주소로 이미 진행중인 방송이 있는지 확인하세요 ('+(error.message||'')+')');return;}
     toast('▶ 판매 시작! 고객 URL이 열렸습니다');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
 }
-/* 라이브만 종료(세션은 열어둠) → 유튜브칸 비워 상단이 평소화면(mp4·이미지)으로 폴백 */
+/* 라이브 시작 → 입력한 유튜브 링크를 저장(상단에 방송 표시). 페이지 판매상태와 무관 */
+async function liveStartLive(id){
+  const yt=($('#ld_youtube')&&$('#ld_youtube').value.trim())||'';
+  if(!yt){toast('유튜브 라이브 링크를 입력한 뒤 눌러주세요');const e=$('#ld_youtube');if(e)e.focus();return;}
+  try{const {error}=await SB.from('live_sessions').update({youtube:yt}).eq('id',id);
+    if(error){console.error(error);toast('⚠️ 라이브 시작 실패: '+(error.message||''));return;}
+    toast('🔴 라이브 시작! 상단에 방송이 표시됩니다');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
+}
+/* 라이브만 종료(페이지는 열어둠) → 유튜브칸 비워 상단이 평소화면(mp4·이미지)으로 폴백 */
 async function liveEndLive(id){
-  if(!confirm('🔴 라이브를 종료하고 평소화면으로 전환할까요?\n\n· 상품·주문은 그대로 유지되어 계속 판매됩니다.\n· 상단 영상만 라이브 → 평소영상(mp4)/기본이미지로 바뀝니다.\n\n(방송 자체를 완전히 닫으려면 [방송 마감]을 쓰세요)'))return;
+  if(!confirm('🔴 라이브를 종료하고 평소화면으로 전환할까요?\n\n· 상품·주문은 그대로 유지되어 계속 판매됩니다.\n· 상단 영상만 라이브 → 평소영상(mp4)/기본이미지로 바뀝니다.\n\n(셀러 페이지 자체를 닫으려면 [판매 종료]를 쓰세요)'))return;
   try{const {error}=await SB.from('live_sessions').update({youtube:null}).eq('id',id);
     if(error){console.error(error);toast('⚠️ 전환 실패: '+(error.message||''));return;}
     const inp=$('#ld_youtube');if(inp)inp.value='';
     toast('🔴 라이브 종료 · 평소화면으로 전환됨');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
 }
 async function liveClose(id){
-  if(!confirm('방송을 마감할까요?\n고객 주문페이지가 닫힙니다. (이미 들어온 주문·데이터는 그대로 유지)'))return;
+  if(!confirm('판매를 종료할까요?\n고객 셀러 페이지가 닫힙니다. (이미 들어온 주문·데이터는 그대로 유지)'))return;
   try{const {error}=await SB.from('live_sessions').update({status:'closed',closed_at:new Date().toISOString()}).eq('id',id);
-    if(error){console.error(error);toast('⚠️ 마감 실패');return;}toast('■ 방송 마감');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
+    if(error){console.error(error);toast('⚠️ 종료 실패');return;}toast('■ 판매 종료');await liveReload();}catch(e){console.error(e);toast('⚠️ 오류');}
 }
 async function liveDelete(id){const s=(LIVE_SESS||[]).find(x=>x.id===id);if(!s)return;
   if(!confirm(`방송 "${s.title||'(제목없음)'}" 삭제할까요?\n· 등록된 상품도 함께 삭제됩니다\n· 이미 수집된 주문은 주문관리에 그대로 남습니다${s.status==='open'?'\n\n⚠️ 현재 [판매중]인 방송입니다 — 삭제하면 고객 주문페이지가 닫힙니다.':''}`))return;
@@ -4344,7 +4372,7 @@ function livePhotoModal(base){
     ${cur?`<div class="muted" style="font-size:11px;margin-top:8px">현재 등록된 사진:</div><img alt="" src="${esc(cur)}" style="display:block;max-width:100%;max-height:min(42vh,380px);border-radius:8px;border:1px solid var(--line);margin-top:4px">`:''}
     <label class="lbl" style="margin-top:12px;display:block">🎬 상품 영상(mp4) <span class="muted" style="font-weight:400;font-size:11px">(고객이 상품에서 "영상 보기"로 재생 · 평소 홈영상에도 포함 · 짧게·30MB↓)</span></label>
     ${curV?`<div class="muted" style="font-size:11px;margin:4px 0">현재 등록된 영상: <b style="color:#059669">있음</b> <button class="btn sm red ghost" style="padding:2px 8px" onclick="livePhotoVideoDel('${escAttr(base)}')">영상 삭제</button></div><video src="${esc(curV)}" controls muted playsinline style="display:block;max-width:100%;max-height:min(40vh,340px);border-radius:8px;border:1px solid var(--line)"></video>`:''}
-    <input id="pm_video" type="file" accept="video/*" style="margin-top:6px">
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px"><label class="upbtn">＋ 영상 파일 선택<input type="file" id="pm_video" accept="video/*" style="display:none" onchange="upName('pm_video')"></label><span class="upname" id="pm_video_nm">선택된 파일 없음</span></div>
     <div class="modal-foot">${cur?`<button class="btn red ghost" onclick="livePhotoDelete('${escAttr(base)}')">사진 삭제</button>`:''}<span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="pm_save" onclick="livePhotoSave()">저장</button></div>`;
   $('#modal').classList.remove('hide');imgPickerBind('pm');
 }
