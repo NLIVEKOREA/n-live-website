@@ -4393,6 +4393,7 @@ async function livePhotoSave(){
       const {error:ve}=await SB.storage.from('live').upload(vp,f,{contentType:(f.type||'video/mp4'),upsert:true});
       if(ve){console.error(ve);toast('⚠️ 영상 업로드 실패');btn.disabled=false;btn.textContent='저장';return;}
       const {data:vpub}=SB.storage.from('live').getPublicUrl(vp);upo.video_url=vpub&&vpub.publicUrl;}
+    if(upo.url===undefined&&!PIMG[base])upo.url='';/* 사진없이 영상만 등록 시 product_images.url NOT NULL 회피(빈값=이미지없음) */
     const {error}=await SB.from('product_images').upsert(upo,{onConflict:'code'});
     if(error){console.error(error);toast('⚠️ 저장 실패: '+(error.message||''));btn.disabled=false;btn.textContent='저장';return;}
     if(upo.url)PIMG[base]=upo.url;if(upo.video_url)PVID[base]=upo.video_url;
