@@ -238,11 +238,13 @@ function appbar(title,back){
    <button class="cart" onclick="go('cart')">🛒 ${cartCount()}</button></div>`;
 }
 /* 히어로 영상: 방송중=유튜브 라이브 인라인 / 평소=고정 mp4 루프 / 없으면 커버·그라데 */
+function ytLoopUrl(v){const e=ytEmbedUrl(v);if(!e)return '';const id=(e.match(/embed\/([A-Za-z0-9_-]+)/)||[])[1];return e.replace('rel=0','loop=1&controls=0&modestbranding=1&rel=0')+(id?('&playlist='+id):'');}
 function heroHtml(s){
-  const live=ytEmbedUrl(s.youtube),mp4=(s.hero_video||'').trim();
+  const live=ytEmbedUrl(s.youtube),hv=(s.hero_video||'').trim(),hvYt=ytLoopUrl(hv);
   let media;
-  if(live)media=`<iframe class="hmedia" src="${live}" allow="autoplay; encrypted-media; picture-in-picture" frameborder="0"></iframe>`;
-  else if(mp4)media=`<video class="hmedia" src="${esc(mp4)}" autoplay muted loop playsinline${s.hero_poster?` poster="${esc(s.hero_poster)}"`:''}></video>`;
+  if(live)media=`<iframe class="hmedia" src="${live}" allow="autoplay; encrypted-media; picture-in-picture" frameborder="0"></iframe>`;/* 방송중 라이브 */
+  else if(hvYt)media=`<iframe class="hmedia" src="${hvYt}" allow="autoplay; encrypted-media" frameborder="0"></iframe>`;/* 평소 고정영상=유튜브 루프 */
+  else if(hv)media=`<video class="hmedia" src="${esc(hv)}" autoplay muted loop playsinline></video>`;/* 평소 고정영상=mp4 */
   else if(s.cover_url)media=`<img class="hmedia" src="${esc(s.cover_url)}">`;
   else media=`<div class="hmedia hgrad"></div>`;
   const cnt=(SHOP.products||[]).length;
