@@ -47,14 +47,18 @@ export async function GET(req) {
   try { tracks = (await rpc('pending_deliveries')).map((r) => r.track).filter(Boolean); }
   catch (e) { return Response.json({ ok: false, error: String(e) }, { status: 500 }); }
 
+  const list = tracks.slice(0, 120);
   let checked = 0, delivered = 0, errors = 0;
-  for (const t of tracks.slice(0, 150)) {
-    const inv = String(t).replace(/[^0-9]/g, '');
-    if (inv.length < 6) continue;
-    checked++;
-    try {
-      if (await isDelivered(inv)) { await rpc('set_delivered', { p_track: t }); delivered++; }
-    } catch (e) { errors++; }
+  const CONC = 10;                                     // 병렬 10개씩 → 시간제한 내 완료
+  for (let i = 0; i < list.length; i += CONC) {
+    const chunk = list.slice(i, i + CONC);
+    const res = await Promise.all(chunk.map(async (t) => {
+      const inv = String(t).replace(/[^0-9]/g, '');
+      if (inv.length < 6) return 'skip';
+      try { if (await isDelivered(inv)) { await rpc('set_delivered', { p_track: t }); return 'delivered'; } return 'no'; }
+      catch (e) { return 'err'; }
+    }));
+    res.forEach((r) => { if (r !== 'skip') checked++; if (r === 'delivered') delivered++; else if (r === 'err') errors++; });
   }
   return Response.json({ ok: true, source: 'delivery-tracker', pending: tracks.length, checked, delivered, errors });
 }
