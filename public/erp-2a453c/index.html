@@ -4172,6 +4172,9 @@ function liveDetail(s){
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
       <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
       <label class="lbl" style="margin-top:8px">▶️ 유튜브 라이브 (채널ID UC… 또는 영상 링크)</label><input id="ld_youtube" value="${escAttr(s.youtube||'')}" placeholder="UC... 또는 youtube.com/watch?v=...">
+      <label class="lbl" style="margin-top:8px">🔗 SNS·문의 바로가기 <span class="muted" style="font-weight:400;font-size:11px">(고객 홈 공지 아래 공식 아이콘으로 표시·비우면 숨김)</span></label>
+      <div class="row2"><input id="ld_ig" value="${escAttr(s.sns_instagram||'')}" placeholder="인스타그램 URL"><input id="ld_tt" value="${escAttr(s.sns_tiktok||'')}" placeholder="틱톡 URL"></div>
+      <div class="row2" style="margin-top:6px"><input id="ld_kakao" value="${escAttr(s.kakao_url||'')}" placeholder="카카오톡 채널 채팅 URL (문의 버튼용)"><input id="ld_band" value="${escAttr(s.band_url||'')}" placeholder="네이버 밴드 URL"></div>
       <label class="lbl" style="margin-top:10px">🖼️ 셀러 프로필 사진 (홈 상단 표시)</label>
       <div style="display:flex;align-items:center;gap:10px">${s.seller_photo?`<img src="${esc(s.seller_photo)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex:0 0 auto">`:'<span class="muted" style="font-size:11px">미등록</span>'}<input id="ld_seller_photo" type="file" accept="image/*" style="flex:1"></div>
       <label class="lbl" style="margin-top:10px">🎬 평소 히어로 영상 <span class="muted" style="font-weight:400;font-size:11px">(방송 안 할 때 홈 상단에서 자동재생·반복)</span></label>
@@ -4227,7 +4230,9 @@ async function liveSaveSettings(id){
     else if(!existMp4){hero_video=null;}      /* URL 비우고 기존이 mp4 아니면 해제 */
     const row={title:$('#ld_title').value.trim(),seller:$('#ld_seller').value.trim(),display_name:(($('#ld_display')&&$('#ld_display').value.trim())||null),notice:$('#ld_notice').value.trim()||null,
       ship_fee:+$('#ld_ship').value||0,free_ship_min:+$('#ld_free').value||0,pay_info:($('#ld_payinfo')&&$('#ld_payinfo').value.trim())||null,
-      youtube:($('#ld_youtube')&&$('#ld_youtube').value.trim())||null,hero_video:hero_video,seller_photo:seller_photo};
+      youtube:($('#ld_youtube')&&$('#ld_youtube').value.trim())||null,hero_video:hero_video,seller_photo:seller_photo,
+      sns_instagram:(($('#ld_ig')&&$('#ld_ig').value.trim())||null),sns_tiktok:(($('#ld_tt')&&$('#ld_tt').value.trim())||null),
+      kakao_url:(($('#ld_kakao')&&$('#ld_kakao').value.trim())||null),band_url:(($('#ld_band')&&$('#ld_band').value.trim())||null)};
     const {error}=await SB.from('live_sessions').update(row).eq('id',id);
     if(error){console.error(error);toast('⚠️ 저장 실패: '+(error.message||''));if(btn){btn.disabled=false;btn.textContent='설정 저장';}return;}
     toast('✅ 설정 저장');await liveReload();

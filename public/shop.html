@@ -149,6 +149,24 @@ button,input,select,textarea{font:inherit}
 .noticerow{display:flex;gap:8px;align-items:stretch;margin:18px 16px 0}
 .noticerow .ndet{margin:0;flex:1}
 .ytbtn2{flex:0 0 auto;display:flex;align-items:center;gap:5px;padding:0 15px;border-radius:14px;background:#ff0000;color:#fff;font-weight:800;font-size:12.5px;text-decoration:none;white-space:nowrap}
+.ndetwrap{margin:18px 16px 0}.ndetwrap .ndet{margin:0}
+.social{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;margin:15px 16px 2px}
+.sicon{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;text-decoration:none;box-shadow:0 3px 11px rgba(20,22,28,.16);transition:transform .12s}
+.sicon:active{transform:scale(.9)}.sicon svg{display:block}
+/* 내 주문 조회 */
+.mocard{border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:12px;background:#fff;box-shadow:0 3px 12px rgba(20,22,28,.05)}
+.moh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.moh small{color:var(--muted);font-size:11px;text-align:right}
+.mostage{font-size:12px;font-weight:800;padding:5px 11px;border-radius:100px;white-space:nowrap}
+.mobar{height:5px;background:#eef0f4;border-radius:100px;margin:12px 0 8px;overflow:hidden}
+.mobar i{display:block;height:100%;background:var(--brand);border-radius:100px;transition:width .3s}
+.modesc{font-size:12px;color:#6b7280;margin-bottom:2px}
+.moitems{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
+.moi{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:4px 0;color:#374151}
+.moi small{color:var(--muted);font-size:11px;font-weight:600}
+.moft{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.moft b{font-size:16px;color:var(--brand)}
+.motrk{border:0;background:var(--ink);color:#fff;font-weight:800;font-size:13px;padding:10px 16px;border-radius:12px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -240,6 +258,7 @@ function prodSoldOut(p){const os=realOpts(p);if(!os.length)return false;return o
 function render(){
   if(VIEW==='product')return renderProduct();
   if(VIEW==='cart')return renderCart();
+  if(VIEW==='orders')return renderMyOrders();
   if(VIEW==='form')return renderForm();
   if(VIEW==='done')return renderDone();
   renderHome();
@@ -273,7 +292,7 @@ function renderHome(){
   const prof=`<div class="profwrap"><div class="profav">${s.seller_photo?`<img src="${esc(s.seller_photo)}">`:esc(nm[0])}</div>
     <div class="profname">${esc(nm)}</div>${tagline?`<div class="proftitle">${esc(tagline)}</div>`:''}
     <div class="profsub">상품 ${ps.length}개 · ${live?'🔴 실시간 방송중':'판매중'}</div></div>`;
-  const notice=`<div class="noticerow"><details class="ndet"><summary><span class="chip">공지</span>배송 · 교환/반품 안내<span class="arw">▾</span></summary><div class="nbody">${esc(noticeTxt)}</div></details>${ytLink?`<a class="ytbtn2" href="${esc(ytLink)}" target="_blank" rel="noopener">▶ 유튜브</a>`:''}</div>`;
+  const notice=`<div class="ndetwrap"><details class="ndet"><summary><span class="chip">공지</span>배송 · 교환/반품 안내<span class="arw">▾</span></summary><div class="nbody">${esc(noticeTxt)}</div></details></div>${socialLinks(s,ytLink)}`;
   const feat=nowP?`<div class="shead"><h2>${live?'🔴 지금 소개중':'⭐ 대표 상품'}</h2><small>${live?'방송에서 소개 중':'추천 상품'}</small></div>
     <button class="feat" onclick="openProduct(${nowP.id})">${live?'<span class="nowtag"><i></i> LIVE 소개중</span>':''}
       ${nowP.image_url?`<img src="${esc(nowP.image_url)}">`:`<div class="fimg-ph">상품이미지</div>`}
@@ -288,9 +307,73 @@ function renderHome(){
     heroHtml(s)+prof
     +`<div class="homewrap">${notice}${feat}${grid}</div>`
     +(cartCount()?`<div class="cbar"><button onclick="go('cart')">🛒 장바구니 보기 <span class="cb">${cartCount()}개 · ${won(subtotal()+shipFee())}</span></button></div>`:'')
-    +`<div class="tabbar"><a class="on"><i>🏠</i>홈</a><a onclick="go('cart')"><i>🛒</i>장바구니</a><a onclick="toast('문의는 방송 채팅이나 카톡으로 남겨주세요 🙏')"><i>💬</i>문의</a></div>`;
+    +`<div class="tabbar"><a class="on"><i>🏠</i>홈</a><a onclick="go('orders')"><i>📦</i>내주문</a><a onclick="go('cart')"><i>🛒</i>장바구니</a><a onclick="contactKakao()"><i>💬</i>문의</a></div>`;
   updatePip();
 }
+/* 셀러 SNS/카톡 공식 아이콘 바로가기 (공지 아래) */
+const _SVG={
+  yt:'<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 4.9 12 4.9 12 4.9s-7 0-8.9.5A3 3 0 0 0 1 7.5 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5A3 3 0 0 0 23 16.5 31 31 0 0 0 23.5 12 31 31 0 0 0 23 7.5zM9.75 15.5v-7l6 3.5-6 3.5z"/></svg>',
+  ig:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.25" fill="currentColor" stroke="none"/></svg>',
+  tt:'<svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor"><path d="M16.6 3c.35 2.06 1.6 3.62 3.6 3.88v2.72c-1.35.13-2.6-.3-3.75-1.06v6.4a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6.02.9.07v2.83a2.95 2.95 0 1 0 2.05 2.8V3h2.9z"/></svg>',
+  ka:'<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 4C6.9 4 3 7.2 3 11.1c0 2.5 1.7 4.7 4.3 5.9-.19.66-.7 2.42-.8 2.8-.12.46.17.45.36.33.15-.1 2.4-1.62 3.37-2.28.58.08 1.16.12 1.77.12 5.1 0 9-3.2 9-7.1S17.1 4 12 4z"/></svg>',
+  bd:'<svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor"><path d="M8.7 5H13c2.3 0 3.9 1.1 3.9 3.05 0 1.2-.72 2.12-1.83 2.5 1.43.32 2.4 1.42 2.4 2.85 0 2.15-1.66 3.3-4.2 3.3H8.7V5zm2.45 4.7h1.45c.95 0 1.55-.42 1.55-1.25s-.6-1.25-1.55-1.25h-1.45V9.7zm0 5.02h1.65c1.03 0 1.66-.44 1.66-1.34s-.63-1.34-1.66-1.34h-1.65v2.68z"/></svg>'
+};
+function socialLinks(s,ytLink){
+  const it=[];
+  if(ytLink)it.push({u:ytLink,bg:'#FF0000',fg:'#fff',n:'YouTube',s:_SVG.yt});
+  if(s.sns_instagram)it.push({u:s.sns_instagram,bg:'linear-gradient(45deg,#f9ce34,#ee2a7b 45%,#6228d7)',fg:'#fff',n:'Instagram',s:_SVG.ig});
+  if(s.sns_tiktok)it.push({u:s.sns_tiktok,bg:'#111',fg:'#fff',n:'TikTok',s:_SVG.tt});
+  if(s.kakao_url)it.push({u:s.kakao_url,bg:'#FEE500',fg:'#191600',n:'카카오톡',s:_SVG.ka});
+  if(s.band_url)it.push({u:s.band_url,bg:'#03C75A',fg:'#fff',n:'네이버 밴드',s:_SVG.bd});
+  if(!it.length)return '';
+  return `<div class="social">${it.map(i=>`<a class="sicon" style="background:${i.bg};color:${i.fg}" href="${esc(i.u)}" target="_blank" rel="noopener" aria-label="${esc(i.n)}" title="${esc(i.n)}">${i.s}</a>`).join('')}</div>`;
+}
+function contactKakao(){const u=SHOP&&SHOP.session&&SHOP.session.kakao_url;if(u){window.open(u,'_blank','noopener');}else{toast('문의는 방송 채팅이나 카톡 채널로 남겨주세요 🙏');}}
+/* ===== 내 주문 조회 (ERP 상태 실시간 연동) ===== */
+const MO_STAGES=[
+  {t:'입금 확인중',c:'#b45309',bg:'#fff7ed',d:'입금이 확인되면 상품 준비를 시작해요.'},
+  {t:'상품 준비중',c:'#1d4ed8',bg:'#eff6ff',d:'주문하신 상품을 준비하고 있어요.'},
+  {t:'출고 대기',c:'#7c3aed',bg:'#f5f3ff',d:'포장이 끝났어요 · 곧 발송됩니다.'},
+  {t:'송장 등록됨',c:'#0e7490',bg:'#ecfeff',d:'운송장이 등록됐어요 · 곧 택배사로 넘어가요.'},
+  {t:'발송 완료',c:'#15803d',bg:'#f0fdf4',d:'택배사로 발송됐어요 · 배송조회로 확인하세요.'}
+];
+function renderMyOrders(){
+  $('#app').innerHTML=appbar('내 주문 조회',"go('home')")+
+    `<div class="sec">
+      <div class="field"><label>주문하신 휴대폰번호로 조회</label>
+        <div style="display:flex;gap:8px">
+          <input id="mo_phone" inputmode="numeric" value="${esc(CUST.phone||'')}" placeholder="010-0000-0000" style="flex:1">
+          <button class="cta" style="width:auto;padding:0 22px;font-size:15px;box-shadow:none" onclick="lookupOrders()">조회</button>
+        </div></div>
+      <div id="mo_list"></div>
+     </div>`;
+  if(CUST.phone&&CUST.phone.replace(/[^0-9]/g,'').length>=9)lookupOrders();
+}
+async function lookupOrders(){
+  const el=$('#mo_phone');const ph=(el?el.value:(CUST.phone||'')).trim();
+  if(ph.replace(/[^0-9]/g,'').length<9){toast('휴대폰번호를 정확히 입력해 주세요.');return;}
+  CUST.phone=ph;const box=$('#mo_list');if(box)box.innerHTML='<div class="center" style="min-height:130px"><div class="spinner"></div></div>';
+  try{
+    const {data,error}=await SB.rpc('get_my_orders',{p_slug:SLUG,p_phone:ph});
+    if(error||!data||!data.ok){if(box)box.innerHTML='<div class="center" style="min-height:130px">조회 중 문제가 생겼어요.<br>잠시 후 다시 시도해 주세요.</div>';return;}
+    const os=data.orders||[];
+    if(!os.length){if(box)box.innerHTML='<div class="center" style="min-height:150px"><div><div style="font-size:38px;margin-bottom:8px">📦</div>이 번호로 접수된 주문이 없어요.</div></div>';return;}
+    if(box)box.innerHTML=`<div style="font-size:12.5px;color:var(--muted);margin:4px 0 12px;font-weight:600">최근 주문 ${os.length}건</div>`+os.map(orderCard).join('');
+  }catch(e){console.error(e);if(box)box.innerHTML='<div class="center" style="min-height:130px">연결 오류입니다. 인터넷을 확인해 주세요.</div>';}
+}
+function orderCard(o){
+  const st=MO_STAGES[o.stage]||MO_STAGES[1];
+  const items=(o.items||[]).map(it=>`<div class="moi"><span>${esc(it.name)}${(it.color||it.size)?` <small>${esc([it.color,it.size].filter(Boolean).join('/'))}</small>`:''}</span><b>${it.qty}개</b></div>`).join('');
+  return `<div class="mocard">
+    <div class="moh"><span class="mostage" style="color:${st.c};background:${st.bg}">${st.t}</span><small>${esc(o.order_date||'')}<br>${esc(o.group_id||'')}</small></div>
+    <div class="mobar"><i style="width:${o.stage/4*100}%"></i></div>
+    <div class="modesc">${st.d}</div>
+    <div class="moitems">${items}</div>
+    <div class="moft"><b>${won(o.amount)}</b>${o.track?`<button class="motrk" onclick="trackShip('${esc(o.track)}')">🚚 배송조회</button>`:''}</div>
+  </div>`;
+}
+function trackShip(t){const n=String(t||'').replace(/[^0-9]/g,'');if(!n){toast('운송장 번호가 아직 없어요.');return;}
+  window.open('https://trace.cjlogistics.com/next/tracking.html?wblNo='+n,'_blank','noopener');}
 function openProduct(id){CURP=(SHOP.products||[]).find(p=>p.id===id);if(!CURP)return;
   const cs=colorsOf(CURP),zs=sizesOf(CURP);
   SEL={color:cs.length?null:'',size:zs.length?null:'',qty:1};go('product');}
@@ -414,6 +497,7 @@ function shopZoom(url){if(!url)return;let o=document.getElementById('zoomOv');if
 function go(v){VIEW=v;window.scrollTo(0,0);render();updatePip();}
 window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSize;window.qc=qc;window.addCart=addCart;
 window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;window.shopZoom=shopZoom;window.ytToggleSize=ytToggleSize;window.ytClose=ytClose;
+window.contactKakao=contactKakao;window.lookupOrders=lookupOrders;window.trackShip=trackShip;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 load();
 </script>
