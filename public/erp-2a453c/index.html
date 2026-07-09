@@ -548,7 +548,7 @@ function _authClient(){return window.supabase.createClient('https://qikvvqgxmque
 const _toDate=d=>{if(!d)return null;const m=String(d).match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);return m?`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`:null;};
 /* 보안: 고객 입력 자유텍스트에서 <> 제거(저장 XSS 차단). 이름·주소·전화엔 꺾쇠가 쓰일 일 없음 */
 const safeText=s=>s==null?s:String(s).replace(/[<>]/g,'');
-const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:safeText(r.cust),phone:safeText(r.phone),addr:safeText(r.addr),code:r.code,disp:safeText(r.item_name),tag:r.tag,color:r.color,size:r.size,qty:r.qty,price:r.price,pay:r.pay,payway:r.payway,ship:r.ship,req:r.req,prog:r.prog,back:r.back,track:r.track,reason:safeText(r.reason),shipped_date:r.shipped_date,rxtype:r.rxtype,rxstat:r.rxstat,rxreason:safeText(r.rxreason),fault:r.fault,rxdate:r.rxdate,rxdone:r.rxdone,rxnew:r.rxnew,created_by:r.created_by,source:r.source,session_id:r.session_id,order_group_id:r.order_group_id,reservation_expires_at:r.reservation_expires_at,meta:r.meta,bo_status:r.bo_status});
+const DB2ORD=r=>({id:r.id,date:r.order_date,staff:r.staff,cust:safeText(r.cust),phone:safeText(r.phone),addr:safeText(r.addr),code:r.code,disp:safeText(r.item_name),tag:r.tag,color:r.color,size:r.size,qty:r.qty,price:r.price,pay:r.pay,payway:r.payway,ship:r.ship,req:r.req,prog:r.prog,back:r.back,track:r.track,reason:safeText(r.reason),shipped_date:r.shipped_date,rxtype:r.rxtype,rxstat:r.rxstat,rxreason:safeText(r.rxreason),fault:r.fault,rxdate:r.rxdate,rxdone:r.rxdone,rxnew:r.rxnew,created_by:r.created_by,source:r.source,session_id:r.session_id,order_group_id:r.order_group_id,reservation_expires_at:r.reservation_expires_at,meta:r.meta,bo_status:r.bo_status,delivered_at:r.delivered_at});
 const ORD2DB=o=>{const r={order_date:_toDate(o.date),staff:o.staff,cust:o.cust,phone:o.phone,addr:o.addr,code:o.code,item_name:o.disp,tag:o.tag,color:o.color,size:o.size,qty:o.qty,price:o.price,pay:o.pay,payway:o.payway||null,ship:o.ship,req:o.req||null,prog:o.prog||null,back:!!o.back,track:o.track||null,reason:o.reason||null,shipped_date:o.shipped_date||null};r.rxtype=o.rxtype||null;r.rxstat=o.rxstat||null;r.rxreason=o.rxreason||null;r.fault=o.fault||null;r.rxdate=o.rxdate||null;r.rxdone=o.rxdone||null;r.rxnew=o.rxnew||null;/* created_by(uuid+FK): 유효한 기존 uuid만 전송, 없으면 미전송해 DB가 채우게(임의 문자열 넣으면 저장 실패) */if(o.created_by&&/^[0-9a-f-]{36}$/i.test(String(o.created_by)))r.created_by=o.created_by;
   /* 링크(라이브)주문 식별 필드 보존 — 수정 저장 시 source/세션/그룹/차감마커가 사라지지 않게 */
   if(o.source!==undefined)r.source=o.source||null;
@@ -2407,8 +2407,8 @@ function shipTabDone(){
   return `<div class="card"><div class="card-h"><h2>출고완료 <span class="muted" style="font-size:12px;font-weight:400">${r.label} · ${done.length}건</span></h2></div>
     <div class="note">💡 기본은 <b>이번주 출고완료</b>건 표시 · 기간 선택으로 조회. (과거 이전분은 출고일 미기록이라 <b>전체</b>에서 보입니다)</div>
     <div class="tabs" style="margin:10px 0">${periodTabs(DONEPERIOD,'setDonePeriod',['week','yesterday','lastweek','month','lastmonth','all'])}</div>
-    <table><thead><tr><th>출고일</th><th>고객</th><th>주문#</th><th>품목</th><th class="num-cell">수량</th><th>배송비</th><th>송장번호</th><th>담당</th></tr></thead><tbody>
-    ${done.slice(0,300).map(o=>`<tr><td class="muted">${o.shipped_date||o.date||'-'}</td><td>${esc(o.cust||'')}</td><td class="muted">#${o.id}</td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td><td>${o.code==='배송비'?'<span class="pill p-req">배송비</span>':'-'}</td><td class="barcode">${o.track}</td><td class="muted">${esc(o.staff||'-')}</td></tr>`).join('')||'<tr><td colspan="8" class="muted">해당 기간 출고완료 없음</td></tr>'}
+    <table><thead><tr><th>출고일</th><th>고객</th><th>주문#</th><th>품목</th><th class="num-cell">수량</th><th>배송비</th><th>송장번호</th><th>담당</th><th>배송</th></tr></thead><tbody>
+    ${done.slice(0,300).map(o=>`<tr><td class="muted">${o.shipped_date||o.date||'-'}</td><td>${esc(o.cust||'')}</td><td class="muted">#${o.id}</td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td><td>${o.code==='배송비'?'<span class="pill p-req">배송비</span>':'-'}</td><td class="barcode">${o.track}</td><td class="muted">${esc(o.staff||'-')}</td><td style="white-space:nowrap">${o.delivered_at?`<span class="pill p-done" style="font-size:10px">✓ 배송완료</span> <button class="btn sm gray" style="padding:2px 7px" onclick="markDelivered('${escAttr(o.track)}',0)">취소</button>`:`<button class="btn sm green" style="padding:3px 9px" onclick="markDelivered('${escAttr(o.track)}',1)">배송완료</button>`}</td></tr>`).join('')||'<tr><td colspan="9" class="muted">해당 기간 출고완료 없음</td></tr>'}
     </tbody></table></div>`;
 }
 /* ===== 리스트 정렬 (미송/합배/출고대기·교환반품 공용) ===== */
@@ -4133,6 +4133,15 @@ function upRow(label,id,accept,curHtml,first,del){
     <label class="upbtn">＋ 파일 선택<input type="file" id="${id}" accept="${accept}" style="display:none" onchange="upName('${id}')"></label>
     <span class="upname" id="${id}_nm">선택된 파일 없음</span>
     ${(del&&curHtml)?`<button type="button" class="btn sm red ghost" style="flex:0 0 auto;padding:5px 10px" onclick="${del}">🗑 삭제</button>`:''}</div>`;
+}
+/* 배송완료 토글 — 송장(track) 단위로 그 배송의 모든 라인에 delivered_at 설정/해제 (고객 내주문에 '배송완료' 표기) */
+async function markDelivered(track,on){
+  const t=String(track||'').trim();if(!t)return;
+  const val=on?new Date().toISOString():null;
+  try{const {error}=await SB.from('orders').update({delivered_at:val}).eq('track',t);
+    if(error){console.error(error);toast('⚠️ 처리 실패: '+(error.message||''));return;}
+    ORD.forEach(o=>{if(String(o.track||'').trim()===t)o.delivered_at=val;});
+    toast(on?('✓ 배송완료 처리 · 송장 '+t):'배송완료 취소됨');render();}catch(e){console.error(e);toast('⚠️ 오류');}
 }
 /* 홈 화면 미디어(메인이미지·영상·프로필) 개별 삭제 */
 async function liveMediaDel(id,col){
