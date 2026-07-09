@@ -1360,8 +1360,10 @@ function workMonthShift(s,n){const d=workDate((s||workToday()).slice(0,7)+'-01')
 function workWeekStart(s){const d=workDate(s),day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return workYmd(d);}
 function workSchedules(){return WORKSCH;}
 /* 공용 저장(전 사원 공유) — 한 건 upsert */
-async function workScheduleUpsert(s){const i=WORKSCH.findIndex(x=>x.id===s.id);if(i>=0)WORKSCH[i]=s;else WORKSCH.unshift(s);
-  try{const {error}=await SB.from('work_schedules').upsert({id:s.id,data:s,owner:(typeof ME!=='undefined'&&ME&&ME.name)||null,updated_at:new Date().toISOString()});if(error){toast('⚠️ 일정 저장 실패: '+error.message);return false;}}catch(e){toast('⚠️ 일정 저장 오류 — 인터넷 확인');return false;}return true;}
+async function workScheduleUpsert(s){const i=WORKSCH.findIndex(x=>x.id===s.id);const isNew=i<0,prev=isNew?null:WORKSCH[i];if(isNew)WORKSCH.unshift(s);else WORKSCH[i]=s;
+  /* 저장 실패 시 화면(메모리)도 원복 — DB 안 들어갔는데 화면엔 남아 '등록됨' 착각하는 가짜성공 방지 */
+  const rollback=function(){const j=WORKSCH.findIndex(x=>x.id===s.id);if(j>=0){if(isNew)WORKSCH.splice(j,1);else WORKSCH[j]=prev;}};
+  try{const {error}=await SB.from('work_schedules').upsert({id:s.id,data:s,owner:(typeof ME!=='undefined'&&ME&&ME.name)||null,updated_at:new Date().toISOString()});if(error){rollback();toast('⚠️ 일정 저장 실패 — 화면에서 취소됨: '+error.message);render();return false;}}catch(e){rollback();toast('⚠️ 일정 저장 오류 — 인터넷 확인(화면에서 취소됨)');render();return false;}return true;}
 async function workScheduleRemove(id){const i=WORKSCH.findIndex(x=>x.id===id);const bak=i>=0?WORKSCH[i]:null;if(i>=0)WORKSCH.splice(i,1);
   try{const {error}=await SB.from('work_schedules').delete().eq('id',id);if(error){if(bak)WORKSCH.splice(i,0,bak);toast('⚠️ 삭제 실패: '+error.message);return false;}}catch(e){if(bak)WORKSCH.splice(i,0,bak);toast('⚠️ 삭제 오류');return false;}return true;}
 /* 공개대상 역할 실제 적용: 관리자·운영은 전체 열람, 그 외는 공개대상(visibleToRoles)에 포함될 때만. 비어있으면 전체공개 */
