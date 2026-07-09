@@ -3,6 +3,7 @@
 // Vercel Cron(매일)이 자동 호출. 별도 API 키/환경변수 없이 동작(선택: CRON_SECRET 설정 시 인증 강제).
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 const SUPA = 'https://qikvvqgxmquevzyykkcm.supabase.co';
 const ANON = 'sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao';
@@ -54,7 +55,6 @@ export async function GET(req) {
     try {
       if (await isDelivered(inv)) { await rpc('set_delivered', { p_track: t }); delivered++; }
     } catch (e) { errors++; }
-    await new Promise((r) => setTimeout(r, 120));       // 예의상 간격
   }
   return Response.json({ ok: true, source: 'delivery-tracker', pending: tracks.length, checked, delivered, errors });
 }
