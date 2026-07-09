@@ -94,6 +94,7 @@ button,input,select,textarea{font:inherit}
 .tbar .cnt{position:absolute;top:3px;right:2px;min-width:17px;height:17px;background:var(--brand);color:#fff;font-size:10px;font-weight:800;border-radius:100px;display:grid;place-items:center;padding:0 4px}
 .hero{position:relative;aspect-ratio:1/1;overflow:hidden;background:#0d0d10}
 .hmedia{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0;display:block}
+.hero iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .hero.vert{aspect-ratio:auto;height:min(80vh,700px);display:flex;justify-content:center;background:#0b0b0d}
 .hero.vert .hmedia{position:relative;inset:auto;height:100%;width:auto;aspect-ratio:9/16;max-width:100%;object-fit:contain}
 .hgrad{background:linear-gradient(140deg,#2a2140,#ff2e50 130%)}
@@ -234,39 +235,40 @@ let YT_API_LOADING=false,LIVE_PLAYER=null,LIVE_OK=null,LIVE_URL='';
 function loadYTApi(cb){if(window.YT&&window.YT.Player){cb();return;}
   if(!YT_API_LOADING){YT_API_LOADING=true;const t=document.createElement('script');t.src='https://www.youtube.com/iframe_api';document.head.appendChild(t);}
   const iv=setInterval(function(){if(window.YT&&window.YT.Player){clearInterval(iv);cb();}},120);setTimeout(function(){clearInterval(iv);},9000);}
-function ensureLivePlayer(raw){LIVE_URL=(raw||'').trim();const box=document.getElementById('livehero');if(!box)return;
-  const vid=ytVideoId(raw);
-  if(!vid){const src=ytEmbedUrl(raw);if(src)box.innerHTML='<iframe class="hmedia" src="'+src+'" allow="autoplay; encrypted-media; picture-in-picture" frameborder="0"></iframe>';return;}/* 채널ID 자동라이브 */
+/* 라이브 플레이어는 항상 1개만 존재(API가 컨테이너로 이동·재생성) → 2중임베드(153) 원천차단.
+   raw iframe은 153 나므로 videoID는 반드시 YT API 플레이어로, 채널ID만 iframe. */
+function mountLive(containerId){const el=document.getElementById(containerId);if(!el)return;
+  const vid=ytVideoId(LIVE_URL);
+  if(!vid){const src=ytEmbedUrl(LIVE_URL);if(src)el.innerHTML='<iframe src="'+src+'" allow="autoplay; encrypted-media; picture-in-picture" frameborder="0" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';return;}/* 채널ID 자동라이브 */
   LIVE_OK=null;
-  loadYTApi(function(){if(!document.getElementById('livehero'))return;
-    try{LIVE_PLAYER=new YT.Player('livehero',{videoId:vid,
+  loadYTApi(function(){if(!document.getElementById(containerId))return;
+    if(LIVE_PLAYER){try{LIVE_PLAYER.destroy();}catch(e){}LIVE_PLAYER=null;}
+    try{LIVE_PLAYER=new YT.Player(containerId,{videoId:vid,
       playerVars:{autoplay:1,mute:1,playsinline:1,rel:0,modestbranding:1,origin:location.origin},
-      events:{onReady:function(){LIVE_OK=true;updatePip();},onError:function(){LIVE_OK=false;heroLiveFallback();}}});
-    }catch(e){LIVE_OK=false;heroLiveFallback();}});}
+      events:{onReady:function(){LIVE_OK=true;},onError:function(){LIVE_OK=false;if(document.getElementById('livehero'))heroLiveFallback();else ytHidePip();}}});
+    }catch(e){LIVE_OK=false;if(document.getElementById('livehero'))heroLiveFallback();}});}
+function ensureLivePlayer(raw){LIVE_URL=(raw||'').trim();mountLive('livehero');}
 function heroLiveFallback(){const box=document.getElementById('livehero');if(!box)return;
   box.outerHTML='<a class="hmedia livefallback" href="'+esc(LIVE_URL)+'" target="_blank" rel="noopener"><span class="lfplay">▶</span><b>지금 LIVE 방송 중</b><small>눌러서 유튜브에서 보기</small></a>';
   ytHidePip();}
 let PIP_CLOSED=false;/* 사용자가 미니창을 닫았는지(선택지) */
-function mountYouTube(raw){const src=ytEmbedUrl(raw);if(!src)return;
-  if(document.getElementById('ytfloat'))return;
-  const d=document.createElement('div');d.id='ytfloat';d.className='mini';
+function buildPipShell(){if(document.getElementById('ytfloat'))return;const d=document.createElement('div');d.id='ytfloat';d.className='mini';
   d.innerHTML=`<div class="ythead"><span class="ytlive">● LIVE</span><span style="flex:1"></span>
       <button class="ytbtn" onclick="ytToggleSize()" title="크게/작게">⤢</button>
       <button class="ytbtn" onclick="pipClose()" title="닫기">✕</button></div>
-    <div class="ytbox"><iframe src="${src}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen frameborder="0"></iframe></div>`;
+    <div class="ytbox"><div id="pipplayer"></div></div>`;
   document.body.appendChild(d);}
 function ytHidePip(){const d=document.getElementById('ytfloat');if(d)d.remove();}
 function ytToggleSize(){const d=document.getElementById('ytfloat');if(d)d.classList.toggle('mini');}
 function pipClose(){PIP_CLOSED=true;ytHidePip();}/* 선택지: 닫으면 다시 위로 올려야 재등장 */
-/* 히어로 보이면 인라인만 / 스크롤 내리거나 다른 화면=미니 PiP로 라이브 계속.
-   같은 영상 2중임베드=153 → PiP 뜰 땐 히어로 플레이어를 비우고, 위로 오면 다시 심음. */
+/* 히어로 보이면 인라인만 / 벗어나면 미니 PiP로 라이브 계속. 플레이어 1개를 이동. */
 function updatePip(){const raw=SHOP&&SHOP.session&&SHOP.session.youtube;if(!ytEmbedUrl(raw))return;
   if(LIVE_OK===false){ytHidePip();return;}/* 임베드 불가 라이브 → 커버만, PiP 없음 */
   const hero=document.querySelector('.hero');
   const past=(VIEW!=='home')||!hero||(hero.getBoundingClientRect().bottom<64);
   if(!past)PIP_CLOSED=false;
-  if(past&&!PIP_CLOSED){const hb=document.getElementById('livehero');if(hb&&hb.firstChild)hb.innerHTML='';mountYouTube(raw);}
-  else{ytHidePip();const hb=document.getElementById('livehero');if(hb&&!hb.firstChild&&LIVE_URL){LIVE_OK=null;ensureLivePlayer(LIVE_URL);}}}
+  if(past&&!PIP_CLOSED){if(!document.getElementById('ytfloat')){const hb=document.getElementById('livehero');if(hb)hb.innerHTML='';buildPipShell();mountLive('pipplayer');}}
+  else{if(document.getElementById('ytfloat')){ytHidePip();const hb=document.getElementById('livehero');if(hb){hb.innerHTML='';mountLive('livehero');}}}}
 function renderClosed(msg){
   $('#app').innerHTML=`<div class="appbar"><b>N-LIVE</b></div>
    <div class="center"><div><div style="font-size:44px;margin-bottom:10px">🌙</div>
