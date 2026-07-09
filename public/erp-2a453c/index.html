@@ -1175,7 +1175,16 @@ function snsIcon(p,s){s=s||36;const A=`width="${s}" height="${s}" viewBox="0 0 4
  if(p==='naver')return `<svg ${A}><rect width="40" height="40" rx="11" fill="#03C75A"/><path fill="#fff" d="M15 12.5h3.6l3.6 5.4v-5.4H25.5v15h-3.6l-3.6-5.4v5.4H15z"/></svg>`;
  return `<svg ${A}><rect width="40" height="40" rx="11" fill="#94a3b8"/></svg>`;}
 function snsGet(){return PREFS.sns||{};}
-function snsSave(d){PREFS.sns=d;savePrefs();}
+function snsSave(d){PREFS.sns=d;savePrefs();snsSyncToShop();}
+/* SNS 관리에 등록한 URL을 shop용 seller_socials로 자동 미러링(카톡은 건드리지 않음) */
+async function snsSyncToShop(){
+  const seller=(typeof ME!=='undefined'&&ME&&(ME.owner||ME.name))||'';if(!seller)return;
+  const d=snsGet();const u=p=>((d[p]&&d[p].url)||null);
+  const row={seller:seller,sns_youtube:u('youtube'),sns_instagram:u('instagram'),sns_tiktok:u('tiktok'),band_url:u('band'),updated_at:new Date().toISOString()};
+  try{const {error}=await SB.from('seller_socials').upsert(row,{onConflict:'seller'});
+    if(!error){if(typeof SELLER_SNS==='undefined')window.SELLER_SNS={};SELLER_SNS[seller]=Object.assign({},SELLER_SNS[seller]||{},row);}
+  }catch(e){console.error('snsSyncToShop',e);}
+}
 function snsAdd(){const d=snsGet(),avail=SNS_ALL.filter(p=>!(d[p]&&d[p].url));
   if(!avail.length){toast('모든 플랫폼이 이미 등록됐어요');return;}
   $('#modalBox').innerHTML=`<h3>＋ SNS 채널 추가</h3><div class="ms">등록할 플랫폼을 고르세요. URL만 넣으면 팔로워는 <b>서버가 자동 수집</b>합니다(틱톡·유튜브·인스타). 밴드·쇼핑라이브는 수동입력.</div>
@@ -1194,7 +1203,8 @@ function snsSpark(hist){if(!hist||hist.length<2)return '<svg width="58" height="
 /* SNS 팔로워 자동수집 — 서버 API(/api/sns-followers, Codex 작성)로 URL에서 팔로워 긁어와 일자별 기록 */
 async function fetchFollowers(plat,silent){const d=snsGet(),s=d[plat];if(!s||!s.url)return false;try{const r=await fetch('/api/sns-followers?platform='+encodeURIComponent(plat)+'&url='+encodeURIComponent(s.url));const j=await r.json();if(j&&j.ok&&j.followers!=null){const hist=(s.hist||[]).slice(-89),today=todayStr();if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=j.followers;else hist.push([today,j.followers]);s.fol=j.followers;s.hist=hist;snsSave(d);if(!silent){toast('🔄 '+SNS_META[plat].name+' 팔로워 '+j.followers.toLocaleString());render();}return true;}else{if(!silent)toast('⚠️ '+SNS_META[plat].name+' 자동수집 실패: '+((j&&j.note)||'차단됨')+' — 수동입력 가능');return false;}}catch(e){if(!silent)toast('⚠️ '+SNS_META[plat].name+' 수집 오류 (실서버에서만 작동)');return false;}}
 async function fetchAllFollowers(){toast('🔄 팔로워 자동수집 중...');let ok=0;const d=snsGet();for(const p of ['tiktok','instagram','youtube','band']){if(d[p]&&d[p].url&&await fetchFollowers(p,true))ok++;}try{const pr=snsGet();PREFS.sns_lastfetch=todayStr();savePrefs();}catch(e){}render();toast(ok?('✅ 자동수집 완료 — '+ok+'개 채널 갱신'):'⚠️ 수집된 채널 없음 (URL 등록/차단 확인)');}
-function viewSns(){const d=snsGet();const reg=SNS_ALL.filter(p=>d[p]&&d[p].url);
+function viewSns(){if(!window._snsSynced){window._snsSynced=true;snsSyncToShop();}/* 기존 등록 SNS를 shop에 1회 자동연동 */
+  const d=snsGet();const reg=SNS_ALL.filter(p=>d[p]&&d[p].url);
   const total=reg.reduce((a,p)=>a+((d[p]&&d[p].fol)||0),0);let recentDelta=0;reg.forEach(p=>{const s=d[p];if(s.hist&&s.hist.length>=2)recentDelta+=(s.fol-s.hist[s.hist.length-2][1]);});
   const maxFol=Math.max(1,...reg.map(p=>d[p].fol||0));
   const cards=reg.map(function(p){const m=SNS_META[p],s=d[p]||{},hist=s.hist||[];const delta=hist.length>=2?(s.fol-hist[hist.length-2][1]):0;
@@ -4170,23 +4180,23 @@ function liveDetail(s){
       <div class="row2"><div><label class="lbl">방송 제목</label><input id="ld_title" value="${escAttr(s.title||'')}"></div>
         <div><label class="lbl">담당 셀러 <span class="muted" style="font-weight:400;font-size:11px">(정산기준·비공개)</span></label><input id="ld_seller" value="${escAttr(s.seller)}" ${isSeller()?'readonly':''}></div></div>
       <label class="lbl" style="margin-top:8px">🙋 채널 표시명 <span class="muted" style="font-weight:400;font-size:11px">(고객에게 보이는 이름·비우면 담당 셀러로 표시)</span></label><input id="ld_display" value="${escAttr(s.display_name||'')}" placeholder="예: 연시언니">
+      <label class="lbl" style="margin-top:8px">🖼️ 메인화면 이미지 <span class="muted" style="font-weight:400;font-size:11px">(방송 안 할 때 홈 상단 표시)</span></label>
+      <div style="display:flex;align-items:center;gap:10px">${s.cover_url?`<img src="${esc(s.cover_url)}" style="width:64px;height:44px;border-radius:8px;object-fit:cover;flex:0 0 auto">`:'<span class="muted" style="font-size:11px">미등록</span>'}<input id="ld_cover_file" type="file" accept="image/*" style="flex:1"></div>
+      <label class="lbl" style="margin-top:8px">🎬 메인 영상(mp4) <span class="muted" style="font-weight:400;font-size:11px">(방송 안 할 때 홈 상단 자동재생·반복 · 짧게·30MB↓)</span></label>
+      <div class="muted" style="font-size:11px;margin-bottom:3px">${s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video)?'<b style="color:#059669">현재 mp4 등록됨</b> · ':''}유튜브 쇼츠는 삽입 불가 → <b>mp4 파일</b>로 올리세요</div>
+      <input id="ld_hero_file" type="file" accept="video/*">
       <label class="lbl" style="margin-top:8px">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
       <div class="row2" style="margin-top:8px"><div><label class="lbl">배송비</label><input id="ld_ship" type="number" value="${s.ship_fee}"></div>
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
       <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
       <label class="lbl" style="margin-top:8px">▶️ 유튜브 라이브 (채널ID UC… 또는 영상 링크)</label><input id="ld_youtube" value="${escAttr(s.youtube||'')}" placeholder="UC... 또는 youtube.com/watch?v=...">
       ${s.youtube?`<div style="margin-top:6px"><button type="button" class="btn sm" style="background:#0f172a;color:#fff" onclick="liveEndLive(${s.id})">🔴 라이브 종료 → 평소화면(mp4·이미지)으로 전환</button><div class="muted" style="font-size:11px;margin-top:3px">상품·주문은 그대로 유지되고 상단 영상만 평소화면으로 바뀝니다. (방송 자체를 닫으려면 [방송 마감])</div></div>`:''}
-      <label class="lbl" style="margin-top:8px">🔗 <b>${esc(s.seller)}</b> 셀러 SNS·문의 바로가기 <span class="muted" style="font-weight:400;font-size:11px">(이 셀러의 모든 방송에 자동 적용·홈 공지 아래 아이콘·비우면 숨김)</span></label>
-      ${(()=>{const ss=(SELLER_SNS&&SELLER_SNS[s.seller])||{};return `
-      <input id="ld_ytch" value="${escAttr(ss.sns_youtube||'')}" placeholder="유튜브 채널 URL (구독·방문용 · 라이브영상 아님)">
-      <div class="row2" style="margin-top:6px"><input id="ld_ig" value="${escAttr(ss.sns_instagram||'')}" placeholder="인스타그램 URL"><input id="ld_tt" value="${escAttr(ss.sns_tiktok||'')}" placeholder="틱톡 URL"></div>
-      <div class="row2" style="margin-top:6px"><input id="ld_kakao" value="${escAttr(ss.kakao_url||'')}" placeholder="카카오톡 채널 URL (문의 버튼)"><input id="ld_band" value="${escAttr(ss.band_url||'')}" placeholder="네이버 밴드 URL"></div>`;})()}
+      <label class="lbl" style="margin-top:8px">💬 <b>${esc(s.seller)}</b> 문의 카톡 채널 URL <span class="muted" style="font-weight:400;font-size:11px">(홈 문의 버튼·이 셀러 모든 방송 적용)</span></label>
+      ${(()=>{const ss=(SELLER_SNS&&SELLER_SNS[s.seller])||{};const has=p=>ss[p]?'<b style="color:#059669">연동됨</b>':'<span style="color:#cbd5e1">미등록</span>';return `
+      <input id="ld_kakao" value="${escAttr(ss.kakao_url||'')}" placeholder="카카오톡 채널 URL (예: http://pf.kakao.com/_xxxx)">
+      <div class="muted" style="font-size:11px;margin-top:5px">🔗 유튜브·인스타·틱톡·밴드 아이콘은 <b>[SNS 관리]에 등록한 URL이 자동 연동</b>됩니다 — 유튜브 ${has('sns_youtube')} · 인스타 ${has('sns_instagram')} · 틱톡 ${has('sns_tiktok')} · 밴드 ${has('band_url')}</div>`;})()}
       <label class="lbl" style="margin-top:10px">🖼️ 셀러 프로필 사진 (홈 상단 표시)</label>
       <div style="display:flex;align-items:center;gap:10px">${s.seller_photo?`<img src="${esc(s.seller_photo)}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex:0 0 auto">`:'<span class="muted" style="font-size:11px">미등록</span>'}<input id="ld_seller_photo" type="file" accept="image/*" style="flex:1"></div>
-      <label class="lbl" style="margin-top:10px">🎬 평소 히어로 영상 <span class="muted" style="font-weight:400;font-size:11px">(방송 안 할 때 홈 상단에서 자동재생·반복)</span></label>
-      <input id="ld_hero_url" value="${escAttr(s.hero_video&&!/\.(mp4|webm|mov)$/i.test(s.hero_video)?s.hero_video:'')}" placeholder="유튜브 일반영상 링크 (youtube.com/watch?v=...)">
-      <div class="muted" style="font-size:11px;margin:3px 0 4px">또는 아래에 영상파일(mp4) 업로드${s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video)?' · <b style="color:#059669">현재 mp4 등록됨</b>':''} · <b style="color:#dc2626">유튜브 쇼츠(youtube.com/shorts/…)는 삽입 불가</b> → mp4로 올리세요 · 인스타/틱톡도 다운받아 mp4 (짧게·30MB↓ 권장)</div>
-      <input id="ld_hero_file" type="file" accept="video/*">
       <div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn sm" id="ld_save_btn" onclick="liveSaveSettings(${s.id})">설정 저장</button></div>
     </div>
     <div class="card2">
@@ -4226,25 +4236,21 @@ async function liveSaveSettings(id){
   const s=(LIVE_SESS||[]).find(x=>x.id===id)||{};
   const btn=$('#ld_save_btn');if(btn){btn.disabled=true;btn.textContent='저장 중...';}
   try{
-    let seller_photo=s.seller_photo||null,hero_video=s.hero_video||null;
-    const pf=$('#ld_seller_photo'),vf=$('#ld_hero_file'),vu=$('#ld_hero_url');
-    const urlVal=(vu&&vu.value.trim())||'';
-    const existMp4=s.hero_video&&/\.(mp4|webm|mov)$/i.test(s.hero_video);
+    let seller_photo=s.seller_photo||null,hero_video=s.hero_video||null,cover_url=s.cover_url||null;
+    const pf=$('#ld_seller_photo'),vf=$('#ld_hero_file'),cf=$('#ld_cover_file');
     if(pf&&pf.files&&pf.files[0]){if(btn)btn.textContent='사진 업로드 중...';const u=await liveUploadFile(id,pf.files[0],'seller');if(u)seller_photo=u;}
-    if(vf&&vf.files&&vf.files[0]){if(btn)btn.textContent='영상 업로드 중...';const u=await liveUploadFile(id,vf.files[0],'hero');if(u)hero_video=u;}
-    else if(urlVal){hero_video=urlVal;}      /* 유튜브 URL */
-    else if(!existMp4){hero_video=null;}      /* URL 비우고 기존이 mp4 아니면 해제 */
+    if(cf&&cf.files&&cf.files[0]){if(btn)btn.textContent='이미지 업로드 중...';const u=await liveUploadFile(id,cf.files[0],'cover');if(u)cover_url=u;}
+    if(vf&&vf.files&&vf.files[0]){if(btn)btn.textContent='영상 업로드 중...';const u=await liveUploadFile(id,vf.files[0],'hero');if(u)hero_video=u;}  /* mp4만 · 새 업로드 없으면 기존 유지 */
     const sname=$('#ld_seller').value.trim();
     const row={title:$('#ld_title').value.trim(),seller:sname,display_name:(($('#ld_display')&&$('#ld_display').value.trim())||null),notice:$('#ld_notice').value.trim()||null,
       ship_fee:+$('#ld_ship').value||0,free_ship_min:+$('#ld_free').value||0,pay_info:($('#ld_payinfo')&&$('#ld_payinfo').value.trim())||null,
-      youtube:($('#ld_youtube')&&$('#ld_youtube').value.trim())||null,hero_video:hero_video,seller_photo:seller_photo};
+      youtube:($('#ld_youtube')&&$('#ld_youtube').value.trim())||null,hero_video:hero_video,seller_photo:seller_photo,cover_url:cover_url};
     const {error}=await SB.from('live_sessions').update(row).eq('id',id);
     if(error){console.error(error);toast('⚠️ 저장 실패: '+(error.message||''));if(btn){btn.disabled=false;btn.textContent='설정 저장';}return;}
-    /* SNS·카톡은 셀러별 저장(그 셀러의 모든 방송에 자동 적용) */
-    if(sname){const sval=id2=>{const e=$('#'+id2);return (e&&e.value.trim())||null;};
-      const ssRow={seller:sname,sns_youtube:sval('ld_ytch'),sns_instagram:sval('ld_ig'),sns_tiktok:sval('ld_tt'),kakao_url:sval('ld_kakao'),band_url:sval('ld_band'),updated_at:new Date().toISOString()};
-      const {error:se}=await SB.from('seller_socials').upsert(ssRow,{onConflict:'seller'});
-      if(se){console.error(se);toast('⚠️ SNS 저장 실패: '+(se.message||''));}else{SELLER_SNS[sname]=ssRow;}}
+    /* 카톡만 셀러별 저장(SNS URL은 [SNS 관리]에서 자동 연동 — snsSyncToShop) */
+    if(sname){const kv=($('#ld_kakao')&&$('#ld_kakao').value.trim())||null;
+      const {error:se}=await SB.from('seller_socials').upsert({seller:sname,kakao_url:kv},{onConflict:'seller'});
+      if(se){console.error(se);toast('⚠️ 카톡 저장 실패: '+(se.message||''));}else{SELLER_SNS[sname]=Object.assign({},SELLER_SNS[sname]||{},{seller:sname,kakao_url:kv});}}
     toast('✅ 설정 저장');await liveReload();
   }catch(e){console.error(e);toast('⚠️ 저장 오류');if(btn){btn.disabled=false;btn.textContent='설정 저장';}}
 }
