@@ -552,7 +552,7 @@ let SHIPPING=[];
 let SCHED=[];
 let PAYROLL_RECORDS=[];
 let PAY_DRAFTS={};/* 급여 드래프트·확정잠금 공용저장 — work_schedules '_payroll' 행(관리자 공유, 개인 PREFS 아님) */
-let LIVE_SESS=[],SESS_PROD=[],PIMG={},SELLER_SNS={};/* 라이브: 세션+방송상품+품번사진+셀러별SNS */
+let LIVE_SESS=[],SESS_PROD=[],PIMG={},PVID={},SELLER_SNS={};/* 라이브: 세션+방송상품+품번사진+품번영상+셀러별SNS */
 const baseCode=c=>String(c||'').split('-')[0];/* 품번 base(색상/사이즈 접미사 제거) */
 /* 번호표 표기: ERP는 #064(3자리·#), 고객화면은 64번. 숫자 아니면(캡처 QAM1 등) 원문 */
 const hashNo=c=>{const b=baseCode(c);return /^\d+$/.test(b)?'#'+String(parseInt(b,10)).padStart(3,'0'):b;};
@@ -602,7 +602,7 @@ async function dbLoadAll(){
     }catch(e){console.warn('work_schedules load',e);WORKSCH=WORKSCH||[];}
     try{const ls=await SB.from('live_sessions').select('*').order('id',{ascending:false});LIVE_SESS=(ls&&ls.data)||[];
         const sp=await SB.from('session_products').select('*').order('sort');SESS_PROD=(sp&&sp.data)||[];
-        const pi=await SB.from('product_images').select('*');PIMG={};((pi&&pi.data)||[]).forEach(r=>{PIMG[r.code]=r.url;});
+        const pi=await SB.from('product_images').select('*');PIMG={};PVID={};((pi&&pi.data)||[]).forEach(r=>{PIMG[r.code]=r.url;if(r.video_url)PVID[r.code]=r.video_url;});
         try{const so=await SB.from('seller_socials').select('*');SELLER_SNS={};((so&&so.data)||[]).forEach(r=>{SELLER_SNS[r.seller]=r;});}catch(e){}}catch(e){console.warn('live load',e);LIVE_SESS=LIVE_SESS||[];SESS_PROD=SESS_PROD||[];PIMG=PIMG||{};}
     if(typeof ME!=='undefined'&&ME&&(ME.scope==='all'||ME.scope==='logi'||(typeof canStockEdit==='function'&&canStockEdit()))){try{const sc=await SB.from('stock_cost').select('*');if(sc&&sc.data){const cm={};sc.data.forEach(r=>cm[r.stock_id]=r.in_price);STOCK.forEach(s=>{s.in_price=(cm[s.id]!=null)?cm[s.id]:(s.in_price||0);});}}catch(e){console.error('cost',e);}}else if(typeof ME!=='undefined'&&ME){STOCK.forEach(s=>{s.in_price=0;});}
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
@@ -4336,31 +4336,49 @@ function liveSearchRun(){
 }
 /* 품번별 상품사진 등록(물류팀 입고사진 · 영구보관 · 방송연결 시 자동 사용) */
 function livePhotoModal(base){
-  window._photoBase=base;const cur=PIMG[base]||'';
+  window._photoBase=base;const cur=PIMG[base]||'';const curV=PVID[base]||'';
   $('#modalBox').className='modal-box modal-photo';
-  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📷 상품사진 · 품번 ${esc(base)}</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📷 상품사진·영상 · 품번 ${esc(base)}</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
     <div class="muted" style="font-size:12px;margin-bottom:10px">한 번 등록하면 이 품번(${esc(base)})의 모든 방송에서 자동으로 사용됩니다. · <span style="color:var(--blue)">↘ 창 모서리를 드래그하면 크게 볼 수 있어요</span></div>
     ${imgPickerHtml('pm')}
     ${cur?`<div class="muted" style="font-size:11px;margin-top:8px">현재 등록된 사진:</div><img alt="" src="${esc(cur)}" style="display:block;max-width:100%;max-height:min(42vh,380px);border-radius:8px;border:1px solid var(--line);margin-top:4px">`:''}
+    <label class="lbl" style="margin-top:12px;display:block">🎬 상품 영상(mp4) <span class="muted" style="font-weight:400;font-size:11px">(고객이 상품에서 "영상 보기"로 재생 · 평소 홈영상에도 포함 · 짧게·30MB↓)</span></label>
+    ${curV?`<div class="muted" style="font-size:11px;margin:4px 0">현재 등록된 영상: <b style="color:#059669">있음</b> <button class="btn sm red ghost" style="padding:2px 8px" onclick="livePhotoVideoDel('${escAttr(base)}')">영상 삭제</button></div><video src="${esc(curV)}" controls muted playsinline style="display:block;max-width:100%;max-height:min(40vh,340px);border-radius:8px;border:1px solid var(--line)"></video>`:''}
+    <input id="pm_video" type="file" accept="video/*" style="margin-top:6px">
     <div class="modal-foot">${cur?`<button class="btn red ghost" onclick="livePhotoDelete('${escAttr(base)}')">사진 삭제</button>`:''}<span style="flex:1"></span><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="pm_save" onclick="livePhotoSave()">저장</button></div>`;
   $('#modal').classList.remove('hide');imgPickerBind('pm');
 }
 async function livePhotoSave(){
   const base=window._photoBase;
-  if(!window._imgBlob&&!window._imgUrl){toast('사진을 캡처·붙여넣기·선택해 주세요');return;}
+  const vf=$('#pm_video'),hasVid=vf&&vf.files&&vf.files[0],hasImg=window._imgBlob||window._imgUrl;
+  if(!hasImg&&!hasVid){toast('사진 또는 영상을 등록해 주세요');return;}
   const btn=$('#pm_save');btn.disabled=true;btn.textContent='업로드 중...';
-  try{let url=window._imgUrl;
-    if(!url){let up=window._imgBlob;if(up.size>3*1024*1024){try{up=await liveCompress(up);}catch(e){}}const path='products/'+base+'_'+Date.now()+'.jpg';
-      const {error:ue}=await SB.storage.from('live').upload(path,up,{contentType:(up.type||'image/jpeg'),upsert:true});
-      if(ue){console.error(ue);toast('⚠️ 업로드 실패');btn.disabled=false;btn.textContent='저장';return;}
-      const {data:pub}=SB.storage.from('live').getPublicUrl(path);url=pub&&pub.publicUrl;}
-    const {error}=await SB.from('product_images').upsert({code:base,url,updated_at:new Date().toISOString()});
+  try{
+    const upo={code:base,updated_at:new Date().toISOString()};
+    if(hasImg){let url=window._imgUrl;
+      if(!url){let b=window._imgBlob;if(b.size>3*1024*1024){try{b=await liveCompress(b);}catch(e){}}const path='products/'+base+'_'+Date.now()+'.jpg';
+        const {error:ue}=await SB.storage.from('live').upload(path,b,{contentType:(b.type||'image/jpeg'),upsert:true});
+        if(ue){console.error(ue);toast('⚠️ 사진 업로드 실패');btn.disabled=false;btn.textContent='저장';return;}
+        const {data:pub}=SB.storage.from('live').getPublicUrl(path);url=pub&&pub.publicUrl;}
+      upo.url=url;}
+    if(hasVid){btn.textContent='영상 업로드 중...';const f=vf.files[0];const ext=((f.name||'').split('.').pop()||'mp4').toLowerCase();const vp='products/'+base+'_v_'+Date.now()+'.'+ext;
+      const {error:ve}=await SB.storage.from('live').upload(vp,f,{contentType:(f.type||'video/mp4'),upsert:true});
+      if(ve){console.error(ve);toast('⚠️ 영상 업로드 실패');btn.disabled=false;btn.textContent='저장';return;}
+      const {data:vpub}=SB.storage.from('live').getPublicUrl(vp);upo.video_url=vpub&&vpub.publicUrl;}
+    const {error}=await SB.from('product_images').upsert(upo,{onConflict:'code'});
     if(error){console.error(error);toast('⚠️ 저장 실패: '+(error.message||''));btn.disabled=false;btn.textContent='저장';return;}
-    PIMG[base]=url;
-    /* 이 품번을 이미 담은 방송상품들 이미지도 갱신 */
-    try{await SB.from('session_products').update({image_url:url}).eq('stock_code',base);SESS_PROD.forEach(p=>{if(p.stock_code===base)p.image_url=url;});}catch(e){console.error(e);}
-    closeModal();toast('✅ 상품사진 등록: 품번 '+base);if($('#lv_res'))liveSearchRun();render();
+    if(upo.url)PIMG[base]=upo.url;if(upo.video_url)PVID[base]=upo.video_url;
+    /* 이 품번을 담은 방송상품 이미지/영상도 갱신 */
+    try{const u2={};if(upo.url)u2.image_url=upo.url;if(upo.video_url)u2.video_url=upo.video_url;
+      if(Object.keys(u2).length){await SB.from('session_products').update(u2).eq('stock_code',base);SESS_PROD.forEach(p=>{if(p.stock_code===base){if(upo.url)p.image_url=upo.url;if(upo.video_url)p.video_url=upo.video_url;}});}}catch(e){console.error(e);}
+    closeModal();toast('✅ 등록: 품번 '+base);if($('#lv_res'))liveSearchRun();render();
   }catch(e){console.error(e);toast('⚠️ 오류');btn.disabled=false;btn.textContent='저장';}
+}
+async function livePhotoVideoDel(base){
+  if(!confirm('품번 '+base+' 상품영상을 삭제할까요? (사진은 유지)'))return;
+  try{await SB.from('product_images').update({video_url:null}).eq('code',base);delete PVID[base];
+    await SB.from('session_products').update({video_url:null}).eq('stock_code',base);SESS_PROD.forEach(p=>{if(p.stock_code===base)p.video_url=null;});
+    toast('상품영상 삭제됨');livePhotoModal(base);}catch(e){console.error(e);toast('⚠️ 오류');}
 }
 async function livePhotoDelete(base){
   if(!confirm('품번 '+base+' 상품사진을 삭제할까요?'))return;

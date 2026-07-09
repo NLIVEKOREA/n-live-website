@@ -132,6 +132,11 @@ button,input,select,textarea{font:inherit}
 .pcard .pi img{width:100%;height:100%;object-fit:cover;display:block}
 .pcard .pi-ph{width:100%;height:100%;display:grid;place-items:center;color:#aeb4c0;font-size:12px}
 .pcard .num{position:absolute;top:8px;left:8px;z-index:2;background:rgba(19,19,22,.72);backdrop-filter:blur(6px);color:#fff;font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px}
+.pcard .vbtn{position:absolute;bottom:8px;right:8px;z-index:3;background:rgba(19,19,22,.8);backdrop-filter:blur(6px);color:#fff;font-size:11px;font-weight:800;padding:5px 9px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.vidov{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9998;display:none;align-items:center;justify-content:center;padding:16px}
+.vidbox{position:relative;width:min(480px,100%)}
+.vidx{position:absolute;top:-42px;right:0;background:rgba(255,255,255,.16);color:#fff;border:0;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer}
+.vidtt{color:#fff;text-align:center;margin-top:12px;font-size:14px;font-weight:700}
 .pcard.sold .pi:after{content:"품절";position:absolute;inset:0;background:rgba(255,255,255,.66);display:grid;place-items:center;font-weight:900;color:var(--ink);font-size:15px}
 .pcard .pn{font-size:13.5px;font-weight:600;line-height:1.35;margin:9px 2px 0;color:#2a2a30;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pcard .pp{font-size:16px;font-weight:900;margin:3px 2px 0;letter-spacing:-.03em}
@@ -305,14 +310,27 @@ function ytLoopUrl(v){const e=ytEmbedUrl(v);if(!e)return '';const id=(e.match(/e
 function heroHtml(s){
   const live=ytEmbedUrl(s.youtube),hv=(s.hero_video||'').trim(),hvYt=ytLoopUrl(hv);
   const vert=/\/shorts\//.test(s.youtube||'')||/\/shorts\//.test(hv)||/vert|9x16|_v\./i.test(hv);/* 세로(쇼츠) 영상 */
-  let media;
-  if(live)media=`<div class="hmedia" id="livehero"></div>`;/* 방송중 라이브: ensureLivePlayer가 채움(실패시 커버로 전환) */
-  else if(hvYt)media=`<iframe class="hmedia" src="${hvYt}" allow="autoplay; encrypted-media" frameborder="0"></iframe>`;/* 평소 고정영상=유튜브 루프 */
-  else if(hv)media=`<video class="hmedia" src="${esc(hv)}" autoplay muted loop playsinline></video>`;/* 평소 고정영상=mp4 */
-  else if(s.cover_url)media=`<img class="hmedia" src="${esc(s.cover_url)}">`;
-  else media=`<div class="hmedia hgrad"></div>`;
+  /* 방송중=라이브 플레이어 / 평소=릴(메인영상+상품영상 루프)은 startReel이 채움 */
+  const media=live?`<div class="hmedia" id="livehero"></div>`:`<div class="hmedia hgrad" id="reelhero"></div>`;
   return `<div class="hero${vert?' vert':''}">${media}<div class="hshade"></div>
     <div class="htop">${live?'<span class="livep"><i></i> LIVE</span>':''}</div></div>`;
+}
+/* 평소(비방송) 릴: 메인 mp4 + 등록된 상품영상들을 무한루프 재생. 없으면 유튜브루프/커버/그라데 */
+function startReel(s,ps){
+  const box=document.getElementById('reelhero');if(!box)return;
+  const hv=(s.hero_video||'').trim();const reel=[];
+  if(hv&&/\.(mp4|webm|mov)$/i.test(hv))reel.push(hv);
+  (ps||[]).forEach(p=>{if(p.video)reel.push(p.video);});
+  if(reel.length){box.className='hmedia';
+    box.innerHTML='<video id="reelvid" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0d0d10" autoplay muted playsinline></video>';
+    const v=document.getElementById('reelvid');let i=0;
+    const play=()=>{if(!v)return;v.src=reel[i%reel.length];const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{});};
+    if(reel.length===1){v.loop=true;}else{v.addEventListener('ended',()=>{i++;play();});}
+    play();return;}
+  const hvYt=ytLoopUrl(hv);
+  if(hvYt){box.className='hmedia';box.innerHTML='<iframe style="position:absolute;inset:0;width:100%;height:100%;border:0" src="'+hvYt+'" allow="autoplay; encrypted-media" frameborder="0"></iframe>';return;}
+  if(s.cover_url){box.className='hmedia';box.innerHTML='<img style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" src="'+esc(s.cover_url)+'">';return;}
+  box.className='hmedia hgrad';box.innerHTML='';
 }
 /* 전체상품 위 컨트롤바: 정보 접기/펼치기 + 유튜브 바로가기(iframe 위가 아니라 일반영역 → 확실히 눌림) */
 function productsHtml(s,ps){
@@ -325,7 +343,7 @@ function productsHtml(s,ps){
   const grid=ps.length?`<div class="shead"><h2>전체 상품</h2><small>${ps.length}</small></div>
    <div class="grid2">${ps.map(p=>{const so=prodSoldOut(p);
      return `<button class="pcard ${so?'sold':''}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
-       <div class="pi">${(p.tag||p.code)?`<span class="num">${esc(numLabel(p.tag||p.code))}</span>`:''}${p.image_url?`<img src="${esc(p.image_url)}">`:`<div class="pi-ph">상품이미지</div>`}</div>
+       <div class="pi">${(p.tag||p.code)?`<span class="num">${esc(numLabel(p.tag||p.code))}</span>`:''}${p.video?`<span class="vbtn" onclick="event.stopPropagation();event.preventDefault();playProductVideoById(${p.id})">🎬 영상</span>`:''}${p.image_url?`<img src="${esc(p.image_url)}">`:`<div class="pi-ph">상품이미지</div>`}</div>
        <div class="pn">${esc(p.name)}</div><div class="pp">${won(p.live_price)}</div></button>`;}).join('')}</div>`
    :`<div class="center" style="min-height:180px">등록된 상품이 곧 올라옵니다.</div>`;
   return feat+grid;
@@ -350,7 +368,8 @@ function renderHome(){
     +`<div class="homewrap"><div id="prodzone">${productsHtml(s,ps)}</div></div>`
     +(cartCount()?`<div class="cbar"><button onclick="go('cart')">🛒 장바구니 보기 <span class="cb">${cartCount()}개 · ${won(subtotal()+shipFee())}</span></button></div>`:'')
     +`<div class="tabbar"><a class="on"><i>🏠</i>홈</a><a onclick="go('orders')"><i>📦</i>내주문</a><a onclick="go('cart')"><i>🛒</i>장바구니</a><a onclick="contactKakao()"><i>💬</i>문의</a></div>`;
-  if(live&&!document.getElementById('ytfloat'))ensureLivePlayer(s.youtube);
+  if(live){if(!document.getElementById('ytfloat'))ensureLivePlayer(s.youtube);}
+  else startReel(s,ps);
   updatePip();
 }
 /* 셀러 SNS/카톡 공식 아이콘 바로가기 (공지 아래) */
@@ -435,6 +454,12 @@ function orderCard(o){
 }
 function trackShip(t){const n=String(t||'').replace(/[^0-9]/g,'');if(!n){toast('운송장 번호가 아직 없어요.');return;}
   window.open('https://trace.cjlogistics.com/next/tracking.html?wblNo='+n,'_blank','noopener');}
+/* 상품 영상 재생 오버레이 */
+function playProductVideoById(id){const p=(SHOP.products||[]).find(x=>x.id===id);if(!p||!p.video){toast('등록된 영상이 없어요.');return;}
+  let o=document.getElementById('vidOv');if(!o){o=document.createElement('div');o.id='vidOv';o.className='vidov';o.onclick=function(e){if(e.target===o)closeVideoOverlay();};document.body.appendChild(o);}
+  o.innerHTML='<div class="vidbox"><button class="vidx" onclick="closeVideoOverlay()">✕</button><video src="'+esc(p.video)+'" controls autoplay playsinline style="width:100%;max-height:82vh;border-radius:12px;background:#000;display:block"></video><div class="vidtt">'+esc(p.name||'')+'</div></div>';
+  o.style.display='flex';}
+function closeVideoOverlay(){const o=document.getElementById('vidOv');if(o){const v=o.querySelector('video');if(v){try{v.pause();}catch(e){}}o.style.display='none';o.innerHTML='';}}
 function openProduct(id){CURP=(SHOP.products||[]).find(p=>p.id===id);if(!CURP)return;
   const cs=colorsOf(CURP),zs=sizesOf(CURP);
   SEL={color:cs.length?null:'',size:zs.length?null:'',qty:1};go('product');}
@@ -559,6 +584,7 @@ function go(v){VIEW=v;window.scrollTo(0,0);render();updatePip();}
 window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSize;window.qc=qc;window.addCart=addCart;
 window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;window.shopZoom=shopZoom;window.ytToggleSize=ytToggleSize;window.pipClose=pipClose;
 window.contactKakao=contactKakao;window.lookupOrders=lookupOrders;window.trackShip=trackShip;window.toggleInfo=toggleInfo;
+window.playProductVideoById=playProductVideoById;window.closeVideoOverlay=closeVideoOverlay;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 load();
 </script>
