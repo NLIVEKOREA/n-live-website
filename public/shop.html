@@ -365,7 +365,8 @@ const _SVG={
 };
 function socialLinks(s,ytLink){
   const it=[];
-  if(ytLink)it.push({u:ytLink,bg:'#FF0000',fg:'#fff',n:'YouTube',s:_SVG.yt});
+  const ytCh=s.sns_youtube||ytLink;/* 셀러 등록 채널 우선, 없으면 라이브 링크 */
+  if(ytCh)it.push({u:ytCh,bg:'#FF0000',fg:'#fff',n:'YouTube',s:_SVG.yt});
   if(s.sns_instagram)it.push({u:s.sns_instagram,bg:'linear-gradient(45deg,#f9ce34,#ee2a7b 45%,#6228d7)',fg:'#fff',n:'Instagram',s:_SVG.ig});
   if(s.sns_tiktok)it.push({u:s.sns_tiktok,bg:'#111',fg:'#fff',n:'TikTok',s:_SVG.tt});
   if(s.kakao_url)it.push({u:s.kakao_url,bg:'#FEE500',fg:'#191600',n:'카카오톡',s:_SVG.ka});
