@@ -1,0 +1,115 @@
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>N-LIVE preview</title>
+<style>
+:root{--ink:#131316;--sub:#8b8b93;--line:#ededf0;--bg:#ececed;--accent:#ff2140;--accent-d:#e00e2e;--card:#fff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,system-ui,"Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.02em}
+.app{max-width:440px;margin:0 auto;min-height:100vh;background:var(--card);position:relative;padding-bottom:150px;box-shadow:0 0 60px rgba(0,0,0,.08)}
+/* HERO */
+.hero{position:relative;aspect-ratio:1/1;overflow:hidden;background:#111}
+.hero>img{width:100%;height:100%;object-fit:cover;display:block}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,0) 32%,rgba(0,0,0,.06) 55%,rgba(0,0,0,.82) 100%)}
+.htop{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:9px;padding:16px 16px 0}
+.livep{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;font-weight:800;font-size:12px;padding:6px 11px 6px 9px;border-radius:100px;box-shadow:0 4px 14px rgba(255,33,64,.5)}
+.livep i{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 0 rgba(255,255,255,.7);animation:pl 1.6s infinite}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}70%{box-shadow:0 0 0 7px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.viewers{background:rgba(0,0,0,.42);backdrop-filter:blur(8px);color:#fff;font-weight:700;font-size:12px;padding:6px 11px;border-radius:100px}
+.hbottom{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:18px 18px 20px;color:#fff}
+.hbottom .ttl{font-size:23px;font-weight:800;line-height:1.25;letter-spacing:-.04em;text-shadow:0 1px 12px rgba(0,0,0,.4)}
+.hseller{display:flex;align-items:center;gap:11px;margin-top:14px}
+.hseller img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.9)}
+.hseller b{font-size:15px;font-weight:800}.hseller small{display:block;opacity:.82;font-size:12px;margin-top:1px;font-weight:600}
+.follow{margin-left:auto;background:#fff;color:#131316;font-weight:800;font-size:13px;padding:9px 16px;border-radius:100px}
+/* STICKY BAR */
+.tbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;height:52px;padding:0 8px 0 16px;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--line)}
+.tbar b{font-size:15px;font-weight:800}
+.tbar .ic{margin-left:auto;width:38px;height:38px;border:0;background:none;font-size:19px;display:grid;place-items:center;position:relative;cursor:pointer}
+.tbar .ic .cnt{position:absolute;top:2px;right:2px;min-width:17px;height:17px;background:var(--accent);color:#fff;font-size:10px;font-weight:800;border-radius:100px;display:grid;place-items:center;padding:0 4px}
+/* NOTICE */
+.notice{margin:14px 16px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.notice summary{list-style:none;display:flex;align-items:center;gap:9px;padding:14px 15px;font-size:13.5px;font-weight:700;cursor:pointer}
+.notice summary::-webkit-details-marker{display:none}
+.notice .chip{background:#131316;color:#fff;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:6px}
+.notice .arw{margin-left:auto;color:var(--sub);transition:.2s}
+.notice[open] .arw{transform:rotate(180deg)}
+.notice .body{padding:0 15px 15px;font-size:12.5px;line-height:1.75;color:#54545c;white-space:pre-line}
+/* SECTION */
+.shead{display:flex;align-items:baseline;gap:9px;padding:24px 18px 12px}
+.shead h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.03em}
+.shead small{color:var(--sub);font-size:12px;font-weight:600}
+/* FEATURED (지금 소개중) */
+.feat{margin:0 16px;border-radius:18px;overflow:hidden;position:relative;background:#111;box-shadow:0 10px 30px rgba(0,0,0,.14)}
+.feat img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.feat .nowtag{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;font-weight:800;font-size:11.5px;padding:6px 11px;border-radius:100px;box-shadow:0 4px 14px rgba(255,33,64,.45)}
+.feat .fmeta{position:absolute;left:0;right:0;bottom:0;padding:36px 16px 15px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.82));color:#fff;display:flex;align-items:flex-end;gap:12px}
+.feat .fmeta .fn{font-size:16px;font-weight:800;line-height:1.3}
+.feat .fmeta .fp{font-size:19px;font-weight:900;margin-top:4px}
+.feat .fmeta .fadd{margin-left:auto;flex:0 0 auto;background:#fff;color:#131316;border:0;font-weight:800;font-size:14px;padding:12px 18px;border-radius:12px}
+/* GRID */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px 16px 8px}
+.pcard{border:0;background:none;text-align:left;padding:0;cursor:pointer}
+.pcard .pi{position:relative;aspect-ratio:1/1;border-radius:15px;overflow:hidden;background:#f3f3f5}
+.pcard .pi img{width:100%;height:100%;object-fit:cover;display:block}
+.pcard .num{position:absolute;top:8px;left:8px;background:rgba(19,19,22,.72);backdrop-filter:blur(6px);color:#fff;font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px}
+.pcard.sold .pi:after{content:"품절";position:absolute;inset:0;background:rgba(255,255,255,.66);backdrop-filter:blur(1px);display:grid;place-items:center;font-weight:900;color:#131316;font-size:15px}
+.pcard .pn{font-size:13.5px;font-weight:600;line-height:1.35;margin:9px 2px 0;color:#2a2a30}
+.pcard .pp{font-size:16px;font-weight:900;margin:3px 2px 0;letter-spacing:-.03em}
+/* BOTTOM */
+.cbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(64px + env(safe-area-inset-bottom));width:min(440px,100%);padding:0 14px;z-index:40}
+.cbar button{width:100%;border:0;background:var(--accent);color:#fff;font-weight:800;font-size:16px;padding:16px;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 12px 30px rgba(255,33,64,.36);cursor:pointer}
+.cbar button .cb{background:rgba(255,255,255,.24);border-radius:8px;padding:2px 9px;font-size:13px}
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(440px,100%);height:calc(64px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;z-index:39}
+.tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--sub);text-decoration:none;font-size:11px;font-weight:700;padding-top:8px}
+.tabbar a.on{color:var(--ink)}
+.tabbar a i{font-size:21px}
+</style></head><body>
+<div class="app">
+  <div class="tbar"><b>연시언니</b>
+    <button class="ic">🔍</button>
+    <button class="ic">🛒<span class="cnt">2</span></button>
+  </div>
+  <div class="hero">
+    <img src="https://www.n-live.co.kr/brand-images/b02/shop1.jpg" alt="">
+    <div class="htop"><span class="livep"><i></i> LIVE</span><span class="viewers">👁 1,240</span></div>
+    <div class="hbottom">
+      <div class="ttl">올여름 코디 끝!<br>실시간 구매 맛집 🔥</div>
+      <div class="hseller">
+        <img src="https://www.n-live.co.kr/brand-images/b01/shop6.jpg" alt="">
+        <div><b>연시언니</b><small>팔로워 12.4천 · 데일리룩</small></div>
+        <button class="follow">+ 팔로우</button>
+      </div>
+    </div>
+  </div>
+
+  <details class="notice"><summary><span class="chip">공지</span> 배송 · 교환/반품 안내<span class="arw">▾</span></summary>
+    <div class="body">🚚 평일 월~금 예쁘게 포장 출고 (토·일·공휴일 휴무)
+영업일 기준 3~5일 소요되니 여유 있게 기다려주시면 감사하겠습니다.
+개인 사정·사이즈 미스로 인한 교환·반품은 어려우니 신중한 구매 부탁드려요 🙏</div>
+  </details>
+
+  <div class="shead"><h2>🔴 지금 소개중</h2><small>방송에서 소개 중인 상품</small></div>
+  <div class="feat">
+    <span class="nowtag"><i style="width:6px;height:6px;border-radius:50%;background:#fff;display:inline-block"></i> LIVE 소개중</span>
+    <img src="https://www.n-live.co.kr/brand-images/b03/shop2.jpg" alt="">
+    <div class="fmeta"><div><div class="fn">볼륨업 하이웨스트 데님</div><div class="fp">29,000원</div></div><button class="fadd">담기</button></div>
+  </div>
+
+  <div class="shead"><h2>전체 상품</h2><small>12</small></div>
+  <div class="grid">
+    <button class="pcard"><div class="pi"><span class="num">1</span><img src="https://www.n-live.co.kr/brand-images/b01/shop2.jpg"></div><div class="pn">오버핏 라운드 니트 가디건</div><div class="pp">34,000원</div></button>
+    <button class="pcard"><div class="pi"><span class="num">2</span><img src="https://www.n-live.co.kr/brand-images/b01/shop3.jpg"></div><div class="pn">펠라 크롭 자켓 (먹색)</div><div class="pp">65,000원</div></button>
+    <button class="pcard"><div class="pi"><span class="num">3</span><img src="https://www.n-live.co.kr/brand-images/b02/shop4.jpg"></div><div class="pn">슬림핏 코튼 슬랙스</div><div class="pp">28,000원</div></button>
+    <button class="pcard sold"><div class="pi"><span class="num">4</span><img src="https://www.n-live.co.kr/brand-images/b02/shop5.jpg"></div><div class="pn">에어리 셔링 블라우스</div><div class="pp">32,000원</div></button>
+    <button class="pcard"><div class="pi"><span class="num">5</span><img src="https://www.n-live.co.kr/brand-images/b03/shop6.jpg"></div><div class="pn">데일리 라운드 티셔츠</div><div class="pp">19,000원</div></button>
+    <button class="pcard"><div class="pi"><span class="num">6</span><img src="https://www.n-live.co.kr/brand-images/b03/shop7.jpg"></div><div class="pn">플리츠 미디 스커트</div><div class="pp">27,000원</div></button>
+  </div>
+
+  <div class="cbar"><button>🛒 장바구니 보기 <span class="cb">2개 · 63,000원</span></button></div>
+  <div class="tabbar">
+    <a class="on"><i>🏠</i>홈</a>
+    <a><i>📦</i>주문내역</a>
+    <a><i>💬</i>문의</a>
+  </div>
+</div>
+</body></html>
