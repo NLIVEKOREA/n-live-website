@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>위잉치킨 라이선스 관리</title>
+<style>
+  :root{--bg:#0f1522;--panel:#1a2234;--panel2:#212c44;--line:#2c3a58;--text:#e8edf7;--sub:#93a1bd;--blue:#3b82f6;--blue-d:#2563eb;--green:#34d399;--red:#f87171;--amber:#fbbf24;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Malgun Gothic","Pretendard",sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 18px;}
+  h1{font-size:20px;display:flex;align-items:center;gap:10px;}
+  .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;}
+  .sub{color:var(--sub);font-size:12.5px;margin-top:4px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:16px;}
+  input,select{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:14px;}
+  button{cursor:pointer;border:none;border-radius:8px;padding:9px 14px;font-weight:700;font-size:13px;}
+  button.primary{background:var(--blue);color:#fff;} button.primary:hover{background:var(--blue-d);}
+  button.mini{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:5px 9px;font-weight:600;font-size:12px;}
+  button.mini.danger{color:var(--red);border-color:#7f1d1d;}
+  button.mini.warn{color:var(--amber);border-color:#78591a;}
+  table{width:100%;border-collapse:collapse;margin-top:6px;}
+  th{text-align:left;color:var(--sub);font-size:12px;padding:8px;border-bottom:1px solid var(--line);}
+  td{padding:8px;border-bottom:1px solid #1c2740;font-size:13px;vertical-align:middle;}
+  .pill{display:inline-block;border-radius:10px;padding:1px 9px;font-size:11px;}
+  .pill.ok{background:rgba(52,211,153,.15);color:var(--green);}
+  .pill.bad{background:rgba(248,113,113,.15);color:var(--red);}
+  .pill.warn{background:rgba(251,191,36,.15);color:var(--amber);}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .gate{max-width:360px;margin:80px auto;text-align:center;}
+  .gate .card{text-align:left;}
+  .msg{color:var(--sub);font-size:12.5px;margin-top:8px;min-height:16px;}
+  .k{font-family:monospace;font-weight:700;}
+  .muted{color:var(--sub);}
+  .ver{font-size:12px;color:var(--sub);}
+</style>
+</head>
+<body>
+<!-- 로그인 게이트 -->
+<div class="gate" id="gate">
+  <h1 style="justify-content:center"><span class="logo">W</span> 라이선스 관리</h1>
+  <div class="card">
+    <label class="muted" style="font-size:12px">관리자 비밀번호</label>
+    <input id="secret" type="password" placeholder="관리자 비밀번호" style="width:100%;margin-top:6px" />
+    <button class="primary" id="loginBtn" style="width:100%;margin-top:10px">들어가기</button>
+    <div class="msg" id="gateMsg"></div>
+  </div>
+</div>
+
+<!-- 관리 화면 -->
+<div class="wrap" id="app" style="display:none">
+  <div class="row" style="justify-content:space-between">
+    <div>
+      <h1><span class="logo">W</span> 위잉치킨 라이선스 관리</h1>
+      <div class="sub">사용자(키) 등록 · 기간 관리 · 정지 · 기기 초기화 <span class="ver" id="verInfo"></span></div>
+    </div>
+    <button class="mini" id="logoutBtn">로그아웃</button>
+  </div>
+
+  <!-- 신규 등록 -->
+  <div class="card">
+    <div class="row">
+      <input id="nKey" placeholder="라이선스 키 (예: WEEING-0002)" style="width:220px" />
+      <input id="nLabel" placeholder="이름/메모 (예: 홍길동)" style="width:200px" />
+      <select id="nDays">
+        <option value="0">무제한</option>
+        <option value="30">30일</option>
+        <option value="90">90일</option>
+        <option value="180">180일</option>
+        <option value="365">365일</option>
+      </select>
+      <button class="primary" id="addBtn">＋ 키 발급</button>
+      <button class="mini" id="genBtn">키 자동생성</button>
+    </div>
+    <div class="msg" id="addMsg"></div>
+  </div>
+
+  <!-- 목록 -->
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <b>발급된 라이선스</b>
+      <button class="mini" id="reloadBtn">새로고침</button>
+    </div>
+    <table>
+      <thead><tr><th>키</th><th>이름</th><th>상태</th><th>기간</th><th>기기</th><th>조작</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const SB_URL = "https://qikvvqgxmquevzyykkcm.supabase.co";
+const SB_ANON = "sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao";
+const $ = (id) => document.getElementById(id);
+let SECRET = localStorage.getItem("chi_admin_secret") || "";
+
+async function rpc(fn, body) {
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/${fn}`, {
+    method: "POST",
+    headers: { apikey: SB_ANON, authorization: "Bearer " + SB_ANON, "content-type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  try { return await r.json(); } catch (_) { return { ok: false, reason: "응답 오류" }; }
+}
+
+function fmtDate(s){ if(!s) return ""; const d=new Date(s); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`; }
+function daysLeft(s){ if(!s) return null; return Math.ceil((new Date(s)-new Date())/86400000); }
+
+function periodCell(r){
+  if(!r.expires_at) return '<span class="pill">무제한</span>';
+  const d = daysLeft(r.expires_at);
+  if(d<0) return `<span class="pill bad">만료</span> <span class="muted">${fmtDate(r.expires_at)}</span>`;
+  const cls = d<=7 ? "warn" : "ok";
+  return `<span class="pill ${cls}">${d}일 남음</span> <span class="muted">~${fmtDate(r.expires_at)}</span>`;
+}
+
+async function load(){
+  const res = await rpc("admin_list_licenses", { p_secret: SECRET });
+  if(!res.ok){ $("rows").innerHTML = `<tr><td colspan="6" class="bad">${res.reason||"불러오기 실패"}</td></tr>`; return; }
+  const rows = res.rows||[];
+  $("rows").innerHTML = rows.map(r=>{
+    const active = r.active && (!r.expires_at || daysLeft(r.expires_at)>=0);
+    const status = !r.active ? '<span class="pill bad">정지</span>' : (active ? '<span class="pill ok">사용중</span>' : '<span class="pill bad">만료</span>');
+    const machine = r.machine ? '<span class="pill ok">등록됨</span>' : '<span class="pill">미사용</span>';
+    return `<tr>
+      <td class="k">${esc(r.key)}</td>
+      <td>${esc(r.label||"")}</td>
+      <td>${status}</td>
+      <td>${periodCell(r)}</td>
+      <td>${machine}</td>
+      <td class="row">
+        ${r.active ? `<button class="mini warn" data-act="off" data-k="${esc(r.key)}">정지</button>` : `<button class="mini" data-act="on" data-k="${esc(r.key)}">활성</button>`}
+        <button class="mini" data-act="ext" data-k="${esc(r.key)}">+30일</button>
+        <button class="mini" data-act="reset" data-k="${esc(r.key)}">기기초기화</button>
+        <button class="mini danger" data-act="del" data-k="${esc(r.key)}">삭제</button>
+      </td></tr>`;
+  }).join("") || '<tr><td colspan="6" class="muted">발급된 키 없음</td></tr>';
+}
+
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+async function checkVersion(){
+  try{
+    const r = await fetch(SB_URL+"/storage/v1/object/public/updates/latest.yml?t="+Date.now());
+    if(!r.ok) return;
+    const t = await r.text();
+    const v = (t.match(/version:\s*([0-9.]+)/)||[])[1];
+    if(v) $("verInfo").textContent = "· 현재 배포버전 v"+v;
+  }catch(_){}
+}
+
+// 로그인
+$("loginBtn").addEventListener("click", tryLogin);
+$("secret").addEventListener("keydown", e=>{ if(e.key==="Enter") tryLogin(); });
+async function tryLogin(){
+  SECRET = $("secret").value.trim();
+  $("gateMsg").textContent = "확인 중...";
+  const res = await rpc("admin_list_licenses", { p_secret: SECRET });
+  if(res.ok){ localStorage.setItem("chi_admin_secret", SECRET); showApp(); }
+  else $("gateMsg").textContent = "❌ " + (res.reason||"비밀번호 오류");
+}
+function showApp(){ $("gate").style.display="none"; $("app").style.display="block"; load(); checkVersion(); }
+$("logoutBtn").addEventListener("click", ()=>{ localStorage.removeItem("chi_admin_secret"); location.reload(); });
+
+// 등록
+$("genBtn").addEventListener("click", ()=>{ $("nKey").value = "WEEING-" + Math.random().toString(36).slice(2,6).toUpperCase() + "-" + Math.random().toString(36).slice(2,6).toUpperCase(); });
+$("addBtn").addEventListener("click", async ()=>{
+  const key = $("nKey").value.trim();
+  if(!key) return $("addMsg").textContent="키를 입력하세요";
+  $("addMsg").textContent="발급 중...";
+  const res = await rpc("admin_create_license", { p_secret:SECRET, p_key:key, p_label:$("nLabel").value.trim(), p_days:Number($("nDays").value) });
+  if(res.ok){ $("addMsg").textContent="✅ 발급됨: "+key; $("nKey").value=""; $("nLabel").value=""; load(); }
+  else $("addMsg").textContent="❌ "+(res.reason||"실패");
+});
+
+// 목록 조작
+$("reloadBtn").addEventListener("click", load);
+$("rows").addEventListener("click", async (e)=>{
+  const b = e.target.closest("button[data-act]"); if(!b) return;
+  const key = b.dataset.k, act = b.dataset.act;
+  if(act==="del" && !confirm(key+" 키를 삭제할까요?")) return;
+  if(act==="reset" && !confirm(key+"의 기기 등록을 초기화할까요? (다른 기기에서 재인증 가능)")) return;
+  let res;
+  if(act==="off") res = await rpc("admin_update_license",{p_secret:SECRET,p_key:key,p_active:false,p_add_days:0,p_reset_machine:false});
+  else if(act==="on") res = await rpc("admin_update_license",{p_secret:SECRET,p_key:key,p_active:true,p_add_days:0,p_reset_machine:false});
+  else if(act==="ext") res = await rpc("admin_update_license",{p_secret:SECRET,p_key:key,p_active:null,p_add_days:30,p_reset_machine:false});
+  else if(act==="reset") res = await rpc("admin_update_license",{p_secret:SECRET,p_key:key,p_active:null,p_add_days:0,p_reset_machine:true});
+  else if(act==="del") res = await rpc("admin_delete_license",{p_secret:SECRET,p_key:key});
+  load();
+});
+
+// 자동 로그인
+if(SECRET) showApp(); else $("secret").focus();
+</script>
+</body>
+</html>
