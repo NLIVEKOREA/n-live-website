@@ -634,7 +634,7 @@ async function guard(key,fn){if(_busy.has(key)){toast('⏳ 처리 중입니다 �
 /* 필드 스냅샷/복원 — DB 저장 실패 시 화면 롤백용 */
 function _snap(o,keys){const s={};keys.forEach(k=>s[k]=o[k]);return s;}
 function _restore(o,s){Object.assign(o,s);}
-async function delOrd(o){try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');return false;}}return true;}catch(e){console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');return false;}}
+async function delOrd(o){try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');}}}catch(e){console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');}}
 async function saveStock(s){try{if(s&&s.id!=null){const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');}}
 /* 재고 원자적 가감 — DB에서 qty=qty±delta 계산(동시 차감해도 안 깨짐). 반환된 정확한 값으로 화면 갱신 */
 async function adjustStockDB(s,delta,reason,ref){if(!s)return false;if(s.id==null){s.qty=(s.qty||0)+delta;return true;}try{const {data,error}=await SB.rpc('adjust_stock',{p_id:s.id,p_delta:delta});if(error){console.error('adjustStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');return false;}if(typeof data==='number')s.qty=data;try{await SB.from('stock_log').insert({stock_id:s.id,code:s.code,delta:delta,reason:reason||'조정',ref:ref||null,staff:(window.ME&&ME.name)||null});}catch(e){}return true;}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');return false;}}
@@ -1845,7 +1845,7 @@ async function cancelPaidGroup(date,cust){const items=mine(ORD).filter(o=>o.pay=
   await cancelGroupObj({cust,items},true);}
 async function cancelGroupObj(g,restoreStock){if(!g)return;const removed=[];g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);removed.push({o,s,dq:o.qty});});
   toast('🗑️ 주문 취소'+(restoreStock?' → 재고 복원':'')+': '+(g.cust||''));render();
-  for(const {o,s,dq} of removed){await delOrd(o);const shopUndeducted=o.source==='shop'&&!!o.reservation_expires_at;/* 링크주문 미입금 = 재고 미차감(가예약만) → 복원 금지(유령재고 방지) */if((restoreStock?!o.back:true)&&!shopUndeducted&&s&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장')await adjustStockDB(s,dq,'주문취소',o.cust);}}
+  for(const {o,s,dq} of removed){await delOrd(o);if((restoreStock?!o.back:true)&&s&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장')await adjustStockDB(s,dq,'주문취소',o.cust);}}
 
 /* ===== 주문서(고객 안내문) ===== */
 /* 셀러별 입금계좌 (주문서 복사·라이브 계좌안내에 g.staff/셀러 기준 자동매칭) · 예금주 나영식 */
@@ -1909,8 +1909,8 @@ function lineRow(l,i){
     <td><span class="tagbox">${tagOf(l.code)}</span></td>
     <td class="barcode muted">${skuFullCode(l.code,l.color,l.size)}</td>
     <td style="text-align:left">${l.name}</td>
-    <td><select onchange="lineColor(${i},this.value)" style="font-weight:800;color:#0f172a">${colors.map(c=>`<option ${l.color===c?'selected':''}>${c}</option>`).join('')}</select></td>
-    <td><select onchange="lineSize(${i},this.value)" style="font-weight:800;color:#1d4ed8">${sizes.map(s=>`<option ${l.size===s.size?'selected':''}>${s.size}${s.qty<=0?'(품절)':''}</option>`).join('')}</select></td>
+    <td><select onchange="lineColor(${i},this.value)" style="font-weight:800;color:#0f172a">${colors.map(c=>`<option value="${escAttr(c==null?'':c)}" ${l.color===c?'selected':''}>${esc(c==null||c===''?'(색상없음)':c)}</option>`).join('')}</select></td>
+    <td><select onchange="lineSize(${i},this.value)" style="font-weight:800;color:#1d4ed8">${sizes.map(s=>`<option value="${escAttr(s.size==null?'':s.size)}" ${l.size===s.size?'selected':''}>${esc(s.size==null||s.size===''?'(규격없음)':s.size)}${s.qty<=0?' (품절)':''}</option>`).join('')}</select></td>
     <td><input class="qty" type="number" min="1" value="${l.qty}" onchange="lineQty(${i},this.value)"></td>
     <td class="num-cell" style="font-weight:700">${q==null?'-':q}</td>
     <td class="num-cell" style="font-weight:800;color:#0f172a">${won(l.price)}</td>
@@ -1966,8 +1966,12 @@ function entryKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(
 function addLineByCode(code){
   const color=colorsOf(code)[0],sizesIn=STOCK.filter(s=>s.code===code&&s.color===color),sk=sizesIn.find(s=>s.qty>0)||sizesIn[0];
   OE.lines.push({code,name:prodName(code),color,size:sk.size,qty:1,price:sk.price,back:sk.qty<=0});render();}
-function lineColor(i,color){const l=OE.lines[i];l.color=color;const sizesIn=STOCK.filter(s=>s.code===l.code&&s.color===color),sk=sizesIn.find(s=>s.qty>0)||sizesIn[0];l.size=sk.size;l.price=sk.price;l.back=(sk||{}).qty<=0;render();}
-function lineSize(i,size){const l=OE.lines[i],sk=skuOf(l.code,l.color,size);l.size=size;if(sk)l.price=sk.price;l.back=(sk||{}).qty<=0;render();}
+function lineColor(i,color){const l=OE.lines[i];if(!l)return;l.color=color;
+  const sizesIn=STOCK.filter(s=>s.code===l.code&&s.color===color);
+  const sk=sizesIn.find(s=>s.size===l.size)||sizesIn.find(s=>s.qty>0)||sizesIn[0];/* 현재 사이즈 유지 우선, 없으면 재고있는것/첫번째 */
+  if(sk){l.size=sk.size;l.price=sk.price;l.back=(sk.qty||0)<=0;}/* sk 없어도 크래시 안 남 */
+  render();}
+function lineSize(i,size){const l=OE.lines[i];if(!l)return;const sk=skuOf(l.code,l.color,size);l.size=size;if(sk){l.price=sk.price;l.back=(sk.qty||0)<=0;}render();}
 function lineQty(i,v){const l=OE.lines[i];if(!l)return;l.qty=Math.max(1,parseInt(v)||1);if(!l.kind){const sk=skuOf(l.code,l.color,l.size);if(sk)l.back=l.qty>(sk.qty||0);}render();}
 function lineBack(i,c){OE.lines[i].back=c;render();}
 function removeLine(i){OE.lines.splice(i,1);render();}
@@ -2168,7 +2172,7 @@ async function shipConsolidate(cust){
   if(ships.length===0)return false;
   const goods=set.filter(o=>o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장');
   const goodsTotal=goods.reduce((a,o)=>a+(o.price||0)*(o.qty||0),0);
-  const free=goodsTotal>=freeThresh();
+  const free=ships.some(o=>(o.price||0)===0)||goodsTotal>=freeThresh();
   const keep=ships[0],drop=ships.slice(1);
   const nP=free?0:4000,nN=free?'무료배송':'배송비';
   let changed=false;
@@ -2801,7 +2805,7 @@ async function cancelSaleCommit(){const d=CANCELDRAFT;if(!d)return;const o=ORD.f
   const i=ORD.indexOf(o);if(i>=0)ORD.splice(i,1);const s=skuOf(o.code,o.color,o.size);
   closeModal();CANCELDRAFT=null;
   toast('🗑️ '+kind+' 처리 → 재고 복원'+(toP?' · 적립금 +'+won(amt):' · 실환불 '+won(net)));render();
-  const _del=await delOrd(o);if(!_del){if(i>=0)ORD.splice(i,0,o);else ORD.push(o);toast('⚠️ 삭제 저장 실패 — 취소가 취소됐어요. 다시 시도하세요');render();return;}if(s)await adjustStockDB(s,o.qty,kind,cust);
+  await delOrd(o);if(s)await adjustStockDB(s,o.qty,kind,cust);
   /* 현금/계좌 환불 → 환불대장에 CS 기록 (매출에는 안 잡히도록 pay='cs') */
   if(!toP){const _td=todayStr();const led={date:(_snap.date||_td).replace(/-/g,'/'),staff:_snap.staff||ME.name||'박시연',cust,code:'CS',disp:item,tag:'CS',color:'',size:'',qty:_snap.qty||1,price:amt,pay:'cs',ship:'done',source:'cs',rxtype:'refund',rxstat:'done',rxreason:kind,rxdate:_td,rxdone:_td,
       meta:{status:kind,settle:{account,refund:amt,deduct,net,memo:kind,at:_td,by:ME.name}}};
