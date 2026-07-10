@@ -126,6 +126,11 @@ button,input,select,textarea{font:inherit}
 .feat .fmeta{position:absolute;left:0;right:0;bottom:0;padding:36px 15px 15px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.82));color:#fff;display:flex;align-items:flex-end;gap:12px;text-align:left}
 .feat .fn{font-size:16px;font-weight:800;line-height:1.3}.feat .fp{font-size:19px;font-weight:900;margin-top:4px}
 .feat .fadd{margin-left:auto;flex:0 0 auto;background:#fff;color:var(--ink);font-weight:800;font-size:14px;padding:11px 17px;border-radius:12px}
+.psearch{position:relative;margin:8px 16px 0}
+.psearch input{width:100%;height:42px;border:1px solid var(--line);border-radius:12px;padding:0 40px 0 36px;font-size:14px;background:#fff;box-sizing:border-box}
+.psearch input:focus{outline:none;border-color:var(--brand)}
+.psi{position:absolute;left:13px;top:11px;font-size:15px;opacity:.55;pointer-events:none}
+.pqx{position:absolute;right:9px;top:9px;width:24px;height:24px;border-radius:50%;background:#eef0f4;color:#667085;display:none;place-items:center;cursor:pointer;font-size:12px;font-weight:800}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px 16px 8px}
 .pcard{border:0;background:none;text-align:left;padding:0;cursor:pointer}
 .pcard .pi{position:relative;aspect-ratio:1/1;border-radius:15px;overflow:hidden;background:#f3f3f5}
@@ -207,6 +212,7 @@ let DONE=null;        // 주문완료 결과
 let CUST={receiver:'',nick:'',phone:'',addr:'',addr_detail:'',agree:false};
 let PAYM='현금';        // 결제방법: 현금 | 카드
 let INFO_OPEN=true;   // 홈 프로필/공지/소셜 블록 펼침 여부(영상 하단 접기버튼)
+let PSEARCH='';       // 상품 검색어(폴링 재렌더에도 유지)
 
 const $=s=>document.querySelector(s);
 const won=n=>'₩'+Number(n||0).toLocaleString();
@@ -341,10 +347,13 @@ function productsHtml(s,ps){
       ${nowP.image_url?`<img src="${esc(nowP.image_url)}">`:`<div class="fimg-ph">상품이미지</div>`}
       <div class="fmeta"><div><div class="fn">${esc(nowP.name)}</div><div class="fp">${won(nowP.live_price)}</div></div><span class="fadd">담기</span></div></button>`:'';
   const grid=ps.length?`<div class="shead"><h2>전체 상품</h2><small>${ps.length}</small></div>
-   <div class="grid2">${ps.map(p=>{const so=prodSoldOut(p);
-     return `<button class="pcard ${so?'sold':''}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
+   <div class="psearch"><span class="psi">🔍</span><input id="pq" value="${esc(PSEARCH)}" placeholder="상품명·번호로 검색" oninput="shopSearch()"><span id="pqx" class="pqx" onclick="shopClearSearch()">✕</span></div>
+   <div class="grid2" id="pgrid">${ps.map(p=>{const so=prodSoldOut(p);
+     const ds=(String(p.name||'')+' '+String(p.tag||'')+' '+String(p.code||'')+' '+String(numLabel(p.tag||p.code||''))).toLowerCase();
+     return `<button class="pcard ${so?'sold':''}" data-s="${esc(ds)}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
        <div class="pi">${(p.tag||p.code)?`<span class="num">${esc(numLabel(p.tag||p.code))}</span>`:''}${p.video?`<span class="vbtn" onclick="event.stopPropagation();event.preventDefault();playProductVideoById(${p.id})">🎬 영상</span>`:''}${p.image_url?`<img src="${esc(p.image_url)}">`:`<div class="pi-ph">상품이미지</div>`}</div>
-       <div class="pn">${esc(p.name)}</div><div class="pp">${won(p.live_price)}</div></button>`;}).join('')}</div>`
+       <div class="pn">${esc(p.name)}</div><div class="pp">${won(p.live_price)}</div></button>`;}).join('')}</div>
+   <div id="pnone" class="center" style="display:none;min-height:120px">검색 결과가 없어요.</div>`
    :`<div class="center" style="min-height:180px">등록된 상품이 곧 올라옵니다.</div>`;
   return feat+grid;
 }
@@ -370,6 +379,7 @@ function renderHome(){
     +`<div class="tabbar"><a class="on"><i>🏠</i>홈</a><a onclick="go('orders')"><i>📦</i>내주문</a><a onclick="go('cart')"><i>🛒</i>장바구니</a><a onclick="contactKakao()"><i>💬</i>문의</a></div>`;
   if(live){if(!document.getElementById('ytfloat'))ensureLivePlayer(s.youtube);}
   else startReel(s,ps);
+  if(PSEARCH)shopSearch();
   updatePip();
 }
 /* 셀러 SNS/카톡 공식 아이콘 바로가기 (공지 아래) */
@@ -393,6 +403,12 @@ function socialLinks(s,ytLink){
 }
 function contactKakao(){const u=SHOP&&SHOP.session&&SHOP.session.kakao_url;if(u){window.open(u,'_blank','noopener');}else{toast('문의는 방송 채팅이나 카톡 채널로 남겨주세요 🙏');}}
 function toggleInfo(){INFO_OPEN=!INFO_OPEN;const b=document.getElementById('infoblock');if(b)b.classList.toggle('collapsed',!INFO_OPEN);const t=document.getElementById('infoToggle');if(t)t.textContent=INFO_OPEN?'▲ 프로필·공지 접기':'▼ 프로필·공지 펼치기';}
+/* 상품 검색(클라이언트 필터 · 폴링 재렌더에도 PSEARCH로 유지) */
+function shopSearch(){const i=document.getElementById('pq');const q=((i?i.value:PSEARCH)||'').trim().toLowerCase();PSEARCH=q;
+  const x=document.getElementById('pqx');if(x)x.style.display=q?'grid':'none';
+  let shown=0;document.querySelectorAll('#pgrid .pcard').forEach(el=>{const m=!q||(el.getAttribute('data-s')||'').indexOf(q)>=0;el.style.display=m?'':'none';if(m)shown++;});
+  const none=document.getElementById('pnone');if(none)none.style.display=(q&&shown===0)?'grid':'none';}
+function shopClearSearch(){PSEARCH='';const i=document.getElementById('pq');if(i){i.value='';i.focus();}shopSearch();}
 /* ===== 실시간 상품 갱신: 방송 중 셀러가 상품 추가/수정하면 새로고침 없이 반영 ===== */
 let POLL_T=null,_prodSig='';
 function prodSig(ps){return (ps||[]).map(p=>p.id+':'+p.live_price+':'+(p.image_url||'')+':'+(p.is_now?1:0)+':'+esc(p.name||'')+':'+(p.options||[]).map(o=>(o.color||'')+(o.size||'')+(o.available?1:0)).join(',')).join('|');}
@@ -403,7 +419,7 @@ async function pollShop(){
     if(data.status!=='open'){if(POLL_T){clearInterval(POLL_T);POLL_T=null;}SHOP=data;if(VIEW==='home')renderClosed();return;}
     SHOP.session=data.session;const sig=prodSig(data.products);
     if(sig!==_prodSig){_prodSig=sig;SHOP.products=data.products||[];
-      if(VIEW==='home'){const z=document.getElementById('prodzone');if(z)z.innerHTML=productsHtml(SHOP.session,SHOP.products);const ps=document.querySelector('.profsub');if(ps)ps.innerHTML='상품 '+SHOP.products.length+'개 · '+(ytEmbedUrl(SHOP.session.youtube)?'🔴 실시간 방송중':'판매중');}
+      if(VIEW==='home'){const z=document.getElementById('prodzone');if(z){z.innerHTML=productsHtml(SHOP.session,SHOP.products);if(PSEARCH)shopSearch();}const ps=document.querySelector('.profsub');if(ps)ps.innerHTML='상품 '+SHOP.products.length+'개 · '+(ytEmbedUrl(SHOP.session.youtube)?'🔴 실시간 방송중':'판매중');}
     }
   }catch(e){}
 }
@@ -586,6 +602,7 @@ window.openProduct=openProduct;window.pickColor=pickColor;window.pickSize=pickSi
 window.cqc=cqc;window.rmCart=rmCart;window.submitOrder=submitOrder;window.go=go;window.clearRemembered=clearRemembered;window.setPay=setPay;window.shopZoom=shopZoom;window.ytToggleSize=ytToggleSize;window.pipClose=pipClose;
 window.contactKakao=contactKakao;window.lookupOrders=lookupOrders;window.trackShip=trackShip;window.toggleInfo=toggleInfo;
 window.playProductVideoById=playProductVideoById;window.closeVideoOverlay=closeVideoOverlay;
+window.shopSearch=shopSearch;window.shopClearSearch=shopClearSearch;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 load();
 </script>

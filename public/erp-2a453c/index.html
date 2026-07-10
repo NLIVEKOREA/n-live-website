@@ -4365,14 +4365,16 @@ function liveSearchRun(){
   const addedBases=new Set(liveProdsOf(window._liveAddSid).map(p=>baseCode(p.stock_code)).filter(Boolean));
   const seen={};const groups=[];
   STOCK.forEach(s=>{const b=baseCode(s.code);if(!b)return;
-    if(q&&!inc(s.code,q)&&!inc(s.name,q))return;
+    if(q&&!inc(s.code,q)&&!inc(s.name,q)&&!inc(s.tag,q))return;/* 품번·상품명·번호표(tag) 검색 */
     if(seen[b]!=null)return;seen[b]=1;
     const rows=STOCK.filter(x=>baseCode(x.code)===b);
     const colors=[...new Set(rows.map(r=>r.color).filter(Boolean))];
     const sizes=[...new Set(rows.map(r=>r.size).filter(Boolean))];
     const qty=rows.reduce((a,r)=>a+(r.qty||0),0);
     groups.push({base:b,name:baseName(s.name,s.color,s.size),price:s.price,qty,colors,sizes,img:PIMG[b]||''});});
-  el.innerHTML=groups.length?groups.slice(0,80).map(g=>{const on=addedBases.has(g.base);return `
+  const CAP=600,shown=groups.slice(0,CAP);
+  const head=`<div class="muted" style="font-size:11px;margin-bottom:6px">${q?'검색 결과':'전체 상품'} <b>${groups.length}</b>개 품번${groups.length>CAP?` · 너무 많아 ${CAP}개만 표시(검색으로 좁히세요)`:''}</div>`;
+  el.innerHTML=groups.length?head+shown.map(g=>{const on=addedBases.has(g.base);return `
     <div style="display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px;margin-bottom:7px;background:${on?'#eef7ee':'#fff'}">
       <button onclick="livePhotoModal('${escAttr(g.base)}')" title="상품사진 등록/변경 (품번 연동)" style="border:0;background:none;padding:0;cursor:pointer;flex:0 0 auto">${g.img?`<img src="${esc(g.img)}" alt="" style="width:46px;height:46px;object-fit:cover;border-radius:8px;display:block">`:'<span style="width:46px;height:46px;border-radius:8px;background:#eef1f6;display:grid;place-items:center;font-size:16px;color:#9aa">📷</span>'}</button>
       <button ${on?'disabled':''} onclick="liveAddStock('${escAttr(g.base)}')" style="flex:1;min-width:0;text-align:left;border:0;background:none;cursor:${on?'default':'pointer'};padding:0">
