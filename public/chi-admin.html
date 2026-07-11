@@ -20,6 +20,8 @@
   button.mini{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:5px 9px;font-weight:600;font-size:12px;}
   button.mini.danger{color:var(--red);border-color:#7f1d1d;}
   button.mini.warn{color:var(--amber);border-color:#78591a;}
+  .dl-btn{background:var(--green);color:#08301f;border-radius:8px;padding:10px 16px;font-weight:800;font-size:13px;text-decoration:none;}
+  .dl-btn:hover{filter:brightness(1.08);}
   table{width:100%;border-collapse:collapse;margin-top:6px;}
   th{text-align:left;color:var(--sub);font-size:12px;padding:8px;border-bottom:1px solid var(--line);}
   td{padding:8px;border-bottom:1px solid #1c2740;font-size:13px;vertical-align:middle;}
@@ -56,6 +58,18 @@
       <div class="sub">사용자(키) 등록 · 기간 관리 · 정지 · 기기 초기화 <span class="ver" id="verInfo"></span></div>
     </div>
     <button class="mini" id="logoutBtn">로그아웃</button>
+  </div>
+
+  <!-- 설치파일 다운로드 -->
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <div>
+      <b>📥 위잉치킨 설치파일</b>
+      <div class="muted" style="font-size:12px;margin-top:3px">고객에게 이 파일을 주세요. 설치 후 발급한 키로 인증합니다. (버전 <span id="dlVer">0.1.0</span>)</div>
+    </div>
+    <div class="row">
+      <a class="dl-btn" id="dlBtn" href="https://qikvvqgxmquevzyykkcm.supabase.co/storage/v1/object/public/updates/weeing-setup-0.1.0.exe" download>설치파일 다운로드</a>
+      <button class="mini" id="copyDlBtn">링크 복사</button>
+    </div>
   </div>
 
   <!-- 신규 등록 -->
@@ -162,6 +176,10 @@ async function tryLogin(){
 }
 function showApp(){ $("gate").style.display="none"; $("app").style.display="block"; load(); checkVersion(); }
 $("logoutBtn").addEventListener("click", ()=>{ localStorage.removeItem("chi_admin_secret"); location.reload(); });
+$("copyDlBtn").addEventListener("click", ()=>{
+  const url = $("dlBtn").getAttribute("href");
+  navigator.clipboard.writeText(url).then(()=>{ $("copyDlBtn").textContent="복사됨!"; setTimeout(()=>$("copyDlBtn").textContent="링크 복사",1500); });
+});
 
 // 등록
 $("genBtn").addEventListener("click", ()=>{ $("nKey").value = "WEEING-" + Math.random().toString(36).slice(2,6).toUpperCase() + "-" + Math.random().toString(36).slice(2,6).toUpperCase(); });
