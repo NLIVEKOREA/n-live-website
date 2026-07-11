@@ -184,7 +184,7 @@ $("copyDlBtn").addEventListener("click", ()=>{
 // 등록
 $("genBtn").addEventListener("click", ()=>{ $("nKey").value = "WEEING-" + Math.random().toString(36).slice(2,6).toUpperCase() + "-" + Math.random().toString(36).slice(2,6).toUpperCase(); });
 $("addBtn").addEventListener("click", async ()=>{
-  const key = $("nKey").value.trim();
+  const key = $("nKey").value.trim().toUpperCase();  // 앱이 대문자로 확인하므로 항상 대문자 저장
   if(!key) return $("addMsg").textContent="키를 입력하세요";
   $("addMsg").textContent="발급 중...";
   const res = await rpc("admin_create_license", { p_secret:SECRET, p_key:key, p_label:$("nLabel").value.trim(), p_days:Number($("nDays").value) });
