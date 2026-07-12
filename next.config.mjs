@@ -8,8 +8,8 @@ const nextConfig = {
     return [
       { source: "/matching-pool", destination: "/matching-pool.html" },
       { source: "/matching-pool/", destination: "/matching-pool.html" },
-      { source: "/privacy", destination: "/privacy.html" },
-      { source: "/privacy/", destination: "/privacy.html" },
+      { source: "/shop-privacy", destination: "/privacy.html" },
+      { source: "/shop-privacy/", destination: "/privacy.html" },
       { source: "/signup", destination: "/signup.html" },
       { source: "/signup/", destination: "/signup.html" },
       { source: "/erp-2a453c", destination: "/erp-2a453c/index.html" },
