@@ -206,6 +206,18 @@ const AUTH=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:
 const SLUG=(location.pathname.match(/\/shop\/([^\/?#]+)/)||[])[1]||'';
 let SHOP=null;        // get_live_shop 결과
 let CART=[];          // {product_id,name,price,color,size,qty,image_url}
+const CART_KEY='nlive_cart_'+SLUG;   // 장바구니 보관(셀러별) — 창 닫았다 켜도 유지
+function saveCart(){try{localStorage.setItem(CART_KEY,JSON.stringify(CART));}catch(e){}}
+function emptyCart(){CART=[];saveCart();}
+function restoreCart(){
+  try{const saved=JSON.parse(localStorage.getItem(CART_KEY)||'[]');if(!Array.isArray(saved))return;
+    const ps=(SHOP&&SHOP.products)||[];
+    CART=saved.map(x=>{const p=ps.find(pp=>pp.id===x.product_id);if(!p)return null;/* 지금 방송에 없는 상품은 제외 */
+      return {product_id:p.id,name:p.name,price:p.live_price,color:x.color||'',size:x.size||'',qty:Math.max(1,+x.qty||1),image_url:p.image_url||''};/* 가격·이름 최신화 */
+    }).filter(Boolean);
+    saveCart();
+  }catch(e){}
+}
 let VIEW='home';      // home | product | cart | form | done
 let CURP=null;        // 현재 상세 상품
 let SEL={color:null,size:null,qty:1};
@@ -233,6 +245,7 @@ async function load(){
     if(error){console.error(error);renderClosed('일시적인 오류입니다. 잠시 후 다시 시도해 주세요.');return;}
     SHOP=data;
     if(!SHOP||SHOP.status!=='open'){renderClosed();return;}
+    restoreCart();/* 저장해둔 장바구니 복원(현재 방송 상품만·최신가) */
     render();
     window.addEventListener('scroll',updatePip,{passive:true});updatePip();
     startPoll();/* 실시간 상품 갱신 */
@@ -512,7 +525,7 @@ function addCart(){const p=CURP;
   if(!optAvail(p,SEL.color,SEL.size)){toast('선택하신 옵션은 품절입니다.');return;}
   const ex=CART.find(x=>x.product_id===p.id&&x.color===(SEL.color||'')&&x.size===(SEL.size||''));
   if(ex)ex.qty+=SEL.qty;else CART.push({product_id:p.id,name:p.name,price:p.live_price,color:SEL.color||'',size:SEL.size||'',qty:SEL.qty,image_url:p.image_url||''});
-  toast('장바구니에 담았어요');go('home');}
+  saveCart();toast('장바구니에 담았어요');go('home');}
 function renderCart(){
   if(!CART.length){$('#app').innerHTML=appbar('장바구니',"go('home')")+`<div class="center">🛒 장바구니가 비어있어요<br><br><button class="cta ghost" style="width:auto;padding:12px 20px" onclick="go('home')">상품 보러가기</button></div>`;return;}
   const rows=CART.map((x,i)=>{const img=x.image_url?`style="background-image:url('${esc(x.image_url)}')"`:'';
@@ -528,8 +541,8 @@ function renderCart(){
         <div class="total"><span>결제예정금액</span><span>${won(subtotal()+sf)}</span></div></div></div>
      <div class="foot"><button class="cta" onclick="go('form')">주문 정보 입력</button></div>`;
 }
-function cqc(i,d){CART[i].qty+=d;if(CART[i].qty<1)CART[i].qty=1;render();}
-function rmCart(i){CART.splice(i,1);render();}
+function cqc(i,d){CART[i].qty+=d;if(CART[i].qty<1)CART[i].qty=1;saveCart();render();}
+function rmCart(i){CART.splice(i,1);saveCart();render();}
 function renderForm(){
   const sf=shipFee();
   const remembered=CUST.phone&&CUST.receiver?`<div class="remembered">👋 <b>${esc(CUST.receiver)}</b>님, 저장된 정보로 채웠어요.<a onclick="clearRemembered()">다른 사람으로 주문</a></div>`:'';
@@ -575,7 +588,7 @@ async function submitOrder(){
     if(!data||!data.ok){toast((data&&data.msg)||'주문을 완료할 수 없습니다.');btn.disabled=false;btn.textContent='주문하기';
       if(data&&(data.reason==='soldout'||data.reason==='bad_option'||data.reason==='bad_item'))await load();return;}
     try{localStorage.setItem('nlive_cust',JSON.stringify({receiver:CUST.receiver,nick:CUST.nick,phone:CUST.phone,addr:CUST.addr,addr_detail:CUST.addr_detail}));}catch(e){}
-    DONE=data;CART=[];go('done');
+    DONE=data;emptyCart();go('done');
   }catch(e){console.error(e);toast('연결 오류입니다. 인터넷을 확인해 주세요.');btn.disabled=false;btn.textContent='주문하기';}
 }
 function clearRemembered(){try{localStorage.removeItem('nlive_cust');}catch(e){}CUST={receiver:'',nick:'',phone:'',addr:'',addr_detail:'',agree:false};render();toast('저장된 정보를 지웠어요');}
@@ -597,7 +610,7 @@ function renderDone(){
        :`<div class="paynote">💵 <b>계좌이체 안내</b>${d.pay_info?`<div style="background:#fff;border:1px solid #cfe0ff;border-radius:8px;padding:10px;margin:8px 0;font-size:14px;font-weight:800;color:#111;text-align:center">${esc(d.pay_info)}</div>`:'<br>· 방송 채팅/카톡으로 계좌번호를 안내드립니다.<br>'}
         · 위 <b>주문금액 ${won(d.total)}</b>을 입금해 주세요. (여러 번 주문하셨으면 <b>합계 한 번에</b>)<br>
         · <b>입금 확인 순서대로</b> 재고가 배정됩니다. 빠른 입금 부탁드려요!</div>`}
-      <button class="cta ghost" style="margin-top:20px" onclick="CART=[];DONE=null;go('home')">쇼핑 계속하기</button>
+      <button class="cta ghost" style="margin-top:20px" onclick="emptyCart();DONE=null;go('home')">쇼핑 계속하기</button>
      </div>`;
 }
 function shopZoom(url){if(!url)return;let o=document.getElementById('zoomOv');if(!o){o=document.createElement('div');o.id='zoomOv';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);display:grid;place-items:center;z-index:9999;cursor:zoom-out;padding:12px';o.onclick=function(){o.style.display='none';};o.innerHTML='<img style="max-width:96vw;max-height:96vh;border-radius:8px">';document.body.appendChild(o);}o.querySelector('img').src=url;o.style.display='grid';}
