@@ -199,7 +199,8 @@ button,input,select,textarea{font:inherit}
 <script>
 const SUPA_URL='https://qikvvqgxmquevzyykkcm.supabase.co';
 const SUPA_KEY='sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao';
-const SB=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+const SB=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});/* 데이터(RPC) 전용 — 항상 anon */
+const AUTH=window.supabase.createClient(SUPA_URL,SUPA_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'nlive-auth'}});/* 카카오 로그인/세션 전용 */
 
 // ---- 상태 ----
 const SLUG=(location.pathname.match(/\/shop\/([^\/?#]+)/)||[])[1]||'';
@@ -213,6 +214,7 @@ let CUST={receiver:'',nick:'',phone:'',addr:'',addr_detail:'',agree:false};
 let PAYM='현금';        // 결제방법: 현금 | 카드
 let INFO_OPEN=true;   // 홈 프로필/공지/소셜 블록 펼침 여부(영상 하단 접기버튼)
 let PSEARCH='';       // 상품 검색어(폴링 재렌더에도 유지)
+let KAKAO=null;       // 카카오 로그인 사용자 {id,nick}
 
 const $=s=>document.querySelector(s);
 const won=n=>'₩'+Number(n||0).toLocaleString();
@@ -606,7 +608,34 @@ window.contactKakao=contactKakao;window.lookupOrders=lookupOrders;window.trackSh
 window.playProductVideoById=playProductVideoById;window.closeVideoOverlay=closeVideoOverlay;
 window.shopSearch=shopSearch;window.shopClearSearch=shopClearSearch;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
-load();
+/* ===== 카카오 로그인 게이트: shop 진입 전에 먼저 뜨는 전체화면 ===== */
+function renderGate(){
+  $('#app').innerHTML=`<div style="min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:36px 24px;text-align:center;background:linear-gradient(165deg,#ffffff,#eef3ff)">
+    <div><div style="font-weight:900;font-size:36px;letter-spacing:1px;color:#1b48e0">N-LIVE</div>
+      <p style="margin-top:16px;color:#5b6b86;font-size:15px;line-height:1.65">라이브 쇼핑을 시작하려면<br><b>카카오로 3초 로그인</b> 해주세요</p></div>
+    <button id="kgbtn" onclick="kakaoLogin()" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:320px;height:52px;border:0;border-radius:12px;background:#FEE500;color:#191600;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.10)">
+      <span style="font-size:19px">💬</span> 카카오톡으로 시작하기</button>
+    <p style="color:#9aa7bd;font-size:12.5px;margin:0">로그인하면 주문·배송조회가 더 편해져요</p></div>`;
+}
+async function kakaoLogin(){const b=document.getElementById('kgbtn');
+  try{if(b){b.disabled=true;b.style.opacity=.6;b.innerHTML='카카오로 이동 중…';}
+    const {error}=await AUTH.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:location.href.split('#')[0].split('?')[0]}});
+    if(error){console.error(error);toast('카카오 로그인 오류: '+(error.message||''));if(b){b.disabled=false;b.style.opacity=1;b.innerHTML='<span style="font-size:19px">💬</span> 카카오톡으로 시작하기';}}
+  }catch(e){console.error(e);toast('로그인 연결 오류입니다.');if(b){b.disabled=false;b.style.opacity=1;}}
+}
+window.kakaoLogin=kakaoLogin;
+async function boot(){
+  let sess=null;
+  try{const {data}=await AUTH.auth.getSession();sess=data&&data.session;}catch(e){console.error(e);}
+  if(!sess){renderGate();return;}
+  try{const u=sess.user||{},m=u.user_metadata||{};
+    KAKAO={id:u.id,nick:m.name||m.nickname||m.full_name||m.preferred_username||m.user_name||''};
+    if(KAKAO.nick){if(!CUST.nick)CUST.nick=KAKAO.nick;if(!CUST.receiver)CUST.receiver=KAKAO.nick;}
+  }catch(e){}
+  try{if(location.search||location.hash)history.replaceState({},'',location.pathname);}catch(e){}
+  load();
+}
+boot();
 </script>
 </body>
 </html>
