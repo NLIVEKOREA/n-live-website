@@ -4253,7 +4253,7 @@ function liveDetail(s){
       ${prods.length?`<div class="muted" style="font-size:12px;margin-bottom:8px">💡 <b>노출</b>이 <b>☑ 노출중</b>(초록)이어야 고객 URL에 보입니다. <b>☐ 숨김</b>은 안 보여요. 상품은 담으면 기본 노출중입니다.</div><div style="overflow:auto"><table class="tbl" id="lp_table"><thead><tr><th>순서</th><th>상품</th><th>옵션</th><th class="num-cell">방송가</th><th>소개중</th><th>고객 노출</th><th></th></tr></thead><tbody>
         ${prods.map((p,i)=>{const opts=liveOptText(p);const numtag=p.stock_code?baseCode(p.stock_code):(p.manual_code||'');const kind=p.stock_code?'재고':(p.manual_code?'개별':'캡처');const bt=liveNumTag(p);return `<tr data-s="${escAttr(((bt||'')+' '+(numtag||'')+' '+(p.name||'')).toLowerCase())}">
           <td style="white-space:nowrap"><button class="ico-btn" onclick="liveMove(${p.id},-1)" ${i===0?'disabled':''}>▲</button><button class="ico-btn" onclick="liveMove(${p.id},1)" ${i===prods.length-1?'disabled':''}>▼</button></td>
-          <td><div style="display:flex;gap:8px;align-items:center">${bt?`<span title="번호표 — 고객이 방송·채팅에서 부르는 번호" style="flex:0 0 auto;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:40px;height:40px;background:#fff1f2;border:1.5px solid #fda4af;border-radius:9px;color:#e11d48;font-weight:900;line-height:1.05"><span style="font-size:16px">${esc(bt)}</span><span style="font-size:8px;font-weight:700;color:#fb7185">번호표</span></span>`:`<span title="이 상품은 번호표(재고 tag)가 지정돼 있지 않아요. 재고관리에서 번호표를 넣어주세요" style="flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:9px;color:#94a3b8;font-size:9px;font-weight:700;text-align:center">번호표<br>없음</span>`}${p.image_url?`<img src="${esc(p.image_url)}" alt="" onclick="imgZoom('${escAttr(p.image_url)}')" title="클릭하면 크게 보기" style="width:44px;height:44px;object-fit:cover;border-radius:7px;flex:0 0 auto;cursor:zoom-in">`:''}<div>${numtag?`<span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:10px;font-weight:800" title="품번">${esc(numtag)}</span> `:`<span class="pill p-req" style="font-size:10px">${kind}</span> `}<b>${esc(p.name)}</b></div></div></td>
+          <td><div style="display:flex;gap:8px;align-items:center"><span class="tagbox" title="번호표 — 고객이 방송·채팅에서 부르는 번호">${esc(bt)}</span>${p.image_url?`<img src="${esc(p.image_url)}" alt="" onclick="imgZoom('${escAttr(p.image_url)}')" title="클릭하면 크게 보기" style="width:44px;height:44px;object-fit:cover;border-radius:7px;flex:0 0 auto;cursor:zoom-in">`:''}<div>${numtag?`<span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:10px;font-weight:800" title="품번">${esc(numtag)}</span> `:`<span class="pill p-req" style="font-size:10px">${kind}</span> `}<b>${esc(p.name)}</b></div></div></td>
           <td class="muted" style="font-size:12px;max-width:180px">${esc(opts)}</td>
           <td class="num-cell"><input type="number" value="${p.live_price}" style="width:92px" onchange="liveSetPrice(${p.id},this.value)"></td>
           <td><button class="btn sm ${p.is_now?'':'gray'}" onclick="liveToggleNow(${p.id})" title="지금 방송에서 소개 중인 상품(고객화면 상단 강조)">${p.is_now?'★ 소개중':'☆ 지정'}</button></td>
@@ -4264,9 +4264,10 @@ function liveDetail(s){
     </div>`;
 }
 function liveNumTag(p){
-  // 번호표 = 재고(stock)의 tag. 같은 품번의 재고행 중 tag 있는 것 우선. 개별/캡처는 manual_code 폴백.
-  if(p&&p.stock_code){const b=baseCode(p.stock_code);const rows=STOCK.filter(x=>baseCode(x.code)===b);const r=rows.find(x=>x.tag!=null&&String(x.tag).trim()!=='');const t=r?r.tag:'';return t?String(t).replace(/^#/,''):'';}
-  return '';
+  // 주문서·판매현황과 100% 동일: 재고 번호표(tag) 우선, 없으면 품번번호(#003). 캡처상품은 '캡처'.
+  if(p&&p.stock_code){const b=baseCode(p.stock_code);const r=STOCK.filter(x=>baseCode(x.code)===b).find(x=>x.tag!=null&&String(x.tag).trim()!==''&&x.tag!=='-');return r?String(r.tag):hashNo(p.stock_code);}
+  if(p&&p.manual_code)return hashNo(p.manual_code);
+  return '캡처';
 }
 function liveOptText(p){
   if(p.stock_code){const b=baseCode(p.stock_code);const rows=STOCK.filter(x=>baseCode(x.code)===b);const cols=[...new Set(rows.map(r=>r.color).filter(Boolean))],szs=[...new Set(rows.map(r=>r.size).filter(Boolean))];
@@ -4380,13 +4381,13 @@ function liveSearchRun(){
     const colors=[...new Set(rows.map(r=>r.color).filter(Boolean))];
     const sizes=[...new Set(rows.map(r=>r.size).filter(Boolean))];
     const qty=rows.reduce((a,r)=>a+(r.qty||0),0);
-    const _tr=rows.find(r=>r.tag!=null&&String(r.tag).trim()!=='');const tag=_tr?String(_tr.tag).replace(/^#/,''):'';
+    const _tr=rows.find(r=>r.tag!=null&&String(r.tag).trim()!==''&&r.tag!=='-');const tag=_tr?String(_tr.tag):hashNo(b);/* 주문서와 동일: tag 없으면 품번번호(#003) */
     groups.push({base:b,name:baseName(s.name,s.color,s.size),price:s.price,qty,colors,sizes,img:PIMG[b]||'',tag});});
   const CAP=600,shown=groups.slice(0,CAP);
   const head=`<div class="muted" style="font-size:11px;margin-bottom:6px">${q?'검색 결과':'전체 상품'} <b>${groups.length}</b>개 품번${groups.length>CAP?` · 너무 많아 ${CAP}개만 표시(검색으로 좁히세요)`:''}</div>`;
   el.innerHTML=groups.length?head+shown.map(g=>{const on=addedBases.has(g.base);return `
     <div style="display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px;margin-bottom:7px;background:${on?'#eef7ee':'#fff'}">
-      ${g.tag?`<span title="번호표 — 고객이 방송·채팅에서 부르는 번호" style="flex:0 0 auto;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:40px;height:40px;background:#fff1f2;border:1.5px solid #fda4af;border-radius:9px;color:#e11d48;font-weight:900;line-height:1.05"><span style="font-size:16px">${esc(g.tag)}</span><span style="font-size:8px;font-weight:700;color:#fb7185">번호표</span></span>`:`<span title="이 상품은 번호표(재고 tag)가 없어요 — 재고관리에서 번호표를 넣어주세요" style="flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:9px;color:#94a3b8;font-size:9px;font-weight:700;text-align:center;line-height:1.15">번호표<br>미지정</span>`}
+      <span class="tagbox" title="번호표 — 고객이 방송·채팅에서 부르는 번호" style="flex:0 0 auto">${esc(g.tag)}</span>
       <button onclick="livePhotoModal('${escAttr(g.base)}')" title="상품사진 등록/변경 (품번 연동)" style="border:0;background:none;padding:0;cursor:pointer;flex:0 0 auto">${g.img?`<img src="${esc(g.img)}" alt="" style="width:46px;height:46px;object-fit:cover;border-radius:8px;display:block">`:'<span style="width:46px;height:46px;border-radius:8px;background:#eef1f6;display:grid;place-items:center;font-size:16px;color:#9aa">📷</span>'}</button>
       <button ${on?'disabled':''} onclick="liveAddStock('${escAttr(g.base)}')" style="flex:1;min-width:0;text-align:left;border:0;background:none;cursor:${on?'default':'pointer'};padding:0">
         <span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:11px;font-weight:800" title="품번">${esc(g.base)}</span> <b>${esc(g.name)}</b><br>
