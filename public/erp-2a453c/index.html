@@ -4380,14 +4380,16 @@ function liveSearchRun(){
     const colors=[...new Set(rows.map(r=>r.color).filter(Boolean))];
     const sizes=[...new Set(rows.map(r=>r.size).filter(Boolean))];
     const qty=rows.reduce((a,r)=>a+(r.qty||0),0);
-    groups.push({base:b,name:baseName(s.name,s.color,s.size),price:s.price,qty,colors,sizes,img:PIMG[b]||''});});
+    const _tr=rows.find(r=>r.tag!=null&&String(r.tag).trim()!=='');const tag=_tr?String(_tr.tag).replace(/^#/,''):'';
+    groups.push({base:b,name:baseName(s.name,s.color,s.size),price:s.price,qty,colors,sizes,img:PIMG[b]||'',tag});});
   const CAP=600,shown=groups.slice(0,CAP);
   const head=`<div class="muted" style="font-size:11px;margin-bottom:6px">${q?'검색 결과':'전체 상품'} <b>${groups.length}</b>개 품번${groups.length>CAP?` · 너무 많아 ${CAP}개만 표시(검색으로 좁히세요)`:''}</div>`;
   el.innerHTML=groups.length?head+shown.map(g=>{const on=addedBases.has(g.base);return `
     <div style="display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px;margin-bottom:7px;background:${on?'#eef7ee':'#fff'}">
+      ${g.tag?`<span title="번호표 — 고객이 방송·채팅에서 부르는 번호" style="flex:0 0 auto;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:40px;height:40px;background:#fff1f2;border:1.5px solid #fda4af;border-radius:9px;color:#e11d48;font-weight:900;line-height:1.05"><span style="font-size:16px">${esc(g.tag)}</span><span style="font-size:8px;font-weight:700;color:#fb7185">번호표</span></span>`:`<span title="이 상품은 번호표(재고 tag)가 없어요 — 재고관리에서 번호표를 넣어주세요" style="flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:9px;color:#94a3b8;font-size:9px;font-weight:700;text-align:center;line-height:1.15">번호표<br>미지정</span>`}
       <button onclick="livePhotoModal('${escAttr(g.base)}')" title="상품사진 등록/변경 (품번 연동)" style="border:0;background:none;padding:0;cursor:pointer;flex:0 0 auto">${g.img?`<img src="${esc(g.img)}" alt="" style="width:46px;height:46px;object-fit:cover;border-radius:8px;display:block">`:'<span style="width:46px;height:46px;border-radius:8px;background:#eef1f6;display:grid;place-items:center;font-size:16px;color:#9aa">📷</span>'}</button>
       <button ${on?'disabled':''} onclick="liveAddStock('${escAttr(g.base)}')" style="flex:1;min-width:0;text-align:left;border:0;background:none;cursor:${on?'default':'pointer'};padding:0">
-        <span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:11px;font-weight:800">${esc(g.base)}</span> <b>${esc(g.name)}</b><br>
+        <span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:11px;font-weight:800" title="품번">${esc(g.base)}</span> <b>${esc(g.name)}</b><br>
         <span class="muted" style="font-size:11px">${g.colors.length?'색상 '+g.colors.length+'개('+g.colors.join('/')+')':'옵션없음'}${g.sizes.length?' · 사이즈 '+g.sizes.join('/'):''} · 재고 ${g.qty} · ${won(g.price||0)}</span>
       </button>
       <button class="btn sm ${on?'gray':'green'}" ${on?'disabled':''} onclick="liveAddStock('${escAttr(g.base)}')" style="flex:0 0 auto">${on?'✓ 담김':'+ 담기'}</button>
