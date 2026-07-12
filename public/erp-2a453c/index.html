@@ -946,9 +946,9 @@ const COLLAPSED=new Set();
 function tog(k){COLLAPSED.has(k)?COLLAPSED.delete(k):COLLAPSED.add(k);render();}
 function expAll(){COLLAPSED.clear();render();}
 function collBtn(k){return `<button class="ico-btn" onclick="tog('${escAttr(k)}')" title="접기/펼치기" aria-label="접기/펼치기"><i class="ti ti-chevron-${COLLAPSED.has(k)?'right':'down'}"></i></button>`;}
-function saleCollAll(){const t=SALETAB;(t==='order'?grpDC(orderRows()):grpDC(shipRows())).forEach(g=>COLLAPSED.add((t==='order'?'so:':'sp:')+g.date+g.cust));render();}
+function saleCollAll(){const t=SALETAB;(t==='order'?grpDC(orderRows()):grpDC(shipRows())).forEach(g=>COLLAPSED.add((t==='order'?'so:':'sp:')+g.key));render();}
 function shipCollAll(){openCustomers().forEach(c=>COLLAPSED.add(c.cat==='wait'?('w:'+c.cust):('m:'+c.cat+c.cust)));render();}
-function ordCollAll(){orderGroups('unpaid').forEach(g=>COLLAPSED.add('os:unpaid'+g.date+g.cust));orderGroups('paid').forEach(g=>COLLAPSED.add('pd:'+g.date+g.cust));render();}
+function ordCollAll(){orderGroups('unpaid').forEach(g=>COLLAPSED.add('os:unpaid'+g.key));orderGroups('paid').forEach(g=>COLLAPSED.add('os:paid'+g.key));render();}
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
 const prodName=c=>{const s=STOCK.find(x=>x.code===c);return s?s.name:c;};
 const tagOf=c=>{const s=STOCK.find(x=>x.code===c);return s?s.tag:'';};
@@ -1723,9 +1723,14 @@ function payBadge(pw){if(!pw||pw==='-')return '';const cash=pw==='현금';return
 let _onCache=null;
 function orderNoOf(date,cust){if(!_onCache)_onCache={};const d=(date||'');if(!_onCache[d]){const seen={};let n=0;ORD.filter(x=>(x.date||'')===d).sort((a,b)=>(a.id||0)-(b.id||0)).forEach(x=>{if(x.cust&&!(x.cust in seen))seen[x.cust]=++n;});_onCache[d]=seen;}return d.replace(/[\/-]/g,'.')+'-'+String((_onCache[d]||{})[cust]||0).padStart(2,'0');}
 function onoBadge(date,cust){return `<span style="display:inline-block;background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;flex:0 0 auto;white-space:nowrap;letter-spacing:.3px">${orderNoOf(date,cust)}</span>`;}
+/* 주문별 고유 그룹ID 생성(uuid v4) — 저장 1건마다 별개 카드로 분리 */
+function genGid(){try{if(typeof crypto!=='undefined'&&crypto.randomUUID)return crypto.randomUUID();}catch(e){}
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){const r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);});}
+/* 그룹 키: order_group_id 있으면 그걸로(주문별 분리), 없으면 옛 방식(날짜+고객) — 기존데이터 무회귀 */
+function _ogKey(o){return o&&o.order_group_id?('g:'+o.order_group_id):((o&&o.date||'')+'||'+(o&&o.cust||''));}
 function orderGroups(pay){
   const list=mine(ORD).filter(o=>o.pay===pay),map={};
-  list.forEach(o=>{const k=(o.date||'')+'||'+(o.cust||'');(map[k]=map[k]||{date:o.date,cust:o.cust,phone:o.phone,addr:o.addr,staff:o.staff,items:[]}).items.push(o);});
+  list.forEach(o=>{const k=_ogKey(o);(map[k]=map[k]||{key:k,date:o.date,cust:o.cust,phone:o.phone,addr:o.addr,staff:o.staff,items:[]}).items.push(o);});
   return Object.values(map).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 }
 function orderStatusCards(pay){
@@ -1736,8 +1741,8 @@ function orderStatusCards(pay){
     <div class="date-div">📅 ${date||'-'} <span class="muted" style="font-weight:400">· ${arr.length}명</span></div>
     <div class="ord-cards">
     ${arr.map(g=>{const idx=all.indexOf(g),tot=g.items.reduce((a,o)=>a+amtOf(o),0);const payw=(g.items.find(o=>o.payway)||{}).payway||'';const isShop=g.items.some(o=>o.source==='shop');return `
-      <div class="ord-card${COLLAPSED.has('os:'+pay+g.date+g.cust)?' collapsed':''}${isShop?' shop-order':''}">
-        <div class="oc-head">${collBtn('os:'+pay+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}${staffBadge(g.staff)}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
+      <div class="ord-card${COLLAPSED.has('os:'+pay+g.key)?' collapsed':''}${isShop?' shop-order':''}">
+        <div class="oc-head">${collBtn('os:'+pay+g.key)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}${staffBadge(g.staff)}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
         ${g.phone||(isShop&&payw)?`<div class="oc-sub">${g.phone?'📞 '+g.phone:''}${isShop&&payw?` · 💳 고객선택: <b>${esc(payw)}</b>${payw==='카드'?' (결제링크 발송 필요)':''}`:''}</div>`:''}
         <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="muted">${o.qty}개</span><span class="oc-amt">${won(amtOf(o))}</span></div>`).join('')}</div>
         ${pay==='unpaid'
@@ -1756,8 +1761,8 @@ function paidCards(){
   const show=gs.slice(0,60);
   if(!show.length)return '<div class="muted" style="padding:12px">해당 날짜·닉네임 결제완료 없음</div>';
   let html=show.map(g=>{const idx=all.indexOf(g),tot=g.items.reduce((a,o)=>a+amtOf(o),0);return `
-    <div class="ord-card${COLLAPSED.has('pd:'+g.date+g.cust)?' collapsed':''}${g.items.some(o=>o.source==='shop')?' shop-order':''}">
-      <div class="oc-head">${collBtn('pd:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}<span class="pill p-done">결제완료</span>${staffBadge(g.staff)}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
+    <div class="ord-card${COLLAPSED.has('pd:'+g.key)?' collapsed':''}${g.items.some(o=>o.source==='shop')?' shop-order':''}">
+      <div class="oc-head">${collBtn('pd:'+g.key)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}<span class="pill p-done">결제완료</span>${staffBadge(g.staff)}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
       <div class="oc-sub">${g.date||''}${g.phone?' · '+g.phone:''} · 💳 ${g.items[0].payway||'-'}</div>
       <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="muted">${o.qty}개</span></div>`).join('')}</div>
       <div class="oc-btns"><button class="btn sm gray" style="flex:1" onclick="unpayGroup(${idx})">↩ 입금확인 취소</button></div>
@@ -1766,7 +1771,7 @@ function paidCards(){
   if(gs.length>show.length)out+=`<div class="muted" style="padding:8px;font-size:12px">… 외 ${gs.length-show.length}건</div>`;
   return out;
 }
-async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const _pk='paygrp:'+g.date+'|'+g.cust;if(_busy.has(_pk)){toast('⏳ 처리 중입니다 — 잠시만요');return;}_busy.add(_pk);try{const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';
+async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;const _pk='paygrp:'+g.key;if(_busy.has(_pk)){toast('⏳ 처리 중입니다 — 잠시만요');return;}_busy.add(_pk);try{const pw=($('#pw'+idx)&&$('#pw'+idx).value)||'현금';
   const prev=g.items.map(o=>({pay:o.pay,payway:o.payway}));
   g.items.forEach(o=>{o.pay='paid';o.payway=pw;});
   const ids=g.items.map(o=>o.id).filter(x=>x!=null);
@@ -1828,6 +1833,7 @@ async function editGroupObj(g,opts){opts=opts||{};if(!g)return;
       return {code:o.code,name:(s&&s.name)||o.disp||o.code,color:o.color||'',size:o.size||'',qty:o.qty,price:o.price,tag:o.tag||(s&&s.tag)||'',back:!!o.back};
     })};
   OE.editOrig=g.items.slice();/* 원주문 보존 — 저장 성공 시에만 교체(도중 이탈해도 원주문 유지) */
+  OE.editGid=(g.items.find(o=>o.order_group_id)||{}).order_group_id||g.key&&(String(g.key).indexOf('g:')===0?g.key.slice(2):null)||null;/* 수정 시 원주문 그룹ID 유지(한 카드 유지) */
   const shopItem=g.items.find(o=>o.source==='shop');
   if(shopItem){/* 링크주문: 입금 전 재고 미차감 상태이므로 재고 원복/차감을 하지 않고 식별필드를 보존 */
     OE.noStockAdjust=true;
@@ -2058,6 +2064,8 @@ async function commitOrder(){
   /* created_by는 uuid+FK(auth.users) 컬럼 — 클라이언트가 이름/임의값을 넣으면 저장 실패(22P02/23503).
      새 주문은 생략해 DB가 채우게 두고(ORD2DB에서 미전송), 실적 집계는 staff 기준으로 처리 */
   if(carry)created.forEach(({o})=>{o.source=carry.source;o.session_id=carry.session_id;o.order_group_id=carry.order_group_id;o.reservation_expires_at=(o.code==='배송비'?null:carry.reservation_expires_at);o.payway=carry.payway;o.meta=carry.meta;});
+  /* 주문서 1건 = 고유 그룹ID 1개 → 같은 고객·같은 날짜여도 별개 카드로 분리(합쳐짐 방지). 수정 시 원주문 그룹ID 유지 */
+  {const _gid=OE.editGid||genGid();created.forEach(({o})=>{if(o.order_group_id==null)o.order_group_id=_gid;});}
   let _failed=0;
   for(const {o,s,dq,points} of created){
     const ok=await saveOrd(o);
@@ -2118,7 +2126,7 @@ function orderRowsToday(){const t=todayStr();return orderRowsAll().filter(o=>(o.
 function orderRows(){return ORDTAB==='today'?orderRowsToday():orderRowsAll();}
 function shipRows(){const d=SHIPDATE||todayStr();return mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-').slice(0,10)===d&&!RXSET.includes(o.req)&&((o.req==='출고요청'||o.req==='합배요청')||o.ship==='done'));}
 function rxAll(){return baseRows().filter(o=>o.req==='교환요청'||o.req==='환불요청');}
-function grpDC(rows){const m={};rows.forEach(o=>{const k=(o.date||'')+'||'+(o.cust||'');(m[k]=m[k]||{date:o.date,cust:o.cust,phone:o.phone,staff:o.staff,items:[]}).items.push(o);});return Object.values(m).sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
+function grpDC(rows){const m={};rows.forEach(o=>{const k=_ogKey(o);(m[k]=m[k]||{key:k,date:o.date,cust:o.cust,phone:o.phone,staff:o.staff,items:[]}).items.push(o);});return Object.values(m).sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
 function curGroups(){return SALETAB==='order'?grpDC(orderRows()):grpDC(shipRows());}
 async function saveReq(gi){const g=curGroups()[gi];if(!g)return;const chg=[];const prev=[];
   g.items.forEach(o=>{const d=REQDRAFT[o.id];if(d&&o.id!=null){prev.push({o,req:o.req,reason:o.reason});o.req=d.req==='없음'?'':d.req;o.reason=d.reason;chg.push(o);}});
@@ -2186,8 +2194,8 @@ async function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;c
 function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   /* "이미 미송 보유" = 미송관리에 실제 대기중(req='미송')인 것만. 다른날 미결정 재고부족(back·req없음)은 아직 미송 아님 → 오배지 방지 */
   const priorMi=mine(ORD).filter(o=>o.cust===g.cust&&o.ship!=='done'&&o.req==='미송'&&!_isSvcLine(o)&&!g.items.some(x=>x.id===o.id));
-  return `<div class="card${COLLAPSED.has('so:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}${priorMi.length?`<span class="pill p-low" style="font-size:10px" title="이 고객은 미송관리에 ${priorMi.length}건 대기 중 — 이번 주문을 합쳐 한 박스로 보낼 수 있어요">📦 미송 ${priorMi.length}건 보유</span>`:''}
+  return `<div class="card${COLLAPSED.has('so:'+g.key)?' collapsed':''}">
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.key)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}${priorMi.length?`<span class="pill p-low" style="font-size:10px" title="이 고객은 미송관리에 ${priorMi.length}건 대기 중 — 이번 주문을 합쳐 한 박스로 보낼 수 있어요">📦 미송 ${priorMi.length}건 보유</span>`:''}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>${shipMemoBar(g.cust)}
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:80px">상태</th><th style="width:130px">요청</th></tr></thead><tbody>
     ${g.items.map(o=>{const dr=reqDraftOf(o);return `<tr ${o.back?'style="background:#fffaf3"':''}>
@@ -2201,8 +2209,8 @@ function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   </div>`;
 }
 function shipCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
-  return `<div class="card${COLLAPSED.has('sp:'+g.date+g.cust)?' collapsed':''}">
-    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('sp:'+g.date+g.cust)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}
+  return `<div class="card${COLLAPSED.has('sp:'+g.key)?' collapsed':''}">
+    <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('sp:'+g.key)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>${shipMemoBar(g.cust)}
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th style="width:92px">출고상태</th><th style="width:120px">송장번호</th><th style="width:108px">반품/교환</th><th style="width:130px">사유</th></tr></thead><tbody>
     ${g.items.map(o=>{const sel=RXSET.includes(o.req)?o.req:'유지';return `<tr>
@@ -2513,7 +2521,7 @@ function shippedRows(){
   if(SHPQ){if(SHPFIELD==='상품번호')rows=rows.filter(o=>inc(o.code,SHPQ)||inc(skuFullCode(o.code,o.color,o.size),SHPQ)||inc(itemLabel(o),SHPQ));else if(SHPFIELD==='번호표')rows=rows.filter(o=>inc(tagShow(o),SHPQ));else if(SHPFIELD==='송장')rows=rows.filter(o=>inc(o.track,SHPQ));else rows=rows.filter(o=>inc(o.cust,SHPQ));}
   return rows;
 }
-function shpCollAll(){grpDC(shippedRows()).forEach(g=>COLLAPSED.add('sd:'+g.date+g.cust));render();}
+function shpCollAll(){grpDC(shippedRows()).forEach(g=>COLLAPSED.add('sd:'+g.key));render();}
 function shipGuideText(date,cust){
   const done=mine(ORD).filter(o=>o.cust===cust&&o.ship==='done'&&o.track&&o.date===date);
   const miss=mine(ORD).filter(o=>o.cust===cust&&o.back);
@@ -2534,7 +2542,7 @@ function openShipGuide(date,cust){
   <div class="modal-foot"><button class="btn gray" onclick="closeModal()">닫기</button><button class="btn" onclick="copySG()">📋 복사</button></div>`;
   $('#modal').classList.remove('hide');}
 function copySG(){const ta=$('#sgText');if(!ta)return;ta.select();try{document.execCommand('copy');}catch(e){}if(navigator.clipboard)navigator.clipboard.writeText(ta.value);toast('📋 안내문구 복사됨 — 카톡/문자에 붙여넣기');}
-function shippedCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='sd:'+g.date+g.cust;
+function shippedCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='sd:'+g.key;
   return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
     <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}${staffBadge(g.staff)}</div><button class="btn sm ghost" style="flex:0 0 auto" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>송장번호</th><th>CS처리</th></tr></thead><tbody>
@@ -2924,7 +2932,7 @@ function csActionCell(o){const B='btn sm ghost',ST='padding:3px 7px;font-size:11
   if(o.ship==='done'&&o.track)return `<span class="barcode muted">${esc(o.track)}</span> <button class="${B}" style="${ST}" onclick="rxOpen(${o.id},'exchange')">교환</button><button class="${B}" style="${ST}" onclick="rxOpen(${o.id},'refund')">반품</button>`;
   return `<button class="${B}" style="${ST}" onclick="cancelSale(${o.id},'환불')">환불</button><button class="btn sm red ghost" style="${ST}" onclick="cancelSale(${o.id},'취소')">취소</button>`;
 }
-function statusCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='ss:'+g.date+g.cust;
+function statusCard(g){const tot=g.items.reduce((a,o)=>a+amtOf(o),0),k='ss:'+g.key;
   return `<div class="card${COLLAPSED.has(k)?' collapsed':''}">
     <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn(k)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2>${payBadge(g.items[0]&&g.items[0].payway)}${staffBadge(g.staff)}</div><span style="flex:0 0 auto;display:flex;gap:6px"><button class="btn sm ghost" onclick='openShipGuide(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})'>📋 안내문구</button><button class="btn sm ghost" onclick='editPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})' title="주문 전체 수정 (재고 자동조정)">✏️ 전체수정</button><button class="btn sm red ghost" onclick='cancelPaidGroup(${JSON.stringify(g.date)},${JSON.stringify(g.cust)})' title="주문 전체 취소 (재고 복원)">🗑️ 취소</button></span></div>
     <table><thead><tr><th>번호표</th><th>품목</th><th class="num-cell">수량</th><th class="num-cell">금액</th><th>상태</th><th>송장·CS</th></tr></thead><tbody>
