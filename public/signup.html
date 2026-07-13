@@ -37,7 +37,8 @@
   </div>
 
   <!-- 1단계: 카카오 간편가입 -->
-  <button class="kbtn">💬 카카오톡으로 시작하기</button>
+  <button class="kbtn" id="kakaoBtn" onclick="kakaoStart()">💬 카카오톡으로 시작하기</button>
+  <div id="kkDone" style="display:none;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:10px;padding:10px 14px;font-size:13.5px;font-weight:700;text-align:center;margin:4px 0"></div>
 
   <!-- 수집 항목 안내 -->
   <div class="card">
@@ -50,9 +51,9 @@
   <!-- 2단계: 주문 정보 입력 폼(배송을 위한 필수 정보) -->
   <div class="card">
     <h3>주문 정보 입력 (배송을 위한 필수)</h3>
-    <div class="field"><label>받는 분 이름</label><div class="inp">예) 홍길동</div></div>
-    <div class="field"><label>휴대폰 번호</label><div class="inp">예) 010-1234-5678</div></div>
-    <div class="field"><label>배송지 주소</label><div class="inp">예) 서울시 ○○구 ○○로 12, 3층</div></div>
+    <div class="field"><label>받는 분 이름</label><input class="inp" id="fName" placeholder="예) 홍길동" style="width:100%;font-size:14px;color:#1a2233;border:1.5px solid var(--line);border-radius:10px;background:#f8fafc;outline:none"></div>
+    <div class="field"><label>휴대폰 번호</label><input class="inp" id="fPhone" inputmode="numeric" placeholder="예) 010-1234-5678" style="width:100%;font-size:14px;color:#1a2233;border:1.5px solid var(--line);border-radius:10px;background:#f8fafc;outline:none"></div>
+    <div class="field"><label>배송지 주소</label><input class="inp" id="fAddr" placeholder="예) 서울시 ○○구 ○○로 12, 3층" style="width:100%;font-size:14px;color:#1a2233;border:1.5px solid var(--line);border-radius:10px;background:#f8fafc;outline:none"></div>
   </div>
 
   <!-- 3단계: 동의 -->
@@ -60,10 +61,42 @@
     <div class="agree"><span class="chk">✓</span><div>[필수] 개인정보 수집·이용에 동의합니다.<br>
       <a href="/shop-privacy" target="_blank">개인정보 처리방침 보기 ›</a></div></div>
     <div class="agree"><span class="chk">✓</span><div>[필수] 이름·연락처·배송지 주소를 배송 목적으로 수집·이용하는 것에 동의합니다.</div></div>
-    <button class="cta">동의하고 회원가입 완료</button>
+    <button class="cta" id="doneBtn" onclick="finishSignup()">동의하고 회원가입 완료</button>
+    <div id="doneMsg" style="display:none;margin-top:10px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:10px;padding:12px;font-size:13.5px;font-weight:700;text-align:center"></div>
   </div>
 
   <div class="note">회원가입 후 라이브 방송에서 상품을 주문하면<br>입력하신 정보로 상품이 배송됩니다.</div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* 실제 동작: 카카오 버튼=카카오 로그인(shop과 동일 Supabase Auth), 완료=배송정보 저장(nlive_cust) */
+const AUTH=window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'nlive-auth'}});
+async function kakaoStart(){
+  const b=document.getElementById('kakaoBtn');b.disabled=true;b.style.opacity=.6;b.textContent='카카오로 이동 중…';
+  const {error}=await AUTH.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:location.origin+'/signup/'}});
+  if(error){alert('카카오 로그인 오류: '+(error.message||''));b.disabled=false;b.style.opacity=1;b.textContent='💬 카카오톡으로 시작하기';}
+}
+function finishSignup(){
+  const name=document.getElementById('fName').value.trim();
+  const phone=document.getElementById('fPhone').value.trim();
+  const addr=document.getElementById('fAddr').value.trim();
+  if(!name||!phone||!addr){alert('이름·휴대폰 번호·배송지 주소를 모두 입력해 주세요.');return;}
+  try{const prev=JSON.parse(localStorage.getItem('nlive_cust')||'{}');
+    localStorage.setItem('nlive_cust',JSON.stringify({...prev,receiver:name,phone:phone,addr:addr}));}catch(e){}
+  const m=document.getElementById('doneMsg');m.style.display='block';
+  m.innerHTML='🎉 회원가입이 완료되었습니다!<br>라이브 방송 페이지에서 바로 주문하실 수 있어요.';
+  document.getElementById('doneBtn').style.display='none';
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+(async()=>{ /* 카카오 로그인 후 복귀 → 로그인됨 표시 */
+  try{const {data}=await AUTH.auth.getSession();const s=data&&data.session;
+    if(s){const u=s.user||{},md=u.user_metadata||{};const nick=md.name||md.nickname||md.full_name||'';
+      const k=document.getElementById('kkDone');k.style.display='block';
+      k.textContent='✅ 카카오 로그인 완료'+(nick?' — '+nick+'님':'')+' · 아래 배송정보를 입력해 주세요';
+      const b=document.getElementById('kakaoBtn');b.disabled=true;b.style.opacity=.55;b.textContent='💬 카카오 로그인 완료';
+      try{if(location.search||location.hash)history.replaceState({},'',location.pathname);}catch(e){}}
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
