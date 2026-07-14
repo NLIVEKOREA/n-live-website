@@ -13,7 +13,7 @@
 button,input,select,textarea{font:inherit}
 .app{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;position:relative;box-shadow:0 0 40px rgba(20,22,28,.06)}
 /* ── 프리미엄 로그인 게이트(입장화면): 셀러가 라이브 만들 때 등록한 영상/사진 배경 ── */
-.gate{position:relative;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:#0b0d12}
+.gate{position:relative;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:radial-gradient(130% 100% at 78% 4%,#3a1730 0%,#241021 46%,#0e0b12 100%)}
 .gate-bg{position:absolute;inset:0}
 .gate-bg video,.gate-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .gate-bg.grad{background:radial-gradient(125% 90% at 22% 8%,#ff5b76 0%,#ff2e50 42%,#8f1732 100%)}
@@ -654,7 +654,7 @@ function renderGate(sess){
   const img=sess&&sess.cover_url?sess.cover_url:'';
   const nm=sess?(sess.display_name||sess.seller||''):'';
   let bg;
-  if(mp4)bg=`<div class="gate-bg"><video src="${esc(mp4)}" autoplay muted loop playsinline preload="auto"></video></div>`;
+  if(mp4)bg=`<div class="gate-bg"><video src="${esc(mp4)}"${img?` poster="${esc(img)}"`:''} autoplay muted loop playsinline preload="auto"></video></div>`;
   else if(img)bg=`<div class="gate-bg"><img src="${esc(img)}" alt=""></div>`;
   else bg=`<div class="gate-bg grad"></div>`;
   const av=sess&&sess.seller_photo?`<img class="gate-av" src="${esc(sess.seller_photo)}">`:(nm?`<div class="gate-av">${esc(nm[0])}</div>`:'');
