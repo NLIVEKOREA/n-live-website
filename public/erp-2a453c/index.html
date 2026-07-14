@@ -4157,7 +4157,7 @@ async function markDelivered(track,on){
 }
 /* 홈 화면 미디어(메인이미지·영상·프로필) 개별 삭제 */
 async function liveMediaDel(id,col){
-  const nm={cover_url:'메인 이미지',hero_video:'메인 영상',seller_photo:'프로필 사진'}[col]||'파일';
+  const nm={cover_url:'메인 이미지',hero_video:'메인 영상',seller_photo:'프로필 사진',gate_video:'입장 영상',gate_image:'입장 이미지'}[col]||'파일';
   if(!confirm(nm+'을(를) 삭제할까요?'))return;
   try{const upd={};upd[col]=null;const {error}=await SB.from('live_sessions').update(upd).eq('id',id);
     if(error){console.error(error);toast('⚠️ 삭제 실패: '+(error.message||''));return;}
@@ -4236,6 +4236,11 @@ function liveDetail(s){
         ${upRow('프로필 사진','ld_seller_photo','image/*', s.seller_photo?`<img class="upthumb" style="border-radius:50%" src="${esc(s.seller_photo)}">`:'', false, s.seller_photo?`liveMediaDel(${s.id},'seller_photo')`:'')}
         <div class="muted" style="font-size:11px;margin-top:7px">메인 영상은 <b>mp4</b>만(유튜브 쇼츠 불가) · 짧게·30MB↓ 권장</div>
       </div>
+      <div class="upgrp"><div class="gh">🚪 입장화면 전용 미디어 <span class="muted" style="font-weight:400;font-size:11px">· 로그인 전 첫 화면 배경(비우면 위 홈 미디어 사용)</span></div>
+        ${upRow('입장 영상','ld_gate_video','video/*', s.gate_video&&/\.(mp4|webm|mov)$/i.test(s.gate_video)?'<span class="upthumb" style="display:grid;place-items:center;background:#0f172a;color:#fff">🚪🎬</span>':'', false, (s.gate_video&&/\.(mp4|webm|mov)$/i.test(s.gate_video))?`liveMediaDel(${s.id},'gate_video')`:'')}
+        ${upRow('입장 이미지','ld_gate_image','image/*', s.gate_image?`<img class="upthumb" src="${esc(s.gate_image)}">`:'', true, s.gate_image?`liveMediaDel(${s.id},'gate_image')`:'')}
+        <div class="muted" style="font-size:11px;margin-top:7px">카카오 로그인 전 첫 화면. <b>영상 &gt; 이미지</b> 순 우선, 둘 다 없으면 홈 미디어가 뜹니다.</div>
+      </div>
       <label class="lbl" style="margin-top:10px">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
       <div class="row2" style="margin-top:8px"><div><label class="lbl">배송비</label><input id="ld_ship" type="number" value="${s.ship_fee}"></div>
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
@@ -4286,7 +4291,7 @@ async function liveUploadFile(id,file,folder){
   if(!file)return null;
   const ext=((file.name||'').split('.').pop()||'bin').toLowerCase();
   const path=liveSlugify((LIVE_SESS.find(x=>x.id===id)||{}).seller||'s')+'/'+folder+'/'+(id||'x')+'_'+Date.now()+'.'+ext;
-  const {error}=await SB.storage.from('live').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:true});
+  const {error}=await SB.storage.from('live').upload(path,file,{contentType:file.type||'application/octet-stream',upsert:true,cacheControl:'31536000'});/* 1년 캐시=CDN 저장→로딩 빠름 */
   if(error){console.error('upload',error);toast('⚠️ 업로드 실패: '+(error.message||''));return null;}
   const {data:pub}=SB.storage.from('live').getPublicUrl(path);return (pub&&pub.publicUrl)||null;
 }
@@ -4294,15 +4299,17 @@ async function liveSaveSettings(id){
   const s=(LIVE_SESS||[]).find(x=>x.id===id)||{};
   const btn=$('#ld_save_btn');if(btn){btn.disabled=true;btn.textContent='저장 중...';}
   try{
-    let seller_photo=s.seller_photo||null,hero_video=s.hero_video||null,cover_url=s.cover_url||null;
-    const pf=$('#ld_seller_photo'),vf=$('#ld_hero_file'),cf=$('#ld_cover_file');
+    let seller_photo=s.seller_photo||null,hero_video=s.hero_video||null,cover_url=s.cover_url||null,gate_video=s.gate_video||null,gate_image=s.gate_image||null;
+    const pf=$('#ld_seller_photo'),vf=$('#ld_hero_file'),cf=$('#ld_cover_file'),gvf=$('#ld_gate_video'),gif=$('#ld_gate_image');
     if(pf&&pf.files&&pf.files[0]){if(btn)btn.textContent='사진 업로드 중...';const u=await liveUploadFile(id,pf.files[0],'seller');if(u)seller_photo=u;}
     if(cf&&cf.files&&cf.files[0]){if(btn)btn.textContent='이미지 업로드 중...';const u=await liveUploadFile(id,cf.files[0],'cover');if(u)cover_url=u;}
     if(vf&&vf.files&&vf.files[0]){if(btn)btn.textContent='영상 업로드 중...';const u=await liveUploadFile(id,vf.files[0],'hero');if(u)hero_video=u;}  /* mp4만 · 새 업로드 없으면 기존 유지 */
+    if(gvf&&gvf.files&&gvf.files[0]){if(btn)btn.textContent='입장영상 업로드 중...';const u=await liveUploadFile(id,gvf.files[0],'gate');if(u)gate_video=u;}
+    if(gif&&gif.files&&gif.files[0]){if(btn)btn.textContent='입장이미지 업로드 중...';const u=await liveUploadFile(id,gif.files[0],'gate');if(u)gate_image=u;}
     const sname=$('#ld_seller').value.trim();
     const row={title:$('#ld_title').value.trim(),seller:sname,display_name:(($('#ld_display')&&$('#ld_display').value.trim())||null),notice:$('#ld_notice').value.trim()||null,
       ship_fee:+$('#ld_ship').value||0,free_ship_min:+$('#ld_free').value||0,pay_info:($('#ld_payinfo')&&$('#ld_payinfo').value.trim())||null,
-      youtube:($('#ld_youtube')&&$('#ld_youtube').value.trim())||null,hero_video:hero_video,seller_photo:seller_photo,cover_url:cover_url};
+      youtube:($('#ld_youtube')&&$('#ld_youtube').value.trim())||null,hero_video:hero_video,seller_photo:seller_photo,cover_url:cover_url,gate_video:gate_video,gate_image:gate_image};
     const {error}=await SB.from('live_sessions').update(row).eq('id',id);
     if(error){console.error(error);toast('⚠️ 저장 실패: '+(error.message||''));if(btn){btn.disabled=false;btn.textContent='설정 저장';}return;}
     /* 카톡만 셀러별 저장(SNS URL은 [SNS 관리]에서 자동 연동 — snsSyncToShop) */
@@ -4427,12 +4434,12 @@ async function livePhotoSave(){
     const upo={code:base,updated_at:new Date().toISOString()};
     if(hasImg){let url=window._imgUrl;
       if(!url){let b=window._imgBlob;if(b.size>3*1024*1024){try{b=await liveCompress(b);}catch(e){}}const path='products/'+base+'_'+Date.now()+'.jpg';
-        const {error:ue}=await SB.storage.from('live').upload(path,b,{contentType:(b.type||'image/jpeg'),upsert:true});
+        const {error:ue}=await SB.storage.from('live').upload(path,b,{contentType:(b.type||'image/jpeg'),upsert:true,cacheControl:'31536000'});
         if(ue){console.error(ue);toast('⚠️ 사진 업로드 실패');btn.disabled=false;btn.textContent='저장';return;}
         const {data:pub}=SB.storage.from('live').getPublicUrl(path);url=pub&&pub.publicUrl;}
       upo.url=url;}
     if(hasVid){btn.textContent='영상 업로드 중...';const f=vf.files[0];const ext=((f.name||'').split('.').pop()||'mp4').toLowerCase();const vp='products/'+base+'_v_'+Date.now()+'.'+ext;
-      const {error:ve}=await SB.storage.from('live').upload(vp,f,{contentType:(f.type||'video/mp4'),upsert:true});
+      const {error:ve}=await SB.storage.from('live').upload(vp,f,{contentType:(f.type||'video/mp4'),upsert:true,cacheControl:'31536000'});
       if(ve){console.error(ve);toast('⚠️ 영상 업로드 실패');btn.disabled=false;btn.textContent='저장';return;}
       const {data:vpub}=SB.storage.from('live').getPublicUrl(vp);upo.video_url=vpub&&vpub.publicUrl;}
     if(upo.url===undefined&&!PIMG[base])upo.url='';/* 사진없이 영상만 등록 시 product_images.url NOT NULL 회피(빈값=이미지없음) */
@@ -4509,7 +4516,7 @@ async function imgResolveUrl(sid){
   const b=window._imgBlob;if(!b)return null;
   let up=b;if(b.size>3*1024*1024){try{up=await liveCompress(b);}catch(e){up=b;}}
   const path=liveSlugify((LIVE_SESS.find(x=>x.id===sid)||{}).seller||'s')+'/'+(sid||'p')+'/'+Date.now()+'.jpg';
-  const {error:ue}=await SB.storage.from('live').upload(path,up,{contentType:(up.type||'image/jpeg'),upsert:true});
+  const {error:ue}=await SB.storage.from('live').upload(path,up,{contentType:(up.type||'image/jpeg'),upsert:true,cacheControl:'31536000'});
   if(ue){console.error('upload',ue);toast('⚠️ 이미지 업로드 실패');return null;}
   const {data:pub}=SB.storage.from('live').getPublicUrl(path);return (pub&&pub.publicUrl)||null;}
 function imgPickerBind(prefix){window._imgBlob=null;window._imgUrl=null;window._capFrame=null;imgSetShareStat(prefix);
