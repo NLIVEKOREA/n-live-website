@@ -5,11 +5,36 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>N-LIVE · 방송 주문</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <style>
 :root{--brand:#ff2e50;--brand-d:#e11d40;--brand-s:#fff1f3;--blue:#ff2e50;--ink:#14161c;--muted:#8b92a1;--line:#eef0f4;--bg:#f5f6f8;--green:#16a34a;--red:#dc2626;--amber:#d97706}
 *{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font-family:Pretendard,"Malgun Gothic",-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit}
 .app{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;position:relative;box-shadow:0 0 40px rgba(20,22,28,.06)}
+/* ── 프리미엄 로그인 게이트(입장화면): 셀러가 라이브 만들 때 등록한 영상/사진 배경 ── */
+.gate{position:relative;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:#0b0d12}
+.gate-bg{position:absolute;inset:0}
+.gate-bg video,.gate-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gate-bg.grad{background:radial-gradient(125% 90% at 22% 8%,#ff5b76 0%,#ff2e50 42%,#8f1732 100%)}
+.gate-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,10,16,.34) 0%,rgba(8,10,16,.04) 30%,rgba(8,10,16,.5) 70%,rgba(8,10,16,.93) 100%)}
+.gate-inner{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:space-between;flex:1;min-height:100vh;min-height:100dvh;padding:26px 24px calc(30px + env(safe-area-inset-bottom))}
+.gate-top{display:flex;min-height:30px}
+.gate-live{display:inline-flex;align-items:center;gap:7px;background:rgba(255,31,61,.96);color:#fff;font-weight:800;font-size:12.5px;letter-spacing:.3px;padding:7px 13px;border-radius:999px;box-shadow:0 6px 20px rgba(255,31,61,.45)}
+.gate-live i{width:7px;height:7px;border-radius:50%;background:#fff;animation:gblink 1.2s infinite}
+@keyframes gblink{0%,100%{opacity:1}50%{opacity:.25}}
+.gate-hero{margin-top:auto}
+.gate-brand{font-weight:900;font-size:21px;letter-spacing:2.5px;color:#fff;opacity:.94}
+.gate-seller{display:flex;align-items:center;gap:11px;margin-top:16px}
+.gate-av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.6);display:grid;place-items:center;color:#fff;font-weight:800;font-size:18px;flex:0 0 auto}
+.gate-seller b{color:#fff;font-size:15.5px;font-weight:700;letter-spacing:-.2px}
+.gate-seller small{display:block;color:rgba(255,255,255,.74);font-size:12px;margin-top:2px}
+.gate-title{color:#fff;font-size:29px;line-height:1.26;font-weight:800;letter-spacing:-.8px;margin:16px 0 0;text-shadow:0 2px 22px rgba(0,0,0,.32)}
+.gate-cta{margin-top:24px}
+.gate-kakao{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:56px;border:0;border-radius:16px;background:#FEE500;color:#181600;font-size:16.5px;font-weight:800;letter-spacing:-.3px;cursor:pointer;box-shadow:0 12px 32px rgba(0,0,0,.3);transition:transform .12s}
+.gate-kakao:active{transform:scale(.98)}
+.gate-legal{color:rgba(255,255,255,.84);font-size:12.5px;line-height:1.6;text-align:center;margin:14px 6px 0}
+.gate-legal b{color:#fff;font-weight:700}
 .appbar{position:sticky;top:0;z-index:20;height:54px;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--line);font-weight:900;font-size:16px;letter-spacing:-.3px;background:rgba(255,255,255,.9);backdrop-filter:saturate(180%) blur(12px)}
 .appbar .back{font-size:24px;background:none;border:0;color:#111;cursor:pointer;padding:4px 6px;margin-left:-6px}
 .appbar .cart{margin-left:auto;background:var(--brand-s);color:var(--brand);border:0;border-radius:12px;padding:9px 13px;font-weight:900;cursor:pointer;font-size:13px}
@@ -622,13 +647,32 @@ window.playProductVideoById=playProductVideoById;window.closeVideoOverlay=closeV
 window.shopSearch=shopSearch;window.shopClearSearch=shopClearSearch;
 try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone){CUST={...CUST,...c,agree:false};}}catch(e){}
 /* ===== 카카오 로그인 게이트: shop 진입 전에 먼저 뜨는 전체화면 ===== */
-function renderGate(){
-  $('#app').innerHTML=`<div style="min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:36px 24px;text-align:center;background:linear-gradient(165deg,#ffffff,#eef3ff)">
-    <div><div style="font-weight:900;font-size:36px;letter-spacing:1px;color:#1b48e0">N-LIVE</div>
-      <p style="margin-top:16px;color:#5b6b86;font-size:15px;line-height:1.65">라이브 쇼핑을 시작하려면<br><b>카카오로 3초 로그인</b> 해주세요</p></div>
-    <button id="kgbtn" onclick="kakaoLogin()" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;max-width:320px;height:52px;border:0;border-radius:12px;background:#FEE500;color:#191600;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.10)">
-      <span style="font-size:19px">💬</span> 카카오톡으로 시작하기</button>
-    <p style="color:#9aa7bd;font-size:12.5px;margin:0">로그인하면 주문·배송조회가 더 편해져요</p></div>`;
+function renderGate(sess){
+  const live=sess&&ytEmbedUrl(sess.youtube);
+  const hv=sess&&(sess.hero_video||'').trim();
+  const mp4=hv&&!ytEmbedUrl(hv)?hv:'';                      // 유튜브 아닌 직접영상(mp4)만 배경영상으로
+  const img=sess&&sess.cover_url?sess.cover_url:'';
+  const nm=sess?(sess.display_name||sess.seller||''):'';
+  let bg;
+  if(mp4)bg=`<div class="gate-bg"><video src="${esc(mp4)}" autoplay muted loop playsinline preload="auto"></video></div>`;
+  else if(img)bg=`<div class="gate-bg"><img src="${esc(img)}" alt=""></div>`;
+  else bg=`<div class="gate-bg grad"></div>`;
+  const av=sess&&sess.seller_photo?`<img class="gate-av" src="${esc(sess.seller_photo)}">`:(nm?`<div class="gate-av">${esc(nm[0])}</div>`:'');
+  const sellerRow=nm?`<div class="gate-seller">${av}<div><b>${esc(nm)}</b><small>${live?'지금 라이브 방송 중':'라이브 쇼핑'}</small></div></div>`:'';
+  const title=live?'지금 방송 중인 특가,<br>놓치지 마세요':'라이브 특가 쇼핑,<br>지금 만나보세요';
+  $('#app').innerHTML=`<div class="gate">${bg}<div class="gate-scrim"></div>
+    <div class="gate-inner">
+      <div class="gate-top">${live?'<span class="gate-live"><i></i>LIVE</span>':''}</div>
+      <div class="gate-hero">
+        <div class="gate-brand">N-LIVE</div>
+        ${sellerRow}
+        <h1 class="gate-title">${title}</h1>
+      </div>
+      <div class="gate-cta">
+        <button class="gate-kakao" id="kgbtn" onclick="kakaoLogin()"><span style="font-size:19px">💬</span> 카카오톡으로 시작하기</button>
+        <p class="gate-legal">로그인하면 <b>이름·연락처·배송지가 자동으로</b> 채워져 주문이 3초면 끝나요</p>
+      </div>
+    </div></div>`;
 }
 async function kakaoLogin(){const b=document.getElementById('kgbtn');
   try{if(b){b.disabled=true;b.style.opacity=.6;b.innerHTML='카카오로 이동 중…';}
@@ -640,7 +684,12 @@ window.kakaoLogin=kakaoLogin;
 async function boot(){
   let sess=null;
   try{const {data}=await AUTH.auth.getSession();sess=data&&data.session;}catch(e){console.error(e);}
-  if(!sess){renderGate();return;}
+  if(!sess){
+    // 로그인 전 입장화면(게이트)에 셀러가 라이브 만들 때 등록한 영상/사진 노출 → 미리 로드
+    let intro=null;
+    try{const {data}=await SB.rpc('get_live_shop',{p_slug:SLUG});if(data&&data.status==='open')intro=data.session;}catch(e){}
+    renderGate(intro);return;
+  }
   try{const u=sess.user||{},m=u.user_metadata||{};
     KAKAO={id:u.id,nick:m.name||m.nickname||m.full_name||m.preferred_username||m.user_name||''};
     if(KAKAO.nick){if(!CUST.nick)CUST.nick=KAKAO.nick;}
