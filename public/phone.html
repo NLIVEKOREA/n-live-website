@@ -391,8 +391,17 @@ $("bulkBtn").addEventListener("click", async function(){
   }catch(e){ $("bulkMsg").textContent = "요청 실패: "+(e.message||e); }
 });
 
-/* 자동 로그인(저장된 키) */
+/* 자동 로그인: URL ?k=키 (QR 스캔) 우선 → 저장된 키 */
 (function(){
+  var p = new URLSearchParams(location.search);
+  var urlKey = (p.get("k") || "").trim().toUpperCase();
+  if(urlKey){
+    $("keyInput").value = urlKey;
+    // 주소창에서 키 제거(어깨너머 노출·기록 방지) — 로그인엔 이미 읽음
+    try{ history.replaceState(null, "", location.pathname); }catch(e){}
+    doLogin(urlKey);
+    return;
+  }
   var saved = localStorage.getItem("wc_phone_key");
   if(saved){ $("keyInput").value = saved; doLogin(saved); }
 })();
