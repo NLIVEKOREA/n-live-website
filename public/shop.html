@@ -632,7 +632,7 @@ function renderGate(){
 }
 async function kakaoLogin(){const b=document.getElementById('kgbtn');
   try{if(b){b.disabled=true;b.style.opacity=.6;b.innerHTML='카카오로 이동 중…';}
-    const {error}=await AUTH.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:location.href.split('#')[0].split('?')[0]}});
+    const {error}=await AUTH.auth.signInWithOAuth({provider:'kakao',options:{scopes:'profile_nickname account_email name phone_number shipping_address',redirectTo:location.href.split('#')[0].split('?')[0]}});
     if(error){console.error(error);toast('카카오 로그인 오류: '+(error.message||''));if(b){b.disabled=false;b.style.opacity=1;b.innerHTML='<span style="font-size:19px">💬</span> 카카오톡으로 시작하기';}}
   }catch(e){console.error(e);toast('로그인 연결 오류입니다.');if(b){b.disabled=false;b.style.opacity=1;}}
 }
@@ -643,8 +643,28 @@ async function boot(){
   if(!sess){renderGate();return;}
   try{const u=sess.user||{},m=u.user_metadata||{};
     KAKAO={id:u.id,nick:m.name||m.nickname||m.full_name||m.preferred_username||m.user_name||''};
-    if(KAKAO.nick){if(!CUST.nick)CUST.nick=KAKAO.nick;if(!CUST.receiver)CUST.receiver=KAKAO.nick;}
+    if(KAKAO.nick){if(!CUST.nick)CUST.nick=KAKAO.nick;}
   }catch(e){}
+  // 로그인 직후(리다이렉트 복귀)엔 provider_token이 살아있음 → 카카오에서 이름·전화·배송지 받아 CUST 자동채움.
+  // 이후 새로고침엔 토큰 없음 → 아래서 localStorage(nlive_cust)로 유지되므로 값이 사라지지 않음.
+  try{
+    const ptk=sess.provider_token;
+    if(ptk){
+      const r=await fetch('/api/kakao-userinfo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:ptk})});
+      const info=await r.json();
+      if(info&&info.ok){
+        if(info.receiver&&!CUST.receiver)CUST.receiver=info.receiver;
+        else if(info.name&&!CUST.receiver)CUST.receiver=info.name;
+        if(info.phone&&!CUST.phone)CUST.phone=info.phone;
+        if(info.addr&&!CUST.addr)CUST.addr=info.addr;
+        if(info.addr_detail&&!CUST.addr_detail)CUST.addr_detail=info.addr_detail;
+        if(info.nickname&&!CUST.nick)CUST.nick=info.nickname;
+        // 카카오로 받은 정보는 즉시 저장(다음 방문에 새로고침해도 유지)
+        try{if(CUST.phone||CUST.receiver||CUST.addr)localStorage.setItem('nlive_cust',JSON.stringify({receiver:CUST.receiver,nick:CUST.nick,phone:CUST.phone,addr:CUST.addr,addr_detail:CUST.addr_detail}));}catch(e){}
+      }
+    }
+  }catch(e){console.error('kakao userinfo',e);}
+  if(!CUST.receiver&&KAKAO.nick)CUST.receiver=KAKAO.nick;   // 실명·배송지 못 받았으면 닉네임이라도
   try{if(location.search||location.hash)history.replaceState({},'',location.pathname);}catch(e){}
   load();
 }
