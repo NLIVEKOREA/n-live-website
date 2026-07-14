@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="theme-color" content="#101826" />
+<title>위잉치킨 · 원정방송</title>
+<style>
+  :root{
+    --ink:#0f1b2d; --sub:#5b6b82; --muted:#8a97a8;
+    --blue:#2563eb; --blue-soft:#e7f0ff; --blue-line:#c9deff;
+    --page:#eef2f7; --card:#ffffff; --line:#e4eaf1;
+    --ok:#15803d; --ok-bg:#e6f5ec; --warn:#b45309; --warn-bg:#fbeed7; --danger:#dc2626; --danger-bg:#fce9e9;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  body{ background:var(--page); color:var(--ink); font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif; font-size:15px; }
+  button{ font-family:inherit; cursor:pointer; }
+  input,select{ font-family:inherit; font-size:15px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; width:100%; background:#fff; }
+  .hidden{ display:none !important; }
+
+  /* 로그인 */
+  #login{ min-height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:28px; }
+  #login .logo{ font-size:26px; font-weight:800; margin-bottom:4px; }
+  #login .sub{ font-size:13px; color:var(--sub); margin-bottom:24px; }
+  #login .box{ width:100%; max-width:340px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; }
+  #login label{ font-size:13px; color:var(--sub); display:block; margin-bottom:6px; }
+  #login .go{ width:100%; margin-top:14px; padding:13px; background:var(--blue); color:#fff; border:none; border-radius:12px; font-size:16px; font-weight:700; }
+  #login .msg{ font-size:13px; text-align:center; margin-top:12px; min-height:18px; }
+
+  /* 앱 셸 */
+  #app{ min-height:100%; display:flex; flex-direction:column; }
+  .top{ background:var(--card); border-bottom:1px solid var(--line); padding:10px 14px; position:sticky; top:0; z-index:5; }
+  .toprow{ display:flex; align-items:center; justify-content:space-between; }
+  .brand{ font-size:16px; font-weight:800; }
+  .who{ font-size:11px; color:var(--sub); }
+  .conns{ display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  .chip{ font-size:11px; font-weight:600; padding:4px 9px; border-radius:7px; background:var(--warn-bg); color:var(--warn); }
+  .chip.on{ background:var(--ok-bg); color:var(--ok); }
+
+  .view{ flex:1; padding:12px; overflow:auto; }
+  .empty{ text-align:center; color:var(--muted); font-size:14px; padding:40px 0; }
+
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:13px; padding:11px 12px; margin-bottom:9px; }
+  .orow{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .tag{ font-size:16px; font-weight:800; background:var(--blue-soft); color:var(--blue); padding:3px 9px; border-radius:8px; }
+  .oname{ font-size:14px; font-weight:600; }
+  .osub{ font-size:12px; color:var(--sub); margin-top:1px; }
+  .badge{ font-size:11px; font-weight:600; padding:3px 8px; border-radius:6px; }
+  .badge.miss{ background:var(--warn-bg); color:var(--warn); }
+  .badge.paid{ background:var(--ok-bg); color:var(--ok); }
+  .btn{ border:1px solid var(--line); background:#fff; color:var(--ink); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:600; }
+  .btn.pri{ background:var(--blue); color:#fff; border-color:var(--blue); }
+  .btn.dng{ color:var(--danger); border-color:var(--danger-bg); }
+  .btn.print{ background:var(--ok); color:#fff; border-color:var(--ok); }
+  .btn:disabled{ opacity:.5; }
+  .row2{ display:flex; gap:8px; }
+  .row2 > *{ flex:1; }
+
+  /* 재고등록 */
+  .reg-hint{ font-size:12px; color:var(--sub); margin:2px 0 10px; line-height:1.5; }
+  .next{ font-size:13px; margin-bottom:10px; }
+  .next b{ color:var(--blue); }
+  .reg-in{ display:flex; gap:8px; margin-bottom:6px; }
+  .reg-in input{ flex:1; font-size:17px; font-weight:600; text-align:center; letter-spacing:1px; }
+  .reg-in .add{ flex:none; width:88px; background:var(--blue); color:#fff; border:none; border-radius:10px; font-weight:700; }
+  .parsemsg{ font-size:12px; min-height:16px; margin-bottom:10px; }
+  .plist .card{ display:flex; align-items:center; justify-content:space-between; }
+  .toolbar{ display:flex; gap:8px; margin-bottom:10px; }
+  .toolbar input{ flex:1; }
+
+  /* 하단 탭바 */
+  .tabs{ display:flex; background:var(--card); border-top:1px solid var(--line); position:sticky; bottom:0; }
+  .tab{ flex:1; text-align:center; padding:10px 0 8px; color:var(--muted); background:none; border:none; font-size:11px; font-weight:600; }
+  .tab.on{ color:var(--blue); }
+  .tab .t{ display:block; font-size:20px; line-height:1.1; }
+
+  .toast{ position:fixed; left:50%; bottom:70px; transform:translateX(-50%); background:#101826; color:#fff; font-size:13px; padding:10px 16px; border-radius:20px; opacity:0; transition:opacity .2s; z-index:20; max-width:88%; text-align:center; }
+  .toast.show{ opacity:1; }
+  .sec-title{ font-size:13px; font-weight:800; margin:4px 0 6px; }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="logo">위잉<span style="color:var(--blue)">치킨</span></div>
+  <div class="sub">원정방송 · 모바일</div>
+  <div class="box">
+    <label>라이선스 키</label>
+    <input id="keyInput" placeholder="예: WEEING-XXXX-XXXX" autocapitalize="characters" autocomplete="off" />
+    <button class="go" id="loginBtn">시작하기</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="top">
+    <div class="toprow">
+      <span class="brand">위잉치킨</span>
+      <span class="who" id="who"></span>
+    </div>
+    <div class="conns">
+      <span class="chip" id="cErp">ERP</span>
+      <span class="chip" id="cPrinter">프린터 미연결</span>
+      <span class="chip on" id="cMode">실시간</span>
+    </div>
+  </div>
+
+  <div class="view" id="viewOrders">
+    <div id="ordersList"><div class="empty">주문을 불러오는 중…</div></div>
+  </div>
+
+  <div class="view hidden" id="viewStock">
+    <div class="sec-title">재고 등록 · 수정</div>
+    <div class="reg-hint">양식: <b>번호표-재고-가격</b> (예: <b>2-50-6000</b>). 색상 넣으려면 <b>3-블랙-50-6000</b>.</div>
+    <div class="next">다음 빈 번호표 추천: <b id="nextTag">–</b> <button class="btn" id="useNext" style="padding:4px 10px">이 번호로</button></div>
+    <div class="reg-in">
+      <input id="regInput" placeholder="2-50-6000" inputmode="text" />
+      <button class="add" id="regBtn">등록</button>
+    </div>
+    <div class="parsemsg" id="parseMsg"></div>
+    <div class="toolbar"><input id="stockSearch" placeholder="번호표·상품명 검색" /></div>
+    <div class="plist" id="stockList"><div class="empty">불러오는 중…</div></div>
+  </div>
+
+  <div class="view hidden" id="viewPrinter">
+    <div class="sec-title">프린터 (블루투스)</div>
+    <div class="reg-hint">소형 무선 라벨프린터(Phomemo 등)를 블루투스로 연결합니다. 안드로이드 크롬에서만 동작해요.</div>
+    <button class="btn pri" id="btConnect" style="width:100%;padding:13px;margin-bottom:10px">프린터 연결</button>
+    <button class="btn" id="btTest" style="width:100%;padding:12px;margin-bottom:16px" disabled>테스트 라벨 출력</button>
+    <div id="btMsg" class="reg-hint"></div>
+
+    <div class="sec-title" style="margin-top:10px">방송분 ERP 일괄 전송</div>
+    <div class="reg-hint">중국 등 신호 나쁜 곳에서 로컬로 쌓인 주문을, 집 PC(위잉치킨)에 요청해 ERP로 한 번에 보냅니다. 몇 번 눌러도 중복 없이 안전합니다.</div>
+    <button class="btn pri" id="bulkBtn" style="width:100%;padding:13px">쌓인 주문 ERP로 일괄 전송</button>
+    <div id="bulkMsg" class="reg-hint" style="margin-top:8px"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-view="Orders"><span class="t">🧾</span>주문</button>
+    <button class="tab" data-view="Stock"><span class="t">📦</span>재고등록</button>
+    <button class="tab" data-view="Printer"><span class="t">🖨️</span>프린터</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+var LICENSE_URL = "https://qikvvqgxmquevzyykkcm.supabase.co";
+var LICENSE_ANON = "sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao";
+var $ = function(id){ return document.getElementById(id); };
+var cfg = null;         // {erp_url, erp_anon_key, erp_slug, erp_app_secret, label}
+var ordersTimer = null;
+
+function toast(msg){ var t=$("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(function(){t.classList.remove("show");},1800); }
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function num(n){ return (Number(n)||0).toLocaleString(); }
+
+async function licenseRpc(fn, body){
+  var r = await fetch(LICENSE_URL+"/rest/v1/rpc/"+fn, { method:"POST",
+    headers:{ apikey:LICENSE_ANON, authorization:"Bearer "+LICENSE_ANON, "content-type":"application/json" },
+    body: JSON.stringify(body) });
+  return await r.json();
+}
+async function erpRpc(fn, payload){
+  if(!cfg || !cfg.erp_url) return { ok:false, reason:"ERP 미연동 (단독 고객은 집 PC 릴레이 필요 — 준비 중)" };
+  var r = await fetch(cfg.erp_url+"/rest/v1/rpc/"+fn, { method:"POST",
+    headers:{ apikey:cfg.erp_anon_key, authorization:"Bearer "+cfg.erp_anon_key, "content-type":"application/json" },
+    body: JSON.stringify({ p_payload: Object.assign({}, payload, { app_secret: cfg.erp_app_secret }) }) });
+  try { return await r.json(); } catch(e){ return { ok:false, reason:"응답 오류 "+r.status }; }
+}
+
+/* ── 로그인 ── */
+async function doLogin(key){
+  $("loginMsg").textContent = "확인 중…";
+  var r = await licenseRpc("phone_login", { p_key: key });
+  if(!r || r.ok !== true){ $("loginMsg").textContent = "❌ " + ((r&&r.reason)||"로그인 실패"); return; }
+  cfg = r;
+  localStorage.setItem("wc_phone_key", key);
+  $("who").textContent = r.label || "";
+  var hasErp = !!r.erp_url;
+  $("cErp").textContent = hasErp ? "ERP 연동" : "단독(릴레이 준비중)";
+  $("cErp").className = "chip " + (hasErp ? "on" : "");
+  $("login").classList.add("hidden"); $("app").classList.remove("hidden");
+  showView("Orders"); startOrders(); loadStock(); loadNextTag();
+}
+$("loginBtn").addEventListener("click", function(){
+  var k = $("keyInput").value.trim().toUpperCase();
+  if(k) doLogin(k);
+});
+$("keyInput").addEventListener("keydown", function(e){ if(e.key==="Enter") $("loginBtn").click(); });
+
+/* ── 탭 ── */
+function showView(name){
+  ["Orders","Stock","Printer"].forEach(function(v){ $("view"+v).classList.toggle("hidden", v!==name); });
+  document.querySelectorAll(".tab").forEach(function(b){ b.classList.toggle("on", b.dataset.view===name); });
+  if(name==="Stock"){ loadStock(); loadNextTag(); }
+}
+document.querySelectorAll(".tab").forEach(function(b){ b.addEventListener("click", function(){ showView(b.dataset.view); }); });
+
+/* ── 주문 대기열 ── */
+function startOrders(){ loadOrders(); if(ordersTimer) clearInterval(ordersTimer); ordersTimer = setInterval(loadOrders, 5000); }
+async function loadOrders(){
+  var r = await erpRpc("get_chat_orders", { limit: 100 });
+  var box = $("ordersList");
+  if(!r || r.ok===false){ box.innerHTML = '<div class="empty">'+esc((r&&r.reason)||"불러오기 실패")+'</div>'; return; }
+  var list = r.orders || [];
+  if(!list.length){ box.innerHTML = '<div class="empty">아직 주문이 없어요.</div>'; return; }
+  box.innerHTML = list.map(function(o){
+    var paid = o.pay==="paid";
+    return '<div class="card"><div class="orow">'
+      + '<div style="display:flex;align-items:center;gap:9px;min-width:0">'
+      + '<span class="tag">'+esc(o.tag||"–")+'</span>'
+      + '<div style="min-width:0"><div class="oname">'+esc(o.name)+(o.color?' ('+esc(o.color)+')':'')+'</div>'
+      + '<div class="osub">'+esc(o.nick||o.cust||"")+' · '+num(o.qty)+'개'+(o.cust_no?' · '+esc(o.cust_no)+'번':'')+'</div></div></div>'
+      + '<div style="display:flex;align-items:center;gap:6px;flex:none">'
+      + '<span class="badge '+(paid?"paid":"miss")+'">'+(paid?"입금":"미결제")+'</span>'
+      + '<button class="btn print" data-print=\''+encodeURIComponent(JSON.stringify(o))+'\'>출력</button>'
+      + '<button class="btn dng" data-cancel="'+esc(o.order_group_id)+'">취소</button>'
+      + '</div></div></div>';
+  }).join("");
+}
+$("ordersList").addEventListener("click", async function(e){
+  var c = e.target.closest("[data-cancel]"); var p = e.target.closest("[data-print]");
+  if(c){
+    if(!confirm("이 주문을 취소할까요? (재고 복원)")) return;
+    var r = await erpRpc("cancel_chat_order_by_group", { order_group_id: c.dataset.cancel });
+    if(r && r.ok){ toast("취소됨 (재고 복원)"); loadOrders(); }
+    else toast("취소 실패: " + ((r&&(r.reason===("already_processed")?"이미 출고/입금됨":r.reason))||"?"));
+  } else if(p){
+    var o = JSON.parse(decodeURIComponent(p.dataset.print));
+    printLabel(o);
+  }
+});
+
+/* ── 재고 등록 (2-50-6000) ── */
+var COLOR_WORDS = ["블랙","화이트","네이비","그레이","베이지","브라운","레드","블루","그린","핑크","퍼플","옐로우","카키","와인","크림","민트","라벤더","차콜","연청","진청"];
+function parseReg(s){
+  var t = String(s||"").trim().replace(/\s*[-~]\s*/g,"-");
+  var parts = t.split("-").map(function(x){return x.trim();}).filter(Boolean);
+  var isNum = function(x){ return /^[0-9]+$/.test(x); };
+  if(parts.length < 3) return null;
+  var last = parts.length-1;
+  if(!isNum(parts[0]) || !isNum(parts[last-1]) || !isNum(parts[last])) return null;
+  var name="", color="";
+  parts.slice(1,last-1).forEach(function(tok){
+    if(isNum(tok)) return;
+    if(!color && COLOR_WORDS.indexOf(tok)>=0) color=tok; else name = name? name+" "+tok : tok;
+  });
+  return { tag:parts[0], name:name, color:color, qty:Number(parts[last-1]), price:Number(parts[last]) };
+}
+var _stockCache = [];
+async function loadStock(){
+  var r = await erpRpc("get_all_stock", {});
+  var box = $("stockList");
+  if(!r || r.ok===false){ box.innerHTML = '<div class="empty">'+esc((r&&r.reason)||"불러오기 실패")+'</div>'; return; }
+  _stockCache = (r.stock||[]).filter(function(s){ return s.tag; });   // 번호표 달린 것만
+  renderStock();
+}
+function renderStock(){
+  var q = ($("stockSearch").value||"").trim().toLowerCase();
+  var rows = _stockCache.filter(function(s){ return !q || String(s.tag).indexOf(q)>=0 || String(s.name||"").toLowerCase().indexOf(q)>=0; });
+  rows.sort(function(a,b){ return (Number(a.tag)||0)-(Number(b.tag)||0); });
+  var box = $("stockList");
+  if(!rows.length){ box.innerHTML = '<div class="empty">번호표 달린 상품이 없어요.</div>'; return; }
+  box.innerHTML = rows.map(function(s){
+    return '<div class="card"><div style="display:flex;align-items:center;gap:9px;min-width:0">'
+      + '<span class="tag">'+esc(s.tag)+'</span>'
+      + '<div style="min-width:0"><div class="oname">'+esc(s.name)+'</div>'
+      + '<div class="osub">재고 '+num(s.qty)+' · '+num(s.price)+'원'+(s.options?' · '+esc(s.options):'')+'</div></div></div>'
+      + '<div style="display:flex;gap:6px;flex:none">'
+      + '<button class="btn" data-edit="'+esc(s.tag)+'">수정</button>'
+      + '<button class="btn dng" data-del="'+esc(s.tag)+'">삭제</button></div></div>';
+  }).join("");
+}
+$("stockSearch").addEventListener("input", renderStock);
+async function loadNextTag(){
+  var r = await erpRpc("get_all_stock", {});
+  var used = {};
+  ((r&&r.stock)||[]).forEach(function(s){ var n=parseInt(String(s.tag||"").replace(/[^0-9]/g,""),10); if(n>0) used[n]=1; });
+  var n=1; while(used[n]) n++;
+  $("nextTag").textContent = n;
+  $("nextTag").dataset.v = n;
+}
+$("useNext").addEventListener("click", function(){ $("regInput").value = ($("nextTag").dataset.v||"") + "-"; $("regInput").focus(); });
+$("regInput").addEventListener("input", function(){
+  var p = parseReg($("regInput").value);
+  var el = $("parseMsg");
+  if(!$("regInput").value.trim()){ el.textContent=""; return; }
+  if(!p){ el.textContent="형식이 아니에요 — 번호표-재고-가격 (예: 2-50-6000)"; el.style.color="var(--danger)"; return; }
+  var dup = _stockCache.find(function(s){ return String(s.tag)===String(p.tag); });
+  if(dup){ el.textContent="⚠️ "+p.tag+"번은 이미 있어요 ("+esc(dup.name)+") — 등록하면 재고·가격이 덮어써집니다"; el.style.color="var(--warn)"; }
+  else { el.textContent="✅ "+p.tag+"번 · "+(p.name||"(이름없음)")+(p.color?" "+p.color:"")+" · 재고"+p.qty+" · "+num(p.price)+"원"; el.style.color="var(--ok)"; }
+});
+$("regBtn").addEventListener("click", async function(){
+  var p = parseReg($("regInput").value);
+  if(!p){ toast("형식 확인: 2-50-6000"); return; }
+  var dup = _stockCache.find(function(s){ return String(s.tag)===String(p.tag); });
+  if(dup && !confirm(p.tag+"번은 이미 있어요. 재고·가격을 덮어쓸까요?")) return;
+  $("regBtn").disabled=true;
+  var r = await erpRpc("upsert_chat_product", { tag:p.tag, name:p.name, color:p.color, qty:p.qty, price:p.price });
+  $("regBtn").disabled=false;
+  if(r && r.ok){ toast(r.updated?(p.tag+"번 수정됨"):(p.tag+"번 등록됨")); $("regInput").value=""; $("parseMsg").textContent=""; loadStock(); loadNextTag(); }
+  else toast("등록 실패: " + ((r&&r.reason)||"?"));
+});
+$("stockList").addEventListener("click", async function(e){
+  var ed = e.target.closest("[data-edit]"); var dl = e.target.closest("[data-del]");
+  if(ed){
+    var s = _stockCache.find(function(x){ return String(x.tag)===ed.dataset.edit; }) || {};
+    $("regInput").value = [s.tag, s.name||"", (s.qty||0), (s.price||0)].filter(function(x){return x!=="";}).join("-");
+    showView("Stock"); $("regInput").dispatchEvent(new Event("input")); $("regInput").focus();
+  } else if(dl){
+    if(!confirm(dl.dataset.del+"번 상품을 삭제할까요?")) return;
+    var r = await erpRpc("delete_chat_product", { tag: dl.dataset.del });
+    if(r && r.ok){ toast("삭제됨"); loadStock(); loadNextTag(); } else toast("삭제 실패: "+((r&&r.reason)||"?"));
+  }
+});
+
+/* ── D) 블루투스 프린터 (Web Bluetooth · Phomemo ESC/POS) — 실기기 도착 후 검증 ── */
+var btDevice=null, btChar=null;
+async function btConnect(){
+  if(!navigator.bluetooth){ $("btMsg").textContent="이 브라우저는 블루투스 인쇄를 지원하지 않아요 (안드로이드 크롬 필요)."; return; }
+  try{
+    btDevice = await navigator.bluetooth.requestDevice({
+      filters:[{ namePrefix:"M" },{ namePrefix:"T" },{ namePrefix:"Phomemo" }],
+      optionalServices:[0xFF00, "0000ff00-0000-1000-8000-00805f9b34fb", "e7810a71-73ae-499d-8c15-faa9aef0c3f2"]
+    });
+    var server = await btDevice.gatt.connect();
+    var svcs = await server.getPrimaryServices();
+    for(var i=0;i<svcs.length;i++){
+      var chars = await svcs[i].getCharacteristics();
+      for(var j=0;j<chars.length;j++){ if(chars[j].properties.write || chars[j].properties.writeWithoutResponse){ btChar = chars[j]; break; } }
+      if(btChar) break;
+    }
+    if(!btChar) throw new Error("쓰기 채널을 찾지 못함");
+    btDevice.addEventListener("gattserverdisconnected", function(){ btChar=null; setPrinterChip(false); });
+    setPrinterChip(true); $("btTest").disabled=false;
+    $("btMsg").textContent="연결됨: "+(btDevice.name||"프린터");
+    toast("프린터 연결됨");
+  }catch(e){ $("btMsg").textContent="연결 실패/취소: "+(e.message||e); }
+}
+function setPrinterChip(on){ var c=$("cPrinter"); c.textContent= on?"프린터 연결됨":"프린터 미연결"; c.className="chip "+(on?"on":""); }
+async function btWrite(bytes){
+  if(!btChar) throw new Error("프린터 미연결");
+  var CH=180;                       // MTU 나눠 전송
+  for(var i=0;i<bytes.length;i+=CH){
+    var slice = bytes.slice(i,i+CH);
+    if(btChar.writeValueWithoutResponse) await btChar.writeValueWithoutResponse(slice);
+    else await btChar.writeValue(slice);
+    await new Promise(function(r){ setTimeout(r,20); });
+  }
+}
+function escposText(lines){
+  // ESC/POS: 초기화 + 텍스트 라인들 + 피드 + 커트 (한글은 프린터 코드페이지 의존 — 실기기서 조정)
+  var enc = new TextEncoder();
+  var out = [0x1B,0x40];            // ESC @ 초기화
+  lines.forEach(function(ln){
+    if(ln.big){ out.push(0x1D,0x21,0x11); } else { out.push(0x1D,0x21,0x00); }   // 배수
+    var b = enc.encode(ln.text+"\n"); for(var k=0;k<b.length;k++) out.push(b[k]);
+  });
+  out.push(0x1B,0x64,0x03);         // 3줄 피드
+  return new Uint8Array(out);
+}
+async function printLabel(o){
+  if(!btChar){ toast("먼저 프린터를 연결하세요 (프린터 탭)"); showView("Printer"); return; }
+  try{
+    await btWrite(escposText([
+      { text:(cfg.label||"위잉치킨"), big:false },
+      { text:(o.tag?("["+o.tag+"] "):"")+(o.name||""), big:true },
+      { text:(o.color?o.color+" ":"")+(o.qty||1)+"개  "+num(o.price)+"원", big:false },
+      { text:(o.nick||o.cust||"")+(o.cust_no?"  #"+o.cust_no:""), big:false }
+    ]));
+    toast("출력 보냄");
+  }catch(e){ toast("출력 실패: "+(e.message||e)); }
+}
+$("btConnect").addEventListener("click", btConnect);
+$("btTest").addEventListener("click", function(){ printLabel({ tag:"1", name:"테스트 상품", color:"", qty:1, price:10000, nick:"테스트", cust_no:"1" }); });
+
+/* ── C) 방송분 일괄전송 — 집PC 릴레이(가정). 릴레이 미구축 시 안내 ── */
+$("bulkBtn").addEventListener("click", async function(){
+  if(!confirm("집 PC(위잉치킨)에 '쌓인 주문 ERP 일괄전송'을 요청할까요?\n(몇 번 눌러도 중복 없이 안전)")) return;
+  $("bulkMsg").textContent = "요청 중…";
+  // 가정: 엔진↔폰 릴레이 엔드포인트. 미구축이면 안내.
+  try{
+    var relay = localStorage.getItem("wc_relay_url");
+    if(!relay){ $("bulkMsg").textContent = "⚠️ 집 PC 연결(릴레이)이 아직 설정되지 않았어요. 릴레이 준비 후 여기서 바로 눌러 전송됩니다. (지금은 집 PC 위잉치킨의 [ERP 일괄전송] 버튼으로 전송)"; return; }
+    var r = await fetch(relay+"/bulk-erp", { method:"POST" });
+    var d = await r.json();
+    $("bulkMsg").textContent = d && d.ok ? ("✅ 전송 완료 — 새로 "+d.sent+"건, 실패 "+d.failed+"건") : ("실패: "+((d&&d.reason)||"?"));
+  }catch(e){ $("bulkMsg").textContent = "요청 실패: "+(e.message||e); }
+});
+
+/* 자동 로그인(저장된 키) */
+(function(){
+  var saved = localStorage.getItem("wc_phone_key");
+  if(saved){ $("keyInput").value = saved; doLogin(saved); }
+})();
+</script>
+</body>
+</html>
