@@ -75,7 +75,7 @@
   <!-- 신규 등록 -->
   <div class="card">
     <div class="row">
-      <input id="nKey" placeholder="라이선스 키 (예: WEEING-0002)" style="width:220px" />
+      <input id="nKey" placeholder="[생성] 버튼 클릭 (무작위 키)" style="width:220px" />
       <input id="nLabel" placeholder="이름/메모 (예: 홍길동)" style="width:200px" />
       <select id="nDays">
         <option value="0">무제한</option>
@@ -187,11 +187,22 @@ $("copyDlBtn").addEventListener("click", ()=>{
   navigator.clipboard.writeText(url).then(()=>{ $("copyDlBtn").textContent="복사됨!"; setTimeout(()=>$("copyDlBtn").textContent="링크 복사",1500); });
 });
 
-// 등록
-$("genBtn").addEventListener("click", ()=>{ $("nKey").value = "WEEING-" + Math.random().toString(36).slice(2,6).toUpperCase() + "-" + Math.random().toString(36).slice(2,6).toUpperCase(); });
+// 등록 — 암호학적 랜덤 키(추측/열거 불가). 혼동문자(O0I1) 제외한 30자 알파벳.
+function genLicenseKey(){
+  const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";  // 32→30자(O,0,I,1 제외)
+  const buf=new Uint8Array(20); crypto.getRandomValues(buf);
+  let s=""; for(let i=0;i<buf.length;i++) s+=A[buf[i]%A.length];
+  return "WEEING-"+s.slice(0,5)+"-"+s.slice(5,10)+"-"+s.slice(10,15)+"-"+s.slice(15,20);
+}
+$("genBtn").addEventListener("click", ()=>{ $("nKey").value = genLicenseKey(); });
 $("addBtn").addEventListener("click", async ()=>{
   const key = $("nKey").value.trim().toUpperCase();  // 앱이 대문자로 확인하므로 항상 대문자 저장
   if(!key) return $("addMsg").textContent="키를 입력하세요";
+  // 약한 키(순차·짧은) 발급 차단 — 열거 공격 방지. 무작위 16자 이상 요구.
+  var body = key.replace(/^WEEING-/,"").replace(/-/g,"");
+  if(body.length < 16 || /^[0-9]+$/.test(body)){
+    return $("addMsg").textContent="⚠️ 약한 키입니다. [생성] 버튼으로 무작위 키를 발급하세요 (순차·짧은 키는 남이 추측 가능).";
+  }
   $("addMsg").textContent="발급 중...";
   const res = await rpc("admin_create_license", { p_secret:SECRET, p_key:key, p_label:$("nLabel").value.trim(), p_days:Number($("nDays").value) });
   if(res.ok){ $("addMsg").textContent="✅ 발급됨: "+key; $("nKey").value=""; $("nLabel").value=""; load(); }
