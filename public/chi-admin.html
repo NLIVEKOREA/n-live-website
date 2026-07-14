@@ -129,10 +129,12 @@ function periodCell(r){
   return `<span class="pill ${cls}">${d}일 남음</span> <span class="muted">~${fmtDate(r.expires_at)}</span>`;
 }
 
+let LAST_ROWS = [];
 async function load(){
   const res = await rpc("admin_list_licenses", { p_secret: SECRET });
   if(!res.ok){ $("rows").innerHTML = `<tr><td colspan="6" class="bad">${res.reason||"불러오기 실패"}</td></tr>`; return; }
   const rows = res.rows||[];
+  LAST_ROWS = rows;
   $("rows").innerHTML = rows.map(r=>{
     const active = r.active && (!r.expires_at || daysLeft(r.expires_at)>=0);
     const status = !r.active ? '<span class="pill bad">정지</span>' : (active ? '<span class="pill ok">사용중</span>' : '<span class="pill bad">만료</span>');
@@ -147,6 +149,7 @@ async function load(){
         ${r.active ? `<button class="mini warn" data-act="off" data-k="${esc(r.key)}">정지</button>` : `<button class="mini" data-act="on" data-k="${esc(r.key)}">활성</button>`}
         <button class="mini" data-act="ext" data-k="${esc(r.key)}">+30일</button>
         <button class="mini" data-act="reset" data-k="${esc(r.key)}">기기초기화</button>
+        <button class="mini ${r.erp_url ? "ok" : ""}" data-act="erp" data-k="${esc(r.key)}" title="${esc(r.erp_url||"고객 ERP 접속정보 미지정")}">ERP${r.erp_url ? "✓" : ""}</button>
         <button class="mini danger" data-act="del" data-k="${esc(r.key)}">삭제</button>
       </td></tr>`;
   }).join("") || '<tr><td colspan="6" class="muted">발급된 키 없음</td></tr>';
@@ -208,6 +211,18 @@ $("rows").addEventListener("click", async (e)=>{
   else if(act==="ext") res = await rpc("admin_update_license",{p_secret:SECRET,p_key:key,p_active:null,p_add_days:30,p_reset_machine:false});
   else if(act==="reset") res = await rpc("admin_update_license",{p_secret:SECRET,p_key:key,p_active:null,p_add_days:0,p_reset_machine:true});
   else if(act==="del") res = await rpc("admin_delete_license",{p_secret:SECRET,p_key:key});
+  else if(act==="erp"){
+    // 고객 ERP 접속정보 지정 — 앱은 라이선스 확인 때 이 값을 자동 적용(앱 내 입력 불필요)
+    const row = (LAST_ROWS||[]).find(x=>x.key===key)||{};
+    const url = prompt("고객 ERP Supabase URL (예: https://xxxx.supabase.co)\n비우면 해제", row.erp_url||"");
+    if(url===null) return;
+    const anon = prompt("Anon Key — 그 Supabase 프로젝트의 공개 API 키 (Settings→API)", row.erp_anon_key||"");
+    if(anon===null) return;
+    const slug = prompt("방송 slug — 이 고객 방송 주문 구분자 (예: sunpick-live)", row.erp_slug||"");
+    if(slug===null) return;
+    res = await rpc("admin_set_license_erp",{p_secret:SECRET,p_key:key,p_url:url.trim(),p_anon:anon.trim(),p_slug:slug.trim()});
+    if(res && !res.ok) alert(res.reason||"저장 실패");
+  }
   load();
 });
 
