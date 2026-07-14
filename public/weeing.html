@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>위잉치킨 — 라이브 채팅주문 프로그램 다운로드</title>
+<meta name="description" content="틱톡·유튜브 라이브 채팅 주문을 자동 수집하고 라벨을 출력하는 위잉치킨 프로그램. 라이선스 키로 우리 ERP에 바로 연동." />
+<style>
+  :root{ --bg:#0f1420; --card:#171f2e; --line:#2a3547; --tx:#e8edf5; --sub:#9fb0c8; --blue:#3b82f6; --blue2:#60a5fa; --ok:#34d399; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:linear-gradient(180deg,#0b0f18,#0f1420 40%); color:var(--tx);
+    font-family:"Pretendard","Malgun Gothic",system-ui,-apple-system,sans-serif; line-height:1.6; }
+  .wrap{ max-width:760px; margin:0 auto; padding:48px 20px 80px; }
+  .logo{ font-size:13px; letter-spacing:2px; color:var(--sub); font-weight:700; }
+  h1{ font-size:38px; margin:10px 0 6px; font-weight:800; letter-spacing:-1px; }
+  h1 .em{ color:var(--blue2); }
+  .lede{ font-size:17px; color:var(--sub); margin:0 0 28px; }
+  .dl-card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px; text-align:center; margin-bottom:22px; }
+  .dl-btn{ display:inline-block; background:linear-gradient(135deg,var(--blue),#2563eb); color:#fff; font-size:18px; font-weight:800;
+    padding:16px 40px; border-radius:12px; text-decoration:none; border:none; cursor:pointer; transition:transform .1s, box-shadow .2s;
+    box-shadow:0 8px 24px rgba(59,130,246,.35); }
+  .dl-btn:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(59,130,246,.5); }
+  .dl-btn:disabled{ opacity:.55; cursor:default; box-shadow:none; }
+  .dl-meta{ font-size:13px; color:var(--sub); margin-top:12px; }
+  .win{ display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--sub); margin-top:4px; }
+  .steps{ display:grid; gap:14px; margin:8px 0 26px; }
+  .step{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; display:flex; gap:14px; align-items:flex-start; }
+  .step .n{ flex:none; width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:15px; }
+  .step .t{ font-weight:700; margin-bottom:2px; }
+  .step .d{ font-size:14px; color:var(--sub); }
+  .note{ background:rgba(59,130,246,.08); border:1px solid rgba(59,130,246,.25); border-radius:12px; padding:16px 18px; font-size:14px; color:var(--sub); }
+  .note b{ color:var(--tx); }
+  .feat{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:26px 0; }
+  @media(max-width:560px){ .feat{ grid-template-columns:1fr; } h1{ font-size:30px; } }
+  .feat div{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; font-size:14px; }
+  .feat .fh{ font-weight:700; color:var(--tx); margin-bottom:3px; }
+  footer{ margin-top:40px; text-align:center; font-size:12px; color:#5c6b82; }
+  code{ background:#0b1018; border:1px solid var(--line); border-radius:5px; padding:1px 6px; font-size:13px; color:var(--blue2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">N-LIVE</div>
+  <h1>위잉<span class="em">치킨</span></h1>
+  <p class="lede">틱톡·유튜브 라이브 채팅 주문을 자동으로 수집하고, 라벨까지 뽑아주는 라이브 커머스 주문 프로그램.</p>
+
+  <div class="dl-card">
+    <button id="dlBtn" class="dl-btn" disabled>다운로드 준비 중…</button>
+    <div class="dl-meta" id="dlMeta">최신 버전을 확인하고 있어요…</div>
+    <div class="win">🪟 Windows 10 / 11 전용</div>
+  </div>
+
+  <div class="feat">
+    <div><div class="fh">🛒 자동 주문 수집</div>채팅에 번호만 치면 상품·수량·고객 자동 정리</div>
+    <div><div class="fh">🖨️ 라벨 자동 출력</div>주문마다 QR·고객번호·상품 라벨 즉시 인쇄</div>
+    <div><div class="fh">🔗 ERP 실시간 연동</div>재고·고객·주문이 우리 ERP와 실시간 동기화</div>
+    <div><div class="fh">⚙️ 설정 제로</div>라이선스 키만 넣으면 접속·프린터 자동 세팅</div>
+  </div>
+
+  <h3 style="margin:30px 0 10px">설치 방법</h3>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div><div class="t">프로그램 다운로드</div><div class="d">위 버튼을 눌러 설치파일을 받고 실행하세요. (Windows 보안 경고가 뜨면 “추가 정보 → 실행”)</div></div></div>
+    <div class="step"><div class="n">2</div><div><div class="t">라이선스 키 입력</div><div class="d">처음 실행하면 라이선스 키를 물어봐요. 발급받은 키를 입력하면 인증됩니다.</div></div></div>
+    <div class="step"><div class="n">3</div><div><div class="t">끝 — 자동 연결</div><div class="d">ERP 접속정보·프린터 용지까지 자동으로 세팅돼요. 바로 방송에 연결해 주문을 받으세요.</div></div></div>
+  </div>
+
+  <div class="note">
+    <b>라이선스 키가 없으신가요?</b><br>
+    위잉치킨은 라이선스 키가 있어야 실행됩니다. 도입 문의는 담당자에게 연락 주세요. 키 발급 후 이 페이지에서 프로그램을 받아 바로 사용하실 수 있습니다.
+  </div>
+
+  <footer>© N-LIVE · 위잉치킨 &nbsp;|&nbsp; 업데이트는 프로그램 실행 시 자동 적용됩니다.</footer>
+</div>
+
+<script>
+(async function(){
+  const btn = document.getElementById("dlBtn");
+  const meta = document.getElementById("dlMeta");
+  try{
+    const r = await fetch("https://api.github.com/repos/NLIVEKOREA/n-live-website/releases/latest", { headers:{ "Accept":"application/vnd.github+json" } });
+    if(!r.ok) throw new Error("release "+r.status);
+    const d = await r.json();
+    const exe = (d.assets||[]).find(a=>/weeing-setup.*\.exe$/i.test(a.name));
+    if(!exe) throw new Error("no exe asset");
+    btn.textContent = "위잉치킨 다운로드";
+    btn.disabled = false;
+    btn.onclick = ()=>{ location.href = exe.browser_download_url; };
+    const ver = (d.tag_name||"").replace(/^v/,"");
+    const mb = exe.size ? (exe.size/1048576).toFixed(0)+"MB" : "";
+    meta.textContent = `최신 버전 ${ver}${mb? " · "+mb : ""}`;
+  }catch(e){
+    // 폴백: 릴리스 페이지로 안내
+    btn.textContent = "다운로드 페이지 열기";
+    btn.disabled = false;
+    btn.onclick = ()=>{ location.href = "https://github.com/NLIVEKOREA/n-live-website/releases/latest"; };
+    meta.textContent = "최신 릴리스 페이지에서 weeing-setup 파일을 받아주세요.";
+  }
+})();
+</script>
+</body>
+</html>

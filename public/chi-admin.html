@@ -220,7 +220,10 @@ $("rows").addEventListener("click", async (e)=>{
     if(anon===null) return;
     const slug = prompt("방송 slug — 이 고객 방송 주문 구분자 (예: sunpick-live)", row.erp_slug||"");
     if(slug===null) return;
-    res = await rpc("admin_set_license_erp",{p_secret:SECRET,p_key:key,p_url:url.trim(),p_anon:anon.trim(),p_slug:slug.trim()});
+    // app_secret — 고객킷생성.js가 출력한 그 고객 전용 secret(고객 ERP 설치SQL에 박힌 값과 동일). 비우면 기존값 유지.
+    const appSecret = prompt("app_secret — 고객 전용 앱 시크릿 (고객킷생성.js 출력값, 고객 설치SQL과 동일)\n비우면 기존값 유지", row.erp_app_secret||"");
+    if(appSecret===null) return;
+    res = await rpc("admin_set_license_erp",{p_secret:SECRET,p_key:key,p_url:url.trim(),p_anon:anon.trim(),p_slug:slug.trim(),p_app_secret:appSecret.trim()});
     if(res && !res.ok) alert(res.reason||"저장 실패");
   }
   load();
