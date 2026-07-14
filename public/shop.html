@@ -649,9 +649,14 @@ try{const c=JSON.parse(localStorage.getItem('nlive_cust')||'null');if(c&&c.phone
 /* ===== 카카오 로그인 게이트: shop 진입 전에 먼저 뜨는 전체화면 ===== */
 function renderGate(sess){
   const live=sess&&ytEmbedUrl(sess.youtube);
-  const hv=sess&&(sess.hero_video||'').trim();
-  const mp4=hv&&!ytEmbedUrl(hv)?hv:'';                      // 유튜브 아닌 직접영상(mp4)만 배경영상으로
-  const img=sess&&sess.cover_url?sess.cover_url:'';
+  // 우선순위: 입장전용 영상 > 입장전용 이미지 > 홈 영상 > 홈 이미지 > 그라데이션
+  const gateV=(sess&&sess.gate_video||'').trim(),gateI=(sess&&sess.gate_image||'').trim();
+  const heroV=(sess&&sess.hero_video||'').trim(),coverI=(sess&&sess.cover_url||'').trim();
+  let mp4='',img='';
+  if(gateV&&!ytEmbedUrl(gateV)){mp4=gateV;img=gateI||coverI;}
+  else if(gateI){img=gateI;}
+  else if(heroV&&!ytEmbedUrl(heroV)){mp4=heroV;img=coverI;}
+  else if(coverI){img=coverI;}
   const nm=sess?(sess.display_name||sess.seller||''):'';
   let bg;
   if(mp4)bg=`<div class="gate-bg"><video src="${esc(mp4)}"${img?` poster="${esc(img)}"`:''} autoplay muted loop playsinline preload="auto"></video></div>`;
