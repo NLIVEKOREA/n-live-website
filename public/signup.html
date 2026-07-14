@@ -4,10 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>N-LIVE 회원가입</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
 <style>
   :root{--brand:#1b48e0;--ink:#1a2233;--sub:#5b6b86;--line:#e6ebf5;--bg:#eef3ff;--kakao:#FEE500;--ok:#059669;--red:#dc2626}
   *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:var(--ink);background:linear-gradient(170deg,#fff,#eaf0ff);min-height:100vh}
+  body{margin:0;font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.2px;color:var(--ink);background:linear-gradient(170deg,#fff,#eaf0ff);min-height:100vh}
   .app{max-width:460px;margin:0 auto;padding:26px 18px 48px}
   .brand{text-align:center;margin:6px 0 18px}
   .logo{font-weight:900;font-size:32px;letter-spacing:1px;color:var(--brand)}
@@ -177,7 +179,7 @@ try{if(new URLSearchParams(location.search).get('type')==='general')switchTab('g
 const AUTH=window.supabase.createClient('https://qikvvqgxmquevzyykkcm.supabase.co','sb_publishable_7dB61aDLDjATF2PMWnS4dw_j506tmao',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'nlive-auth'}});
 async function kakaoStart(){
   const b=document.getElementById('kakaoBtn');b.disabled=true;b.style.opacity=.6;b.textContent='카카오로 이동 중…';
-  const {error}=await AUTH.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:location.origin+'/signup/'}});
+  const {error}=await AUTH.auth.signInWithOAuth({provider:'kakao',options:{scopes:'profile_nickname account_email name phone_number shipping_address',redirectTo:location.origin+'/signup/'}});
   if(error){alert('카카오 로그인 오류: '+(error.message||''));b.disabled=false;b.style.opacity=1;b.textContent='💬 카카오톡으로 시작하기';}
 }
 function finishSignup(){
@@ -193,10 +195,22 @@ function finishSignup(){
   document.getElementById('doneBtn').style.display='none';
 }
 (async()=>{try{const {data}=await AUTH.auth.getSession();const s=data&&data.session;
-  if(s){const u=s.user||{},md=u.user_metadata||{};const nick=md.name||md.nickname||md.full_name||'';
+  if(s){const u=s.user||{},md=u.user_metadata||{};let nick=md.name||md.nickname||md.full_name||'';
     const k=document.getElementById('kkDone');k.style.display='block';
-    k.textContent='✅ 카카오 로그인 완료'+(nick?' — '+nick+'님':'')+' · 아래 배송정보를 입력해 주세요';
     const b=document.getElementById('kakaoBtn');b.disabled=true;b.style.opacity=.55;b.textContent='💬 카카오 로그인 완료';
+    // 로그인 직후 provider_token으로 이름·전화·배송지 받아 배송정보 폼 자동채움
+    let filled=false;
+    try{const ptk=s.provider_token;
+      if(ptk){const r=await fetch('/api/kakao-userinfo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:ptk})});
+        const info=await r.json();
+        if(info&&info.ok){
+          const setV=(id,v)=>{const el=document.getElementById(id);if(el&&v&&!el.value)el.value=v;};
+          setV('fName',info.receiver||info.name); setV('fPhone',info.phone);
+          setV('fAddr',[info.addr,info.addr_detail].filter(Boolean).join(' '));
+          if(info.name)nick=info.name; filled=true;
+        }}
+    }catch(e){}
+    k.textContent='✅ 카카오 로그인 완료'+(nick?' — '+nick+'님':'')+(filled?' · 정보를 자동으로 채웠어요':' · 아래 배송정보를 입력해 주세요');
     try{if(location.search||location.hash)history.replaceState({},'',location.pathname);}catch(e){}}
 }catch(e){}})();
 
