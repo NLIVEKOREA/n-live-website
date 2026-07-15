@@ -86,6 +86,7 @@
       </select>
       <button class="primary" id="addBtn">＋ 키 발급</button>
       <button class="mini" id="genBtn">키 자동생성</button>
+      <button class="mini" id="trialBtn" title="무작위 키를 즉시 만들어 3일 무료체험으로 발급합니다">🎁 무료체험 3일</button>
     </div>
     <div class="msg" id="addMsg"></div>
   </div>
@@ -206,6 +207,17 @@ $("addBtn").addEventListener("click", async ()=>{
   $("addMsg").textContent="발급 중...";
   const res = await rpc("admin_create_license", { p_secret:SECRET, p_key:key, p_label:$("nLabel").value.trim(), p_days:Number($("nDays").value) });
   if(res.ok){ $("addMsg").textContent="✅ 발급됨: "+key; $("nKey").value=""; $("nLabel").value=""; load(); }
+  else $("addMsg").textContent="❌ "+(res.reason||"실패");
+});
+
+// 🎁 무료체험 3일: 무작위 키를 즉시 만들어 3일 만료로 발급(발급된 키는 화면에 남겨 고객 전달용으로 복사)
+$("trialBtn").addEventListener("click", async ()=>{
+  const key = genLicenseKey();               // 항상 강한 무작위 키(추측 불가)
+  $("nKey").value = key;                       // 발급 키를 입력칸에 표시(복사용)
+  const label = $("nLabel").value.trim() || "무료체험";
+  $("addMsg").textContent="무료체험 발급 중...";
+  const res = await rpc("admin_create_license", { p_secret:SECRET, p_key:key, p_label:label, p_days:3 });
+  if(res.ok){ $("addMsg").textContent="✅ 3일 무료체험 발급됨 — 이 키를 고객에게 전달: "+key; $("nLabel").value=""; load(); }
   else $("addMsg").textContent="❌ "+(res.reason||"실패");
 });
 
