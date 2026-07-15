@@ -4733,13 +4733,16 @@ function viewConfig(){
   const sw=x=>{const on=m[x.k]!==false;return `<label style="display:flex;align-items:center;gap:8px;padding:6px 2px;cursor:${x.core?'default':'pointer'};${x.core?'opacity:.55':''}">
     <input type="checkbox" ${on?'checked':''} ${x.core?'disabled':''} onchange="tcfgToggleMenu('${x.k}',this.checked)"><span>${x.l}</span>${x.core?'<span class="muted" style="font-size:11px">핵심 · 항상 켬</span>':''}</label>`;};
   const log=(TCFG._log||[]).slice(0,10).map(r=>`<div class="muted" style="font-size:12px;padding:2px 0">${esc(r.at||'')} · ${esc(r.who||'')} — ${esc(r.what||'')}</div>`).join('')||'<div class="muted" style="font-size:12px">아직 변경 이력이 없습니다.</div>';
+  /* 고객 개인설정 영역만 노출 — 메뉴 구성·프리셋은 관제 콘솔 전용 (2026-07-15 분리, 고객 실수로 메뉴 사라지는 사고 방지) */
+  const consoleOnly=!(TCFG&&TCFG.selfMenuEdit===true);/* 콘솔에서 selfMenuEdit:true 주면 고객에게도 열림(보류 항목) */
   return `<div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 4px">⚙️ 환경설정</h3>
-    <div class="muted" style="font-size:12px">저장 즉시 반영 · 메뉴를 꺼도 데이터는 삭제되지 않습니다(화면 숨김만, 다시 켜면 복원)</div></div>
-  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 8px">업종 프리셋</h3>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">${Object.keys(TCFG_PRESETS).map(p=>`<button class="btn ghost sm" onclick="tcfgPreset('${p}')">${TCFG_PRESETS[p].label}</button>`).join('')}</div>
-    <div class="muted" style="font-size:12px;margin-top:6px">한 번에 기본 조합을 적용한 뒤, 아래 체크박스로 미세조정하세요.</div></div>
+    <div class="muted" style="font-size:12px">저장 즉시 반영 · 우리 가게의 문구·금액·표기를 직접 바꿀 수 있습니다</div></div>
+  ${consoleOnly?`<div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 4px">메뉴 구성</h3>
+    <div class="muted" style="font-size:12px">사용하는 메뉴 구성(켜기/끄기·업종 프리셋)은 <b>관리사에서 원격 설정</b>합니다. 변경이 필요하면 담당자에게 요청하세요 — 보통 몇 분 내 반영됩니다.</div></div>`
+  :`<div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 8px">업종 프리셋</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${Object.keys(TCFG_PRESETS).map(p=>`<button class="btn ghost sm" onclick="tcfgPreset('${p}')">${TCFG_PRESETS[p].label}</button>`).join('')}</div></div>
   <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 6px">메뉴 사용</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0 18px">${TCFG_MENUS.map(sw).join('')}</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0 18px">${TCFG_MENUS.map(sw).join('')}</div></div>`}
   <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 6px">금액 · 브랜딩</h3>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">
       <div><label class="lbl">반품 회수비(원) — 교환은 자동 ×2</label><input id="tc_ship" type="number" value="${SHIP_FEE}"></div>
