@@ -1910,7 +1910,7 @@ function orderSheetText(){
   const goods=items.reduce((a,o)=>a+amtOf(o),0);
   const ship=g.items.filter(o=>o.code==='배송비').reduce((a,o)=>a+amtOf(o),0);
   const acct=((EMPLOYEES.find(e=>e.name===g.staff)||{}).account)||ACCOUNTS[g.staff]||(TCFG&&TCFG.payAccount)||ACCOUNTS._default;/* 우선순위: 직원별 계좌(DB) > 구 하드코딩 > 환경설정 기본계좌 */
-  let t='구매해주셔서 감사합니다❤️\n\n🛍️ 주문내역\n'+lines.join('\n')+'\n\n';
+  let t=((TCFG&&TCFG.orderGreet)||'구매해주셔서 감사합니다❤️')+'\n\n🛍️ 주문내역\n'+lines.join('\n')+'\n\n';
   t+=`📦 상품 금액: ${goods.toLocaleString()}원\n`;
   t+=`🚚 배송비: ${ship.toLocaleString()}원\n`;
   if(OSHEET.pay==='현금'){
@@ -1998,7 +1998,7 @@ function custKey(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!
   else{toast('여러 명 검색됨 — 목록에서 선택하세요');custSearch(v);}}
 function pickCustId(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;OE.cust=c.name;OE.phone=c.phone;OE.addr=c.addr;OE.custId=c.id;OE.zip=c.zip||'';OE.island=islandInfo(OE.zip)||islandByAddr(OE.addr);
   toast('👤 고객: '+c.name+(c.phone?' ('+c.phone+')':' (연락처 미등록)'));render();
-  if(OE.island)setTimeout(function(){alert('🏝️ 이 고객은 도서산간 지역입니다!\n\n· '+OE.island.region+'\n· 택배사 추가비 '+OE.island.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 4,000+추가 3,000)으로 반영됩니다.');},150);}
+  if(OE.island)setTimeout(function(){alert('🏝️ 이 고객은 도서산간 지역입니다!\n\n· '+OE.island.region+'\n· 택배사 추가비 '+OE.island.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 '+SHIP_FEE.toLocaleString()+'원+지역 추가비)으로 반영됩니다.');},150);}
 function pickCust(name){const c=CUSTOMERS.find(x=>x.name===name);if(c)pickCustId(c.id);}
 function pickCustNew(v){OE.cust=v;OE.phone='';OE.addr='';toast('🆕 신규고객 '+v+' (연락처·주소 추후 등록)');render();}
 function clearCust(){OE.cust=null;OE.phone='';OE.addr='';OE.editOrig=null;render();}
@@ -2052,7 +2052,7 @@ const ISLAND_ADDR=[['제주','제주 (도서산간)',3000],['서귀포','제주 
 function islandByAddr(addr){const a=String(addr||'');if(!a)return null;for(const r of ISLAND_ADDR){if(a.indexOf(r[0])>=0)return {region:r[1],extra:r[2]};}return null;}
 function islandOf(){return islandInfo(OE.zip)||islandByAddr(OE.addr||'');}
 /* 무료배송 기준 (회사 공통값, 기본 10만원) */
-function freeThresh(){return (PREFS.freeship!=null)?PREFS.freeship:100000;}
+function freeThresh(){return (PREFS.freeship!=null)?PREFS.freeship:((typeof TCFG!=='undefined'&&TCFG&&TCFG.freeShipMin!=null&&TCFG.freeShipMin!=='')?(+TCFG.freeShipMin||0):100000);}
 function setFreeThresh(v){const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.freeship=n;savePrefs();toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료');render();}
 /* 배송비 자동계산 — 상품합계·주소·무료기준에 따라 배송비 라인 자동 세팅 (수동지정 시 건너뜀) */
 function shipBase(){return OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);}
@@ -2066,12 +2066,12 @@ function recalcShip(){
   const label=price===0?'무료배송':(isl&&free)?'도서산간 추가배송비':isl?'배송비(도서산간)':'배송비';
   OE.lines.push({kind:'ship',name:label,code:'배송비',color:'',size:'',qty:1,price,auto:true});
 }
-function checkIsland(zip){OE.zip=(zip||'').trim();const info=islandInfo(OE.zip)||islandByAddr(OE.addr);OE.island=info||null;if(info){alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 4,000+추가 3,000)으로 반영됩니다.');}render();}
+function checkIsland(zip){OE.zip=(zip||'').trim();const info=islandInfo(OE.zip)||islandByAddr(OE.addr);OE.island=info||null;if(info){alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 배송비가 자동으로 도서산간 요금(기본 '+SHIP_FEE.toLocaleString()+'원+지역 추가비)으로 반영됩니다.');}render();}
 /* 카카오(다음) 우편번호 검색 — 동적 로드, 키 불필요 */
 function searchAddr(cb){function go(){new daum.Postcode({oncomplete:function(d){cb(d.zonecode||'',d.roadAddress||d.jibunAddress||'');}}).open();}
   if(window.daum&&window.daum.Postcode)return go();
   const s=document.createElement('script');s.src='https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';s.onload=go;s.onerror=function(){toast('⚠️ 주소검색 로드 실패 — 인터넷을 확인하세요');};document.head.appendChild(s);}
-function islandAlert(zip){const info=islandInfo(zip);if(info)alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 주문 시 배송비가 도서산간 요금(기본 4,000+추가 3,000)으로 자동 반영됩니다.');return info;}
+function islandAlert(zip){const info=islandInfo(zip);if(info)alert('🏝️ 도서산간 지역입니다!\n\n· '+info.region+'\n· 택배사 추가비 '+info.extra.toLocaleString()+'원 지역\n· 주문 시 배송비가 도서산간 요금(기본 '+SHIP_FEE.toLocaleString()+'원+지역 추가비)으로 자동 반영됩니다.');return info;}
 function custSearchAddr(){searchAddr(function(zip,addr){const z=$('#mc_zip'),a=$('#mc_addr');if(z)z.value=zip;if(a)a.value=addr;islandAlert(zip);});}
 function resetOrder(){OE={cust:null,phone:'',addr:'',staff:null,lines:[]};render();}
 let _committing=false;
@@ -2572,12 +2572,12 @@ function shipGuideText(date,cust){
   const miss=mine(ORD).filter(o=>o.cust===cust&&o.back);
   const trk=(done.find(o=>o.track)||{}).track||'';
   const bundle=new Set(done.map(o=>o.date)).size>1;
-  let t='안녕하세요, '+cust+' 고객님 :)\n금일 출고 완료된 상품 안내드립니다.\n\n[출고완료]\n';
+  let t=((TCFG&&TCFG.shipGreet)||'안녕하세요, {고객명} 고객님 :)\n금일 출고 완료된 상품 안내드립니다.').split('{고객명}').join(cust)+'\n\n[출고완료]\n';
   const gl=o=>{const tg=tagShow(o);return '· '+((tg&&tg!=='-')?'['+tg+'] ':'')+custLabel(o)+' / '+o.qty+'개';};
   t+=(done.length?done.map(gl).join('\n'):'· (없음)');
   if(miss.length)t+='\n\n[미송 — 입고 후 순차 발송]\n'+miss.map(gl).join('\n');
   if(bundle)t+='\n\n※ 여러 주문 합배송 처리되었습니다.';
-  t+='\n\n택배사: \n송장번호: '+trk+'\n\n감사합니다 ♡';
+  t+='\n\n택배사: \n송장번호: '+trk+'\n\n'+((TCFG&&TCFG.shipTail)||'감사합니다 ♡');
   return t;
 }
 function openShipGuide(date,cust){
@@ -4711,8 +4711,10 @@ function tcfgPreset(p){const pr=TCFG_PRESETS[p];if(!pr)return;
 function tcfgSaveForm(){
   const num=id=>{const el=$('#'+id);if(!el)return null;const v=String(el.value).replace(/[^0-9]/g,'');return v===''?null:+v;};
   const ship=num('tc_ship'),free=num('tc_free');
+  const txt=id=>{const el=$('#'+id);return el?el.value.trim():'';};
   tcfgSave({shipFee:(ship&&ship>0)?ship:4000,freeShipMin:(free==null)?100000:free,
-    brandKo:($('#tc_brand')?$('#tc_brand').value.trim():''),payAccount:($('#tc_acct')?$('#tc_acct').value.trim():'')},'금액·브랜딩 저장');}
+    brandKo:txt('tc_brand'),payAccount:txt('tc_acct'),
+    orderGreet:txt('tc_greet'),shipGreet:txt('tc_shipgreet'),shipTail:txt('tc_shiptail')},'금액·브랜딩·문구 저장');}
 function viewConfig(){
   if(!(ME&&ME.scope==='all'))return '<div class="card"><div class="muted" style="padding:20px">관리자만 접근할 수 있습니다.</div></div>';
   const m=TCFG.menus||{};
@@ -4732,6 +4734,9 @@ function viewConfig(){
       <div><label class="lbl">무료배송 기준(원, 0=없음)</label><input id="tc_free" type="number" value="${FREESHIP_MIN}"></div>
       <div><label class="lbl">회사명(화면 로고 표기)</label><input id="tc_brand" value="${escAttr(TCFG.brandKo||'')}" placeholder="비우면 기본(N-LIVE)"></div>
       <div><label class="lbl">기본 입금계좌(주문서 안내 폴백)</label><input id="tc_acct" value="${escAttr(TCFG.payAccount||'')}" placeholder="예: 기업은행 000-000000 (예금주 홍길동)"></div>
+      <div style="grid-column:1/-1"><label class="lbl">주문서 인사말 (고객 안내문 첫 줄)</label><textarea id="tc_greet" rows="2" placeholder="비우면 기본: 구매해주셔서 감사합니다❤️">${esc(TCFG.orderGreet||'')}</textarea></div>
+      <div style="grid-column:1/-1"><label class="lbl">출고 안내 인사말 — {고객명} 자리에 이름이 들어갑니다</label><textarea id="tc_shipgreet" rows="2" placeholder="비우면 기본: 안녕하세요, {고객명} 고객님 :) 금일 출고 완료된 상품 안내드립니다.">${esc(TCFG.shipGreet||'')}</textarea></div>
+      <div><label class="lbl">출고 안내 맺음말</label><input id="tc_shiptail" value="${escAttr(TCFG.shipTail||'')}" placeholder="비우면 기본: 감사합니다 ♡"></div>
     </div>
     <div class="muted" style="font-size:11px;margin-top:6px">담당자별 계좌는 [사원관리]의 직원 계좌가 우선 적용됩니다.</div>
     <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" onclick="tcfgSaveForm()">저장 — 즉시 반영</button></div></div>
