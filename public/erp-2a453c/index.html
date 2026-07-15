@@ -632,7 +632,7 @@ function isTyping(){const a=document.activeElement;if(a&&['INPUT','TEXTAREA','SE
 function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(function tick(){
   if(_committing||isTyping()){clearTimeout(_rtTimer);_rtTimer=setTimeout(tick,1400);return;}/* 입력/모달/커밋 중엔 대기 */
   if(Date.now()-_localActAt<1800){clearTimeout(_rtTimer);_rtTimer=setTimeout(tick,1800);return;}/* 내 최근 조작 여파 — 조용해질 때까지 미룸 */
-  dbLoadAll().then(function(){if(!isTyping()){_fromRt=true;try{render();}finally{_fromRt=false;}}});
+  dbLoadAll().then(function(){if(!isTyping()){_fromRt=true;try{buildNav();render();}finally{_fromRt=false;}}});/* buildNav: 환경설정 메뉴 토글이 다른 직원 메뉴바에도 즉시 반영 */
 },900);}).subscribe();}catch(e){console.error('realtime',e);}}
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){_pendMark(_pendSave,'orders',o.id);const {error}=await SB.from('orders').update(row).eq('id',o.id);if(error){_pendSave.delete(_pk('orders',o.id));console.error('saveOrd',error);toast('⚠️ 저장 실패 — 새로고침 후 다시 시도하세요');return false;}}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 다시 시도하세요');return false;}if(data){o.id=data.id;_pendMark(_pendSave,'orders',o.id);}}return true;}catch(e){console.error(e);toast('⚠️ 저장 오류 — 인터넷 연결을 확인하세요');return false;}}
 /* ===== 동시/이중 처리 안전장치 ===== 같은 작업키가 처리 중이면 재실행 차단(더블클릭·동시처리 방지) */
@@ -2859,6 +2859,7 @@ async function cancelSaleCommit(){const d=CANCELDRAFT;if(!d)return;const o=ORD.f
   closeModal();CANCELDRAFT=null;
   toast('🗑️ '+kind+' 처리 → 재고 복원'+(toP?' · 적립금 +'+won(amt):' · 실환불 '+won(net)));render();
   await delOrd(o);if(s)await adjustStockDB(s,o.qty,kind,cust);
+  await sweepOrphanShip(cust,_snap.date);/* 마지막 상품이었으면 남은 배송비 줄도 정리 */
   /* 현금/계좌 환불 → 환불대장에 CS 기록 (매출에는 안 잡히도록 pay='cs') */
   if(!toP){const _td=todayStr();const led={date:(_snap.date||_td).replace(/-/g,'/'),staff:_snap.staff||ME.name||'박시연',cust,code:'CS',disp:item,tag:'CS',color:'',size:'',qty:_snap.qty||1,price:amt,pay:'cs',ship:'done',source:'cs',rxtype:'refund',rxstat:'done',rxreason:kind,rxdate:_td,rxdone:_td,
       meta:{status:kind,settle:{account,refund:amt,deduct,net,memo:kind,at:_td,by:ME.name}}};
@@ -3810,9 +3811,20 @@ function viewUsers(){
 
 /* ===== 동작 ===== */
 function payConfirm(id){const o=ORD.find(x=>x.id===id);o.pay='paid';toast('💳 입금확인 → 결제완료! 판매관리로 이동: '+o.cust);render();}
+/* 고아 배송비 정리 — 같은 고객·같은 주문일의 상품 줄이 전부 지워졌으면 남은 배송비 줄도 삭제
+   (상품은 지웠는데 배송비 4,000만 덩그러니 남는 문제 방지. 적립금 줄은 포인트 환원 로직이 따로 있어 건드리지 않음) */
+async function sweepOrphanShip(cust,date){
+  if(!cust)return;
+  const svc=o=>o.code==='배송비'||o.code==='적립금'||o.code==='낱장';
+  if(ORD.some(o=>o.cust===cust&&o.date===date&&!svc(o)))return;/* 상품이 남아있으면 정상 */
+  const orphans=ORD.filter(o=>o.cust===cust&&o.date===date&&o.code==='배송비');
+  if(!orphans.length)return;
+  for(const o of orphans){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);}
+  toast('🧹 상품이 없어 남은 배송비 '+orphans.length+'건도 자동 정리');render();}
 async function cancelOrder(id,reason){const i=ORD.findIndex(x=>x.id===id);if(i<0)return;const o=ORD[i],s=skuOf(o.code,o.color,o.size);ORD.splice(i,1);
   toast('🗑️ 주문 취소 → 재고 '+o.qty+'개 복원 ('+prodName(o.code)+' '+o.color+')');render();
-  await delOrd(o);if(s)await adjustStockDB(s,o.qty,reason||'주문취소',o.cust);}
+  await delOrd(o);if(s)await adjustStockDB(s,o.qty,reason||'주문취소',o.cust);
+  await sweepOrphanShip(o.cust,o.date);}
 /* 미송 상품 취소 — 배송지연 등. 적립금 적립 여부 포함한 취소/환불 모달로 연결 */
 function cancelBackOrder(id){cancelSale(id,'취소');}
 function setShip(id,st){const o=ORD.find(x=>x.id===id);o.ship=st;toast('🚚 '+o.cust+' → '+({req:'출고요청',done:'출고완료'})[st]);render();}
