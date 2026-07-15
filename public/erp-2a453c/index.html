@@ -475,7 +475,7 @@
 <body>
 <div id="login">
   <div class="loginbox">
-    <h2>N-LIVE <b>ERP</b></h2>
+    <h2 id="brandH2">N-LIVE <b>ERP</b></h2>
     <div class="sb">회사 전용 시스템 · 직원 로그인</div>
     <label>아이디</label><input id="loginId" placeholder="아이디 입력" onkeydown="if(event.key==='Enter'){event.preventDefault();(($('#loginPw').value||'').trim())?doLogin():$('#loginPw').focus();}">
     <label>비밀번호</label><input id="loginPw" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter'){event.preventDefault();doLogin();}">
@@ -487,7 +487,7 @@
 
 <div class="app">
   <aside class="side" id="sideNav">
-    <div class="brand"><span class="dot">●</span> N-LIVE 통합관리<small>회사 전용</small></div>
+    <div class="brand"><span class="dot">●</span> <span id="brandTop">N-LIVE 통합관리</span><small>회사 전용</small></div>
     <nav class="nav" id="nav">
       <div class="sec">업무</div>
       <button data-v="dash" class="on"><span class="ic"><i class="ti ti-layout-dashboard"></i></span>대시보드</button>
@@ -509,6 +509,7 @@
       <button data-v="emp"><span class="ic"><i class="ti ti-users"></i></span>직원·급여</button>
       <button data-v="users"><span class="ic"><i class="ti ti-key"></i></span>사원관리</button>
       <button data-v="kakao"><span class="ic"><i class="ti ti-message-circle"></i></span>카카오 연동</button>
+      <button data-v="config"><span class="ic"><i class="ti ti-settings"></i></span>환경설정</button>
     </nav>
     <div class="foot">
       <div class="lab">🔄 계정 빠른전환 (시연용)</div>
@@ -612,7 +613,8 @@ async function dbLoadAll(){
         const pr=wrows.find(r=>r.id==='_emp_perms');EMP_PERMS=(pr&&pr.data)||{};
         const hr=wrows.find(r=>r.id==='_emp_hire');EMP_HIRE=(hr&&hr.data)||{};
         const py=wrows.find(r=>r.id==='_payroll');PAY_DRAFTS=(py&&py.data)||{};
-        WORKSCH=wrows.filter(r=>r.id!=='_emp_perms'&&r.id!=='_emp_hire'&&r.id!=='_payroll').map(r=>Object.assign({},r.data||{},{id:r.id}));
+        const tc=wrows.find(r=>r.id==='_tenant_config');TCFG=(tc&&tc.data)||{};tcfgApply();
+        WORKSCH=wrows.filter(r=>r.id!=='_emp_perms'&&r.id!=='_emp_hire'&&r.id!=='_payroll'&&r.id!=='_tenant_config').map(r=>Object.assign({},r.data||{},{id:r.id}));
         EMPLOYEES.forEach(e=>{e.perms=EMP_PERMS[e.login_id]||null;e.hire_date=EMP_HIRE[e.login_id]||null;});
         if(ME)ME.perms=EMP_PERMS[ME.id]||null;
     }catch(e){console.warn('work_schedules load',e);WORKSCH=WORKSCH||[];}
@@ -655,6 +657,25 @@ function _applyFetched(t,rows,local){_pendSweep();const byId={};(local||[]).forE
     out.push(r);});
   _pendSave.forEach((ts,k)=>{if(k.indexOf(t+':')===0){const id=k.slice(t.length+1);if(!seen.has(id)&&byId[id])out.push(byId[id]);}});/* 방금 추가분이 옛 스냅샷에 없어도 유지 */
   return out;}
+/* ===== 테넌트 설정 (환경설정 화면 — 고객사별 커스텀의 단일 저장소) =====
+   저장위치: work_schedules id='_tenant_config' (EMP_PERMS와 동일 패턴 — 스키마 무변경)
+   원칙: 값이 없으면 기존 하드코딩 기본값 그대로 = 설정 안 만진 고객사는 동작 무변경 */
+let TCFG={};
+function tcfgApply(){try{
+  if(TCFG&&+TCFG.shipFee>0)SHIP_FEE=+TCFG.shipFee;
+  if(TCFG&&TCFG.freeShipMin!=null&&TCFG.freeShipMin!=='')FREESHIP_MIN=+TCFG.freeShipMin||0;
+  if(TCFG&&TCFG.poSince)PO_SINCE=TCFG.poSince;
+  const ko=(TCFG&&TCFG.brandKo)||'';
+  if(ko){const h2=document.getElementById('brandH2');if(h2)h2.innerHTML=esc(ko)+' <b>ERP</b>';
+    const bt=document.getElementById('brandTop');if(bt)bt.textContent=ko+' 통합관리';
+    document.title=ko+' 통합관리';}
+}catch(e){console.warn('tcfgApply',e);}}
+async function tcfgSave(patch,summary){return guard('tcfg',async()=>{
+  const next=Object.assign({},TCFG,patch);
+  next._log=[{at:new Date().toISOString().slice(0,16).replace('T',' '),who:(typeof ME!=='undefined'&&ME&&ME.name)||'?',what:summary||'설정 변경'}].concat(TCFG._log||[]).slice(0,50);
+  const {error}=await SB.from('work_schedules').upsert({id:'_tenant_config',data:next,owner:'_tcfg',updated_at:new Date().toISOString()});
+  if(error){console.error('tcfgSave',error);toast('⚠️ 설정 저장 실패 — 다시 시도하세요');render();return false;}
+  TCFG=next;tcfgApply();toast('✅ 저장됨 — 즉시 반영');buildNav();render();return true;});}
 async function delOrd(o){if(o.id)_pendMark(_pendDel,'orders',o.id);try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){_pendDel.delete(_pk('orders',o.id));console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');}}}catch(e){if(o.id)_pendDel.delete(_pk('orders',o.id));console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');}}
 async function saveStock(s){try{if(s&&s.id!=null){_pendMark(_pendSave,'stock',s.id);const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){_pendSave.delete(_pk('stock',s.id));console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){if(s&&s.id!=null)_pendSave.delete(_pk('stock',s.id));console.error(e);toast('⚠️ 재고 저장 오류');}}
 /* 재고 원자적 가감 — DB에서 qty=qty±delta 계산(동시 차감해도 안 깨짐). 반환된 정확한 값으로 화면 갱신 */
@@ -938,12 +959,15 @@ function sellerTabs(){
 const PERM={dash:['all','logi','self'],sns:['all','self'],order:['all','self'],sales:['all','self'],live:['all','self'],
   ship:['all','logi'],bo:['all','logi','self'],shipped:['all','logi','self'],rx:['all','logi','self'],
   stock:['all','logi','self'],cust:['all','self'],prod:['all'],vendor:['all','logi'],
-  revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all']};
+  revenue:['all','self'],emp:['all','logi','self'],users:['all'],kakao:['all'],config:['all']};
 const SUBMGR_MENUS=['ship'];/* 셀러 보조(서브매니저) 추가 허용 메뉴: 출고장(물류와 동일) */
 /* 사원별 권한 편집용 메뉴 구조 (대분류 + 소분류 세부탭) */
 const PERM_MENUS=[{k:'dash',l:'대시보드'},{k:'order',l:'주문관리'},{k:'sales',l:'판매관리',subs:[{k:'order',l:'출고대기'},{k:'ship',l:'출고작업·완료'}]},{k:'live',l:'라이브 판매'},{k:'ship',l:'출고장',subs:[{k:'wait',l:'출고대기'},{k:'back',l:'미송관리'},{k:'bundle',l:'합배관리'},{k:'done',l:'출고완료'}]},{k:'bo',l:'미송사입',subs:[{k:'need',l:'주문필요'},{k:'ordered',l:'주문완료·입고전'}]},{k:'shipped',l:'판매현황'},{k:'rx',l:'교환·반품',subs:[{k:'active',l:'진행중'},{k:'archive',l:'완료'},{k:'fault',l:'귀책현황'}]},{k:'stock',l:'재고관리',subs:[{k:'edit',l:'상품 등록·수정·입출고 (미체크=조회만)'}]},{k:'revenue',l:'매출현황'},{k:'sns',l:'SNS 관리'},{k:'cust',l:'고객관리',subs:[{k:'all',l:'고객 목록'},{k:'dup',l:'번호중복 정리'}]},{k:'prod',l:'상품현황',subs:[{k:'compose',l:'상품 구성'},{k:'sales',l:'판매 분석'}]},{k:'vendor',l:'사입처관리'},{k:'emp',l:'직원·급여'},{k:'users',l:'사원관리'},{k:'kakao',l:'카카오 연동'}];
 /* 메뉴 접근권한: 사원별 perms(체크박스)가 있으면 그게 우선, 없으면 기존 scope 기본값. 관리자(all)는 사원관리 항상 열림(자기잠금 방지) */
-function menuAllowed(v){if(v==='dash')return true;if(ME&&ME.scope==='all'&&v==='users')return true;if(ME&&ME.perms&&ME.perms.menus)return ME.perms.menus[v]===true;return (PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));}
+function menuAllowed(v){
+  /* 테넌트 설정에서 끈 메뉴는 전 직원 숨김(대시보드·사원관리·환경설정은 끌 수 없음 — 자기잠금 방지) */
+  if(TCFG&&TCFG.menus&&TCFG.menus[v]===false&&v!=='dash'&&v!=='users'&&v!=='config')return false;
+  if(v==='dash')return true;if(ME&&ME.scope==='all'&&(v==='users'||v==='config'))return true;if(v==='config')return false;if(ME&&ME.perms&&ME.perms.menus)return ME.perms.menus[v]===true;return (PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));}
 /* 소분류(세부탭) 접근권한: 기본 전체허용, perms에서 명시적으로 끈 것만 숨김. 관리자는 항상 전체 */
 function subAllowed(menu,sub){if(!ME||ME.scope==='all')return true;if(ME.perms&&ME.perms.subs&&ME.perms.subs[menu])return ME.perms.subs[menu][sub]!==false;return true;}
 function firstSub(menu,list){const a=list.filter(s=>subAllowed(menu,s));return a[0]||list[0];}
@@ -1111,7 +1135,7 @@ function boVendorCard(vendor,items,ordered){const q=items.reduce((a,o)=>a+(o.qty
   </div>`;}
 /* ===== 사입 입금관리 (거래처 주문완료 → 사입삼촌 입금 체크) · 관리자 전용 ===== */
 let PO_PERIOD='month';
-const PO_SINCE='2026-07-03';/* 이 날짜 이전 사입은 이미 정산완료 → 위젯에서 숨김 (필요시 이 값만 수정) */
+let PO_SINCE='2026-07-03';/* 이 날짜 이전 사입은 이미 정산완료 → 위젯에서 숨김 (환경설정 TCFG.poSince로 변경 가능) */
 function poSetPeriod(p){PO_PERIOD=p;render();}
 function poDate(o){return (o.date||'').replace(/\//g,'-').slice(0,10);}
 function poOrderedItems(){return mine(ORD).filter(o=>o.bo_status==='ordered'&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장'&&o.id!=null&&poDate(o)>=PO_SINCE);}
@@ -1885,7 +1909,7 @@ function orderSheetText(){
   const lines=items.map(o=>`[${tagShow(o)}] ${prodName(o.code)} ${o.color||''} ${o.size||''} - ${amtOf(o).toLocaleString()}원`.replace(/ +/g,' '));
   const goods=items.reduce((a,o)=>a+amtOf(o),0);
   const ship=g.items.filter(o=>o.code==='배송비').reduce((a,o)=>a+amtOf(o),0);
-  const acct=ACCOUNTS[g.staff]||ACCOUNTS._default;
+  const acct=((EMPLOYEES.find(e=>e.name===g.staff)||{}).account)||ACCOUNTS[g.staff]||(TCFG&&TCFG.payAccount)||ACCOUNTS._default;/* 우선순위: 직원별 계좌(DB) > 구 하드코딩 > 환경설정 기본계좌 */
   let t='구매해주셔서 감사합니다❤️\n\n🛍️ 주문내역\n'+lines.join('\n')+'\n\n';
   t+=`📦 상품 금액: ${goods.toLocaleString()}원\n`;
   t+=`🚚 배송비: ${ship.toLocaleString()}원\n`;
@@ -2820,7 +2844,7 @@ function renderCancelModal(o){const d=CANCELDRAFT;const bal=custPoints(o.cust);
       <input id="cxAcct" value="${escAttr(d.account||'')}" placeholder="예) 농협 352-1234-5678-90 홍길동" oninput="CANCELDRAFT.account=this.value" style="font-size:14px">
       <div class="modal-row" style="margin-top:8px"><div><label style="font-size:12px">차감(배송비 등)</label><input id="cxDed" type="number" value="${d.deduct||0}" oninput="CANCELDRAFT.deduct=parseInt(this.value)||0;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))"></div>
         <div><label style="font-size:12px">실 환불액</label><input value="${won(Math.max(0,d.amount-(d.deduct||0)))}" disabled style="background:#ecfdf5;color:#065f46;font-weight:800;border-color:#a7f3d0"></div></div>
-      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><button class="btn sm ghost" onclick="CANCELDRAFT.deduct=0;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))">차감없음</button><button class="btn sm ghost" onclick="CANCELDRAFT.deduct=${SHIP_FEE};renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))">배송비 4,000</button></div>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><button class="btn sm ghost" onclick="CANCELDRAFT.deduct=0;renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))">차감없음</button><button class="btn sm ghost" onclick="CANCELDRAFT.deduct=${SHIP_FEE};renderCancelModal(ORD.find(x=>x.id===CANCELDRAFT.id))">배송비 ${SHIP_FEE.toLocaleString()}</button></div>
       <div class="muted" style="font-size:11px;margin-top:8px">💵 계좌·금액은 <b>환불대장</b>(교환·반품 메뉴)에 기록됩니다. 차감됐던 재고는 복원됩니다.</div>
     </div>`}
     <div class="modal-foot"><button class="btn gray" onclick="closeModal()">닫기</button><button class="btn" onclick="cancelSaleCommit()">${d.kind} 확정</button></div>`;
@@ -2849,7 +2873,7 @@ async function cancelSaleCommit(){const d=CANCELDRAFT;if(!d)return;const o=ORD.f
 /* ===== 환불 정산 (계좌·차감배송비·실환불 기록) =====
    반품·환불·입금후취소는 모두 고객에게 돈을 돌려줘야 함 → 계좌+금액+차감을 한 창에서 입력·기록.
    기본 차감 = 회수 배송비 4,000 / 교환(고객귀책)은 왕복 8,000 / 무배 미달 시 원래 안 낸 배송비 추가 */
-const SHIP_FEE=4000, FREESHIP_MIN=100000;
+let SHIP_FEE=4000, FREESHIP_MIN=100000;/* 환경설정(TCFG)에서 덮어씀 — tcfgApply() */
 function custFaultOf(o){return (o.fault||'무과실')==='무과실';}/* 무과실=고객귀책(배송비 고객부담) */
 function deductDefault(kind,custFault){if(kind==='cancel')return 0;if(!custFault)return 0;if(kind==='exchange')return SHIP_FEE*2;return SHIP_FEE;}
 function lastAccountOf(cust){for(let i=ORD.length-1;i>=0;i--){const o=ORD[i];if(o.cust===cust&&o.meta){const a=(o.meta.settle&&o.meta.settle.account)||o.meta.account;if(a)return a;}}return '';}
@@ -2868,9 +2892,9 @@ function renderRefundSettle(o){const d=RSETTLE;if(!d)return;$('#modalBox').class
       <div><label>차감 배송비</label><input id="rsDed" type="number" value="${d.deduct}" oninput="RSETTLE.deduct=parseInt(this.value)||0;_rsRR()"></div></div>
     <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
       <button class="btn sm ghost" onclick="RSETTLE.deduct=0;_rsRR()">차감없음</button>
-      <button class="btn sm ghost" onclick="RSETTLE.deduct=${SHIP_FEE};_rsRR()">회수 4,000</button>
-      <button class="btn sm ghost" onclick="RSETTLE.deduct=${SHIP_FEE*2};_rsRR()">교환왕복 8,000</button>
-      <button class="btn sm ghost" onclick="RSETTLE.deduct=(RSETTLE.deduct||0)+${SHIP_FEE};_rsRR()" title="무료배송 고객이 반품·교환으로 기준 미달 시, 원래 안 낸 배송비 추가">＋무배미달 4,000</button>
+      <button class="btn sm ghost" onclick="RSETTLE.deduct=${SHIP_FEE};_rsRR()">회수 ${SHIP_FEE.toLocaleString()}</button>
+      <button class="btn sm ghost" onclick="RSETTLE.deduct=${SHIP_FEE*2};_rsRR()">교환왕복 ${(SHIP_FEE*2).toLocaleString()}</button>
+      <button class="btn sm ghost" onclick="RSETTLE.deduct=(RSETTLE.deduct||0)+${SHIP_FEE};_rsRR()" title="무료배송 고객이 반품·교환으로 기준 미달 시, 원래 안 낸 배송비 추가">＋무배미달 ${SHIP_FEE.toLocaleString()}</button>
     </div>
     <div class="note" style="margin-top:12px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:15px">💰 실 환불액 <b style="font-size:20px">${won(rsNet(d))}</b> <span class="muted" style="font-size:12px">= 환불 ${won(d.refund)} − 차감 ${won(d.deduct)}</span></div>
     <label style="margin-top:10px">메모</label><input id="rsMemo" value="${escAttr(d.memo||'')}" oninput="RSETTLE.memo=this.value" placeholder="사유·비고">
@@ -4659,8 +4683,61 @@ async function liveMove(id,dir){const p=SESS_PROD.find(x=>x.id===id);if(!p)retur
 async function liveDelProduct(id){const p=SESS_PROD.find(x=>x.id===id);if(!p)return;if(!confirm("'"+(p.name||'')+"' 상품을 방송에서 뺄까요?"))return;
   try{const {error}=await SB.from('session_products').delete().eq('id',id);if(error){console.error(error);toast('⚠️ 삭제 실패');return;}toast('삭제됨');await liveReload();}catch(e){console.error(e);}}
 
-const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,live:viewLive,ship:viewShip,bo:viewBackorder,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao};
-const VIEW_LABELS={dash:'대시보드',order:'주문관리',sales:'판매관리',live:'라이브 판매',ship:'출고장',bo:'미송사입',shipped:'판매현황',rx:'교환·반품',stock:'재고관리',revenue:'매출현황',sns:'SNS 관리',cust:'고객관리',prod:'상품현황',vendor:'사입처관리',emp:'직원·급여',users:'사원관리',kakao:'카카오 연동'};
+/* ===== 환경설정 (테넌트 설정 — 관리자 전용) =====
+   원칙: ①끄기=화면 숨김만(데이터·로직 유지, 재켜기=100% 복원) ②끄기 전 사전검증 ③변경 이력 기록 */
+const TCFG_MENUS=[
+  {k:'sales',l:'판매관리'},{k:'live',l:'라이브 판매'},{k:'bo',l:'미송사입'},{k:'shipped',l:'판매현황'},
+  {k:'rx',l:'교환·반품'},{k:'revenue',l:'매출현황'},{k:'sns',l:'SNS 관리'},{k:'prod',l:'상품현황'},
+  {k:'vendor',l:'사입처관리'},{k:'emp',l:'직원·급여'},{k:'kakao',l:'카카오 연동'},
+  {k:'order',l:'주문관리',core:true},{k:'ship',l:'출고장',core:true},{k:'stock',l:'재고관리',core:true},{k:'cust',l:'고객관리',core:true}];
+const TCFG_PRESETS={fashion:{label:'의류 도매 (전체 기능)',off:[]},goods:{label:'잡화·소품',off:['bo','sns']},solo:{label:'1인샵 미니',off:['bo','sns','vendor','emp','kakao']}};
+function tcfgOffCheck(k){/* 끄기 전 사전검증 — block:true면 차단, msg만 있으면 확인 후 진행 */
+  if(k==='live'){const n=(LIVE_SESS||[]).filter(s=>s.status==='open').length;if(n)return{block:true,msg:'진행 중 방송 '+n+'개 — 방송 종료 후 꺼주세요.'};}
+  if(k==='rx'){const n=ORD.filter(o=>o.rxtype&&o.rxstat&&o.rxstat!=='done').length;if(n)return{block:true,msg:'진행 중 교환·반품 '+n+'건 — 완료 후 꺼주세요.'};}
+  if(k==='bo'){const n=ORD.filter(o=>o.ship==='miss'&&o.code!=='배송비'&&o.code!=='적립금').length;if(n)return{msg:'미송 '+n+'건이 남아있습니다. 꺼도 데이터는 유지되고, 다시 켜면 그대로 보입니다.'};}
+  if(k==='emp'){return{msg:'급여·직원 데이터는 유지됩니다. 화면만 숨겨져요.'};}
+  return null;}
+function tcfgToggleMenu(k,on){
+  if(TCFG_MENUS.some(m=>m.k===k&&m.core)){toast('핵심 메뉴는 끌 수 없습니다');render();return;}
+  if(!on){const c=tcfgOffCheck(k);
+    if(c&&c.block){toast('⛔ '+c.msg);render();return;}
+    if(c&&c.msg&&!confirm(c.msg+'\n\n['+((TCFG_MENUS.find(m=>m.k===k)||{}).l||k)+'] 메뉴를 끌까요?')){render();return;}}
+  const menus=Object.assign({},TCFG.menus||{});menus[k]=on;
+  tcfgSave({menus},'메뉴 ['+((TCFG_MENUS.find(m=>m.k===k)||{}).l||k)+'] '+(on?'켬':'끔'));}
+function tcfgPreset(p){const pr=TCFG_PRESETS[p];if(!pr)return;
+  if(!confirm('프리셋 ['+pr.label+'] 적용 — 메뉴 구성이 한 번에 바뀝니다. (데이터는 그대로) 진행할까요?'))return;
+  const menus=Object.assign({},TCFG.menus||{});TCFG_MENUS.forEach(m=>{if(!m.core)menus[m.k]=!pr.off.includes(m.k);});
+  tcfgSave({menus},'프리셋 적용: '+pr.label);}
+function tcfgSaveForm(){
+  const num=id=>{const el=$('#'+id);if(!el)return null;const v=String(el.value).replace(/[^0-9]/g,'');return v===''?null:+v;};
+  const ship=num('tc_ship'),free=num('tc_free');
+  tcfgSave({shipFee:(ship&&ship>0)?ship:4000,freeShipMin:(free==null)?100000:free,
+    brandKo:($('#tc_brand')?$('#tc_brand').value.trim():''),payAccount:($('#tc_acct')?$('#tc_acct').value.trim():'')},'금액·브랜딩 저장');}
+function viewConfig(){
+  if(!(ME&&ME.scope==='all'))return '<div class="card"><div class="muted" style="padding:20px">관리자만 접근할 수 있습니다.</div></div>';
+  const m=TCFG.menus||{};
+  const sw=x=>{const on=m[x.k]!==false;return `<label style="display:flex;align-items:center;gap:8px;padding:6px 2px;cursor:${x.core?'default':'pointer'};${x.core?'opacity:.55':''}">
+    <input type="checkbox" ${on?'checked':''} ${x.core?'disabled':''} onchange="tcfgToggleMenu('${x.k}',this.checked)"><span>${x.l}</span>${x.core?'<span class="muted" style="font-size:11px">핵심 · 항상 켬</span>':''}</label>`;};
+  const log=(TCFG._log||[]).slice(0,10).map(r=>`<div class="muted" style="font-size:12px;padding:2px 0">${esc(r.at||'')} · ${esc(r.who||'')} — ${esc(r.what||'')}</div>`).join('')||'<div class="muted" style="font-size:12px">아직 변경 이력이 없습니다.</div>';
+  return `<div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 4px">⚙️ 환경설정</h3>
+    <div class="muted" style="font-size:12px">저장 즉시 반영 · 메뉴를 꺼도 데이터는 삭제되지 않습니다(화면 숨김만, 다시 켜면 복원)</div></div>
+  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 8px">업종 프리셋</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${Object.keys(TCFG_PRESETS).map(p=>`<button class="btn ghost sm" onclick="tcfgPreset('${p}')">${TCFG_PRESETS[p].label}</button>`).join('')}</div>
+    <div class="muted" style="font-size:12px;margin-top:6px">한 번에 기본 조합을 적용한 뒤, 아래 체크박스로 미세조정하세요.</div></div>
+  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 6px">메뉴 사용</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0 18px">${TCFG_MENUS.map(sw).join('')}</div></div>
+  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 6px">금액 · 브랜딩</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">
+      <div><label class="lbl">반품 회수비(원) — 교환은 자동 ×2</label><input id="tc_ship" type="number" value="${SHIP_FEE}"></div>
+      <div><label class="lbl">무료배송 기준(원, 0=없음)</label><input id="tc_free" type="number" value="${FREESHIP_MIN}"></div>
+      <div><label class="lbl">회사명(화면 로고 표기)</label><input id="tc_brand" value="${escAttr(TCFG.brandKo||'')}" placeholder="비우면 기본(N-LIVE)"></div>
+      <div><label class="lbl">기본 입금계좌(주문서 안내 폴백)</label><input id="tc_acct" value="${escAttr(TCFG.payAccount||'')}" placeholder="예: 기업은행 000-000000 (예금주 홍길동)"></div>
+    </div>
+    <div class="muted" style="font-size:11px;margin-top:6px">담당자별 계좌는 [사원관리]의 직원 계좌가 우선 적용됩니다.</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" onclick="tcfgSaveForm()">저장 — 즉시 반영</button></div></div>
+  <div class="card"><h3 style="margin:0 0 6px">변경 이력 <span class="muted" style="font-weight:400;font-size:12px">(최근 10건)</span></h3>${log}</div>`;}
+const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,live:viewLive,ship:viewShip,bo:viewBackorder,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao,config:viewConfig};
+const VIEW_LABELS={dash:'대시보드',order:'주문관리',sales:'판매관리',live:'라이브 판매',ship:'출고장',bo:'미송사입',shipped:'판매현황',rx:'교환·반품',stock:'재고관리',revenue:'매출현황',sns:'SNS 관리',cust:'고객관리',prod:'상품현황',vendor:'사입처관리',emp:'직원·급여',users:'사원관리',kakao:'카카오 연동',config:'환경설정'};
 function toggleSideNav(force){
   const side=$('#sideNav'),dim=$('#sideDim');if(!side||!dim)return;
   const open=force==null?!side.classList.contains('open'):!!force;
