@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>N-LIVE 통합관리</title>
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/gridstack@10.3.1/dist/gridstack.min.css" rel="stylesheet">
@@ -470,6 +471,21 @@
   table.tbl{width:100%;border-collapse:collapse;font-size:13px}
   table.tbl th,table.tbl td{padding:8px 9px;border-bottom:1px solid var(--line,#eef1f5);text-align:left;vertical-align:middle}
   table.tbl th{background:#f7f9fc;color:#667085;font-weight:700;font-size:12px}
+
+/* ═══ v2 프리미엄 스킨 (2026-07-15) — 덧씌우기 층. 문제 시 이 블록만 삭제하면 원상복구 ═══ */
+:root{--navy:#171f36;--navy2:#101626;--blue:#3559e9;--blue-d:#2743c7;--blue-s:#eef1fe;--bg:#eef1f6;--line:#e7ebf2;--ink:#191f2e;--gray:#7b8698}
+body{font-family:'Pretendard Variable',Pretendard,'Malgun Gothic','맑은 고딕',system-ui,sans-serif;letter-spacing:-.012em}
+.nav button:hover{background:rgba(255,255,255,.06);color:#e9edf8}
+.nav button.on{background:linear-gradient(90deg,rgba(77,110,245,.32),rgba(77,110,245,.10));color:#fff}
+.btn{background:linear-gradient(180deg,#4066f0,#3559e9);box-shadow:0 2px 8px rgba(53,89,233,.28),inset 0 1px 0 rgba(255,255,255,.16)}
+.btn:hover{background:linear-gradient(180deg,#3559e9,#2743c7)}
+.btn.ghost,.btn.gray,.btn.red{background:#fff;box-shadow:0 1px 2px rgba(18,25,45,.05)}
+.card,.kpi,.ord-card,.sg-card{box-shadow:0 1px 2px rgba(18,25,45,.04),0 4px 16px rgba(18,25,45,.07)}
+th{letter-spacing:.4px;font-weight:700}
+tbody tr:hover>td{background:#f8faff}
+.pill{border-radius:20px;padding:0 10px;gap:5px}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+/* ═══ v2 스킨 끝 ═══ */
 </style>
 </head>
 <body>
