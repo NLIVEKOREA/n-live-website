@@ -590,6 +590,7 @@ html.big-ui .nav button{font-size:15.5px;padding:13px 12px}
       <button data-v="emp"><span class="ic"><i class="ti ti-users"></i></span>직원·급여</button>
       <button data-v="users"><span class="ic"><i class="ti ti-key"></i></span>사원관리</button>
       <button data-v="kakao"><span class="ic"><i class="ti ti-message-circle"></i></span>카카오 연동</button>
+      <button data-v="sim"><span class="ic"><i class="ti ti-calculator"></i></span>운영 시뮬레이션</button>
       <button data-v="config"><span class="ic"><i class="ti ti-settings"></i></span>환경설정</button>
     </nav>
     <div class="foot">
@@ -773,7 +774,16 @@ async function openStockLog(id,name){$('#modalBox').innerHTML=`<div style="displ
     el.innerHTML=rows.length?`<table><thead><tr><th>일시</th><th>구분</th><th class="num-cell">증감</th><th>담당</th><th>메모</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="muted" style="font-size:12px">${String(r.at||'').slice(0,16).replace('T',' ')}</td><td><span class="pill ${r.delta>0?'p-done':'p-low'}">${esc(r.reason||'')}</span></td><td class="num-cell" style="font-weight:700;color:${r.delta>0?'#16a34a':'#dc2626'}">${r.delta>0?'+':''}${r.delta}</td><td class="muted">${esc(r.staff||'-')}</td><td class="muted" style="font-size:12px">${esc(r.ref||'')}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:10px">아직 변동 기록이 없습니다. 지금부터 판매·교환·환불·조정이 자동 기록됩니다.</div>';
   }catch(e){$('#slBody').innerHTML='<div class="muted" style="padding:10px">불러오기 실패 (잠시 후 다시)</div>';}}
 async function saveStockRow(s){try{const row={code:s.code,name:s.name,color:s.color,size:s.size,tag:s.tag,qty:s.qty,price:s.price,vendor:s.vendor||null,barcode:s.barcode||null,category:s.category||null,subcategory:s.subcategory||null,season:s.season||null,sample:!!s.sample};if(s.id){_pendMark(_pendSave,'stock',s.id);const {error}=await SB.from('stock').update(row).eq('id',s.id);if(error){_pendSave.delete(_pk('stock',s.id));console.error('updStock',error);toast('⚠️ 품목 저장 실패 — 다시 시도하세요');}}else{const {data,error}=await SB.from('stock').insert(row).select('id').single();if(error){console.error('insStock',error);toast('⚠️ 품목 등록 실패 — 다시 시도하세요');}if(data){s.id=data.id;_pendMark(_pendSave,'stock',s.id);if((s.qty||0)!==0){try{await SB.from('stock_log').insert({stock_id:s.id,code:s.code,delta:s.qty,reason:'신규입고',ref:s.vendor||null,staff:(typeof ME!=='undefined'&&ME&&ME.name)||null});}catch(e){console.error('log입고',e);}}}}if(s.id&&s.in_price!=null){try{const {error}=await SB.from('stock_cost').upsert({stock_id:s.id,in_price:s.in_price||0});if(error)console.error('cost',error);}catch(e){console.error('cost',e);}}}catch(e){console.error(e);toast('⚠️ 품목 저장 오류');}}
-async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null,zip:c.zip||null};if(c.id){_pendMark(_pendSave,'customers',c.id);const {error}=await SB.from('customers').update(row).eq('id',c.id);if(error){_pendSave.delete(_pk('customers',c.id));console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}else{row.owner=((typeof ME!=='undefined'&&ME&&(ME.owner||ME.name)))||null;row.created_at=new Date().toISOString();let res=await SB.from('customers').insert(row).select('id,created_at').single();if(res.error&&/created_at/i.test(res.error.message||'')){delete row.created_at;res=await SB.from('customers').insert(row).select('id').single();}if(res.error){console.error('insCust',res.error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(res.data){c.id=res.data.id;c.owner=row.owner;c.created_at=res.data.created_at;}}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
+async function saveCustDB(c){try{const row={name:c.name,phone:c.phone||null,addr:c.addr||null,zip:c.zip||null};
+  /* 다중닉 그릇: 컬럼 미추가 구스키마도 안 깨지게 — 스키마 오류 시 자동 제외 재시도 */
+  if(Array.isArray(c.platform_ids))row.platform_ids=c.platform_ids;if('rep_nick' in c)row.rep_nick=c.rep_nick||null;
+  const isNickErr=e=>e&&/platform_ids|rep_nick/i.test(e.message||'');
+  if(c.id){_pendMark(_pendSave,'customers',c.id);let {error}=await SB.from('customers').update(row).eq('id',c.id);
+    if(error&&isNickErr(error)){delete row.platform_ids;delete row.rep_nick;({error}=await SB.from('customers').update(row).eq('id',c.id));}
+    if(error){_pendSave.delete(_pk('customers',c.id));console.error('updCust',error);toast('⚠️ 고객 저장 실패 — 다시 시도하세요');}}
+  else{row.owner=((typeof ME!=='undefined'&&ME&&(ME.owner||ME.name)))||null;row.created_at=new Date().toISOString();let res=await SB.from('customers').insert(row).select('id,created_at').single();
+    if(res.error&&isNickErr(res.error)){delete row.platform_ids;delete row.rep_nick;res=await SB.from('customers').insert(row).select('id,created_at').single();}
+    if(res.error&&/created_at/i.test(res.error.message||'')){delete row.created_at;res=await SB.from('customers').insert(row).select('id').single();}if(res.error){console.error('insCust',res.error);toast('⚠️ 고객 등록 실패 — 다시 시도하세요');}if(res.data){c.id=res.data.id;c.owner=row.owner;c.created_at=res.data.created_at;}}}catch(e){console.error(e);toast('⚠️ 고객 저장 오류');}}
 async function delCustDB(c){if(c.id)_pendMark(_pendDel,'customers',c.id);try{if(c.id){const {error}=await SB.from('customers').delete().eq('id',c.id);if(error){_pendDel.delete(_pk('customers',c.id));console.error('delCust',error);toast('⚠️ 고객 삭제 실패 — 다시 시도하세요');}}}catch(e){if(c.id)_pendDel.delete(_pk('customers',c.id));console.error(e);toast('⚠️ 삭제 오류');}}
 async function delStockDB(s){if(s&&s.id!=null)_pendMark(_pendDel,'stock',s.id);try{if(s&&s.id!=null){const {error}=await SB.from('stock').delete().eq('id',s.id);if(error){_pendDel.delete(_pk('stock',s.id));console.error('delStock',error);toast('⚠️ 품목 삭제 실패 — 다시 시도하세요');}}}catch(e){if(s&&s.id!=null)_pendDel.delete(_pk('stock',s.id));console.error(e);toast('⚠️ 삭제 오류');}}
 /* ===== 기간 헬퍼 (당일 기본) ===== */
@@ -1055,7 +1065,7 @@ const PERM_MENUS=[{k:'dash',l:'대시보드'},{k:'order',l:'주문관리'},{k:'s
 function menuAllowed(v){
   /* 테넌트 설정에서 끈 메뉴는 전 직원 숨김(대시보드·사원관리·환경설정은 끌 수 없음 — 자기잠금 방지) */
   if(TCFG&&TCFG.menus&&TCFG.menus[v]===false&&v!=='dash'&&v!=='users'&&v!=='config')return false;
-  if(v==='dash')return true;if(ME&&ME.scope==='all'&&(v==='users'||v==='config'))return true;if(v==='config')return false;if(ME&&ME.perms&&ME.perms.menus)return ME.perms.menus[v]===true;return (PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));}
+  if(v==='dash')return true;if(ME&&ME.scope==='all'&&(v==='users'||v==='config'||v==='sim'))return true;if(v==='config'||v==='sim')return false;/* sim: 관리자 전용 — 사원별 권한으로도 못 엶 */if(ME&&ME.perms&&ME.perms.menus)return ME.perms.menus[v]===true;return (PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));}
 /* 소분류(세부탭) 접근권한: 기본 전체허용, perms에서 명시적으로 끈 것만 숨김. 관리자는 항상 전체 */
 function subAllowed(menu,sub){if(TCFG&&TCFG.subsOff&&TCFG.subsOff[menu]&&TCFG.subsOff[menu][sub]===false)return false;/* 테넌트 하위탭 끔(환경설정) — 전 직원 공통 */
   if(!ME||ME.scope==='all')return true;if(ME.perms&&ME.perms.subs&&ME.perms.subs[menu])return ME.perms.subs[menu][sub]!==false;return true;}
@@ -3325,7 +3335,17 @@ function downloadCSV(rows,name){const csv='﻿'+rows.map(r=>r.map(v=>{v=String(v
 function sortTh(label,field,cur,fn,cls){const on=cur.f===field;const ar=on?(cur.d<0?' ▼':' ▲'):'';return `<th class="${cls||''} sort-th${on?' on':''}" onclick="${fn}('${field}')" title="정렬">${label}${ar}</th>`;}
 function custSort(f){if(CUSTSORT.f===f)CUSTSORT.d*=-1;else{CUSTSORT.f=f;CUSTSORT.d=(f==='name'?1:-1);}CUSTPAGE=1;render();}
 function custPage(p){CUSTPAGE=Math.max(1,p);render();}
-function custFilterSort(){const stats=custStats();let list=CUSTOMERS.slice();if(!isSeller()&&typeof SELLERVIEW!=='undefined'&&SELLERVIEW)list=list.filter(c=>c.owner===SELLERVIEW);const q=(CUSTSEARCH||'').trim(),qn=custPhoneNorm(q),ql=q.toLowerCase();if(q)list=list.filter(c=>(c.name||'').toLowerCase().includes(ql)||(qn&&custPhoneNorm(c.phone).includes(qn))||(c.addr||'').toLowerCase().includes(ql));
+/* ===== 고객 다중닉네임 / 대표닉 (3단계) =====
+   platform_ids = jsonb 배열, 원소 {platform, uid, nick}
+   · uid  = raw 채널ID(매칭키, 내부보관·화면엔 최소노출)
+   · nick = 화면표시용 닉네임(틱톡/유튜브 수집기·카카오·수동입력)
+   rep_nick = 대표닉 스냅샷(text, null이면 name 폴백). name/통계/정렬키는 불변(무회귀). */
+const PLAT_META={tiktok:{ic:'🎵',l:'틱톡'},youtube:{ic:'▶️',l:'유튜브'},kakao:{ic:'💬',l:'카카오'},shop:{ic:'🛒',l:'SHOP'},etc:{ic:'👤',l:'기타'}};
+function platIco(p){return (PLAT_META[p]||PLAT_META.etc).ic;}
+function platLab(p){return (PLAT_META[p]||PLAT_META.etc).l;}
+function custPlats(c){return (c&&Array.isArray(c.platform_ids))?c.platform_ids:[];}/* 구고객·undefined 전부 빈배열 가드 */
+function custDisplayName(c){return (c&&(c.rep_nick||c.name))||'이름없음';}/* 표시 전용 — 절대 통계/주문매칭 키로 쓰지 말 것 */
+function custFilterSort(){const stats=custStats();let list=CUSTOMERS.slice();if(!isSeller()&&typeof SELLERVIEW!=='undefined'&&SELLERVIEW)list=list.filter(c=>c.owner===SELLERVIEW);const q=(CUSTSEARCH||'').trim(),qn=custPhoneNorm(q),ql=q.toLowerCase();if(q)list=list.filter(c=>(c.name||'').toLowerCase().includes(ql)||(c.rep_nick||'').toLowerCase().includes(ql)||(qn&&custPhoneNorm(c.phone).includes(qn))||(c.addr||'').toLowerCase().includes(ql)||custPlats(c).some(p=>((p.nick||'').toLowerCase().includes(ql))||((p.uid||'').toLowerCase().includes(ql))));
   if(CUSTFILTER){const back=new Set(ORD.filter(o=>o.back&&o.ship!=='done'&&o.cust).map(o=>o.cust));const d90=daysAgoYmd(90);
     list=list.filter(c=>{const s=stats[c.name]||{};switch(CUSTFILTER){
       case 'vip':return (s.amt||0)>=500000;
@@ -3364,7 +3384,8 @@ function renderCustDetail(c,logs){
   const sec=(title,body)=>`<div class="card" style="margin-top:12px"><div class="card-h"><h2 style="margin:0;font-size:15px">${title}</h2></div>${body}</div>`;
   const logRows=arr=>arr.length?`<table><thead><tr><th>일시</th><th>구분</th><th>내용</th><th class="num-cell">금액</th><th class="num-cell">적립금</th><th>담당</th></tr></thead><tbody>${arr.map(l=>`<tr><td class="muted" style="font-size:12px">${fdt(l.at)}</td><td><span class="pill ${l.type==='환불'||l.type==='취소'?'p-low':'p-done'}">${esc(l.type)}</span></td><td>${esc(l.item||l.reason||'-')}</td><td class="num-cell muted">${l.amount?won(l.amount):'-'}</td><td class="num-cell" style="font-weight:700;color:${l.points_delta>0?'#059669':l.points_delta<0?'#dc2626':'#94a3b8'}">${l.points_delta?(l.points_delta>0?'+':'')+won(l.points_delta):'-'}</td><td class="muted">${esc(l.staff||'-')}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">내역 없음</div>';
   $('#modalBox').className='modal-box modal-wide';
-  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><h3 style="margin:0">${custAvatar(c.name)} ${esc(c.name)}${custFlagBadge(c)}</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕ 닫기</button></div>
+  const nickSec=custNickSecHTML(c);
+  $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><h3 style="margin:0">${custAvatar(c.name)} ${esc(custDisplayName(c))}${custFlagBadge(c)}</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕ 닫기</button></div>
   <div class="sg-sub" style="margin-bottom:10px">📞 ${esc(formatPhone(c.phone)||'-')}　📍 ${esc(c.addr||'-')}</div>
   <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi"><div><div class="lab">총 구매</div><div class="num">${st.cnt||0}</div><div class="sub">건</div></div></div>
@@ -3372,12 +3393,77 @@ function renderCustDetail(c,logs){
     <div class="kpi"><div><div class="lab">적립금</div><div class="num" style="font-size:20px;color:#059669">${won(c.points||0)}</div><div class="sub">사용 가능</div></div></div>
     <div class="kpi"><div><div class="lab">최근 구매</div><div class="num" style="font-size:15px">${st.last||'-'}</div></div></div>
   </div>
+  ${nickSec}
   ${sec('💰 적립금 <span class="muted" style="font-size:12px;font-weight:400">현재 '+won(c.points||0)+'</span>',`<div style="padding:0 0 6px"><div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;justify-content:flex-end"><span class="muted" style="align-self:center;font-size:12px;margin-right:auto">주문관리에서 적립금을 사용할 수 있습니다</span><button class="btn sm gray" onclick="custAdjustPoints(${c.id},-1)">－ 차감</button><button class="btn sm" onclick="custAdjustPoints(${c.id},1)">＋ 수동 적립</button></div>${logRows(pointLog)}</div>`)}
   ${sec('↩️ 취소·환불 이력 <span class="muted" style="font-size:12px;font-weight:400">'+csLog.length+'건</span>',logRows(csLog))}
   ${sec('🔄 교환·반품 이력 <span class="muted" style="font-size:12px;font-weight:400">'+rx.length+'건</span>',rx.length?`<table><thead><tr><th>일시</th><th>구분</th><th>상품</th><th>사유</th><th>진행</th></tr></thead><tbody>${rx.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.rxdate||o.date)}</td><td><span class="pill p-req">${rxTypeLabel(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="muted">${esc(o.rxreason||'-')}</td><td>${o.rxstat==='done'?'<span class="pill p-done">완료</span>':'<span class="pill p-req">진행중</span>'}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">내역 없음</div>')}
   ${sec('📦 미송 이력 <span class="muted" style="font-size:12px;font-weight:400">'+back.length+'건 대기중</span>',back.length?`<table><thead><tr><th>주문일</th><th>번호표</th><th>상품</th><th class="num-cell">수량</th></tr></thead><tbody>${back.map(o=>`<tr><td class="muted" style="font-size:12px">${fdt(o.date)}</td><td><span class="tagbox">${tagShow(o)}</span></td><td>${itemLabel(o)}${sampleBadge(o)}</td><td class="num-cell">${o.qty}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:12px">현재 미송 대기 없음</div>')}
   ${sec('🚩 주의/블랙리스트',`<div style="padding:2px 0"><div style="display:flex;gap:6px;margin-bottom:10px;justify-content:flex-end">${flagBtn(null,'정상','')}${flagBtn('주의','⚠️ 주의','btn')}${flagBtn('블랙리스트','⛔ 블랙리스트','red')}</div><label>메모 <span class="muted" style="font-size:11px">문제 이력·특이사항</span></label><textarea id="cdMemo" style="width:100%;height:70px;padding:10px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:13px" placeholder="예: 잦은 단순변심 취소, 반말 고객 등">${esc(c.memo||'')}</textarea><div style="margin-top:8px;display:flex;justify-content:flex-end"><button class="btn sm" onclick="saveCustMemo(${c.id})">메모 저장</button></div></div>`)}`;
   $('#modal').classList.remove('hide');}
+/* ===== 닉네임 관리 섹션 (상세모달) ===== */
+function custNickSecHTML(c){
+  const repCur=(c.rep_nick||c.name)||'';/* 현재 대표닉(스냅샷 없으면 name 폴백) */
+  const isRep=v=>!!v&&v===repCur;
+  const starCell=v=>isRep(v)?'<span class="pill p-done">대표 ✓</span>':`<button class="btn sm ghost" onclick="setCustRepNick(${c.id},'${escAttr(v)}')" ${v?'':'disabled'}>⭐ 대표</button>`;
+  /* ① 수기닉(name) */
+  const manualRow=`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)">
+    <span style="width:66px;font-size:13px;color:#64748b;flex:0 0 auto">✏️ 수기</span>
+    <b style="flex:1;min-width:0">${esc(c.name||'')||'<span class="muted" style="font-weight:400">이름없음</span>'}</b>
+    ${starCell(c.name||'')}</div>`;
+  /* ②③④ 채널닉(틱톡/유튜브/카카오/수동) — nick 우선, uid는 매칭키(복사만) */
+  const plats=custPlats(c);
+  const platRows=plats.map((p,i)=>{const disp=p.nick?esc(p.nick):(p.uid?'<span class="muted" style="font-weight:400">닉 미입력 · ID '+esc(p.uid)+'</span>':'<span class="muted" style="font-weight:400">닉 미입력</span>');const repVal=p.nick||p.uid||'';
+    return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);flex-wrap:wrap">
+      <span style="width:66px;font-size:13px;color:#64748b;flex:0 0 auto">${platIco(p.platform)} ${esc(platLab(p.platform))}</span>
+      <b style="flex:1;min-width:120px">${disp}</b>
+      <input id="cdnick_${i}" value="${esc(p.nick||'')}" placeholder="닉네임" style="width:110px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:12px">
+      <button class="btn sm" onclick="custPlatNickSave(${c.id},'${escAttr(p.platform)}','${escAttr(p.uid||'')}',${i})">닉저장</button>
+      ${p.uid?`<button class="ico-btn" title="채널ID 복사" onclick="custPlatCopy('${escAttr(p.uid)}')">📋</button>`:''}
+      ${starCell(repVal)}
+      <button class="ico-btn" aria-label="연동 해제" title="연동 해제" onclick="custPlatDel(${c.id},'${escAttr(p.platform)}','${escAttr(p.uid||'')}')">✕</button></div>`;}).join('');
+  /* 추가행 — 등록엔 삭제도(각 행 ✕) · option엔 value 명시 */
+  const addRow=`<div style="display:flex;gap:6px;margin-top:10px;align-items:center;flex-wrap:wrap">
+    <select id="cdPlatSel" style="padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-size:13px">${Object.keys(PLAT_META).filter(k=>k!=='shop'&&k!=='etc').concat(['etc']).map(k=>`<option value="${k}">${PLAT_META[k].ic} ${PLAT_META[k].l}</option>`).join('')}</select>
+    <input id="cdPlatUid" placeholder="채널ID(매칭키·선택)" style="flex:1;min-width:120px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-size:13px" onkeydown="if(event.key==='Enter')custPlatAdd(${c.id})">
+    <input id="cdPlatNick" placeholder="닉네임(표시)" style="flex:1;min-width:120px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-size:13px" onkeydown="if(event.key==='Enter')custPlatAdd(${c.id})">
+    <button class="btn sm" onclick="custPlatAdd(${c.id})">＋ 연동 추가</button></div>`;
+  const cur=`<div class="note" style="margin-top:10px;display:flex;align-items:center;gap:8px"><span>현재 대표닉</span><b style="color:#2563eb">${esc(custDisplayName(c))}</b><span class="grow" style="flex:1"></span><span class="muted" style="font-size:11px">틱톡·유튜브 자동닉은 수집기 연동 후 채워집니다</span></div>`;
+  const body=`<div style="padding:2px 0">${manualRow}${platRows}${addRow}${cur}</div>`;
+  const sec=(title,inner)=>`<div class="card" style="margin-top:12px"><div class="card-h"><h2 style="margin:0;font-size:15px">${title}</h2></div>${inner}</div>`;
+  return sec('🏷️ 닉네임 관리 <span class="muted" style="font-size:12px;font-weight:400">대표닉 ⭐ 선택 · 채널ID는 매칭키</span>',body);
+}
+async function setCustRepNick(id,val){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;const prev=c.rep_nick;
+  c.rep_nick=(val&&val!==c.name)?val:null;/* 수기=기본이면 null(폴백) */
+  if(c.id!=null){try{const {error}=await SB.from('customers').update({rep_nick:c.rep_nick}).eq('id',id);
+    if(error){c.rep_nick=prev;console.error('repNick',error);toast('⚠️ 대표닉 저장 실패'+(/rep_nick/i.test(error.message||'')?' (컬럼 준비 전)':'')+' — 다시 시도하세요');openCustDetail(id);return;}}
+    catch(e){c.rep_nick=prev;console.error(e);toast('⚠️ 대표닉 저장 오류');openCustDetail(id);return;}}
+  toast('⭐ 대표닉: '+custDisplayName(c));openCustDetail(id);render();}
+async function custPlatSaveDB(c){if(!c||c.id==null){toast('⚠️ 저장 안 된 고객이라 연동 불가 (먼저 고객 저장)');return false;}
+  try{const {error}=await SB.from('customers').update({platform_ids:custPlats(c)}).eq('id',c.id);
+    if(error){console.error('platSave',error);toast('⚠️ 연동 저장 실패'+(/platform_ids/i.test(error.message||'')?' (컬럼 준비 전)':'')+' — 다시 시도하세요');return false;}return true;}
+  catch(e){console.error(e);toast('⚠️ 연동 저장 오류');return false;}}
+async function custPlatAdd(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;
+  const platEl=$('#cdPlatSel'),uidEl=$('#cdPlatUid'),nickEl=$('#cdPlatNick');
+  const platform=(platEl&&platEl.value)||'tiktok';const uid=((uidEl&&uidEl.value)||'').trim();const nick=((nickEl&&nickEl.value)||'').trim();
+  if(!uid&&!nick){toast('채널ID 또는 닉네임을 입력하세요');return;}
+  const arr=custPlats(c);if(arr.some(p=>p.platform===platform&&(p.uid||'')===uid&&(p.nick||'')===nick)){toast('이미 연동된 계정입니다');return;}
+  const prev=c.platform_ids;c.platform_ids=arr.concat([{platform,uid:uid||'',nick:nick||''}]);
+  const ok=await custPlatSaveDB(c);if(!ok){c.platform_ids=prev;openCustDetail(id);return;}
+  toast('🔗 연동: '+platLab(platform)+' '+(nick||uid));openCustDetail(id);}
+async function custPlatDel(id,platform,uid){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;
+  const arr=custPlats(c);const gone=arr.find(p=>p.platform===platform&&(p.uid||'')===(uid||''));
+  if(!confirm('연동 해제할까요?\n'+platLab(platform)+' '+((gone&&(gone.nick||gone.uid))||uid||'')))return;
+  const prev=c.platform_ids;c.platform_ids=arr.filter(p=>!(p.platform===platform&&(p.uid||'')===(uid||'')));
+  const clearRep=!!(gone&&c.rep_nick&&(gone.nick||gone.uid)===c.rep_nick);const prevRep=c.rep_nick;if(clearRep)c.rep_nick=null;
+  const ok=await custPlatSaveDB(c);if(!ok){c.platform_ids=prev;c.rep_nick=prevRep;openCustDetail(id);return;}
+  if(clearRep){try{await SB.from('customers').update({rep_nick:null}).eq('id',id);}catch(e){console.warn('repClear',e);}}
+  toast('연동 해제됨');openCustDetail(id);}
+async function custPlatNickSave(id,platform,uid,i){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;
+  const el=$('#cdnick_'+i);const nick=((el&&el.value)||'').trim();
+  const p=custPlats(c).find(x=>x.platform===platform&&(x.uid||'')===(uid||''));if(!p)return;
+  const prev=p.nick;p.nick=nick;const ok=await custPlatSaveDB(c);if(!ok){p.nick=prev;openCustDetail(id);return;}
+  toast('✅ 닉 저장: '+(nick||'(비움)'));openCustDetail(id);}
+function custPlatCopy(uid){try{navigator.clipboard.writeText(uid);toast('📋 채널ID 복사: '+uid);}catch(e){toast(uid);}}
 async function setCustFlag(id,flag){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;c.flag=flag||null;try{const {error}=await SB.from('customers').update({flag:c.flag}).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패');}}catch(e){console.error(e);}toast(flag?('🚩 '+flag+': '+c.name):'표시 해제: '+c.name);openCustDetail(id);}
 async function saveCustMemo(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;const v=($('#cdMemo')&&$('#cdMemo').value||'').trim();c.memo=v||null;try{const {error}=await SB.from('customers').update({memo:c.memo}).eq('id',id);if(error){console.error(error);toast('⚠️ 저장 실패');}else toast('📝 메모 저장');}catch(e){console.error(e);}}
 async function custAdjustPoints(id,sign){const c=CUSTOMERS.find(x=>x.id===id);if(!c)return;const raw=prompt((sign>0?'적립할':'차감할')+' 금액 (원)');if(raw==null)return;const amt=parseInt(String(raw).replace(/[^\d]/g,''))||0;if(amt<=0){toast('금액을 입력하세요');return;}const reason=prompt('사유 (선택)','')||'';await addPoints(c.name,sign*amt,sign>0?'적립조정':'적립차감',{reason:reason||'수동 조정'});toast((sign>0?'💰 적립 +':'➖ 차감 −')+won(amt)+' · '+c.name);openCustDetail(id);}
@@ -3387,8 +3473,10 @@ function phoneDupGroups(){const m={};CUSTOMERS.forEach(c=>{const p=custPhoneNorm
 function custAvatar(name){const ch=(name||'?').trim().charAt(0)||'?';const colors=['#2563eb','#7c3aed','#db2777','#ea580c','#059669','#0891b2','#4f46e5'];let h=0;for(const c of (name||'?'))h=(h*31+c.charCodeAt(0))%colors.length;return `<span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:${colors[h]};color:#fff;font-weight:800;font-size:14px;flex:0 0 auto">${esc(ch)}</span>`;}
 function custActBtns(c){return `<div style="display:flex;gap:4px;justify-content:flex-end"><button class="btn sm" onclick="openCustDetail(${c.id})">상세</button><button class="btn sm ghost" onclick="openCustEdit(${c.id})">수정</button><button class="ico-btn" aria-label="삭제" title="삭제" onclick="delCust(${c.id})"><i class="ti ti-trash"></i></button></div>`;}
 function custRow(c,stats){const s=stats[c.name]||{cnt:0,amt:0,last:''};
+  const plats=custPlats(c);/* 채널줄: nick 있으면 아이콘+nick, 없으면 아이콘만(raw uid 미노출) */
+  const nickLine=plats.length?`<div style="font-size:11px;color:#2563eb;margin-top:1px">${plats.map(p=>p.nick?platIco(p.platform)+' '+esc(p.nick):platIco(p.platform)).join(' · ')}</div>`:'';
   return `<tr>
-    <td><div style="display:flex;align-items:center;gap:10px">${custAvatar(c.name)}<div><div style="font-weight:700">${esc(c.name)}${custFlagBadge(c)}</div><div class="muted" style="font-size:12px">${esc(c.addr||'주소 미등록')}</div></div></div></td>
+    <td><div style="display:flex;align-items:center;gap:10px">${custAvatar(c.name)}<div><div style="font-weight:700">${esc(custDisplayName(c))}${custFlagBadge(c)}</div><div class="muted" style="font-size:12px">${esc(c.addr||'주소 미등록')}</div>${nickLine}</div></div></td>
     <td class="barcode" style="font-weight:600">${esc(formatPhone(c.phone)||'-')}</td>
     <td class="num-cell">${s.cnt?s.cnt+'건':'<span class="muted">-</span>'}</td>
     <td class="num-cell" style="font-weight:700">${s.amt?won(s.amt):'<span class="muted">-</span>'}</td>
@@ -3408,11 +3496,15 @@ function custDupView(dup,stats){
 async function mergeGroupInto(keeperName,pnorm){const grp=CUSTOMERS.filter(c=>custPhoneNorm(c.phone)===pnorm);const keeper=grp.find(c=>c.name===keeperName);const others=grp.filter(c=>c.name!==keeperName);if(!keeper||!others.length)return;
   const stats=custStats();let totO=0,totP=0;others.forEach(o=>{totO+=(stats[o.name]||{}).cnt||0;totP+=o.points||0;});
   if(!confirm('동일 연락처 고객을 \''+keeperName+'\' 하나로 통합할까요?\n\n통합 대상: '+others.map(o=>o.name).join(', ')+'\n· 주문 '+totO+'건 → '+keeperName+'\n· 적립금 '+won(totP)+' 합산\n· 나머지 '+others.length+'개 고객기록 삭제\n\n※ 되돌리기 어렵습니다. 신중히.'))return;
-  for(const o of others){ORD.forEach(x=>{if(x.cust===o.name)x.cust=keeperName;});if(!keeper.addr&&o.addr)keeper.addr=o.addr;if(!keeper.memo&&o.memo)keeper.memo=o.memo;if(!keeper.flag&&o.flag)keeper.flag=o.flag;const i=CUSTOMERS.indexOf(o);if(i>=0)CUSTOMERS.splice(i,1);}
+  for(const o of others){ORD.forEach(x=>{if(x.cust===o.name)x.cust=keeperName;});if(!keeper.addr&&o.addr)keeper.addr=o.addr;if(!keeper.memo&&o.memo)keeper.memo=o.memo;if(!keeper.flag&&o.flag)keeper.flag=o.flag;
+    /* 채널연동(닉/uid)도 keeper로 흡수 — 중복 통합 시 닉 유실 방지 */const ka=custPlats(keeper).slice();custPlats(o).forEach(p=>{if(!ka.some(q=>q.platform===p.platform&&(q.uid||'')===(p.uid||'')&&(q.nick||'')===(p.nick||'')))ka.push(p);});keeper.platform_ids=ka;
+    const i=CUSTOMERS.indexOf(o);if(i>=0)CUSTOMERS.splice(i,1);}
   keeper.points=(keeper.points||0)+totP;toast('✅ 통합 완료 → '+keeperName+' (주문 '+totO+'건 이동)');render();
   try{for(const o of others){await SB.from('orders').update({cust:keeperName}).eq('cust',o.name);await SB.from('cust_log').update({cust:keeperName}).eq('cust',o.name);if(o.id!=null)await SB.from('customers').delete().eq('id',o.id);}
     if(totP&&keeper.id!=null)await SB.rpc('adjust_points',{p_id:keeper.id,p_delta:totP});
     if(keeper.id!=null)await SB.from('customers').update({addr:keeper.addr,memo:keeper.memo,flag:keeper.flag}).eq('id',keeper.id);
+    /* platform_ids 흡수분 저장(별도·best-effort: 컬럼 미추가 스키마여도 통합 본체는 안 깨짐) */
+    if(keeper.id!=null){try{await SB.from('customers').update({platform_ids:custPlats(keeper)}).eq('id',keeper.id);}catch(e){console.warn('merge plat',e);}}
   }catch(e){console.error('merge',e);toast('⚠️ 통합 저장 일부 실패 — 새로고침으로 확인하세요');}}
 function pageBar(pg,pages,fn){if(pages<=1)return '';let s='<div class="pagebar">';s+=`<button class="btn sm gray" ${pg<=1?'disabled':''} onclick="${fn}(${pg-1})" aria-label="이전">‹</button>`;
   let a=Math.max(1,pg-3),b=Math.min(pages,a+6);a=Math.max(1,b-6);
@@ -3428,7 +3520,7 @@ function viewCustomers(){
   <div class="head"><h1>고객관리 <span class="badge">${CUSTOMERS.length.toLocaleString()}명</span></h1><p>헤더 클릭 정렬 · 검색 · 페이지 이동 · CSV · 행에서 바로 수정/삭제</p></div>
   ${sellerTabs()}
   <div class="card" style="margin-bottom:14px"><div class="toolbar">
-    <input id="custSearch" placeholder="🔍 이름·연락처·주소 입력 후 Enter" value="${esc(CUSTSEARCH)}" onkeydown="if(event.key==='Enter'){CUSTSEARCH=this.value;CUSTPAGE=1;render()}" style="width:min(320px,100%);font-size:14px">
+    <input id="custSearch" placeholder="🔍 이름·닉네임·연락처·주소 입력 후 Enter" value="${esc(CUSTSEARCH)}" onkeydown="if(event.key==='Enter'){CUSTSEARCH=this.value;CUSTPAGE=1;render()}" style="width:min(320px,100%);font-size:14px">
     ${CUSTSEARCH?`<button class="btn sm gray" onclick="CUSTSEARCH='';CUSTPAGE=1;render()">초기화</button>`:''}
     <span class="grow"></span>
     <button class="btn sm ghost" onclick="custCSV()"><i class="ti ti-download"></i> CSV</button>
@@ -4930,7 +5022,7 @@ async function liveDelProduct(id){const p=SESS_PROD.find(x=>x.id===id);if(!p)ret
 const TCFG_MENUS=[
   {k:'sales',l:'판매관리'},{k:'live',l:'라이브 판매'},{k:'bo',l:'미송사입'},{k:'shipped',l:'판매현황'},
   {k:'rx',l:'교환·반품'},{k:'revenue',l:'매출현황'},{k:'sns',l:'SNS 관리'},{k:'prod',l:'상품현황'},
-  {k:'vendor',l:'사입처관리'},{k:'emp',l:'직원·급여'},{k:'kakao',l:'카카오 연동'},
+  {k:'vendor',l:'사입처관리'},{k:'emp',l:'직원·급여'},{k:'kakao',l:'카카오 연동'},{k:'sim',l:'운영 시뮬레이션'},
   {k:'order',l:'주문관리',core:true},{k:'ship',l:'출고장',core:true},{k:'stock',l:'재고관리',core:true},{k:'cust',l:'고객관리',core:true}];
 const TCFG_PRESETS={
   fashion:{label:'의류 도매 (전체 기능)',off:[],hideSize:false,optLabels:{color:'색상',size:'사이즈'}},
@@ -5152,8 +5244,238 @@ function viewConfig(){
     <div class="muted" style="font-size:11px;margin-top:6px">회수비·무료배송 기준·계좌는 각 업무 화면(환불정산·주문입력·방송설정)에서 바꾸면서 기본값 저장할 수 있습니다.</div>
     <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn sm" onclick="tcfgMsgsSave()">저장 — 즉시 반영</button></div></div>
   <div class="card"><h3 style="margin:0 0 6px">변경 이력 <span class="muted" style="font-weight:400;font-size:12px">(최근 10건)</span></h3>${log}</div>`;}
-const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,live:viewLive,ship:viewShip,bo:viewBackorder,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao,config:viewConfig};
-const VIEW_LABELS={dash:'대시보드',order:'주문관리',sales:'판매관리',live:'라이브 판매',ship:'출고장',bo:'미송사입',shipped:'판매현황',rx:'교환·반품',stock:'재고관리',revenue:'매출현황',sns:'SNS 관리',cust:'고객관리',prod:'상품현황',vendor:'사입처관리',emp:'직원·급여',users:'사원관리',kakao:'카카오 연동',config:'환경설정'};
+/* ===== 운영 시뮬레이션 (관리자 전용) — '한국 운영.xlsx' Sheet3 모델 3종을 수식 그대로 구현 =====
+   ①국내 사무실(다수 셀러): 순이익 = 총매출 − 고정비 − 변동비(셀러기본급×n + 보조 + 수수료) − (물류비 + 원가)
+   ②원정 방송: 고정비 = 원정담당자(기본급+매출연동) + 출고팀, 수수료 30% 기본
+   ③위탁 운영: 순이익 = 위탁매출 × 회사귀속률 − 담당자 비용
+   시나리오는 user_prefs(PREFS)에 계정별 저장 · '실적 불러오기'로 ERP 실제 주문 데이터를 팀 구성에 자동 채움 */
+let SIM=null;
+const SIM_DEF=()=>({mode:'office',
+  office:{teams:[
+    {on:1,name:'셀러1팀',per:2000000,shows:20,aov:30000},
+    {on:1,name:'셀러2팀',per:500000,shows:20,aov:60000},
+    {on:1,name:'셀러3팀',per:500000,shows:20,aov:22000},
+    {on:1,name:'셀러4팀',per:500000,shows:24,aov:29000}],
+    base:2000000,comm:10,aCnt:1,aBase:2000000,aPct:3,
+    fix:{office:1650000,mgmt:260000,util:500000,inCost:2500000,inCnt:0,outCost:2500000,outCnt:1,mdCost:2500000,mdCnt:0},
+    logPct:3,mult:3},
+  exped:{teams:[{on:1,name:'원정1팀',per:8000000,shows:10,aov:30000}],
+    comm:30,mgrBase:2000000,mgrPct:3,outCost:2500000,outCnt:0,logPct:10,mult:3},
+  consign:{rev:100000000,mgrBase:2000000,mgrPct:3,rows:[{fee:20,keep:15},{fee:25,keep:10}]}});
+function simInit(){
+  let s=null;
+  try{if(PREFS&&PREFS.simLast)s=JSON.parse(JSON.stringify(PREFS.simLast));}catch(e){s=null;}
+  if(!s||!s.office||!Array.isArray(s.office.teams)||!s.exped||!s.consign)s=SIM_DEF();
+  if(!s.mode)s.mode='office';
+  return s;}
+function simPersist(){try{PREFS.simLast=JSON.parse(JSON.stringify(SIM));savePrefs();}catch(e){}}
+function simCalcOffice(o){
+  const rows=o.teams.map(t=>{const rev=t.on?(+t.per||0)*(+t.shows||0):0;
+    const pay=t.on?Math.round(rev*(+o.comm||0)/100+(+o.base||0)):0;
+    const cnt=(t.on&&+t.aov>0)?Math.round((+t.per||0)/+t.aov):0;return{rev,pay,cnt};});
+  const rev=rows.reduce((a,r)=>a+r.rev,0);
+  const nSell=o.teams.filter(t=>t.on).length;
+  const f=o.fix||{};
+  const fixed=(+f.office||0)+(+f.mgmt||0)+(+f.util||0)+(+f.inCost||0)*(+f.inCnt||0)+(+f.outCost||0)*(+f.outCnt||0)+(+f.mdCost||0)*(+f.mdCnt||0);
+  const assist=(+o.aCnt||0)*(+o.aBase||0)+rev*(+o.aPct||0)/100;
+  const commAmt=rev*(+o.comm||0)/100;
+  const basePayAll=(+o.base||0)*nSell;
+  const variable=basePayAll+assist+commAmt;
+  const log=rev*(+o.logPct||0)/100;
+  const cogs=(+o.mult||0)>0?rev/(+o.mult):0;
+  const profit=rev-fixed-variable-log-cogs;
+  return{rows,rev,nSell,fixed,variable,basePayAll,assist,commAmt,log,cogs,profit,margin:rev>0?profit/rev*100:0};}
+function simCalcExped(e){
+  const rows=e.teams.map(t=>{const rev=t.on?(+t.per||0)*(+t.shows||0):0;
+    const pay=t.on?Math.round(rev*(+e.comm||0)/100):0;
+    const cnt=(t.on&&+t.aov>0)?Math.round((+t.per||0)/+t.aov):0;return{rev,pay,cnt};});
+  const rev=rows.reduce((a,r)=>a+r.rev,0);
+  const mgr=(+e.mgrBase||0)+rev*(+e.mgrPct||0)/100;
+  const fixed=mgr+(+e.outCost||0)*(+e.outCnt||0);
+  const commAmt=rev*(+e.comm||0)/100;
+  const log=rev*(+e.logPct||0)/100;
+  const cogs=(+e.mult||0)>0?rev/(+e.mult):0;
+  const profit=rev-fixed-commAmt-log-cogs;
+  return{rows,rev,nSell:e.teams.filter(t=>t.on).length,fixed,mgr,variable:commAmt,basePayAll:0,assist:0,commAmt,log,cogs,profit,margin:rev>0?profit/rev*100:0};}
+function simCalcConsign(c){
+  const rev=+c.rev||0;const mgr=(+c.mgrBase||0)+rev*(+c.mgrPct||0)/100;
+  const rows=(c.rows||[]).map(r=>{const fee=rev*(+r.fee||0)/100;const keep=rev*(+r.keep||0)/100;
+    const profit=keep-mgr;return{fee,keep,profit,margin:rev>0?profit/rev*100:0};});
+  return{rev,mgr,rows};}
+function simIn(el){
+  const p=(el.dataset.p||'').split('.');if(!p.length)return;
+  let o=SIM;for(let i=0;i<p.length-1;i++){o=o[/^\d+$/.test(p[i])?+p[i]:p[i]];if(o==null)return;}
+  const k=p[p.length-1];
+  o[k]=el.type==='checkbox'?(el.checked?1:0):(el.dataset.t==='s'?el.value:(+el.value||0));
+  simPaint();simPersist();}
+function simPaint(){
+  const out=$('#simOut');if(!out)return;
+  if(SIM.mode==='office'||SIM.mode==='exped'){
+    const c=SIM.mode==='office'?simCalcOffice(SIM.office):simCalcExped(SIM.exped);
+    c.rows.forEach((r,i)=>{const a=$('#simRev_'+i),b=$('#simPay_'+i),d=$('#simCnt_'+i);
+      if(a)a.textContent=won(r.rev);if(b)b.textContent=won(r.pay);if(d)d.textContent=r.cnt?r.cnt.toLocaleString()+'건':'-';});
+    out.innerHTML=simOutHtml(c);
+  }else out.innerHTML=simConsignOutHtml(simCalcConsign(SIM.consign));}
+function simOutHtml(c){
+  const pc=c.profit>=0?'#059669':'#dc2626';
+  return `<div class="card-h"><h2>📊 월간 손익 결과 <span class="muted" style="font-size:12px;font-weight:400">활성 셀러 ${c.nSell}팀</span></h2></div>
+  <div class="kpis" style="margin-bottom:12px">
+    <div class="kpi"><div><div class="lab">총 매출</div><div class="num">${won(c.rev)}</div></div><div class="ic ic-b"><i class="ti ti-cash"></i></div></div>
+    <div class="kpi"><div><div class="lab">순이익</div><div class="num" style="color:${pc}">${won(Math.round(c.profit))}</div><div class="sub" style="color:${pc};font-weight:700">이익률 ${c.margin.toFixed(1)}%</div></div><div class="ic ic-p"><i class="ti ti-trending-up"></i></div></div>
+    <div class="kpi"><div><div class="lab">고정비</div><div class="num">${won(Math.round(c.fixed))}</div>${c.mgr!=null?`<div class="sub" style="color:#94a3b8;font-weight:500">담당자 ${won(Math.round(c.mgr))} 포함</div>`:''}</div><div class="ic ic-o"><i class="ti ti-building"></i></div></div>
+    <div class="kpi"><div><div class="lab">변동비</div><div class="num">${won(Math.round(c.variable))}</div><div class="sub" style="color:#94a3b8;font-weight:500">${c.basePayAll?'기본급 '+won(c.basePayAll)+' · ':''}수수료 ${won(Math.round(c.commAmt))}${c.assist?' · 보조 '+won(Math.round(c.assist)):''}</div></div><div class="ic ic-r"><i class="ti ti-users"></i></div></div>
+    <div class="kpi"><div><div class="lab">물류 + 원가</div><div class="num">${won(Math.round(c.log+c.cogs))}</div><div class="sub" style="color:#94a3b8;font-weight:500">물류 ${won(Math.round(c.log))} · 원가 ${won(Math.round(c.cogs))}</div></div><div class="ic ic-g"><i class="ti ti-truck"></i></div></div>
+  </div>
+  <table><tbody>
+    <tr><td>총 매출</td><td class="num-cell"><b>${won(c.rev)}</b></td></tr>
+    <tr><td>(−) 고정비</td><td class="num-cell">${won(Math.round(c.fixed))}</td></tr>
+    <tr><td>(−) 변동비</td><td class="num-cell">${won(Math.round(c.variable))}</td></tr>
+    <tr><td>(−) 물류비 + 상품원가</td><td class="num-cell">${won(Math.round(c.log+c.cogs))}</td></tr>
+    <tr><td><b>= 월 순이익</b></td><td class="num-cell"><b style="color:${pc}">${won(Math.round(c.profit))} (${c.margin.toFixed(1)}%)</b></td></tr>
+  </tbody></table>`;}
+function simConsignOutHtml(c){
+  return `<div class="card-h"><h2>📊 위탁 운영 손익</h2></div>
+  <table><thead><tr><th>수수료율</th><th class="num-cell">수수료 수입</th><th class="num-cell">회사 귀속</th><th class="num-cell">담당자 비용</th><th class="num-cell">월 순이익</th><th class="num-cell">이익률</th></tr></thead><tbody>
+  ${c.rows.map((r,i)=>{const t=SIM.consign.rows[i]||{};const pc=r.profit>=0?'#059669':'#dc2626';
+    return `<tr><td>${+t.fee||0}% (회사분 ${+t.keep||0}%)</td><td class="num-cell">${won(Math.round(r.fee))}</td><td class="num-cell">${won(Math.round(r.keep))}</td><td class="num-cell">${won(Math.round(c.mgr))}</td><td class="num-cell"><b style="color:${pc}">${won(Math.round(r.profit))}</b></td><td class="num-cell" style="color:${pc};font-weight:700">${r.margin.toFixed(1)}%</td></tr>`;}).join('')}
+  </tbody></table>
+  <div class="muted" style="font-size:12px;margin-top:8px">담당자 비용 = 기본급 + 위탁매출 × 매출연동% · 회사 귀속 = 위탁매출 × 회사귀속률</div>`;}
+function simFld(lab,p,v,opt){opt=opt||{};
+  return `<div><label class="lbl" style="display:block;font-size:12px;color:#64748b;font-weight:700;margin-bottom:4px">${lab}${opt.suf?` <span class="muted" style="font-weight:400">(${opt.suf})</span>`:''}</label>
+  <input class="simin" type="number" min="0" ${opt.step?`step="${opt.step}"`:''} data-p="${p}" value="${v}" oninput="simIn(this)"></div>`;}
+function simTeamRows(mode){
+  const o=SIM[mode];const c=mode==='office'?simCalcOffice(o):simCalcExped(o);
+  return o.teams.map((t,i)=>`<tr>
+    <td style="text-align:center"><input type="checkbox" data-p="${mode}.teams.${i}.on" ${t.on?'checked':''} onchange="simIn(this)" style="width:17px;height:17px;accent-color:var(--blue,#1b48e0)"></td>
+    <td><input class="simin" data-t="s" data-p="${mode}.teams.${i}.name" value="${escAttr(t.name||'')}" oninput="simIn(this)" style="width:92px"></td>
+    <td><input class="simin" type="number" min="0" step="100000" data-p="${mode}.teams.${i}.per" value="${+t.per||0}" oninput="simIn(this)"></td>
+    <td><input class="simin" type="number" min="0" data-p="${mode}.teams.${i}.shows" value="${+t.shows||0}" oninput="simIn(this)" style="width:62px"></td>
+    <td><input class="simin" type="number" min="0" step="1000" data-p="${mode}.teams.${i}.aov" value="${+t.aov||0}" oninput="simIn(this)" style="width:84px"></td>
+    <td class="num-cell" id="simRev_${i}">${won(c.rows[i].rev)}</td>
+    <td class="num-cell" id="simPay_${i}">${won(c.rows[i].pay)}</td>
+    <td class="num-cell" id="simCnt_${i}">${c.rows[i].cnt?c.rows[i].cnt.toLocaleString()+'건':'-'}</td>
+    <td><button class="btn sm gray" onclick="simDelTeam('${mode}',${i})" title="팀 삭제">✕</button></td>
+  </tr>`).join('');}
+function simAddTeam(mode){const o=SIM[mode];if(o.teams.length>=8){toast('팀은 최대 8개까지');return;}
+  o.teams.push({on:1,name:'셀러'+(o.teams.length+1)+'팀',per:500000,shows:20,aov:30000});simPersist();render();}
+function simDelTeam(mode,i){const o=SIM[mode];if(!o.teams[i])return;o.teams.splice(i,1);simPersist();render();}
+function simMode(m){SIM.mode=m;simPersist();render();}
+function simSaveScen(){
+  const name=prompt('시나리오 이름을 입력하세요 (같은 이름은 덮어씁니다)');if(!name||!name.trim())return;
+  PREFS.simScen=PREFS.simScen||{};PREFS.simScen[name.trim()]=JSON.parse(JSON.stringify(SIM));savePrefs();toast('💾 시나리오 저장: '+name.trim());render();}
+function simLoadScen(name){const s=PREFS.simScen&&PREFS.simScen[name];if(!s){toast('시나리오를 찾을 수 없습니다');return;}
+  SIM=JSON.parse(JSON.stringify(s));simPersist();toast('📂 불러옴: '+name);render();}
+function simDelScen(name,ev){if(ev)ev.stopPropagation();if(!confirm('시나리오 ['+name+'] 삭제할까요?'))return;
+  if(PREFS.simScen)delete PREFS.simScen[name];savePrefs();toast('🗑 삭제: '+name);render();}
+function simFromActual(){
+  const paid=ORD.filter(o=>o.pay==='paid'&&_isGoods(o));
+  const months=[...new Set(paid.map(o=>String(o.date||'').replace(/\//g,'-').slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)))].sort().reverse();
+  if(!months.length){toast('불러올 주문 데이터가 없습니다');return;}
+  $('#modalBox').innerHTML=`<h3 style="margin:0 0 6px">📥 실적 불러오기</h3>
+  <div class="muted" style="font-size:12.5px;margin-bottom:12px">선택한 달의 실제 판매 데이터로 셀러 팀 구성을 채웁니다.<br>회당 매출 = 월매출 ÷ 판매일수 · 방송 횟수 = 판매가 발생한 날 수 · 객단가 = 매출 ÷ 판매수량</div>
+  <label class="lbl" style="display:block;font-size:12px;font-weight:700;margin-bottom:4px">기준 월</label>
+  <select id="simMonth" class="simin" style="width:100%;height:38px">${months.map(m=>`<option value="${m}">${m}</option>`).join('')}</select>
+  <div class="modal-foot" style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" onclick="simApplyActual()">적용</button></div>`;
+  $('#modal').classList.remove('hide');}
+function simApplyActual(){
+  const sel=$('#simMonth');if(!sel||!sel.value)return;
+  const mon=sel.value;
+  const paid=ORD.filter(o=>o.pay==='paid'&&_isGoods(o)&&String(o.date||'').replace(/\//g,'-').slice(0,7)===mon);
+  const by={};
+  paid.forEach(o=>{const s=o.staff||'미지정';by[s]=by[s]||{rev:0,qty:0,days:new Set()};
+    by[s].rev+=amtOf(o);by[s].qty+=(+o.qty||0);const d=String(o.date||'').replace(/\//g,'-').slice(0,10);if(d)by[s].days.add(d);});
+  const teams=Object.entries(by).sort((a,b)=>b[1].rev-a[1].rev).slice(0,8)
+    .map(([name,v])=>({on:1,name,per:v.days.size?Math.round(v.rev/v.days.size):0,shows:v.days.size,aov:v.qty?Math.round(v.rev/v.qty):0}));
+  if(!teams.length){toast('해당 월 판매 데이터가 없습니다');return;}
+  SIM.mode='office';SIM.office.teams=teams;simPersist();closeModal();render();
+  toast('📥 '+mon+' 실적 반영 — 셀러 '+teams.length+'팀');}
+function viewSim(){
+  if(!ME||ME.scope!=='all')return '<div class="card" style="padding:36px;text-align:center;color:#64748b">🔒 관리자 전용 메뉴입니다.</div>';
+  if(!SIM)SIM=simInit();
+  const m=SIM.mode;
+  const scen=Object.keys((PREFS&&PREFS.simScen)||{});
+  const scenBar=`<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>💾 시나리오</h2></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+    ${scen.length?scen.map(n=>`<span class="simchip" onclick="simLoadScen('${escAttr(n)}')" title="클릭하면 불러옵니다">${esc(n)} <i class="ti ti-x" onclick="simDelScen('${escAttr(n)}',event)" title="삭제"></i></span>`).join(''):'<span class="muted" style="font-size:12.5px">저장된 시나리오가 없습니다 — 숫자를 맞춘 뒤 오른쪽 아래 [현재 상태 저장]을 누르세요.</span>'}
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn" onclick="simSaveScen()">현재 상태 저장</button></div></div>`;
+  let body='';
+  if(m==='office'||m==='exped'){
+    const o=SIM[m];
+    const teamCard=`<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>👥 셀러 팀 구성</h2>${m==='office'?'<button class="btn sm ghost" onclick="simFromActual()"><i class="ti ti-download"></i> 실적 불러오기</button>':''}</div>
+      <table><thead><tr><th style="width:44px">사용</th><th>팀명</th><th>회당 매출</th><th>월 방송</th><th>객단가</th><th class="num-cell">월 매출</th><th class="num-cell">${m==='office'?'급여(기본급+수수료)':'셀러 수수료'}</th><th class="num-cell">회당 판매</th><th style="width:44px"></th></tr></thead>
+      <tbody>${simTeamRows(m)}</tbody></table>
+      <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn sm gray" onclick="simAddTeam('${m}')">+ 팀 추가</button></div></div>`;
+    const grid='display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px';
+    const condCard=m==='office'
+      ?`<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>⚙️ 운영 조건</h2></div>
+        <div style="${grid}">
+          ${simFld('셀러 기본급','office.base',o.base,{step:100000,suf:'원/월'})}
+          ${simFld('셀러 수수료율','office.comm',o.comm,{suf:'%'})}
+          ${simFld('셀러 보조 인원','office.aCnt',o.aCnt,{suf:'명'})}
+          ${simFld('보조 기본급','office.aBase',o.aBase,{step:100000,suf:'원/월'})}
+          ${simFld('보조 매출연동','office.aPct',o.aPct,{suf:'%'})}
+          ${simFld('택배 물류비율','office.logPct',o.logPct,{suf:'%'})}
+          ${simFld('판매 배수(원가=매출÷배수)','office.mult',o.mult,{step:'0.1',suf:'배'})}
+        </div>
+        <div class="card-h" style="margin-top:16px"><h2>🏢 고정비</h2></div>
+        <div style="${grid}">
+          ${simFld('사무실','office.fix.office',o.fix.office,{step:50000,suf:'원/월'})}
+          ${simFld('관리비','office.fix.mgmt',o.fix.mgmt,{step:10000,suf:'원/월'})}
+          ${simFld('공과금','office.fix.util',o.fix.util,{step:10000,suf:'원/월'})}
+          ${simFld('입고팀 급여','office.fix.inCost',o.fix.inCost,{step:100000,suf:'원/명'})}
+          ${simFld('입고팀 인원','office.fix.inCnt',o.fix.inCnt,{suf:'명'})}
+          ${simFld('출고팀 급여','office.fix.outCost',o.fix.outCost,{step:100000,suf:'원/명'})}
+          ${simFld('출고팀 인원','office.fix.outCnt',o.fix.outCnt,{suf:'명'})}
+          ${simFld('MD 급여','office.fix.mdCost',o.fix.mdCost,{step:100000,suf:'원/명'})}
+          ${simFld('MD 인원','office.fix.mdCnt',o.fix.mdCnt,{suf:'명'})}
+        </div></div>`
+      :`<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>⚙️ 원정 운영 조건</h2></div>
+        <div style="${grid}">
+          ${simFld('셀러 수수료율','exped.comm',o.comm,{suf:'%'})}
+          ${simFld('원정 담당자 기본급','exped.mgrBase',o.mgrBase,{step:100000,suf:'원/월'})}
+          ${simFld('담당자 매출연동','exped.mgrPct',o.mgrPct,{suf:'%'})}
+          ${simFld('출고팀 급여','exped.outCost',o.outCost,{step:100000,suf:'원/명'})}
+          ${simFld('출고팀 인원','exped.outCnt',o.outCnt,{suf:'명'})}
+          ${simFld('물류비율','exped.logPct',o.logPct,{suf:'%'})}
+          ${simFld('판매 배수(원가=매출÷배수)','exped.mult',o.mult,{step:'0.1',suf:'배'})}
+        </div></div>`;
+    const c=m==='office'?simCalcOffice(o):simCalcExped(o);
+    body=teamCard+condCard+`<div class="card" id="simOut">${simOutHtml(c)}</div>`;
+  }else{
+    const o=SIM.consign;
+    const grid='display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px';
+    body=`<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>⚙️ 위탁 조건</h2></div>
+      <div style="${grid}">
+        ${simFld('월 위탁 매출','consign.rev',o.rev,{step:1000000,suf:'원'})}
+        ${simFld('담당자 기본급','consign.mgrBase',o.mgrBase,{step:100000,suf:'원/월'})}
+        ${simFld('담당자 매출연동','consign.mgrPct',o.mgrPct,{suf:'%'})}
+      </div>
+      <div class="card-h" style="margin-top:16px"><h2>수수료 시나리오 2안</h2></div>
+      <div style="${grid}">
+        ${simFld('1안 수수료율','consign.rows.0.fee',o.rows[0].fee,{suf:'%'})}
+        ${simFld('1안 회사귀속률','consign.rows.0.keep',o.rows[0].keep,{suf:'%'})}
+        ${simFld('2안 수수료율','consign.rows.1.fee',o.rows[1].fee,{suf:'%'})}
+        ${simFld('2안 회사귀속률','consign.rows.1.keep',o.rows[1].keep,{suf:'%'})}
+      </div></div>
+      <div class="card" id="simOut">${simConsignOutHtml(simCalcConsign(o))}</div>`;
+  }
+  return `<style>
+    .simin{height:34px;border:1.5px solid var(--line,#e2e8f0);border-radius:8px;background:#f8fafc;padding:0 9px;font-size:13px;color:inherit;width:110px;outline:none;box-sizing:border-box}
+    .simin:focus{border-color:var(--blue,#1b48e0);background:#fff}
+    .simchip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border:1.5px solid var(--line,#e2e8f0);border-radius:999px;font-size:12.5px;font-weight:700;cursor:pointer;background:#fff}
+    .simchip:hover{border-color:var(--blue,#1b48e0);color:var(--blue,#1b48e0)}
+    .simchip .ti-x{font-size:12px;color:#94a3b8}.simchip .ti-x:hover{color:#dc2626}
+  </style>
+  <div class="head"><h1>운영 시뮬레이션</h1><p>'한국 운영' 손익 모델 — 숫자를 바꾸면 즉시 재계산됩니다 · 관리자 전용</p></div>
+  <div class="tabs" style="margin-bottom:14px">
+    <button class="${m==='office'?'on':''}" onclick="simMode('office')">국내 사무실 (다수 셀러)</button>
+    <button class="${m==='exped'?'on':''}" onclick="simMode('exped')">원정 방송</button>
+    <button class="${m==='consign'?'on':''}" onclick="simMode('consign')">위탁 운영</button>
+  </div>
+  ${scenBar}${body}`;}
+const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,live:viewLive,ship:viewShip,bo:viewBackorder,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao,sim:viewSim,config:viewConfig};
+const VIEW_LABELS={dash:'대시보드',order:'주문관리',sales:'판매관리',live:'라이브 판매',ship:'출고장',bo:'미송사입',shipped:'판매현황',rx:'교환·반품',stock:'재고관리',revenue:'매출현황',sns:'SNS 관리',cust:'고객관리',prod:'상품현황',vendor:'사입처관리',emp:'직원·급여',users:'사원관리',kakao:'카카오 연동',sim:'운영 시뮬레이션',config:'환경설정'};
 function toggleSideNav(force){
   const side=$('#sideNav'),dim=$('#sideDim');if(!side||!dim)return;
   const open=force==null?!side.classList.contains('open'):!!force;
