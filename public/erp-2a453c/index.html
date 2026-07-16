@@ -1961,7 +1961,10 @@ function genGid(){try{if(typeof crypto!=='undefined'&&crypto.randomUUID)return c
 function _ogKey(o){return o&&o.order_group_id?('g:'+o.order_group_id):((o&&o.date||'')+'||'+(o&&o.cust||''));}
 function orderGroups(pay){
   const list=mine(ORD).filter(o=>o.pay===pay),map={};
-  list.forEach(o=>{const k=_ogKey(o);(map[k]=map[k]||{key:k,date:o.date,cust:o.cust,phone:o.phone,addr:o.addr,staff:o.staff,items:[]}).items.push(o);});
+  list.forEach(o=>{const k=_ogKey(o);
+    if(!map[k]){const _c=(!o.phone||!o.addr)?CUSTOMERS.find(x=>x.name===o.cust):null;/* 라이브챗 주문은 주문행 phone/addr가 빈값 → 매칭된 고객정보에서 폴백(SUNPICK서 발견: 매칭고객 주문서 연락처·주소 안뜸) */
+      map[k]={key:k,date:o.date,cust:o.cust,phone:o.phone||(_c&&_c.phone)||'',addr:o.addr||(_c&&_c.addr)||'',staff:o.staff,items:[]};}
+    map[k].items.push(o);});
   return Object.values(map).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 }
 function orderStatusCards(pay){
@@ -2415,7 +2418,7 @@ async function shipConsolidate(cust){
   if(ships.length===0)return false;
   const goods=set.filter(o=>o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장');
   const goodsTotal=goods.reduce((a,o)=>a+(o.price||0)*(o.qty||0),0);
-  const free=ships.some(o=>(o.price||0)===0)||goodsTotal>=freeThresh();
+  const free=ships.some(o=>(o.price||0)===0)||(freeThresh()>0&&goodsTotal>=freeThresh());/* SUNPICK서 발견: 기준 0이면 goodsTotal>=0 항상참=합배 전주문 무료처리 버그 → >0 가드(주문입력 2254·저장 2279와 동일) */
   const keep=ships[0],drop=ships.slice(1);
   const nP=free?0:(SHIP_FEE||4000),nN=free?'무료배송':'배송비';
   let changed=false;
