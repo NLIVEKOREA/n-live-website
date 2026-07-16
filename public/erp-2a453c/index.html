@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>N-LIVE 통합관리</title>
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/gridstack@10.3.1/dist/gridstack.min.css" rel="stylesheet">
@@ -131,6 +131,20 @@
   .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 3px 8px rgba(15,23,42,.04)}
   .card-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
   .card-h h2{font-size:15px;letter-spacing:-.3px}
+  /* SNS 관리 시각화 */
+  .sns-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media(max-width:720px){.sns-grid{grid-template-columns:1fr}}
+  .sns-mini{display:flex;gap:16px;flex-wrap:wrap;margin-top:11px;padding-top:11px;border-top:1px solid var(--line)}
+  .sns-mini>div{font-size:11px;color:var(--gray)}
+  .sns-mini b{display:block;font-size:13.5px;color:var(--ink);font-weight:800;margin-top:2px}
+  .sns-mini b.up{color:var(--green)} .sns-mini b.down{color:var(--red)}
+  .sns-chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:8px;white-space:nowrap}
+  .sns-chip.up{background:var(--green-s);color:var(--green)}
+  .sns-chip.dn{background:var(--red-s);color:var(--red)}
+  .sns-chip.fl{background:var(--bg);color:var(--gray2)}
+  .sns-feed .fi{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:12.5px}
+  .sns-feed .fi:first-child{border-top:0}
+  .sns-demoban{background:var(--amber-s);color:var(--amber);border:1px dashed #f0c886;font-size:12px;font-weight:600;padding:9px 14px;border-radius:12px;margin-bottom:14px;line-height:1.5}
   .card-h .more{font-size:12px;color:var(--gray);cursor:pointer}
   .alist{display:flex;flex-direction:column;gap:2px}
   .ai{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid #f1f5f9;font-size:13px}
@@ -157,7 +171,9 @@
   .p-miss{background:var(--amber-s);color:var(--amber)} .p-req{background:var(--blue-s);color:var(--blue)}
   .p-done{background:var(--green-s);color:var(--green)} .p-low{background:var(--red-s);color:var(--red)}
   .p-gray{background:#eef1f6;color:#475569} .p-purple{background:#f1ebfe;color:#6d28d9}
-  .tagbox{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:var(--chip-h);background:#fde68a;color:#7c3f06;border:1.5px solid #f59e0b;font-weight:900;font-size:13px;line-height:1;padding:0 10px;border-radius:8px;font-family:'Courier New',monospace;letter-spacing:.5px;white-space:nowrap}
+  .tagbox{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:var(--chip-h);background:linear-gradient(135deg,#fef3c7,#fde3a7);color:#b45309;border:0;font-weight:800;font-size:12.5px;line-height:1;padding:0 11px;border-radius:9px;font-variant-numeric:tabular-nums;letter-spacing:-.1px;white-space:nowrap;box-shadow:0 1px 2px rgba(180,83,9,.14),inset 0 0 0 1px rgba(245,158,11,.35)}
+  .tagbox.hot{background:linear-gradient(135deg,#f59e0b,#b45309);color:#fff;box-shadow:0 2px 6px rgba(180,83,9,.3),inset 0 1px 0 rgba(255,255,255,.25)}
+  .tagbox.none{background:linear-gradient(180deg,#f8fafc,#eef2f7);color:var(--gray2);font-weight:700;box-shadow:inset 0 0 0 1px var(--line)}
   .stock-low{color:var(--red);font-weight:800} .stock-ok{font-weight:700}
   .muted{color:var(--gray)} .barcode{font-family:'Courier New',monospace;letter-spacing:.5px}
   .toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
@@ -384,6 +400,18 @@
   .chipf:hover{border-color:var(--blue);color:var(--blue)}
   .chipf.on{background:var(--blue);color:#fff;border-color:var(--blue)}
   .chipf.reset{color:#dc2626;border-color:#fecaca}.chipf.reset:hover{background:#fef2f2}
+  /* ── 판매/출고 상단바 재배치(vhbar): 좌=탭·필터, 우=검색·액션 ── */
+  .vhbar{display:flex;align-items:center;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;margin-bottom:16px}
+  .vhbar .vh-left,.vhbar .vh-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+  .vhbar .vh-right{justify-content:flex-end}
+  .vh-chips{display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .btn.lg{min-height:44px;padding:11px 18px;font-size:14px;border-radius:12px}
+  .btn-group{display:inline-flex;align-items:center;gap:5px;padding:4px;background:var(--bg);border:1px solid var(--line);border-radius:11px}
+  .searchbox{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:3px 4px 3px 6px}
+  .searchbox:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(53,89,233,.14)}
+  .searchbox input{border:0!important;box-shadow:none!important;padding:7px 4px;background:transparent}
+  .searchbox select{border:0;background:transparent;font-weight:700;font-size:12.5px;color:var(--gray);padding:6px 2px}
+  @media(max-width:640px){.vhbar{flex-direction:column;align-items:stretch}.vhbar .vh-right{justify-content:stretch}.searchbox{flex:1}.searchbox input{flex:1;width:auto}.btn.lg{width:100%}}
   .table-wrap td.wrap-cell{white-space:normal;min-width:180px;max-width:320px}
   .truncate{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .toolbar{width:100%}
@@ -485,6 +513,43 @@ th{letter-spacing:.4px;font-weight:700}
 tbody tr:hover>td{background:#f8faff}
 .pill{border-radius:20px;padding:0 10px;gap:5px}
 .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+/* ── 2차: 디테일 (2026-07-15 밤, 데모 선적용) ── */
+.kpi{position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;right:-26px;top:-26px;width:92px;height:92px;border-radius:50%;background:var(--blue-s);opacity:.55;pointer-events:none}
+.kpi .num{font-size:29px;letter-spacing:-.03em}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#9db6f8;box-shadow:0 0 0 3px rgba(53,89,233,.12)}
+.topbar{background:#fff}/* backdrop-filter 제거 — 블러는 타이핑·스크롤마다 GPU 재합성 유발(전역 렉) */
+.modal-box{border-radius:18px;box-shadow:0 20px 60px rgba(15,23,42,.28)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#c9d2e2;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:#aab7cd}
+::-webkit-scrollbar-track{background:transparent}
+/* 전체화면: 본문 최대폭 제한 해제 — 와이드 모니터에서 오른쪽 공백 제거, 위젯이 화면 끝까지 (실사용 피드백 2026-07-15) */
+.main{max-width:none}
+/* 크롬식 화면 탭 — 열어본 메뉴가 탭으로 쌓임, ✕로 닫기 */
+.viewtabs{display:none;align-items:center;gap:6px;padding:8px 26px 0;flex-wrap:wrap;background:var(--bg)}
+.vtab{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:9px;background:#e3e8f1;color:var(--gray);font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid var(--line);transition:.12s;user-select:none}
+.vtab:hover{background:#eaeef6;color:var(--ink)}
+.vtab.on{background:#fff;color:var(--blue);border-color:#c7d7fb;box-shadow:0 1px 3px rgba(18,25,45,.08)}
+.vtab i{font-size:13px;opacity:.55;border-radius:4px;padding:1px}
+.vtab i:hover{background:#fdeaea;color:#dc2626;opacity:1}
+/* 화면 크게 보기 모드 — 환경설정 토글 (50대·터치 배려) */
+html.big-ui{--control-h:47px;--control-sm-h:37px;--chip-h:30px}
+html.big-ui body{font-size:15.5px}
+html.big-ui .btn{font-size:14.5px}
+html.big-ui .btn.sm{font-size:13.5px}
+html.big-ui th{font-size:12.5px}
+html.big-ui td{padding-top:11px;padding-bottom:11px;font-size:14.5px}
+html.big-ui .nav button{font-size:15.5px;padding:13px 12px}
+/* 메뉴 꾸미기(환경설정) — 드래그 리스트 */
+.orditem{border:1px solid var(--line);border-radius:10px;margin-bottom:5px;background:#fff;transition:transform .15s ease,box-shadow .15s ease,opacity .15s ease}
+.orditem .obar{display:flex;align-items:center;gap:8px;padding:6px 8px}
+.orditem.orddiv{display:flex;align-items:center;gap:8px;padding:4px 8px;background:#f7f9fc;border-style:dashed}
+.orditem .oh{cursor:grab;color:#9aa7bd;font-size:15px;padding:0 2px;user-select:none}
+.orditem.dragging{opacity:.45;box-shadow:0 8px 20px rgba(18,25,45,.18);transform:scale(1.01);cursor:grabbing}
+.orditem:not(.dragging):hover{box-shadow:0 2px 8px rgba(18,25,45,.08)}
+.ordsubs{padding:4px 10px 9px 34px;border-top:1px dashed var(--line);background:#fafbfd;border-radius:0 0 10px 10px}
+.ordsubs label{display:inline-flex;gap:6px;align-items:center;margin:3px 14px 3px 0;font-size:12.5px;cursor:pointer}
 /* ═══ v2 스킨 끝 ═══ */
 </style>
 </head>
@@ -551,6 +616,7 @@ tbody tr:hover>td{background:#f8faff}
         </div>
       </div>
     </header>
+    <div id="viewTabs" class="viewtabs"></div>
     <main class="main" id="main"></main>
   </div>
 </div>
@@ -629,7 +695,9 @@ async function dbLoadAll(){
         const pr=wrows.find(r=>r.id==='_emp_perms');EMP_PERMS=(pr&&pr.data)||{};
         const hr=wrows.find(r=>r.id==='_emp_hire');EMP_HIRE=(hr&&hr.data)||{};
         const py=wrows.find(r=>r.id==='_payroll');PAY_DRAFTS=(py&&py.data)||{};
-        const tc=wrows.find(r=>r.id==='_tenant_config');TCFG=(tc&&tc.data)||{};tcfgApply();
+        const tc=wrows.find(r=>r.id==='_tenant_config');
+        if(Date.now()-_tcfgSavedAt>15000){TCFG=(tc&&tc.data)||{};}/* 15초 내 저장분은 리로드가 못 덮음 */
+        tcfgApply();
         WORKSCH=wrows.filter(r=>r.id!=='_emp_perms'&&r.id!=='_emp_hire'&&r.id!=='_payroll'&&r.id!=='_tenant_config').map(r=>Object.assign({},r.data||{},{id:r.id}));
         EMPLOYEES.forEach(e=>{e.perms=EMP_PERMS[e.login_id]||null;e.hire_date=EMP_HIRE[e.login_id]||null;});
         if(ME)ME.perms=EMP_PERMS[ME.id]||null;
@@ -678,20 +746,24 @@ function _applyFetched(t,rows,local){_pendSweep();const byId={};(local||[]).forE
    원칙: 값이 없으면 기존 하드코딩 기본값 그대로 = 설정 안 만진 고객사는 동작 무변경 */
 let TCFG={};
 function tcfgApply(){try{
+  document.documentElement.classList.toggle('big-ui',!!(TCFG&&TCFG.bigUi));/* 화면 크게 보기 */
   if(TCFG&&+TCFG.shipFee>0)SHIP_FEE=+TCFG.shipFee;
   if(TCFG&&TCFG.freeShipMin!=null&&TCFG.freeShipMin!=='')FREESHIP_MIN=+TCFG.freeShipMin||0;
   if(TCFG&&TCFG.poSince)PO_SINCE=TCFG.poSince;
-  const ko=(TCFG&&TCFG.brandKo)||'';
-  if(ko){const h2=document.getElementById('brandH2');if(h2)h2.innerHTML=esc(ko)+' <b>ERP</b>';
-    const bt=document.getElementById('brandTop');if(bt)bt.textContent=ko+' 통합관리';
+  const ko=(TCFG&&TCFG.brandKo)||'';const lg=(TCFG&&TCFG.brandLogo)||'';
+  const h2=document.getElementById('brandH2');
+  if(lg&&h2){h2.innerHTML='<img src="'+lg+'" alt="'+esc(ko||'로고')+'" style="max-height:36px;max-width:180px;display:block">';}
+  else if(ko&&h2){h2.innerHTML=esc(ko)+' <b>ERP</b>';}
+  if(ko){const bt=document.getElementById('brandTop');if(bt)bt.textContent=ko+' 통합관리';
     document.title=ko+' 통합관리';}
 }catch(e){console.warn('tcfgApply',e);}}
+let _tcfgSavedAt=0;/* 방금 저장한 설정이 실시간 리로드의 옛 스냅샷에 덮이지 않게 보호 (메뉴순서 되돌아감 버그 수정 2026-07-15) */
 async function tcfgSave(patch,summary){return guard('tcfg',async()=>{
   const next=Object.assign({},TCFG,patch);
   next._log=[{at:new Date().toISOString().slice(0,16).replace('T',' '),who:(typeof ME!=='undefined'&&ME&&ME.name)||'?',what:summary||'설정 변경'}].concat(TCFG._log||[]).slice(0,50);
   const {error}=await SB.from('work_schedules').upsert({id:'_tenant_config',data:next,owner:'_tcfg',updated_at:new Date().toISOString()});
   if(error){console.error('tcfgSave',error);toast('⚠️ 설정 저장 실패 — 다시 시도하세요');render();return false;}
-  TCFG=next;tcfgApply();toast('✅ 저장됨 — 즉시 반영');buildNav();render();return true;});}
+  TCFG=next;_tcfgSavedAt=Date.now();tcfgApply();toast('✅ 저장됨 — 즉시 반영');buildNav();render();return true;});}
 async function delOrd(o){if(o.id)_pendMark(_pendDel,'orders',o.id);try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){_pendDel.delete(_pk('orders',o.id));console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');}}}catch(e){if(o.id)_pendDel.delete(_pk('orders',o.id));console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');}}
 async function saveStock(s){try{if(s&&s.id!=null){_pendMark(_pendSave,'stock',s.id);const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){_pendSave.delete(_pk('stock',s.id));console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){if(s&&s.id!=null)_pendSave.delete(_pk('stock',s.id));console.error(e);toast('⚠️ 재고 저장 오류');}}
 /* 재고 원자적 가감 — DB에서 qty=qty±delta 계산(동시 차감해도 안 깨짐). 반환된 정확한 값으로 화면 갱신 */
@@ -985,7 +1057,8 @@ function menuAllowed(v){
   if(TCFG&&TCFG.menus&&TCFG.menus[v]===false&&v!=='dash'&&v!=='users'&&v!=='config')return false;
   if(v==='dash')return true;if(ME&&ME.scope==='all'&&(v==='users'||v==='config'))return true;if(v==='config')return false;if(ME&&ME.perms&&ME.perms.menus)return ME.perms.menus[v]===true;return (PERM[v]||['all']).includes(ME.scope)||(isSubMgr()&&SUBMGR_MENUS.includes(v));}
 /* 소분류(세부탭) 접근권한: 기본 전체허용, perms에서 명시적으로 끈 것만 숨김. 관리자는 항상 전체 */
-function subAllowed(menu,sub){if(!ME||ME.scope==='all')return true;if(ME.perms&&ME.perms.subs&&ME.perms.subs[menu])return ME.perms.subs[menu][sub]!==false;return true;}
+function subAllowed(menu,sub){if(TCFG&&TCFG.subsOff&&TCFG.subsOff[menu]&&TCFG.subsOff[menu][sub]===false)return false;/* 테넌트 하위탭 끔(환경설정) — 전 직원 공통 */
+  if(!ME||ME.scope==='all')return true;if(ME.perms&&ME.perms.subs&&ME.perms.subs[menu])return ME.perms.subs[menu][sub]!==false;return true;}
 function firstSub(menu,list){const a=list.filter(s=>subAllowed(menu,s));return a[0]||list[0];}
 /* 재고 등록·수정 권한: 관리/물류는 기본 허용, 셀러(self)는 stock_edit 플래그가 켜진 경우만 */
 const canStockEdit=()=>!isSeller()||!!ME.stock_edit||!!(ME.perms&&ME.perms.subs&&ME.perms.subs.stock&&ME.perms.subs.stock.edit===true);
@@ -1166,6 +1239,19 @@ async function poMarkPaid(vendor,date){
   let ok=true;for(const o of items){if(await saveOrd(o)===false){ok=false;break;}}
   if(!ok){items.forEach((o,i)=>o.meta=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else toast('💰 입금완료: '+vendor+' '+won(amt));
   render();}
+/* 날짜별 일괄 입금완료 — 하루치 전 거래처 한 방 (실사용 피드백 2026-07-15) */
+async function poMarkPaidDate(date){
+  const items=poOrderedItems().filter(o=>!poIsPaid(o)&&poDate(o)===date);
+  if(!items.length){toast('대상 없음');return;}
+  const vendors=[...new Set(items.map(o=>boVendorOf(o)))];
+  const amt=items.reduce((a,o)=>a+boInPrice(o)*(o.qty||0),0);
+  if(!confirm('📅 '+date+' 하루치 일괄 입금완료\n\n거래처 '+vendors.length+'곳 · '+items.length+'건 · 총 '+won(amt)+'\n('+vendors.join(', ').slice(0,90)+')\n\n전부 입금완료로 표시할까요? (거래처별로 되돌리기 가능)'))return;
+  const prev=items.map(o=>o.meta);const at=todayStr();
+  items.forEach(o=>{o.meta=Object.assign({},o.meta||{},{poPaid:true,poPaidAt:at,poPaidBy:(ME&&ME.name)||null});});
+  let ok=true;for(const o of items){if(await saveOrd(o)===false){ok=false;break;}}
+  if(!ok){items.forEach((o,i)=>o.meta=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}
+  else toast('💰 '+date+' 일괄 입금완료: '+vendors.length+'곳 '+won(amt));
+  render();}
 async function poUnpay(vendor,date){
   const items=poOrderedItems().filter(o=>poIsPaid(o)&&boVendorOf(o)===vendor&&poDate(o)===date);
   if(!items.length)return;const prev=items.map(o=>o.meta);
@@ -1191,12 +1277,20 @@ function wPoSettle(){
     <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:6px">${pb('today','일')}${pb('week','주')}${pb('month','월')}<span style="flex:1"></span><span style="font-size:12px;white-space:nowrap"><b style="color:${totUnpaid?'#dc2626':'#059669'}">미입금 ${nz(totUnpaid)}</b> <span class="muted">/ ${nz(totAmt)}</span></span></div>
     ${vrows.length?`<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:7px">${vrows.map(x=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;padding:3px 9px;background:#f7f9fc;border-radius:7px"><b style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.v)}</b><span class="muted" style="white-space:nowrap">${x.cnt}건</span><span style="white-space:nowrap">${won(x.amt)}</span><span style="font-weight:700;white-space:nowrap;min-width:52px;text-align:right;color:${x.unpaid?'#dc2626':'#059669'}">${x.unpaid?won(x.unpaid):'완료'}</span></div>`).join('')}</div>`:`<div class="muted" style="font-size:12px;padding:5px 2px 8px">${r.label} 거래처 주문완료 없음</div>`}
     <div style="border-top:1px dashed var(--line);padding-top:7px;min-height:0;overflow:auto">
-      <div style="font-weight:800;font-size:12px;margin-bottom:5px">💰 입금 대기 <span class="muted" style="font-size:10.5px;font-weight:400">거래처+날짜별 · 버튼 하나로 하루치 입금</span></div>
+      <div style="font-weight:800;font-size:12px;margin-bottom:5px">💰 입금 대기 <span class="muted" style="font-size:10.5px;font-weight:400">거래처별 또는 날짜 전체 일괄</span></div>
       <div style="display:flex;flex-direction:column;gap:5px">
-      ${drows.length?drows.map(x=>`<div style="display:flex;flex-wrap:nowrap;align-items:center;gap:8px;padding:5px 9px;border:1px solid var(--line);border-radius:9px;background:#fffef8">
-        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px"><span class="muted">${x.d}</span> <b>${esc(x.v)}</b> <span class="muted">${x.cnt}건</span> · <b style="color:#b45309">${won(x.amt)}</b></span>
-        <button class="btn sm" style="background:#059669;color:#fff;padding:3px 10px;font-size:11.5px;flex:0 0 auto;white-space:nowrap" onclick="poMarkPaid('${escAttr(x.v)}','${x.d}')">💰 입금완료</button>
-      </div>`).join(''):'<div class="muted" style="font-size:12px;padding:6px 2px;text-align:center">입금할 사입 건 없음 👍</div>'}
+      ${(()=>{if(!drows.length)return '<div class="muted" style="font-size:12px;padding:6px 2px;text-align:center">입금할 사입 건 없음 👍</div>';
+        const byDate={};drows.forEach(x=>{(byDate[x.d]=byDate[x.d]||[]).push(x);});
+        return Object.keys(byDate).sort((a,b)=>b.localeCompare(a)).map(d=>{
+          const rows=byDate[d],sum=rows.reduce((a,x)=>a+x.amt,0);
+          const head=`<div style="display:flex;align-items:center;gap:8px;padding:3px 2px 1px;font-size:11.5px">
+            <b>${d}</b><span class="muted">거래처 ${rows.length}곳 · ${won(sum)}</span><span style="flex:1"></span>
+            ${rows.length>1?`<button class="btn sm ghost" style="border-color:#059669;color:#059669;padding:2px 9px;font-size:11px" onclick="poMarkPaidDate('${d}')">📅 이날 전체 입금완료</button>`:''}</div>`;
+          return head+rows.map(x=>`<div style="display:flex;flex-wrap:nowrap;align-items:center;gap:8px;padding:5px 9px;border:1px solid var(--line);border-radius:9px;background:#fffef8">
+            <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px"><b>${esc(x.v)}</b> <span class="muted">${x.cnt}건</span> · <b style="color:#b45309">${won(x.amt)}</b></span>
+            <button class="btn sm" style="background:#059669;color:#fff;padding:3px 10px;font-size:11.5px;flex:0 0 auto;white-space:nowrap" onclick="poMarkPaid('${escAttr(x.v)}','${x.d}')">💰 입금완료</button>
+          </div>`).join('');
+        }).join('');})()}
       </div>
     </div>
   </div>`;}
@@ -1275,40 +1369,107 @@ function snsSpark(hist){if(!hist||hist.length<2)return '<svg width="58" height="
 /* SNS 팔로워 자동수집 — 서버 API(/api/sns-followers, Codex 작성)로 URL에서 팔로워 긁어와 일자별 기록 */
 async function fetchFollowers(plat,silent){const d=snsGet(),s=d[plat];if(!s||!s.url)return false;try{const r=await fetch('/api/sns-followers?platform='+encodeURIComponent(plat)+'&url='+encodeURIComponent(s.url));const j=await r.json();if(j&&j.ok&&j.followers!=null){const hist=(s.hist||[]).slice(-89),today=todayStr();if(hist.length&&hist[hist.length-1][0]===today)hist[hist.length-1][1]=j.followers;else hist.push([today,j.followers]);s.fol=j.followers;s.hist=hist;snsSave(d);if(!silent){toast('🔄 '+SNS_META[plat].name+' 팔로워 '+j.followers.toLocaleString());render();}return true;}else{if(!silent)toast('⚠️ '+SNS_META[plat].name+' 자동수집 실패: '+((j&&j.note)||'차단됨')+' — 수동입력 가능');return false;}}catch(e){if(!silent)toast('⚠️ '+SNS_META[plat].name+' 수집 오류 (실서버에서만 작동)');return false;}}
 async function fetchAllFollowers(){toast('🔄 팔로워 자동수집 중...');let ok=0;const d=snsGet();for(const p of ['tiktok','instagram','youtube','band']){if(d[p]&&d[p].url&&await fetchFollowers(p,true))ok++;}try{const pr=snsGet();PREFS.sns_lastfetch=todayStr();savePrefs();}catch(e){}render();toast(ok?('✅ 자동수집 완료 — '+ok+'개 채널 갱신'):'⚠️ 수집된 채널 없음 (URL 등록/차단 확인)');}
-function viewSns(){if(!window._snsSynced){window._snsSynced=true;snsSyncToShop();}/* 기존 등록 SNS를 shop에 1회 자동연동 */
-  const d=snsGet();const reg=SNS_ALL.filter(p=>d[p]&&d[p].url);
-  const total=reg.reduce((a,p)=>a+((d[p]&&d[p].fol)||0),0);let recentDelta=0;reg.forEach(p=>{const s=d[p];if(s.hist&&s.hist.length>=2)recentDelta+=(s.fol-s.hist[s.hist.length-2][1]);});
+/* -- SNS 분석 헬퍼 (순수 프론트) -- */
+function snsGoalGet(){return PREFS.sns_goal||0;}
+function snsGoalSet(v){PREFS.sns_goal=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);savePrefs();render();}
+function snsGoalPrompt(){const c=snsGoalGet();const v=prompt('총 팔로워 목표치를 입력하세요 (숫자만):',c||'');if(v!=null)snsGoalSet(v);}
+function snsDaysAgo(n){const dt=new Date();dt.setDate(dt.getDate()-n);return ymd(dt);}
+function snsValAsOf(hh,ds){let v=null;for(let i=0;i<hh.length;i++){if(hh[i][0]<=ds)v=hh[i][1];else break;}return v;}
+function snsGrowth(hh,days){if(!hh||!hh.length)return 0;const cur=hh[hh.length-1][1],p=snsValAsOf(hh,snsDaysAgo(days));return p==null?0:cur-p;}
+function snsBest(hh){return hh&&hh.length?Math.max.apply(null,hh.map(x=>x[1])):0;}
+function snsMilestone(v){const s=v<1e3?100:v<1e4?1e3:v<1e5?1e4:1e5;return Math.ceil((v+1)/s)*s;}
+function snsDeltaChip(n,suf){suf=suf||'';return n>0?`<span class="sns-chip up">▲ ${n.toLocaleString()}${suf}</span>`:n<0?`<span class="sns-chip dn">▼ ${Math.abs(n).toLocaleString()}${suf}</span>`:`<span class="sns-chip fl">– 0</span>`;}
+function snsTimeline(d,reg){const set=new Set();reg.forEach(p=>(d[p].hist||[]).forEach(hh=>set.add(hh[0])));const dates=[...set].sort();
+  return dates.map(ds=>[ds,reg.reduce((a,p)=>a+(snsValAsOf(d[p].hist||[],ds)||0),0)]);}
+function snsAreaSvg(series,col,H){col=col||'var(--blue)';H=H||150;const W=560,pad=7,vals=series.map(s=>s[1]);if(vals.length<2)return '';
+  const mx=Math.max.apply(null,vals),mn=Math.min.apply(null,vals),rg=(mx-mn)||1,n=vals.length,
+    X=i=>pad+(i/(n-1))*(W-2*pad),Y=v=>H-pad-((v-mn)/rg)*(H-2*pad-4),
+    pts=vals.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' '),
+    gid='sg'+Math.round(mx)+'_'+n,area=`${X(0).toFixed(1)},${(H-pad).toFixed(1)} ${pts} ${X(n-1).toFixed(1)},${(H-pad).toFixed(1)}`,
+    lx=X(n-1).toFixed(1),ly=Y(vals[n-1]).toFixed(1);
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px;display:block">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".22"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <polygon points="${area}" fill="url(#${gid})"/><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${lx}" cy="${ly}" r="4" fill="${col}"/><circle cx="${lx}" cy="${ly}" r="7.5" fill="${col}" opacity=".16"/></svg>`;}
+function snsDemo(){const mk=(b,st,amp)=>{const hh=[];for(let i=29;i>=0;i--){hh.push([snsDaysAgo(i),Math.max(0,Math.round(b+(29-i)*st+Math.sin(i/3)*amp))]);}return {url:'#',hist:hh,fol:hh[hh.length-1][1],_demo:1};};
+  return {instagram:mk(8200,42,120),tiktok:mk(5400,66,180),youtube:mk(3100,18,40)};}
+
+function viewSns(){if(!window._snsSynced){window._snsSynced=true;snsSyncToShop();}
+  const real=snsGet(),regReal=SNS_ALL.filter(p=>real[p]&&real[p].url),isDemo=regReal.length===0;
+  const d=isDemo?snsDemo():real,reg=SNS_ALL.filter(p=>d[p]&&d[p].url);
+  const total=reg.reduce((a,p)=>a+((d[p]&&d[p].fol)||0),0);
+  const tl=snsTimeline(d,reg),tlOK=tl.length>=2;
+  const g7=snsGrowth(tl,7),g30=snsGrowth(tl,30);
+  const p7=snsValAsOf(tl,snsDaysAgo(7)),p30=snsValAsOf(tl,snsDaysAgo(30));
+  const pct7=p7?Math.round(g7/p7*1000)/10:0,pct30=p30?Math.round(g30/p30*1000)/10:0;
+  const bestTot=Math.max.apply(null,tl.map(t=>t[1]).concat([total])),
+    firstTot=tlOK?tl[0][1]:total,spanDays=tlOK?tl.length-1:1,
+    avgDay=tlOK?Math.round((total-firstTot)/spanDays):0;
+  const goal=snsGoalGet(),goalPct=goal?Math.min(100,Math.round(total/goal*100)):0,ms=snsMilestone(total);
   const maxFol=Math.max(1,...reg.map(p=>d[p].fol||0));
-  const cards=reg.map(function(p){const m=SNS_META[p],s=d[p]||{},hist=s.hist||[];const delta=hist.length>=2?(s.fol-hist[hist.length-2][1]):0;
-    const tr=hist.slice(-30),vals=tr.map(h=>h[1]),mx=Math.max.apply(null,vals.concat([1])),mn=Math.min.apply(null,vals.concat([mx])),rg=(mx-mn)||1,W=280,H=64;
-    const pts=tr.length>1?tr.map((h,i)=>`${(i/(tr.length-1))*W},${H-((h[1]-mn)/rg)*(H-8)-4}`).join(' '):'';
+  const feed=[];reg.forEach(p=>{const hh=d[p].hist||[];for(let i=1;i<hh.length;i++){const dl=hh[i][1]-hh[i-1][1];if(dl)feed.push({ds:hh[i][0],p,dl});}});
+  feed.sort((a,b)=>a.ds<b.ds?1:-1);const feedTop=feed.slice(0,7);
+  const rank=reg.map(p=>({p,g:snsGrowth(d[p].hist||[],7),fol:d[p].fol||0})).sort((a,b)=>b.g-a.g);
+  const pal=['#3559e9','#60a5fa','#f59e0b','#10b981','#ef4444'];let acc=0;
+  const stops=reg.map((p,i)=>{const pc=total?(d[p].fol||0)/total*100:0,a=acc,b=acc+pc;acc=b;return `${pal[i%pal.length]} ${a}% ${b}%`;}).join(',');
+  const donut=`<div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(${stops||'#e5e7eb 0 100%'});position:relative;flex:0 0 auto"><div style="position:absolute;inset:19px;background:#fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:9px;color:var(--gray2)">총</div><div style="font-size:15px;font-weight:800">${total>=1e4?(total/1e4).toFixed(1)+'만':total.toLocaleString()}</div></div></div>`;
+  const legend=reg.map((p,i)=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0"><span style="width:9px;height:9px;border-radius:2px;background:${pal[i%pal.length]};flex:0 0 auto"></span>${SNS_META[p].name}<b style="margin-left:auto">${total?Math.round((d[p].fol||0)/total*100):0}%</b></div>`).join('');
+  const compare=reg.map(p=>{const s=d[p],pc=Math.round((s.fol||0)/maxFol*100);return `<div style="display:flex;align-items:center;gap:9px;margin:7px 0">${snsIcon(p,24)}<span style="width:66px;font-size:12px">${SNS_META[p].name}</span><div style="flex:1;background:var(--bg);border-radius:5px;height:9px"><div style="width:${pc}%;background:var(--blue);height:9px;border-radius:5px"></div></div><b style="width:74px;text-align:right;font-size:12px">${(s.fol||0).toLocaleString()}</b></div>`;}).join('');
+  const cards=reg.map(function(p){const m=SNS_META[p],s=d[p]||{},hist=s.hist||[];
+    const delta=hist.length>=2?(s.fol-hist[hist.length-2][1]):0,gg7=snsGrowth(hist,7),best=snsBest(hist),
+      tr=hist.slice(-30),spark=snsAreaSvg(tr.map((hh,i)=>[i,hh[1]]),'var(--blue)',66);
     return `<div class="card">
-      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
-        ${snsIcon(p,44)}
-        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700">${m.name}</div><a href="${esc(s.url)}" target="_blank" style="font-size:11px;color:#2563eb;text-decoration:none;word-break:break-all">${esc(String(s.url).slice(0,44))} ↗</a></div>
-        <button class="ico-btn" onclick="snsDel('${p}')" title="삭제" style="flex:0 0 auto">🗑️</button>
-      </div>
-      <div style="display:flex;gap:18px;align-items:flex-end;margin-bottom:10px">
-        <div><div class="muted" style="font-size:11px">팔로워</div><div style="font-size:25px;font-weight:800;letter-spacing:-.5px">${(s.fol||0).toLocaleString()}</div></div>
-        <div style="padding-bottom:5px"><span style="font-size:13px;font-weight:700;color:${delta>0?'#16a34a':delta<0?'#ef4444':'#94a3b8'}">${delta>0?'▲ '+delta.toLocaleString():delta<0?'▼ '+Math.abs(delta).toLocaleString():'– 변동없음'}</span></div>
-        <span class="grow"></span>
-        <button class="btn sm" onclick="${SNS_FETCHABLE.includes(p)?`fetchFollowers('${p}')`:`snsReg('${p}')`}" style="flex:0 0 auto">${SNS_FETCHABLE.includes(p)?'🔄 수집':'✎ 입력'}</button>
-      </div>
-      ${tr.length>1?`<svg viewBox="0 0 ${W} ${H+4}" style="width:100%;height:66px"><polyline points="${pts}" fill="none" stroke="#2563eb" stroke-width="2.2"/></svg><div class="muted" style="font-size:10px;text-align:right">최근 ${tr.length}일 추이</div>`:`<div class="muted" style="font-size:11.5px;padding:10px 0;text-align:center">📈 추이 없음 — [수집/입력]하면 오늘부터 매일 기록</div>`}
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">${snsIcon(p,44)}
+        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700">${m.name}</div>${isDemo?'<span style="font-size:11px;color:var(--gray2)">예시 미리보기</span>':`<a href="${esc(s.url)}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none;word-break:break-all">${esc(String(s.url).slice(0,40))} ↗</a>`}</div>
+        ${isDemo?'':`<button class="ico-btn" onclick="snsDel('${p}')" title="삭제" style="flex:0 0 auto">🗑️</button>`}</div>
+      <div style="display:flex;gap:14px;align-items:flex-end;margin-bottom:8px">
+        <div><div class="muted" style="font-size:11px">팔로워</div><div style="font-size:26px;font-weight:800;letter-spacing:-.5px">${(s.fol||0).toLocaleString()}</div></div>
+        <div style="padding-bottom:4px">${snsDeltaChip(delta)}</div><span class="grow"></span>
+        <button class="btn sm" onclick="${isDemo?'snsAdd()':SNS_FETCHABLE.includes(p)?`fetchFollowers('${p}')`:`snsReg('${p}')`}" style="flex:0 0 auto">${isDemo?'＋ 등록':SNS_FETCHABLE.includes(p)?'🔄 수집':'✎ 입력'}</button></div>
+      ${tr.length>1?spark+`<div class="muted" style="font-size:10px;text-align:right;margin-top:-4px">최근 ${tr.length}일 추이${isDemo?' · 예시':''}</div>`:`<div class="muted" style="font-size:11.5px;padding:10px 0;text-align:center">📈 추이 없음 — [수집/입력]하면 오늘부터 매일 기록</div>`}
+      <div class="sns-mini"><div>7일 <b class="${gg7>0?'up':gg7<0?'down':''}">${gg7>0?'+':''}${gg7.toLocaleString()}</b></div><div>최고 <b>${best.toLocaleString()}</b></div><div>기록일수 <b>${hist.length}일</b></div></div>
     </div>`;}).join('');
-  const compare=reg.map(function(p){const s=d[p];const pct=Math.round((s.fol||0)/maxFol*100);return `<div style="display:flex;align-items:center;gap:9px;margin:6px 0">${snsIcon(p,24)}<span style="width:66px;font-size:12px">${SNS_META[p].name}</span><div style="flex:1;background:#eef2f7;border-radius:5px;height:9px"><div style="width:${pct}%;background:#2563eb;height:9px;border-radius:5px"></div></div><b style="width:74px;text-align:right;font-size:12px">${(s.fol||0).toLocaleString()}</b></div>`;}).join('');
+
   return `<div class="head"><h1>SNS 관리 <span class="badge">팔로워 · 성장</span></h1><p>등록한 SNS URL에서 <b>팔로워를 서버가 자동 수집</b>해 매일 증감을 기록합니다 · 밴드·쇼핑라이브는 수동입력</p></div>
   ${lockBanner()}
-  <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
-    <div class="kpi"><div><div class="lab">총 팔로워</div><div class="num">${total.toLocaleString()}</div><div class="sub" style="color:#94a3b8;margin-top:6px">${reg.length}개 채널 합산</div></div><div class="ic ic-b"><i class="ti ti-users-group"></i></div></div>
-    <div class="kpi"><div><div class="lab">최근 증감</div><div class="num ${recentDelta>0?'up':recentDelta<0?'down':''}">${recentDelta>0?'+':''}${recentDelta.toLocaleString()}</div><div class="sub" style="color:#94a3b8;margin-top:6px">직전 기록 대비</div></div><div class="ic ic-g"><i class="ti ti-trending-up"></i></div></div>
-    <div class="kpi" style="cursor:pointer" onclick="snsAdd()"><div><div class="lab">채널 추가</div><div class="num" style="font-size:19px;color:#2563eb">＋ SNS 추가</div><div class="sub" style="color:#94a3b8;margin-top:6px">플랫폼 선택 → URL</div></div><div class="ic ic-b"><i class="ti ti-plus"></i></div></div>
+  ${isDemo?'<div class="sns-demoban">👀 아직 등록된 SNS가 없어 <b>예시 데이터</b>로 화면을 미리 보여드립니다. [＋ SNS 추가]로 URL을 넣으면 실제 데이터로 채워집니다.</div>':''}
+  <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi"><div><div class="lab">총 팔로워</div><div class="num">${total.toLocaleString()}</div><div class="sub" style="color:var(--gray2);margin-top:6px">${reg.length}개 채널 합산</div></div><div class="ic ic-b"><i class="ti ti-users-group"></i></div></div>
+    <div class="kpi"><div><div class="lab">7일 증감</div><div class="num ${g7>0?'up':g7<0?'down':''}">${g7>0?'+':''}${g7.toLocaleString()}</div><div class="sub" style="color:var(--gray2);margin-top:6px">${pct7>0?'+':''}${pct7}% · 일평균 +${avgDay.toLocaleString()}</div></div><div class="ic ic-g"><i class="ti ti-trending-up"></i></div></div>
+    <div class="kpi"><div><div class="lab">30일 증감</div><div class="num ${g30>0?'up':g30<0?'down':''}">${g30>0?'+':''}${g30.toLocaleString()}</div><div class="sub" style="color:var(--gray2);margin-top:6px">${pct30>0?'+':''}${pct30}% · 최고 ${bestTot.toLocaleString()}</div></div><div class="ic ic-a"><i class="ti ti-calendar-stats"></i></div></div>
+    <div class="kpi" style="cursor:pointer" onclick="snsGoalPrompt()"><div style="min-width:0"><div class="lab">목표 달성</div><div class="num" style="font-size:22px">${goal?goalPct+'%':'목표 설정'}</div><div class="sub" style="color:var(--gray2);margin-top:6px">${goal?`${total.toLocaleString()} / ${goal.toLocaleString()}`:`다음 목표 ${ms.toLocaleString()} 추천`}</div>${goal?`<div style="background:var(--bg);border-radius:6px;height:7px;margin-top:8px"><div style="width:${goalPct}%;background:var(--blue);height:7px;border-radius:6px;transition:width .3s"></div></div>`:''}</div><div class="ic ic-p"><i class="ti ti-target"></i></div></div>
   </div>
-  ${reg.length?`<div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn sm" onclick="fetchAllFollowers()">🔄 전체 팔로워 새로고침</button><button class="btn sm ghost" onclick="snsAdd()">＋ SNS 추가</button></div>
-  <div class="card" style="margin-bottom:14px"><div class="card-h"><h2>플랫폼 비교</h2></div>${compare}</div>
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px">${cards}</div>`:'<div class="card"><div class="muted" style="padding:26px;text-align:center">등록된 SNS가 없어요 · 위 [＋ SNS 추가]로 플랫폼을 골라 시작하세요</div></div>'}
-  <div class="note" style="margin-top:14px">💡 <b>자동수집</b>은 실서버(n-live.co.kr)에서 작동 · 틱톡·유튜브·인스타는 자동, 밴드·쇼핑라이브는 수동입력. 하루 한 번 로그인 시 자동 갱신됩니다.</div>`;
+  <div style="display:flex;gap:8px;margin-bottom:14px">${isDemo?'':'<button class="btn sm" onclick="fetchAllFollowers()">🔄 전체 팔로워 새로고침</button>'}<button class="btn sm ghost" onclick="snsAdd()">＋ SNS 추가</button></div>
+
+  <div class="card" style="margin-bottom:14px"><div class="card-h"><h2>총 팔로워 성장 추이${isDemo?' <span class="pill" style="background:var(--amber-s);color:var(--amber)">예시</span>':''}</h2><span class="muted" style="font-size:11px">전 채널 합산 · 최근 ${tl.length}일</span></div>
+    ${tlOK?snsAreaSvg(tl.map((t,i)=>[i,t[1]]),'var(--blue)',160)+`<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray2);margin-top:2px"><span>${tl[0][0]}</span><span>${tl[tl.length-1][0]}</span></div>
+    <div style="display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)"><div><div class="muted" style="font-size:11px">시작 대비 총 증가</div><div style="font-size:17px;font-weight:800" class="${total-firstTot>0?'up':''}">${total-firstTot>=0?'+':''}${(total-firstTot).toLocaleString()}</div></div><div><div class="muted" style="font-size:11px">최고 기록</div><div style="font-size:17px;font-weight:800">${bestTot.toLocaleString()}</div></div><div><div class="muted" style="font-size:11px">일평균 증가</div><div style="font-size:17px;font-weight:800">+${avgDay.toLocaleString()}</div></div><div><div class="muted" style="font-size:11px">다음 마일스톤</div><div style="font-size:17px;font-weight:800">${ms.toLocaleString()}</div></div></div>`:'<div class="muted" style="padding:26px;text-align:center">추이 기록이 2일 이상 쌓이면 그래프가 그려집니다</div>'}</div>
+
+  <div class="sns-grid" style="margin-bottom:14px">
+    <div class="card"><div class="card-h"><h2>플랫폼 구성</h2></div><div style="display:flex;gap:16px;align-items:center">${donut}<div style="flex:1;min-width:0">${legend||'<span class="muted">없음</span>'}</div></div></div>
+    <div class="card"><div class="card-h"><h2>플랫폼 비교 · 성장률</h2></div>${compare}
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line)"><div class="muted" style="font-size:11px;margin-bottom:6px">7일 성장 랭킹</div>${rank.map((r,i)=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;margin:4px 0"><b style="width:14px;color:${i===0?'var(--blue)':'var(--gray2)'}">${i+1}</b>${snsIcon(r.p,20)}<span style="flex:1">${SNS_META[r.p].name}</span>${snsDeltaChip(r.g)}</div>`).join('')||'<span class="muted">데이터 없음</span>'}</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px"><div class="card-h"><h2>최근 변동 하이라이트</h2><span class="muted" style="font-size:11px">일자별 증감 기록</span></div>
+    <div class="sns-feed">${feedTop.length?feedTop.map(f=>`<div class="fi">${snsIcon(f.p,26)}<span style="flex:1"><b>${SNS_META[f.p].name}</b> <span class="muted">${f.ds}</span></span>${snsDeltaChip(f.dl)}</div>`).join(''):'<div class="muted" style="padding:14px;text-align:center">기록이 쌓이면 최근 팔로워 변동이 여기 표시됩니다</div>'}</div></div>
+
+  <div class="sns-grid">${cards}</div>
+  <div class="note" style="margin-top:14px">💡 <b>자동수집</b>은 실서버에서 작동 · 틱톡·유튜브·인스타는 자동, 밴드·쇼핑라이브는 수동입력. 하루 한 번 로그인 시 자동 갱신됩니다.</div>`;
 }
+/* ── 필터 프리셋 (자주 보는 조건 저장·재적용, 실사용 피드백 2026-07-16) ── */
+function fpGet(screen){return (PREFS.filterPresets&&PREFS.filterPresets[screen])||[];}
+function fpSaveCur(screen,data){const nm=prompt('이 필터 조건을 어떤 이름으로 저장할까요? (예: 오늘 미출고)','');if(nm===null)return;const t=nm.trim();if(!t){toast('이름을 입력해주세요');return;}
+  const all=PREFS.filterPresets||{};all[screen]=(all[screen]||[]).filter(x=>x.name!==t);all[screen].push(Object.assign({name:t.slice(0,16)},data));if(all[screen].length>8)all[screen]=all[screen].slice(-8);PREFS.filterPresets=all;savePrefs();toast('⭐ 필터 저장: '+t);render();}
+function fpDel(screen,name){const all=PREFS.filterPresets||{};if(all[screen])all[screen]=all[screen].filter(x=>x.name!==name);PREFS.filterPresets=all;savePrefs();render();}
+/* 프리셋 바 HTML — applyFn: 프리셋 클릭 시 실행할 전역함수명(문자열), curFn: 현재조건 객체 반환 함수명 */
+function fpBar(screen,applyFn,saveArgsJs){const ps=fpGet(screen);
+  return `<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px">
+    <span class="muted" style="font-size:11.5px;font-weight:700">⭐ 저장된 조건</span>
+    ${ps.length?ps.map(p=>`<span class="chipf" style="display:inline-flex;align-items:center;gap:5px;cursor:pointer" onclick="${applyFn}(${escAttr(JSON.stringify(p))})">${esc(p.name)}<i class="ti ti-x" style="font-size:11px;opacity:.6" onclick="event.stopPropagation();fpDel('${screen}','${esc(p.name)}')" title="삭제"></i></span>`).join(''):'<span class="muted" style="font-size:11.5px">아직 없음 — 조건 검색 후 [현재 조건 저장]</span>'}
+    <button class="btn sm ghost" onclick="fpSaveCur('${screen}',${saveArgsJs})" style="font-size:11.5px">＋ 현재 조건 저장</button></div>`;}
+/* 판매현황 프리셋 적용 */
+function shpApplyPreset(p){SHPFIELD=p.field||'닉네임';SHPQ=p.q||'';if(p.status)SHPSTATUS=p.status;render();}
 function goalGet(){return PREFS.goal||{};}
 function goalSet(k,v){const g=PREFS.goal||{};g[k]=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.goal=g;savePrefs();render();}
 function numCard(lab,num,sub,col,ic,onclick,delta){
@@ -1746,8 +1907,9 @@ function viewOrder(){
       <button class="btn sm ghost" onclick="addNatjang()">＋ 낱장</button>
       <span class="muted" style="margin:0 2px">|</span>
       <span class="muted" style="font-size:12px">배송비 <b style="color:var(--blue)">자동</b>${OE.shipManual?' <span style="color:var(--amber);font-weight:700">수동지정됨</span>':''}</span>
-      <button class="btn sm" style="background:var(--blue-s);color:var(--blue);border:1px solid #bcd3ff" onclick="addShip(4000,'배송비')">배송비 +4,000</button>
+      <button class="btn sm" style="background:var(--blue-s);color:var(--blue);border:1px solid #bcd3ff" onclick="addShip(${SHIP_FEE},'배송비')">배송비 +${SHIP_FEE.toLocaleString()}</button>
       <button class="btn sm" style="background:var(--green-s);color:var(--green);border:1px solid #b9e6c9" onclick="addShip(0,'무료배송')">무료배송 +0</button>
+      <button class="btn sm gray" onclick="askShipCustom()" title="이 주문만 배송비 직접 입력">✏️ 직접입력</button>
       ${OE.shipManual?`<button class="btn sm gray" onclick="OE.shipManual=false;render()">↻ 자동복구</button>`:''}
       ${(()=>{const g=OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0),sh=OE.lines.filter(l=>l.kind==='ship').reduce((a,l)=>a+(l.price||0),0),th=freeThresh();return (th>0&&g>=th&&sh>0)?`<span style="flex-basis:100%;margin-top:6px;padding:7px 11px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:8px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px">🆓 무료배송 대상(${won(g)} ≥ ${won(th)})인데 배송비 ${won(sh)}이 잡혀 있어요 <button class="btn sm" style="background:#059669;padding:3px 10px" onclick="addShip(0,'무료배송')">무료배송으로 바꾸기</button></span>`:'';})()}
       <span class="muted" style="margin:0 2px">|</span>
@@ -2045,6 +2207,8 @@ function removeLine(i){OE.lines.splice(i,1);render();}
 function lineField(i,f,v){if(!OE.lines[i])return;OE.lines[i][f]=(f==='qty'||f==='price')?Math.max(0,parseInt(v)||0):v;render();}
 function addNatjang(){OE.lines.push({kind:'natjang',tag:'',name:'',code:'낱장',color:'',size:'',qty:1,price:0});toast('📝 낱장 행 추가 — 번호표·색상·수량·단가 직접 입력');render();}
 function addShip(price,label){OE.lines=OE.lines.filter(l=>l.kind!=='ship');OE.lines.push({kind:'ship',name:label,code:'배송비',color:'',size:'',qty:1,price});OE.shipManual=true;toast('🚚 '+label+' 수동지정 (자동계산 해제 · [자동복구]로 되돌림)');render();}
+/* 이 주문만 배송비 직접 입력 (업체·상황별 배송비 수정) — 실사용 피드백 2026-07-15 */
+function askShipCustom(){const cur=(OE.lines.find(l=>l.kind==='ship')||{}).price||SHIP_FEE;const v=prompt('이 주문의 배송비(원)를 직접 입력하세요',String(cur));if(v===null)return;const n=Math.max(0,parseInt(String(v).replace(/[^0-9]/g,''),10)||0);addShip(n,n===0?'무료배송':'배송비');}
 /* 적립금 사용 — 배송비처럼 주문에 마이너스 라인으로 붙음(상품금액 한도·보유 한도) */
 function usePoints(){
   if(!OE.cust){toast('고객을 먼저 선택하세요');return;}
@@ -2069,7 +2233,9 @@ function islandByAddr(addr){const a=String(addr||'');if(!a)return null;for(const
 function islandOf(){return islandInfo(OE.zip)||islandByAddr(OE.addr||'');}
 /* 무료배송 기준 (회사 공통값, 기본 10만원) */
 function freeThresh(){return (PREFS.freeship!=null)?PREFS.freeship:((typeof TCFG!=='undefined'&&TCFG&&TCFG.freeShipMin!=null&&TCFG.freeShipMin!=='')?(+TCFG.freeShipMin||0):100000);}
-function setFreeThresh(v){const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.freeship=n;savePrefs();toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료');render();}
+function setFreeThresh(v){const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.freeship=n;savePrefs();toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료');
+  if(typeof ME!=='undefined'&&ME&&ME.scope==='all')tcfgSave({freeShipMin:n},'무료배송 기준 '+n.toLocaleString()+'원');/* 관리자가 바꾸면 가게 기본값으로 저장 */
+  render();}
 /* 배송비 자동계산 — 상품합계·주소·무료기준에 따라 배송비 라인 자동 세팅 (수동지정 시 건너뜀) */
 function shipBase(){return OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);}
 function recalcShip(){
@@ -2287,22 +2453,32 @@ function shipCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
 function saleToolbar(){
   const rows=baseRows(),total=rows.reduce((a,o)=>a+amtOf(o),0);
   return `<div class="card">
-    <div class="toolbar">
-      <span class="muted" style="align-self:center">기간</span>
-      <input type="date" value="${SALEFROM}" onchange="SALEFROM=this.value;render()">
-      <span style="align-self:center">~</span>
-      <input type="date" value="${SALETO}" onchange="SALETO=this.value;render()">
-      <button class="btn sm gray" onclick="setPeriod('today')">당일</button>
-      <button class="btn sm gray" onclick="setPeriod('week')">이번주</button>
-      <button class="btn sm gray" onclick="setPeriod('month')">당월</button>
-      <button class="btn sm gray" onclick="setPeriod('lastmonth')">전월</button>
-      <button class="btn sm gray" onclick="setPeriod('all')">전체</button>
-      <button class="btn sm gray" onclick="saleCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button>
-      <button class="btn sm gray" onclick="expAll()"><i class="ti ti-chevrons-down"></i> 모두펼치기</button>
-      <span class="grow"></span>
-      <select onchange="SALEFIELD=this.value;render()" style="padding:9px 10px;border-radius:9px;font-size:13px;font-weight:700">${['닉네임','상품번호','번호표'].map(f=>`<option ${SALEFIELD===f?'selected':''}>${f}</option>`).join('')}</select>
-      <input id="saleSearch" placeholder="🔍 ${SALEFIELD} 입력 후 Enter" value="${SALEQ}" onkeydown="if(event.key==='Enter'){SALEQ=this.value.trim();render();}" style="width:210px">
-      <button class="btn sm" onclick="SALEQ=document.getElementById('saleSearch').value.trim();render()">검색</button>${SALEQ?`<button class="btn sm gray" onclick="SALEQ='';render()">초기화</button>`:''}
+    <div class="vhbar">
+      <div class="vh-left">
+        <span class="muted" style="font-weight:700;align-self:center">기간</span>
+        <input type="date" value="${SALEFROM}" onchange="SALEFROM=this.value;render()">
+        <span style="color:var(--gray)">~</span>
+        <input type="date" value="${SALETO}" onchange="SALETO=this.value;render()">
+        <span class="vh-chips">
+          <button class="chipf" onclick="setPeriod('today')">당일</button>
+          <button class="chipf" onclick="setPeriod('week')">이번주</button>
+          <button class="chipf" onclick="setPeriod('month')">당월</button>
+          <button class="chipf" onclick="setPeriod('lastmonth')">전월</button>
+          <button class="chipf" onclick="setPeriod('all')">전체</button>
+        </span>
+      </div>
+      <div class="vh-right">
+        <span class="searchbox">
+          <select onchange="SALEFIELD=this.value;render()">${['닉네임','상품번호','번호표'].map(f=>`<option ${SALEFIELD===f?'selected':''}>${f}</option>`).join('')}</select>
+          <input id="saleSearch" placeholder="${SALEFIELD} 입력 후 Enter" value="${SALEQ}" onkeydown="if(event.key==='Enter'){SALEQ=this.value.trim();render();}" style="width:180px">
+          <button class="btn sm" onclick="SALEQ=document.getElementById('saleSearch').value.trim();render()"><i class="ti ti-search"></i></button>
+          ${SALEQ?`<button class="btn sm gray" onclick="SALEQ='';render()" title="검색 초기화"><i class="ti ti-x"></i></button>`:''}
+        </span>
+        <span class="btn-group">
+          <button class="btn sm gray" onclick="saleCollAll()" title="모두접기"><i class="ti ti-chevrons-up"></i></button>
+          <button class="btn sm gray" onclick="expAll()" title="모두펼치기"><i class="ti ti-chevrons-down"></i></button>
+        </span>
+      </div>
     </div>
     <div class="note">📅 ${SALEFROM||'처음'} ~ ${SALETO||'끝'} · <b>${rows.length.toLocaleString()}건</b> · 매출 <b>${won(total)}</b> · 날짜별 → 고객별 정렬</div>
   </div>`;
@@ -2539,22 +2715,26 @@ function viewShip(){
     <div class="kpi"><div><div class="lab">합배 고객</div><div class="num">${bundle.length}</div><div class="sub">묶음배송</div></div><div class="ic ic-p"><i class="ti ti-packages"></i></div></div>
     <div class="kpi"><div><div class="lab">출고완료(송장)</div><div class="num">${done.length}</div><div class="sub up">처리됨</div></div><div class="ic ic-g"><i class="ti ti-circle-check"></i></div></div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-    <div class="tabs" style="margin:0">
-      ${(!subAllowed('ship',SHIPTAB)?(SHIPTAB=firstSub('ship',['wait','back','bundle','done'])):'')&&''}
-      ${subAllowed('ship','wait')?`<button class="${SHIPTAB==='wait'?'on':''}" onclick="SHIPTAB='wait';render()">출고대기 ${cnt(wait)}</button>`:''}
-      ${subAllowed('ship','back')?`<button class="${SHIPTAB==='back'?'on':''}" onclick="SHIPTAB='back';render()">미송관리 ${back.length}</button>`:''}
-      ${subAllowed('ship','bundle')?`<button class="${SHIPTAB==='bundle'?'on':''}" onclick="SHIPTAB='bundle';render()">합배관리 ${bundle.length}</button>`:''}
-      ${subAllowed('ship','done')?`<button class="${SHIPTAB==='done'?'on':''}" onclick="SHIPTAB='done';render()">출고완료</button>`:''}
+  <div class="vhbar">
+    <div class="vh-left">
+      <div class="tabs" style="margin:0">
+        ${(!subAllowed('ship',SHIPTAB)?(SHIPTAB=firstSub('ship',['wait','back','bundle','done'])):'')&&''}
+        ${subAllowed('ship','wait')?`<button class="${SHIPTAB==='wait'?'on':''}" onclick="SHIPTAB='wait';render()"><i class="ti ti-truck"></i> 출고대기 ${cnt(wait)}</button>`:''}
+        ${subAllowed('ship','back')?`<button class="${SHIPTAB==='back'?'on':''}" onclick="SHIPTAB='back';render()"><i class="ti ti-clock"></i> 미송관리 ${back.length}</button>`:''}
+        ${subAllowed('ship','bundle')?`<button class="${SHIPTAB==='bundle'?'on':''}" onclick="SHIPTAB='bundle';render()"><i class="ti ti-packages"></i> 합배관리 ${bundle.length}</button>`:''}
+        ${subAllowed('ship','done')?`<button class="${SHIPTAB==='done'?'on':''}" onclick="SHIPTAB='done';render()"><i class="ti ti-circle-check"></i> 출고완료</button>`:''}
+      </div>
     </div>
-    <span style="flex:1"></span>
-    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-      <button class="btn sm" onclick="openShipScan()" title="송장→상품 연속 스캔으로 출고완료 처리 (오배송·오포장 방지)"><i class="ti ti-scan"></i> 바코드 검수</button>
-      <button class="btn sm gray" onclick="cjExportShip()" title="출고대기·합배 고객을 CJ 접수 엑셀로 내려받기"><i class="ti ti-download"></i> CJ접수 엑셀</button>
-      <button class="btn sm gray" onclick="cjImportShip()" title="CJ에서 송장 채워진 결과 엑셀을 올려 각 주문에 송장번호 연결"><i class="ti ti-upload"></i> CJ송장 가져오기</button>
-      <span style="width:1px;height:22px;background:var(--line);margin:0 3px"></span>
-      <button class="btn sm gray" onclick="shipCollAll()" title="모두 접기"><i class="ti ti-chevrons-up"></i></button>
-      <button class="btn sm gray" onclick="expAll()" title="모두 펼치기"><i class="ti ti-chevrons-down"></i></button>
+    <div class="vh-right">
+      <button class="btn lg" onclick="openShipScan()" title="송장→상품 연속 스캔으로 출고완료 처리 (오배송·오포장 방지)"><i class="ti ti-scan"></i> 바코드 검수·출고</button>
+      <span class="btn-group">
+        <button class="btn sm gray" onclick="cjExportShip()" title="출고대기·합배 고객을 CJ 접수 엑셀로 내려받기"><i class="ti ti-download"></i> CJ접수</button>
+        <button class="btn sm gray" onclick="cjImportShip()" title="CJ에서 송장 채워진 결과 엑셀을 올려 각 주문에 송장번호 연결"><i class="ti ti-upload"></i> CJ송장</button>
+      </span>
+      <span class="btn-group">
+        <button class="btn sm gray" onclick="shipCollAll()" title="모두 접기"><i class="ti ti-chevrons-up"></i></button>
+        <button class="btn sm gray" onclick="expAll()" title="모두 펼치기"><i class="ti ti-chevrons-down"></i></button>
+      </span>
     </div>
   </div>
   ${shipTabBody()}`;
@@ -2913,6 +3093,7 @@ function renderRefundSettle(o){const d=RSETTLE;if(!d)return;$('#modalBox').class
       <button class="btn sm ghost" onclick="RSETTLE.deduct=${SHIP_FEE*2};_rsRR()">교환왕복 ${(SHIP_FEE*2).toLocaleString()}</button>
       <button class="btn sm ghost" onclick="RSETTLE.deduct=(RSETTLE.deduct||0)+${SHIP_FEE};_rsRR()" title="무료배송 고객이 반품·교환으로 기준 미달 시, 원래 안 낸 배송비 추가">＋무배미달 ${SHIP_FEE.toLocaleString()}</button>
     </div>
+    <div class="muted" style="font-size:11px;margin-top:4px">기본 회수비 ${won(SHIP_FEE)} · <a href="javascript:void(0)" onclick="tcfgAskShipFee()" style="color:var(--blue);font-weight:700">기본값 변경</a></div>
     <div class="note" style="margin-top:12px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;font-size:15px">💰 실 환불액 <b style="font-size:20px">${won(rsNet(d))}</b> <span class="muted" style="font-size:12px">= 환불 ${won(d.refund)} − 차감 ${won(d.deduct)}</span></div>
     <label style="margin-top:10px">메모</label><input id="rsMemo" value="${escAttr(d.memo||'')}" oninput="RSETTLE.memo=this.value" placeholder="사유·비고">
     <div class="note" style="margin-top:12px;font-size:12px">💵 <b>계좌환불</b> = 위 계좌로 직접 입금 후 대장 기록 · 💰 <b>적립금</b> = 실환불액을 이 고객 적립금으로 즉시 적립(계좌송금 불필요·환불완료 처리)</div>
@@ -2964,6 +3145,7 @@ async function ledgerGotback(id){const o=ORD.find(x=>x.id===id);if(!o)return;if(
 async function ledgerRefundDone(id){const o=ORD.find(x=>x.id===id);if(!o)return;if(o.rxstat==='done'){toast('이미 환불완료된 건입니다');return;}
   const st=o.meta&&o.meta.settle;
   if(!st){if(!confirm('환불 계좌·금액 정산이 안 됐습니다.\n먼저 [💵정산]으로 계좌·실환불액을 기록하는 걸 권장해요.\n\n그래도 환불완료로 표시할까요?'))return;}
+  else if(!confirm('🏦 계좌환불 완료 확인\n\n'+o.cust+' · '+itemLabel(o)+'\n실환불 '+won((st.net!=null?st.net:0))+(st.account?('\n입금계좌 '+st.account):'')+'\n\n계좌 입금을 마치셨나요?\n확인을 누르면 환불완료로 확정되고 [환불 대기]에서 사라집니다.'))return;/* 중대 결정 재확인 — 실사용 피드백(2026-07-15) */
   await guard('rxstep:'+id,async()=>{
     const prev=_snap(o,['rxstat','rxdone','meta']);
     o.rxstat='done';o.rxdone=todayStr();rxStampStep(o,'done',todayStr());render();
@@ -3041,6 +3223,7 @@ function viewShipped(){
       <input id="shpSearch" placeholder="${SHPFIELD} 입력 후 Enter" value="${SHPQ}" onkeydown="if(event.key==='Enter'){SHPQ=this.value.trim();render();}" style="width:200px">
       <button class="btn sm" onclick="SHPQ=document.getElementById('shpSearch').value.trim();render()">검색</button>${SHPQ?`<button class="btn sm gray" onclick="SHPQ='';render()">초기화</button>`:''}
     </div>
+    ${fpBar('shipped','shpApplyPreset',"{field:SHPFIELD,q:SHPQ,status:SHPSTATUS}")}
     ${statusTabs}
     <div class="note">${SHPFROM||'처음'} ~ ${SHPTO||'끝'} · <b>${(SHP_STATES.find(s=>s.k===SHPSTATUS)||{}).l}</b> <b>${rows.length.toLocaleString()}건</b> · 금액 <b>${won(total)}</b></div>
   </div>${cards}`;
@@ -3065,8 +3248,8 @@ function viewStock(){
       <input id="sf_tag" placeholder="번호표" value="${esc(SFORM.tag)}" oninput="SFORM.tag=this.value" style="width:78px">
       <input id="sf_code" placeholder="품목코드*" value="${esc(SFORM.code)}" oninput="SFORM.code=this.value" style="width:100px">
       <input id="sf_name" placeholder="품목명*" value="${esc(SFORM.name)}" oninput="SFORM.name=this.value" style="width:150px">
-      <input id="sf_color" placeholder="색상" value="${esc(SFORM.color)}" oninput="SFORM.color=this.value" style="width:68px">
-      <input id="sf_size" placeholder="사이즈" value="${esc(SFORM.size)}" oninput="SFORM.size=this.value" style="width:58px">
+      <input id="sf_color" placeholder="${optLabel('color')}" value="${esc(SFORM.color)}" oninput="SFORM.color=this.value" style="width:68px">
+      ${sizeHidden()?'':`<input id="sf_size" placeholder="${optLabel('size')}" value="${esc(SFORM.size)}" oninput="SFORM.size=this.value" style="width:58px">`}
       <span style="position:relative"><input id="vpick_sform" placeholder="사입처 검색·신규" value="${esc(SFORM.vendor)}" oninput="vendorSearch('sform',this.value)" onkeydown="vendorKey('sform',event)" autocomplete="off" style="width:118px"><div id="vpick_sform_drop" class="drop2"></div></span>
       <input id="sf_inprice" type="number" placeholder="입고단가" value="${SFORM.inprice}" oninput="SFORM.inprice=this.value" style="width:84px">
       <input id="sf_price" type="number" placeholder="출고단가" value="${SFORM.price}" oninput="SFORM.price=this.value" style="width:84px">
@@ -3575,7 +3758,15 @@ function revenueCSV(){const rp=periodRange(REVPERIOD);let paid=mine(ORD).filter(
 
 /* ===== 직원·급여 / 사원관리 ===== */
 const PAY_BASE={'셀러':2000000,'보조':2300000,'서브매니저':2300000,'운영':2300000,'물류':2300000,'관리자':3000000};
-const PAY_RATE={'셀러':10,'보조':3,'서브매니저':3,'운영':0,'물류':0,'관리자':0};
+const PAY_RATE={'셀러':10,'보조':3,'서브매니저':3,'운영':0,'물류':0,'관리자':0};/* 미사용 — 수수료율은 TCFG.payRate·_payRateFor 참조 */
+/* ── 호칭·급여 커스텀 (2026-07 과제9) — 내부 role/scope 키는 불변, 표시/기본값만 TCFG 오버라이드 ── */
+const POS_KEYS=['운영','물류','셀러','서브매니저'];
+function posLabel(pos){return (TCFG&&TCFG.roleLabels&&TCFG.roleLabels[pos])||pos;}
+/* 상품 옵션 라벨·축 커스텀 (과제6) — TCFG.optLabels / TCFG.hideSize */
+function optLabel(axis){const dd={color:'색상',size:'사이즈'};const c=(TCFG&&TCFG.optLabels)||{};return (c[axis]&&String(c[axis]).trim())||dd[axis];}
+function sizeHidden(){return !!(TCFG&&TCFG.hideSize);}
+function _payBaseFor(role){const t=TCFG&&TCFG.payBase;if(t&&t[role]!=null&&t[role]!=='')return Math.max(0,+t[role]||0);return PAY_BASE[role]||0;}
+function _payRateFor(kind){const dflt={seller:10,assist:3,own:10}[kind]||0;const t=TCFG&&TCFG.payRate;if(t&&t[kind]!=null&&t[kind]!=='')return Math.max(0,+t[kind]||0);return dflt;}
 let PAY_MONTH=new Date().toISOString().slice(0,7),PAY_EMP='',PAY_TAB='slip',PAY_VIEW='all';
 const _paySub=e=>e.role==='보조'||e.role==='서브매니저';
 /* 급여 매출 집계 기준(엑셀 급여정산서와 동일): 배송비/적립금/합배/택배/운임/무료배송 제외, 낱장·일반상품 포함 */
@@ -3596,7 +3787,7 @@ function _payCommMonth(o){
 const _payMonthRows=(name,ym)=>ORD.filter(o=>o.staff===name&&o.pay==='paid'&&_isPaySales(o)&&_payCommMonth(o)===ym);
 const _paySales=(name,ym)=>_payMonthRows(name,ym).reduce((a,o)=>a+amtOf(o),0);
 const _payRound10=n=>Math.floor(Math.max(0,n)/10)*10;
-function _payDefaultDraft(e){return {contract:'freelancer',stage:'regular',base:(e.name==='윤진영'?2500000:((e.base_salary!=null&&+e.base_salary>0)?+e.base_salary:(PAY_BASE[e.role]||0))),sellerRate:e.role==='셀러'?10:0,assistRate:_paySub(e)?3:0,ownRate:_paySub(e)?10:0,dependents:1,incentive:0,meal:0,otherPay:0,otherDeduction:0,insuranceBase:0,taxOverride:'',pensionOverride:'',healthOverride:'',careOverride:'',employmentOverride:''};}
+function _payDefaultDraft(e){return {contract:'freelancer',stage:'regular',base:(e.name==='윤진영'?2500000:((e.base_salary!=null&&+e.base_salary>0)?+e.base_salary:_payBaseFor(e.role))),sellerRate:e.role==='셀러'?_payRateFor('seller'):0,assistRate:_paySub(e)?_payRateFor('assist'):0,ownRate:_paySub(e)?_payRateFor('own'):0,dependents:1,incentive:0,meal:0,otherPay:0,otherDeduction:0,insuranceBase:0,taxOverride:'',pensionOverride:'',healthOverride:'',careOverride:'',employmentOverride:''};}
 /* 읽기전용 — 계산·렌더용. 저장소에 phantom 드래프트를 만들지 않는다(부작용 없음, PREFS/DB 비대화 방지) */
 function _payDraft(e,ym){const k=ym+'|'+e.id;if(PAY_DRAFTS[k])return PAY_DRAFTS[k];
   const saved=PAYROLL_RECORDS.find(x=>x.employee_id===e.id&&x.pay_month===ym);if(saved&&saved.payload&&Object.keys(saved.payload).length)return saved.payload;
@@ -3809,7 +4000,7 @@ function viewUsers(){
       <input id="f_id" placeholder="아이디(영문/숫자)" style="width:140px">
       <input id="f_pw" placeholder="비밀번호(6자 이상)" style="width:150px">
       <label style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#64748b;font-weight:700">입사일 <input id="f_hire" type="date" style="width:140px"></label>
-      <select id="f_pos" onchange="posOwnerToggle('f')" title="포지션"><option>운영</option><option>물류</option><option selected>셀러</option><option>서브매니저</option></select>
+      <select id="f_pos" onchange="posOwnerToggle('f')" title="포지션">${POS_KEYS.map(p=>`<option value="${p}" ${p==='셀러'?'selected':''}>${esc(posLabel(p))}</option>`).join('')}</select>
       <span id="f_ownerWrap" style="display:none;align-items:center;gap:4px"><span class="muted" style="font-size:12px;font-weight:700">담당셀러</span><select id="f_owner" style="width:120px"><option value="">— 선택 —</option>${sellerOptions('')}</select></span>
       <button class="btn" onclick="addEmp()">＋ 등록</button>
     </div>
@@ -3881,7 +4072,7 @@ function renderBulk(){const b=BULK;const colors=String(b.colors||'').split(',').
   <div class="modal-row"><div><label>사입처 <span class="muted" style="font-size:11px">검색·없으면 신규등록</span></label><input id="vpick_bulk" value="${esc(b.vendor)}" oninput="vendorSearch('bulk',this.value)" onkeydown="vendorKey('bulk',event)" placeholder="사입처 이름 입력" autocomplete="off"><div id="vpick_bulk_drop" class="drop2"></div></div><div><label>카테고리 · 종류</label><div style="display:flex;gap:6px"><select onchange="bulkSet('cat',this.value)" style="flex:1"><option value="">-</option>${catOpt}</select><select onchange="BULK.subcat=this.value" style="flex:1"><option value="">종류</option>${subOpt}</select></div></div></div>
   <div class="modal-row"><div><label>입고단가(원가)</label><input type="number" value="${b.inprice}" oninput="BULK.inprice=this.value" placeholder="0"></div><div><label>출고단가(판매가)</label><input type="number" value="${b.price}" oninput="BULK.price=this.value" placeholder="0"></div></div>
   <label>번호표 <span class="muted" style="font-size:11px">방송·재고 표시용 번호 (예: 063) · 이 상품 전체 SKU에 부여 · 비우면 나중에</span></label><input value="${esc(b.tag||'')}" oninput="BULK.tag=this.value" placeholder="예: 063" style="font-weight:700;color:#92500a">
-  <label style="margin-top:10px;display:block">색상 <span class="muted" style="font-size:11px">쉼표로 구분 · 다 쓰고 Enter 또는 다음 칸 클릭하면 수량표 생성</span></label><input value="${esc(b.colors)}" oninput="BULK.colors=this.value" onchange="renderBulk()" onkeydown="if(event.key==='Enter'){event.preventDefault();renderBulk();}" placeholder="블랙, 화이트, 아이보리">
+  <label style="margin-top:10px;display:block">${optLabel('color')} <span class="muted" style="font-size:11px">쉼표로 구분 · 다 쓰고 Enter 또는 다음 칸 클릭하면 수량표 생성</span></label><input value="${esc(b.colors)}" oninput="BULK.colors=this.value" onchange="renderBulk()" onkeydown="if(event.key==='Enter'){event.preventDefault();renderBulk();}" placeholder="블랙, 화이트, 아이보리">
   <label style="margin-top:10px;display:block">사이즈 <span class="muted" style="font-size:11px">F=프리(생략), 여러 개 선택 가능</span></label><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">${chips}</div>
   ${matrix}
   <label style="margin-top:12px;display:inline-flex;align-items:center;gap:7px;padding:10px 12px;background:${b.sample?'#fff7ed':'#f8fafc'};border:1px solid ${b.sample?'#fed7aa':'var(--line)'};border-radius:9px;cursor:pointer;font-weight:700;${b.sample?'color:#c2410c':''}"><input type="checkbox" ${b.sample?'checked':''} onchange="BULK.sample=this.checked;renderBulk()" style="width:17px;height:17px"> 🔖 샘플 상품 <span class="muted" style="font-weight:400;font-size:12px">— 반납 대상 · 주문 시 자동 미송·사입 (재고 0으로 등록됨)</span></label>
@@ -3989,7 +4180,7 @@ function editUser(i){const u=EMPLOYEES[i];if(!u)return;
   $('#modalBox').innerHTML=`<h3>사원 정보 수정</h3><div class="ms">이름·팀·권한을 수정합니다. 아이디는 변경할 수 없어요. 비밀번호는 직원이 로그인 후 우측 상단에서 본인이 변경합니다.</div>
     <div class="modal-row"><div><label>이름</label><input id="eu_name" value="${esc(u.name)}"></div><div><label>입사일</label><input id="eu_hire" type="date" value="${esc(u.hire_date||'')}"></div></div>
     <div class="modal-row"><div><label>아이디(변경불가)</label><input value="${esc(u.login_id)}" disabled style="background:#f1f5f9;color:#94a3b8"></div><div></div></div>
-    <div class="modal-row"><div><label>포지션</label><select id="eu_pos" onchange="posOwnerToggle('eu')">${['운영','물류','셀러','서브매니저'].map(p=>`<option ${empPos(u)===p?'selected':''}>${p}</option>`).join('')}</select></div>
+    <div class="modal-row"><div><label>포지션</label><select id="eu_pos" onchange="posOwnerToggle('eu')">${POS_KEYS.map(p=>`<option value="${p}" ${empPos(u)===p?'selected':''}>${esc(posLabel(p))}</option>`).join('')}</select></div>
       <div id="eu_ownerWrap" style="${empPos(u)==='서브매니저'?'':'display:none'}"><label>담당셀러</label><select id="eu_owner"><option value="">— 선택 —</option>${sellerOptions(u.owner||'')}</select></div></div>
     <div class="ms" style="margin:2px 0 8px">운영=전체권한 · 물류=출고·재고 · 셀러=독립 판매자(본인자료) · 서브매니저=담당셀러 보조</div>
     <label style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);border-radius:9px;cursor:pointer;font-weight:700"><input type="checkbox" id="eu_stock" ${u.stock_edit?'checked':''} style="width:17px;height:17px"> 📦 재고 등록·수정 권한 <span class="muted" style="font-weight:400;font-size:12px">— 셀러/보조도 재고관리에서 품목 등록·수정·입출고 가능</span></label>
@@ -4255,7 +4446,7 @@ function liveNew(){
       <label>공지 / 배송·교환 안내</label><textarea id="lv_notice" rows="2" placeholder="교환·반품 정책 등"></textarea>
       <div class="row2"><div><label>기본 배송비(원)</label><input id="lv_ship" type="number" value="4000"></div>
         <div><label>무료배송 기준(원, 0=없음)</label><input id="lv_free" type="number" value="0"></div></div>
-      <label>💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="lv_payinfo" value="${escAttr((typeof ACCOUNTS!=='undefined'&&(ACCOUNTS[defSeller]||ACCOUNTS._default))||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
+      <label>💵 계좌 안내 (현금 선택 고객에게 표시) <a href="javascript:void(0)" onclick="tcfgSaveAcctFrom('lv_payinfo')" style="font-size:11px;color:var(--blue);font-weight:700;margin-left:6px">이 계좌를 기본값으로 저장</a></label><input id="lv_payinfo" value="${escAttr((typeof ACCOUNTS!=='undefined'&&(ACCOUNTS[defSeller]||ACCOUNTS._default))||(TCFG&&TCFG.payAccount)||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
       <label>▶️ 유튜브 라이브 (선택)</label><input id="lv_youtube" placeholder="채널ID(UC...) 또는 라이브 영상 링크">
       <div class="muted" style="font-size:11px;margin-top:2px">채널ID(UC...)를 넣으면 방송마다 안 바꿔도 그 채널 라이브가 자동 표시됩니다. 영상 링크(youtube.com/watch?v=…)도 가능.</div>
     </div>
@@ -4317,7 +4508,7 @@ function liveDetail(s){
       <label class="lbl" style="margin-top:10px">공지 / 배송·교환 안내</label><textarea id="ld_notice" rows="2">${esc(s.notice||'')}</textarea>
       <div class="row2" style="margin-top:8px"><div><label class="lbl">배송비</label><input id="ld_ship" type="number" value="${s.ship_fee}"></div>
         <div><label class="lbl">무료배송 기준(0=없음)</label><input id="ld_free" type="number" value="${s.free_ship_min}"></div></div>
-      <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시)</label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
+      <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시) <a href="javascript:void(0)" onclick="tcfgSaveAcctFrom('ld_payinfo')" style="font-size:11px;color:var(--blue);font-weight:700;margin-left:6px">이 계좌를 기본값으로 저장</a></label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
       <label class="lbl" style="margin-top:8px">🔴 유튜브 라이브 링크 <span class="muted" style="font-weight:400;font-size:11px">(채널ID UC… 또는 영상 링크 · 아래 [라이브 시작]을 눌러야 방송 표시)</span></label><input id="ld_youtube" value="${escAttr(s.youtube||'')}" placeholder="UC... 또는 youtube.com/watch?v=...">
       <label class="lbl" style="margin-top:8px">💬 <b>${esc(s.seller)}</b> 문의 카톡 채널 URL <span class="muted" style="font-weight:400;font-size:11px">(홈 문의 버튼·이 셀러 모든 페이지 적용)</span></label>
       ${(()=>{const ss=(SELLER_SNS&&SELLER_SNS[s.seller])||{};const has=p=>ss[p]?'<b style="color:#059669">연동됨</b>':'<span style="color:#cbd5e1">미등록</span>';return `
@@ -4736,12 +4927,105 @@ function tcfgPreset(p){const pr=TCFG_PRESETS[p];if(!pr)return;
   if(!confirm('프리셋 ['+pr.label+'] 적용 — 메뉴 구성이 한 번에 바뀝니다. (데이터는 그대로) 진행할까요?'))return;
   const menus=Object.assign({},TCFG.menus||{});TCFG_MENUS.forEach(m=>{if(!m.core)menus[m.k]=!pr.off.includes(m.k);});
   tcfgSave({menus},'프리셋 적용: '+pr.label);}
+/* ── 메뉴 커스텀 v2 (2026-07-15) — 드래그 순서·이름 바꾸기·구분선·하위탭 켬끔 ── */
+let _ordDraft=null,_lblDraft=null,_subsDraft=null,_navOrig=null;
+function menuLabel(v){return (TCFG&&TCFG.menuLabels&&TCFG.menuLabels[v])||VIEW_LABELS[v]||v;}
+function applyMenuOrder(){
+  const nav=document.getElementById('nav');if(!nav)return;
+  if(!_navOrig)_navOrig=[...nav.children];
+  nav.querySelectorAll('.nav-div-dyn').forEach(el=>el.remove());
+  const btn=v=>nav.querySelector('button[data-v="'+v+'"]');
+  [...nav.querySelectorAll('button[data-v]')].forEach(b=>{const v=b.dataset.v;
+    [...b.childNodes].filter(n=>n.nodeType===3).forEach(n=>n.remove());
+    b.appendChild(document.createTextNode(menuLabel(v)));});/* 커스텀 이름 적용 */
+  const ord=(TCFG&&Array.isArray(TCFG.menuOrder)&&TCFG.menuOrder.length)?TCFG.menuOrder:null;
+  const secs=_navOrig.filter(el=>el.classList&&el.classList.contains('sec'));
+  if(!ord){_navOrig.forEach(el=>nav.appendChild(el));secs.forEach(s=>s.style.display='');return;}
+  secs.forEach(s=>s.style.display='none');
+  ord.forEach(v=>{
+    if(String(v).charAt(0)==='~'){const d=document.createElement('div');d.className='nav-div-dyn';d.style.cssText='border-top:1px solid rgba(255,255,255,.16);margin:7px 10px';nav.appendChild(d);return;}
+    const b=btn(v);if(b)nav.appendChild(b);});
+  [...nav.querySelectorAll('button')].map(b=>b.dataset.v).filter(v=>v&&v!=='config'&&!ord.includes(v)).forEach(v=>{const b=btn(v);if(b)nav.appendChild(b);});
+  const c=btn('config');if(c)nav.appendChild(c);/* 환경설정은 항상 맨 아래 */
+}
+function ordInit(){
+  if(!_ordDraft)_ordDraft=(TCFG&&Array.isArray(TCFG.menuOrder)&&TCFG.menuOrder.length)?TCFG.menuOrder.slice():[...document.querySelectorAll('#nav button')].map(b=>b.dataset.v).filter(v=>v&&v!=='config');
+  if(!_lblDraft)_lblDraft=Object.assign({},(TCFG&&TCFG.menuLabels)||{});
+  if(!_subsDraft)_subsDraft=JSON.parse(JSON.stringify((TCFG&&TCFG.subsOff)||{}));
+}
+function ordRows(){ordInit();
+  return _ordDraft.map((v,i)=>{
+    if(String(v).charAt(0)==='~')return `<div class="orditem orddiv" draggable="true" data-k="${v}"><span class="oh">⠿</span><span style="flex:1;border-top:2px dashed #c9d2e2;margin:0 6px"></span><span class="muted" style="font-size:11px">구분선</span><button class="btn sm ghost" onclick="ordDel(${i})" title="구분선 삭제">✕</button></div>`;
+    const subs=((PERM_MENUS.find(m=>m.k===v)||{}).subs)||[];
+    const offN=subs.filter(s=>_subsDraft[v]&&_subsDraft[v][s.k]===false).length;
+    return `<div class="orditem" draggable="true" data-k="${v}"><div class="obar"><span class="oh">⠿</span>
+      <b style="flex:1;font-size:13.5px">${esc(_lblDraft[v]||VIEW_LABELS[v]||v)}${_lblDraft[v]?` <small class="muted" style="font-weight:400">(기본: ${esc(VIEW_LABELS[v]||v)})</small>`:''}</b>
+      <button class="btn sm ghost" onclick="ordRename('${v}')" title="이름 바꾸기">✏️</button>
+      ${subs.length?`<button class="btn sm ghost" onclick="ordSubs('${v}')">▾ 하위 ${subs.length-offN}/${subs.length}</button>`:''}</div>
+      ${subs.length?`<div class="ordsubs" id="subs_${v}" style="display:none">${subs.map(s=>`<label><input type="checkbox" ${(_subsDraft[v]&&_subsDraft[v][s.k]===false)?'':'checked'} onchange="ordSubToggle('${v}','${s.k}',this.checked)"> ${esc(s.l)}</label>`).join('')}</div>`:''}</div>`;
+  }).join('');
+}
+function ordRepaint(){const el=document.getElementById('ordList');if(el){el.innerHTML=ordRows();}}
+function ordRename(v){ordInit();const nm=prompt('메뉴 이름을 입력하세요 (비우면 기본 이름으로)',_lblDraft[v]||VIEW_LABELS[v]||'');if(nm===null)return;const t=nm.trim();if(!t||t===VIEW_LABELS[v])delete _lblDraft[v];else _lblDraft[v]=t.slice(0,12);ordRepaint();}
+function ordSubs(v){const el=document.getElementById('subs_'+v);if(el)el.style.display=(el.style.display==='none')?'block':'none';}
+function ordSubToggle(v,s,on){ordInit();_subsDraft[v]=_subsDraft[v]||{};if(on)delete _subsDraft[v][s];else _subsDraft[v][s]=false;}
+function ordDel(i){ordInit();_ordDraft.splice(i,1);ordRepaint();}
+function ordAddDiv(){ordInit();_ordDraft.push('~'+Math.floor(Math.random()*1e9));ordRepaint();}
+function ordDragInit(){const list=document.getElementById('ordList');if(!list||list._dg)return;list._dg=1;
+  list.addEventListener('dragstart',e=>{const r=e.target.closest('.orditem');if(!r)return;r.classList.add('dragging');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','');}catch(_){}});
+  list.addEventListener('dragend',()=>{const r=list.querySelector('.dragging');if(r)r.classList.remove('dragging');
+    ordInit();_ordDraft=[...list.querySelectorAll('.orditem')].map(el=>el.dataset.k);ordRepaint();});
+  list.addEventListener('dragover',e=>{e.preventDefault();const drag=list.querySelector('.dragging');if(!drag)return;
+    const rows=[...list.querySelectorAll('.orditem:not(.dragging)')];
+    const next=rows.find(r=>{const b=r.getBoundingClientRect();return e.clientY<b.top+b.height/2;});
+    if(next)list.insertBefore(drag,next);else list.appendChild(drag);});
+}
+function ordSave(){ordInit();
+  const arr=_ordDraft.filter((v,i,a)=>!(String(v).charAt(0)==='~'&&(i===0||i===a.length-1||String(a[i+1]||'').charAt(0)==='~')));
+  tcfgSave({menuOrder:arr,menuLabels:_lblDraft,subsOff:_subsDraft},'메뉴 구성 변경(순서·이름·하위탭)');
+  _ordDraft=null;_lblDraft=null;_subsDraft=null;}
+function ordReset(){if(!confirm('메뉴 순서·이름·구분선·하위탭을 전부 기본값으로 되돌릴까요?'))return;_ordDraft=null;_lblDraft=null;_subsDraft=null;tcfgSave({menuOrder:null,menuLabels:{},subsOff:{}},'메뉴 기본값 복원');}
+/* 로고 업로드 (파일선택+드래그, 400KB 이하 dataURL 저장) */
+function cfgLogoPick(){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{if(i.files&&i.files[0])cfgLogoFile(i.files[0]);};i.click();}
+function cfgLogoDrop(ev){ev.preventDefault();ev.stopPropagation();const f=ev.dataTransfer&&ev.dataTransfer.files&&ev.dataTransfer.files[0];if(f)cfgLogoFile(f);}
+function cfgLogoFile(f){if(!f||!/^image\//.test(f.type)){toast('이미지 파일을 넣어주세요 (PNG 권장)');return;}
+  if(f.size>400*1024){toast('로고는 400KB 이하로 줄여주세요 (권장: 투명 PNG, 가로 400px 이내)');return;}
+  const r=new FileReader();r.onload=()=>{tcfgSave({brandLogo:String(r.result)},'로고 변경');};r.readAsDataURL(f);}
+function cfgLogoClear(){if(confirm('로고 이미지를 제거할까요? (회사명 글자 로고로 돌아갑니다)'))tcfgSave({brandLogo:''},'로고 제거');}
+function tcfgBrandSave(){const b=document.getElementById('tc_brand'),g=document.getElementById('tc_bigui');
+  tcfgSave({brandKo:b?b.value.trim():'',bigUi:!!(g&&g.checked)},'회사명·화면크기 저장');}
+function tcfgMsgsSave(){const t=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
+  tcfgSave({orderGreet:t('tc_greet'),shipGreet:t('tc_shipgreet'),shipTail:t('tc_shiptail')},'안내 문구 저장');}
+/* 상품 옵션 표기 저장 (과제6) */
+function tcfgOptSave(){const c=(document.getElementById('tc_optcolor')||{}).value||'';const s=(document.getElementById('tc_optsize')||{}).value||'';
+  const hide=!!(document.getElementById('tc_hidesize')&&document.getElementById('tc_hidesize').checked);
+  tcfgSave({optLabels:{color:c.trim(),size:s.trim()},hideSize:hide},'상품 옵션 표기 변경');}
+/* 직원·급여 설정 저장 (과제9) */
+function tcfgEmpSave(){const t=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
+  const roleLabels={};POS_KEYS.forEach(p=>{const v=t('rl_'+p);if(v&&v!==p)roleLabels[p]=v.slice(0,12);});
+  const payBase={};[['운영','운영'],['물류','물류'],['셀러','셀러'],['서브매니저','보조']].forEach(function(pr){const el=document.getElementById('pb_'+pr[0]);if(!el)return;const raw=String(el.value).replace(/[^0-9]/g,'');if(raw!=='')payBase[pr[1]]=+raw;});
+  const payRate={};['seller','assist','own'].forEach(function(k){const el=document.getElementById('pr_'+k);if(!el||el.value.trim()==='')return;payRate[k]=Math.max(0,parseFloat(el.value)||0);});
+  tcfgSave({roleLabels:roleLabels,payBase:payBase,payRate:payRate},'직원·급여 설정 저장');}
+/* 외부 연동(솔라피·PG·SMS) 저장 — 실사용 피드백 2026-07-15 */
+function extSave(){const t=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
+  const ext={solapiKey:t('ex_solapi_key'),solapiCh:t('ex_solapi_ch'),pgProvider:t('ex_pg_provider'),pgMid:t('ex_pg_mid'),smsFrom:t('ex_sms_from')};
+  ext.solapi=!!(ext.solapiKey||ext.solapiCh);ext.pg=!!(ext.pgProvider||ext.pgMid);ext.sms=!!ext.smsFrom;
+  tcfgSave({ext},'외부 연동 설정 저장');}
+function extRequest(){alert('📩 연동 요청\n\n카카오 알림톡 템플릿 등록, PG 가맹, 발신번호 등록 등\n복잡한 외부 절차는 관리사(라방ERP)가 대행합니다.\n\n담당자 카톡채널로 "○○ 연동 요청"이라고 남겨주시면\n필요 서류·절차를 안내드립니다.');}
+/* 현장 기본값 저장 — 환불정산의 회수비 / 방송설정의 계좌 (설정화면 대신 실제 쓰는 자리에서) */
+function tcfgAskShipFee(){const v=prompt('기본 회수비(원) — 교환은 자동 ×2',String(SHIP_FEE));if(v===null)return;
+  const n=parseInt(String(v).replace(/\D/g,''),10)||0;if(n<=0){toast('금액을 확인해주세요');return;}
+  tcfgSave({shipFee:n},'기본 회수비 '+n.toLocaleString()+'원');}
+function tcfgSaveAcctFrom(id){const el=document.getElementById(id);const v=el?el.value.trim():'';
+  if(!v){toast('계좌를 먼저 입력해주세요');return;}
+  tcfgSave({payAccount:v},'기본 입금계좌 저장');}
 function tcfgSaveForm(){
   const num=id=>{const el=$('#'+id);if(!el)return null;const v=String(el.value).replace(/[^0-9]/g,'');return v===''?null:+v;};
   const ship=num('tc_ship'),free=num('tc_free');
   const txt=id=>{const el=$('#'+id);return el?el.value.trim():'';};
   tcfgSave({shipFee:(ship&&ship>0)?ship:4000,freeShipMin:(free==null)?100000:free,
     brandKo:txt('tc_brand'),payAccount:txt('tc_acct'),
+    bigUi:!!($('#tc_bigui')&&$('#tc_bigui').checked),
     orderGreet:txt('tc_greet'),shipGreet:txt('tc_shipgreet'),shipTail:txt('tc_shiptail')},'금액·브랜딩·문구 저장');}
 function viewConfig(){
   if(!(ME&&ME.scope==='all'))return '<div class="card"><div class="muted" style="padding:20px">관리자만 접근할 수 있습니다.</div></div>';
@@ -4751,26 +5035,88 @@ function viewConfig(){
   const log=(TCFG._log||[]).slice(0,10).map(r=>`<div class="muted" style="font-size:12px;padding:2px 0">${esc(r.at||'')} · ${esc(r.who||'')} — ${esc(r.what||'')}</div>`).join('')||'<div class="muted" style="font-size:12px">아직 변경 이력이 없습니다.</div>';
   /* 고객 개인설정 영역만 노출 — 메뉴 구성·프리셋은 관제 콘솔 전용 (2026-07-15 분리, 고객 실수로 메뉴 사라지는 사고 방지) */
   const consoleOnly=!(TCFG&&TCFG.selfMenuEdit===true);/* 콘솔에서 selfMenuEdit:true 주면 고객에게도 열림(보류 항목) */
+  const ext=(TCFG&&TCFG.ext)||{};const _es=(k)=>ext[k]?'<span class="pill p-done" style="font-size:11px">연동됨</span>':'<span class="pill" style="font-size:11px;background:#eef2f7;color:#94a3b8">미설정</span>';
   return `<div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 4px">⚙️ 환경설정</h3>
-    <div class="muted" style="font-size:12px">저장 즉시 반영 · 우리 가게의 문구·금액·표기를 직접 바꿀 수 있습니다</div></div>
-  ${consoleOnly?`<div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 4px">메뉴 구성</h3>
-    <div class="muted" style="font-size:12px">사용하는 메뉴 구성(켜기/끄기·업종 프리셋)은 <b>관리사에서 원격 설정</b>합니다. 변경이 필요하면 담당자에게 요청하세요 — 보통 몇 분 내 반영됩니다.</div></div>`
-  :`<div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 8px">업종 프리셋</h3>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">${Object.keys(TCFG_PRESETS).map(p=>`<button class="btn ghost sm" onclick="tcfgPreset('${p}')">${TCFG_PRESETS[p].label}</button>`).join('')}</div></div>
-  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 6px">메뉴 사용</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0 18px">${TCFG_MENUS.map(sw).join('')}</div></div>`}
-  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 6px">금액 · 브랜딩</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">
-      <div><label class="lbl">반품 회수비(원) — 교환은 자동 ×2</label><input id="tc_ship" type="number" value="${SHIP_FEE}"></div>
-      <div><label class="lbl">무료배송 기준(원, 0=없음)</label><input id="tc_free" type="number" value="${FREESHIP_MIN}"></div>
-      <div><label class="lbl">회사명(화면 로고 표기)</label><input id="tc_brand" value="${escAttr(TCFG.brandKo||'')}" placeholder="비우면 기본(N-LIVE)"></div>
-      <div><label class="lbl">기본 입금계좌(주문서 안내 폴백)</label><input id="tc_acct" value="${escAttr(TCFG.payAccount||'')}" placeholder="예: 기업은행 000-000000 (예금주 홍길동)"></div>
-      <div style="grid-column:1/-1"><label class="lbl">주문서 인사말 (고객 안내문 첫 줄)</label><textarea id="tc_greet" rows="2" placeholder="비우면 기본: 구매해주셔서 감사합니다❤️">${esc(TCFG.orderGreet||'')}</textarea></div>
-      <div style="grid-column:1/-1"><label class="lbl">출고 안내 인사말 — {고객명} 자리에 이름이 들어갑니다</label><textarea id="tc_shipgreet" rows="2" placeholder="비우면 기본: 안녕하세요, {고객명} 고객님 :) 금일 출고 완료된 상품 안내드립니다.">${esc(TCFG.shipGreet||'')}</textarea></div>
+    <div class="muted" style="font-size:12px">저장 즉시 반영 · 우리 가게 화면을 직접 꾸밀 수 있습니다</div></div>
+  <div class="card" style="margin-bottom:14px;border:1.5px solid var(--blue-line,#c7d7fb)"><h3 style="margin:0 0 4px">🔌 외부 연동 <span class="muted" style="font-weight:400;font-size:12px">(관리사 설정 영역)</span></h3>
+    <div class="muted" style="font-size:12px;margin-bottom:10px">카카오 알림톡·문자·PG 결제 연동. <b>템플릿 등록·심사 등 복잡한 설정은 관리사(라방ERP)가 대신 진행</b>합니다 — 값만 넣거나, 요청만 주세요.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
+      <div style="border:1px solid var(--line);border-radius:12px;padding:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>💬 카카오 알림톡 (솔라피)</b>${_es('solapi')}</div>
+        <label class="lbl">솔라피 API Key</label><input id="ex_solapi_key" value="${escAttr(ext.solapiKey||'')}" placeholder="관리사가 발급·입력">
+        <label class="lbl" style="margin-top:6px">발신 프로필(채널)</label><input id="ex_solapi_ch" value="${escAttr(ext.solapiCh||'')}" placeholder="@우리채널">
+        <div class="muted" style="font-size:11px;margin-top:6px">알림톡 템플릿(입금·출고 안내 등)은 카카오 심사(1~2일)가 필요 → <b>관리사가 대행 등록</b></div>
+      </div>
+      <div style="border:1px solid var(--line);border-radius:12px;padding:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>💳 PG 결제 연동</b>${_es('pg')}</div>
+        <label class="lbl">PG사</label><select id="ex_pg_provider"><option value="">선택 안 함</option><option ${ext.pgProvider==='tosspayments'?'selected':''} value="tosspayments">토스페이먼츠</option><option ${ext.pgProvider==='nicepay'?'selected':''} value="nicepay">나이스페이</option><option ${ext.pgProvider==='payhere'?'selected':''} value="payhere">페이히어</option></select>
+        <label class="lbl" style="margin-top:6px">가맹점 ID / 키</label><input id="ex_pg_mid" value="${escAttr(ext.pgMid||'')}" placeholder="PG 가맹 계약 후 입력">
+        <div class="muted" style="font-size:11px;margin-top:6px">PG 가맹 심사·계약은 고객사 명의 필요 → 관리사가 절차 안내·연동</div>
+      </div>
+      <div style="border:1px solid var(--line);border-radius:12px;padding:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>📨 문자(SMS/LMS)</b>${_es('sms')}</div>
+        <label class="lbl">발신번호 (사전등록 필요)</label><input id="ex_sms_from" value="${escAttr(ext.smsFrom||'')}" placeholder="010-0000-0000">
+        <div class="muted" style="font-size:11px;margin-top:6px">발신번호 사전등록(통신사)도 관리사가 대행</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <button class="btn sm gray" onclick="extRequest()">📩 연동 요청·문의</button>
+      <button class="btn sm" onclick="extSave()">저장 — 즉시 반영</button></div></div>
+  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 8px">회사명 · 로고</h3>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
+      <div style="flex:1;min-width:240px">
+        <label class="lbl">회사명 (로고 이미지가 없을 때 글자로 표시)</label>
+        <input id="tc_brand" value="${escAttr(TCFG.brandKo||'')}" placeholder="예: 미니상사">
+        <label style="display:inline-flex;gap:8px;align-items:center;font-size:13px;padding:10px 0 0;cursor:pointer"><input type="checkbox" id="tc_bigui" ${TCFG.bigUi?'checked':''}> 화면 크게 보기 (큰 글씨·큰 버튼, 전 직원)</label>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn sm" onclick="tcfgBrandSave()">저장 — 즉시 반영</button></div>
+      </div>
+      <div style="width:250px">
+        <label class="lbl">로고 이미지</label>
+        <div onclick="cfgLogoPick()" ondragover="event.preventDefault()" ondrop="cfgLogoDrop(event)"
+          style="border:2px dashed #b9c6dd;border-radius:12px;padding:14px;text-align:center;cursor:pointer;background:#f8fafd;min-height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+          ${TCFG.brandLogo?`<img src="${TCFG.brandLogo}" style="max-height:44px;max-width:200px">`:`<span style="font-size:22px">🖼️</span>`}
+          <span class="muted" style="font-size:11.5px">${TCFG.brandLogo?'클릭 또는 드래그로 교체':'클릭해서 파일 선택 또는 이미지를 여기로 드래그'}</span>
+        </div>
+        ${TCFG.brandLogo?`<div style="text-align:right;margin-top:5px"><button class="btn sm ghost" onclick="cfgLogoClear()">로고 제거</button></div>`:''}
+      </div>
+    </div></div>
+  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 4px">상품 옵션 표기</h3>
+    <div class="muted" style="font-size:12px;margin-bottom:10px">재고 등록·재고현황에서 쓰는 <b>옵션 이름</b>과 <b>사이즈 사용 여부</b>를 우리 가게에 맞게 바꿉니다. 품번·수량·가격 등 핵심 항목은 바뀌지 않습니다.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+      <div><label class="lbl">색상 항목 이름</label><input id="tc_optcolor" value="${escAttr((TCFG.optLabels&&TCFG.optLabels.color)||'')}" placeholder="비우면 기본: 색상 (예: 컬러)"></div>
+      <div><label class="lbl">사이즈 항목 이름</label><input id="tc_optsize" value="${escAttr((TCFG.optLabels&&TCFG.optLabels.size)||'')}" placeholder="비우면 기본: 사이즈 (예: 치수)"></div>
+    </div>
+    <label style="display:inline-flex;gap:8px;align-items:center;font-size:13px;padding:10px 0 0;cursor:pointer"><input type="checkbox" id="tc_hidesize" ${TCFG.hideSize?'checked':''}> 사이즈 항목 숨기기 <span class="muted" style="font-size:11.5px">— 잡화·소품처럼 사이즈가 없을 때 (숨기면 모든 상품이 자동 프리로 등록됩니다)</span></label>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn sm" onclick="tcfgOptSave()">저장 — 즉시 반영</button></div></div>
+  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 4px">직원 · 급여 설정 <span class="muted" style="font-weight:400;font-size:12px">(호칭·기본급·수수료율 — 개인별 설정이 항상 우선)</span></h3>
+    <div style="font-weight:700;font-size:12.5px;margin:8px 0 6px;color:var(--gray)">호칭(역할 이름)</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px 14px">
+      ${POS_KEYS.map(p=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);font-weight:700">${p}<input id="rl_${p}" value="${escAttr((TCFG.roleLabels&&TCFG.roleLabels[p])||'')}" placeholder="${p}" style="flex:1"></label>`).join('')}</div>
+    <div style="font-weight:700;font-size:12.5px;margin:14px 0 6px;color:var(--gray)">직급별 기본급 (원)</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px 14px">
+      ${[['운영','운영'],['물류','물류'],['셀러','셀러'],['서브매니저','보조']].map(pr=>`<label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);font-weight:700">${esc(posLabel(pr[0]))}<input id="pb_${pr[0]}" type="number" value="${(TCFG.payBase&&TCFG.payBase[pr[1]]!=null)?TCFG.payBase[pr[1]]:''}" placeholder="${(PAY_BASE[pr[1]]||0).toLocaleString()}" style="flex:1;text-align:right"></label>`).join('')}</div>
+    <div style="font-weight:700;font-size:12.5px;margin:14px 0 6px;color:var(--gray)">수수료율 (%)</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px 14px">
+      <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);font-weight:700">${esc(posLabel('셀러'))} 판매수당<input id="pr_seller" type="number" step="0.1" value="${(TCFG.payRate&&TCFG.payRate.seller!=null)?TCFG.payRate.seller:''}" placeholder="10" style="width:70px;text-align:right"></label>
+      <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);font-weight:700">${esc(posLabel('서브매니저'))} 담당셀러<input id="pr_assist" type="number" step="0.1" value="${(TCFG.payRate&&TCFG.payRate.assist!=null)?TCFG.payRate.assist:''}" placeholder="3" style="width:70px;text-align:right"></label>
+      <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);font-weight:700">${esc(posLabel('서브매니저'))} 본인판매<input id="pr_own" type="number" step="0.1" value="${(TCFG.payRate&&TCFG.payRate.own!=null)?TCFG.payRate.own:''}" placeholder="10" style="width:70px;text-align:right"></label></div>
+    <div class="note" style="margin-top:10px">비워두면 기본값(회색 글씨)을 사용합니다. 여기 값은 <b>새 급여계산의 기본값</b>이며, 직원별로 따로 정한 기본급·확정된 과거 달 급여는 바뀌지 않습니다.</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn sm" onclick="tcfgEmpSave()">저장 — 즉시 반영</button></div></div>
+  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 4px">메뉴 꾸미기</h3>
+    <div class="muted" style="font-size:12px;margin-bottom:10px">⠿를 잡고 <b>드래그</b>로 순서 이동 · ✏️ 이름 바꾸기 · ▾ 하위 탭 켬/끔 · 구분선으로 그룹 나누기 — 저장하면 전 직원에게 적용</div>
+    <div id="ordList" style="max-width:430px">${ordRows()}</div>
+    <div style="display:flex;gap:8px;margin-top:10px;max-width:430px">
+      <button class="btn sm ghost" onclick="ordAddDiv()">＋ 구분선 추가</button><span style="flex:1"></span>
+      <button class="btn sm gray" onclick="ordReset()">기본값 복원</button>
+      <button class="btn sm" onclick="ordSave()">저장 — 즉시 반영</button></div></div>
+  <div class="card" style="margin-bottom:14px"><h3 style="margin:0 0 6px">안내 문구</h3>
+    <div style="display:grid;gap:10px">
+      <div><label class="lbl">주문서 인사말 (고객 안내문 첫 줄)</label><textarea id="tc_greet" rows="2" placeholder="비우면 기본: 구매해주셔서 감사합니다❤️">${esc(TCFG.orderGreet||'')}</textarea></div>
+      <div><label class="lbl">출고 안내 인사말 — {고객명} 자리에 이름이 들어갑니다</label><textarea id="tc_shipgreet" rows="2" placeholder="비우면 기본: 안녕하세요, {고객명} 고객님 :) 금일 출고 완료된 상품 안내드립니다.">${esc(TCFG.shipGreet||'')}</textarea></div>
       <div><label class="lbl">출고 안내 맺음말</label><input id="tc_shiptail" value="${escAttr(TCFG.shipTail||'')}" placeholder="비우면 기본: 감사합니다 ♡"></div>
     </div>
-    <div class="muted" style="font-size:11px;margin-top:6px">담당자별 계좌는 [사원관리]의 직원 계좌가 우선 적용됩니다.</div>
-    <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" onclick="tcfgSaveForm()">저장 — 즉시 반영</button></div></div>
+    <div class="muted" style="font-size:11px;margin-top:6px">회수비·무료배송 기준·계좌는 각 업무 화면(환불정산·주문입력·방송설정)에서 바꾸면서 기본값 저장할 수 있습니다.</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn sm" onclick="tcfgMsgsSave()">저장 — 즉시 반영</button></div></div>
   <div class="card"><h3 style="margin:0 0 6px">변경 이력 <span class="muted" style="font-weight:400;font-size:12px">(최근 10건)</span></h3>${log}</div>`;}
 const VIEWS={dash:viewDash,order:viewOrder,sales:viewSales,live:viewLive,ship:viewShip,bo:viewBackorder,shipped:viewShipped,rx:viewRx,stock:viewStock,cust:viewCustomers,prod:viewProducts,vendor:viewVendor,revenue:viewRevenue,sns:viewSns,emp:viewEmp,users:viewUsers,kakao:viewKakao,config:viewConfig};
 const VIEW_LABELS={dash:'대시보드',order:'주문관리',sales:'판매관리',live:'라이브 판매',ship:'출고장',bo:'미송사입',shipped:'판매현황',rx:'교환·반품',stock:'재고관리',revenue:'매출현황',sns:'SNS 관리',cust:'고객관리',prod:'상품현황',vendor:'사입처관리',emp:'직원·급여',users:'사원관리',kakao:'카카오 연동',config:'환경설정'};
@@ -4785,13 +5131,25 @@ function enhanceResponsiveUI(root){
   if(!root)return;
   root.querySelectorAll('table').forEach(t=>{if(t.parentElement&&t.parentElement.classList.contains('table-wrap'))return;const w=document.createElement('div');w.className='table-wrap';t.parentNode.insertBefore(w,t);w.appendChild(t);});
 }
-function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}buildNav();render();}}
-function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}}
-function render(){if(!_fromRt)_localActAt=Date.now();/* 내 조작(클릭·저장·이동) 시각 기록 — realtime 리로드가 이 직후엔 안 끼어들게 */_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();enhanceResponsiveUI(_mn);if(VIEW==='dash')setTimeout(initDashGrid,0);updateTopbar();const cv=$('#currentView');if(cv)cv.textContent=VIEW_LABELS[VIEW]||'';if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
+/* ── 크롬식 화면 탭 (실사용 피드백 2026-07-15) — 열어본 메뉴가 탭으로, ✕로 닫기. 새로고침에도 유지(sessionStorage) ── */
+let TABS=[];try{TABS=JSON.parse(sessionStorage.getItem('erp_tabs')||'[]');}catch(e){TABS=[];}
+function tabsSave(){try{sessionStorage.setItem('erp_tabs',JSON.stringify(TABS));}catch(e){}}
+function tabsOnNavigate(v){if(!v||!VIEWS[v])return;if(!TABS.includes('dash'))TABS.unshift('dash');if(!TABS.includes(v))TABS.push(v);tabsSave();renderTabs();}
+function tabClose(v,ev){if(ev)ev.stopPropagation();const i=TABS.indexOf(v);if(i<0)return;TABS.splice(i,1);tabsSave();
+  if(VIEW===v){go(TABS[i-1]||TABS[0]||'dash');}else renderTabs();}
+function renderTabs(){const el=document.getElementById('viewTabs');if(!el)return;
+  if(typeof ME==='undefined'||!ME){el.style.display='none';return;}
+  const t=TABS.filter(v=>VIEWS[v]&&menuAllowed(v));
+  if(t.length<2){el.style.display='none';el.innerHTML='';return;}
+  el.style.display='flex';
+  el.innerHTML=t.map(v=>`<span class="vtab ${v===VIEW?'on':''}" onclick="go('${v}')">${esc(menuLabel(v))}${v==='dash'?'':`<i class="ti ti-x" title="탭 닫기" onclick="tabClose('${v}',event)"></i>`}</span>`).join('');}
+function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}tabsOnNavigate(v);buildNav();render();}}
+function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}tabsOnNavigate(VIEW);}
+function render(){if(!_fromRt)_localActAt=Date.now();/* 내 조작(클릭·저장·이동) 시각 기록 — realtime 리로드가 이 직후엔 안 끼어들게 */_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();enhanceResponsiveUI(_mn);if(VIEW==='dash')setTimeout(initDashGrid,0);if(VIEW==='config')setTimeout(ordDragInit,0);updateTopbar();const cv=$('#currentView');if(cv)cv.textContent=menuLabel(VIEW)||'';if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
   if(CUSTPOP){const c=custPopTarget();if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
-function buildNav(){[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
-$('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuAllowed(b.dataset.v))return;VIEW=b.dataset.v;try{history.replaceState(null,'','#'+VIEW)}catch(e){}buildNav();render();if(innerWidth<1024)closeSideNav();});
+function buildNav(){applyMenuOrder();[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
+$('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!menuAllowed(b.dataset.v))return;VIEW=b.dataset.v;try{history.replaceState(null,'','#'+VIEW)}catch(e){}tabsOnNavigate(VIEW);buildNav();render();if(innerWidth<1024)closeSideNav();});
 window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&VIEWS[h]&&menuAllowed(h)&&h!==VIEW){VIEW=h;buildNav();render();}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#sideNav')&&$('#sideNav').classList.contains('open'))closeSideNav();if(e.key==='F8'&&VIEW==='order'){e.preventDefault();commitOrder();}});
 /* 검색 드롭다운(.drop2) — 바깥 클릭/ESC 시 닫기 (교환 새상품·고객·품목 검색 공통) */
