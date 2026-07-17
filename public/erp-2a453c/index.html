@@ -1359,6 +1359,9 @@ function snsSave(d){PREFS.sns=d;savePrefs();snsSyncToShop();}
 /* SNS 관리에 등록한 URL을 shop용 seller_socials로 자동 미러링(카톡은 건드리지 않음) */
 async function snsSyncToShop(){
   const seller=(typeof ME!=='undefined'&&ME&&(ME.owner||ME.name))||'';if(!seller)return;
+  /* ⚠️ PREFS가 아직 안 불러와졌으면(sns 키 자체가 없음) 중단 — 안 그러면 기존 SNS를 NULL로 덮어써 날림.
+     (사용자가 전부 삭제한 경우엔 PREFS.sns={} 라 truthy → 정상적으로 NULL 반영됨) */
+  if(typeof PREFS==='undefined'||!PREFS||!PREFS.sns)return;
   const d=snsGet();const u=p=>((d[p]&&d[p].url)||null);
   const row={seller:seller,sns_youtube:u('youtube'),sns_instagram:u('instagram'),sns_tiktok:u('tiktok'),band_url:u('band'),updated_at:new Date().toISOString()};
   try{const {error}=await SB.from('seller_socials').upsert(row,{onConflict:'seller'});
@@ -4626,9 +4629,15 @@ function liveDetail(s){
       <label class="lbl" style="margin-top:8px">💵 계좌 안내 (현금 선택 고객에게 표시) <a href="javascript:void(0)" onclick="tcfgSaveAcctFrom('ld_payinfo')" style="font-size:11px;color:var(--blue);font-weight:700;margin-left:6px">이 계좌를 기본값으로 저장</a></label><input id="ld_payinfo" value="${escAttr(s.pay_info||'')}" placeholder="예: 기업은행 49907863201015 (예금주 홍길동)">
       <label class="lbl" style="margin-top:8px">🔴 유튜브 라이브 링크 <span class="muted" style="font-weight:400;font-size:11px">(채널ID UC… 또는 영상 링크 · 아래 [라이브 시작]을 눌러야 방송 표시)</span></label><input id="ld_youtube" value="${escAttr(s.youtube||'')}" placeholder="UC... 또는 youtube.com/watch?v=...">
       <label class="lbl" style="margin-top:8px">💬 <b>${esc(s.seller)}</b> 문의 카톡 채널 URL <span class="muted" style="font-weight:400;font-size:11px">(홈 문의 버튼·이 셀러 모든 페이지 적용)</span></label>
-      ${(()=>{const ss=(SELLER_SNS&&SELLER_SNS[s.seller])||{};const has=p=>ss[p]?'<b style="color:#059669">연동됨</b>':'<span style="color:#cbd5e1">미등록</span>';return `
+      ${(()=>{const ss=(SELLER_SNS&&SELLER_SNS[s.seller])||{};return `
       <input id="ld_kakao" value="${escAttr(ss.kakao_url||'')}" placeholder="카카오톡 채널 URL (예: http://pf.kakao.com/_xxxx)">
-      <div class="muted" style="font-size:11px;margin-top:5px">🔗 유튜브·인스타·틱톡·밴드 아이콘은 <b>[SNS 관리]에 등록한 URL이 자동 연동</b>됩니다 — 유튜브 ${has('sns_youtube')} · 인스타 ${has('sns_instagram')} · 틱톡 ${has('sns_tiktok')} · 밴드 ${has('band_url')}</div>`;})()}
+      <div class="upgrp" style="margin-top:10px"><div class="gh">🔗 ${esc(s.seller)} SNS 링크 <span class="muted" style="font-weight:400;font-size:11px">· 고객 페이지 상단 아이콘 (비우면 아이콘 숨김)</span></div>
+        <label class="lbl">유튜브 채널</label><input id="ld_sns_youtube" value="${escAttr(ss.sns_youtube||'')}" placeholder="https://youtube.com/@채널 또는 채널 URL">
+        <label class="lbl" style="margin-top:6px">인스타그램</label><input id="ld_sns_instagram" value="${escAttr(ss.sns_instagram||'')}" placeholder="https://instagram.com/아이디">
+        <label class="lbl" style="margin-top:6px">틱톡</label><input id="ld_sns_tiktok" value="${escAttr(ss.sns_tiktok||'')}" placeholder="https://tiktok.com/@아이디">
+        <label class="lbl" style="margin-top:6px">밴드</label><input id="ld_band_url" value="${escAttr(ss.band_url||'')}" placeholder="https://band.us/@밴드">
+        <div class="muted" style="font-size:11px;margin-top:7px">셀러 본인이 [SNS 관리]에 등록하면 그 값이 이 칸에 자동으로 들어옵니다. 여기서 직접 넣어도 되고, 비우면 그 아이콘만 안 보입니다.</div>
+      </div>`;})()}
       <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
         ${s.youtube?`<button class="btn sm" style="background:#dc2626;color:#fff" onclick="liveEndLive(${s.id})">🔴 라이브 종료</button>`:`<button class="btn sm green" onclick="liveStartLive(${s.id})">▶ 라이브 시작</button>`}
         <span class="muted" style="font-size:11px;flex:1;min-width:0">${s.youtube?'상단에 라이브 방송중 · 종료하면 평소화면(영상/이미지)으로':'유튜브 링크 입력 후 [라이브 시작]'}</span>
@@ -4691,10 +4700,12 @@ async function liveSaveSettings(id){
       youtube:($('#ld_youtube')&&$('#ld_youtube').value.trim())||null,hero_video:hero_video,seller_photo:seller_photo,cover_url:cover_url,gate_video:gate_video,gate_image:gate_image};
     const {error}=await SB.from('live_sessions').update(row).eq('id',id);
     if(error){console.error(error);toast('⚠️ 저장 실패: '+(error.message||''));if(btn){btn.disabled=false;btn.textContent='설정 저장';}return;}
-    /* 카톡만 셀러별 저장(SNS URL은 [SNS 관리]에서 자동 연동 — snsSyncToShop) */
-    if(sname){const kv=($('#ld_kakao')&&$('#ld_kakao').value.trim())||null;
-      const {error:se}=await SB.from('seller_socials').upsert({seller:sname,kakao_url:kv},{onConflict:'seller'});
-      if(se){console.error(se);toast('⚠️ 카톡 저장 실패: '+(se.message||''));}else{SELLER_SNS[sname]=Object.assign({},SELLER_SNS[sname]||{},{seller:sname,kakao_url:kv});}}
+    /* 카톡 + SNS 링크를 셀러별로 저장 (셀러 본인이 [SNS 관리]에 등록하면 snsSyncToShop이 같은 행을 갱신) */
+    if(sname){const gv=id=>{const e=$('#'+id);return (e&&e.value.trim())||null;};
+      const srow={seller:sname,kakao_url:gv('ld_kakao'),sns_youtube:gv('ld_sns_youtube'),sns_instagram:gv('ld_sns_instagram'),
+        sns_tiktok:gv('ld_sns_tiktok'),band_url:gv('ld_band_url'),updated_at:new Date().toISOString()};
+      const {error:se}=await SB.from('seller_socials').upsert(srow,{onConflict:'seller'});
+      if(se){console.error(se);toast('⚠️ SNS 저장 실패: '+(se.message||''));}else{SELLER_SNS[sname]=Object.assign({},SELLER_SNS[sname]||{},srow);}}
     toast('✅ 설정 저장');await liveReload();
   }catch(e){console.error(e);toast('⚠️ 저장 오류');if(btn){btn.disabled=false;btn.textContent='설정 저장';}}
 }
