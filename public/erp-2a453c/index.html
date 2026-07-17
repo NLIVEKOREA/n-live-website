@@ -1359,6 +1359,9 @@ function snsSave(d){PREFS.sns=d;savePrefs();snsSyncToShop();}
 /* SNS 관리에 등록한 URL을 shop용 seller_socials로 자동 미러링(카톡은 건드리지 않음) */
 async function snsSyncToShop(){
   const seller=(typeof ME!=='undefined'&&ME&&(ME.owner||ME.name))||'';if(!seller)return;
+  /* ⚠️ PREFS가 아직 안 불러와졌으면(sns 키 자체가 없음) 중단 — 안 그러면 기존 SNS를 NULL로 덮어써 날림.
+     (사용자가 전부 삭제한 경우엔 PREFS.sns={} 라 truthy → 정상적으로 NULL 반영됨) */
+  if(typeof PREFS==='undefined'||!PREFS||!PREFS.sns)return;
   const d=snsGet();const u=p=>((d[p]&&d[p].url)||null);
   const row={seller:seller,sns_youtube:u('youtube'),sns_instagram:u('instagram'),sns_tiktok:u('tiktok'),band_url:u('band'),updated_at:new Date().toISOString()};
   try{const {error}=await SB.from('seller_socials').upsert(row,{onConflict:'seller'});
