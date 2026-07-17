@@ -13,3 +13,6 @@ _untrans.json
 _b50_stage.json
 _pr_b50.json
 _i18n_b50.json
+
+# 시크릿 SQL — 절대 커밋 금지 (공개 리포)
+db/*_secret_*.sql
