@@ -7,6 +7,7 @@
 <title>N-LIVE · 방송 주문</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,300..600&family=Noto+Serif+KR:wght@200;300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{--brand:#ff2e50;--brand-d:#e11d40;--brand-s:#fff1f3;--blue:#ff2e50;--ink:#14161c;--muted:#8b92a1;--line:#eef0f4;--bg:#f5f6f8;--green:#16a34a;--red:#dc2626;--amber:#d97706}
 *{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font-family:Pretendard,"Malgun Gothic",-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
@@ -213,6 +214,45 @@ button,input,select,textarea{font:inherit}
 .moft b{font-size:16px;color:var(--brand)}
 .motrk{border:0;background:var(--ink);color:#fff;font-weight:800;font-size:13px;padding:10px 16px;border-radius:12px;cursor:pointer}
 </style>
+<style id="dior-editorial">
+/* ===== 디올 에디토리얼 (승인 시안 반영) — 되돌리려면 이 style#dior-editorial 블록만 삭제 ===== */
+:root{--serif:'Noto Serif KR',Georgia,serif;--serif-en:'Bodoni Moda','Noto Serif KR',serif;--ed-ink:#1a1a1a;--ed-muted:#8a8a8a;--ed-line:#e8e8e8;--ed-bg:#FAFAFA;}
+body{background:var(--ed-bg);color:var(--ed-ink);}
+/* --- 게이트(로그인) : 셀러 영상/이미지 배경 유지(B안). 배경/스크림/텍스트색은 원본 그대로 두어
+       영상 위 가독성(흰 글씨+어두운 스크림) 보존. 에디토리얼 요소는 '세리프 타이포'만 얹음. --- */
+.gate-brand{font-family:var(--serif-en) !important;font-weight:300 !important;letter-spacing:6px !important;}
+.gate-seller b{font-family:var(--serif) !important;font-weight:500 !important;}
+.gate-title{font-family:var(--serif) !important;font-weight:400 !important;letter-spacing:.2px !important;}
+.gate-kakao{border-radius:8px !important;} /* 노랑 브랜드색·원본 스타일 유지 */
+/* --- 홈 상단 프로필 --- */
+.profav{background:#efefef !important;border:1px solid var(--ed-line) !important;box-shadow:none !important;color:#9a9a9a !important;font-family:var(--serif) !important;font-weight:400 !important;}
+.profname{font-family:var(--serif) !important;font-weight:400 !important;color:var(--ed-ink) !important;letter-spacing:.3px !important;}
+.proftitle{color:var(--ed-muted) !important;font-weight:400 !important;}
+.profsub{color:var(--ed-muted) !important;font-weight:400 !important;}
+/* --- 섹션 헤딩 --- */
+.shead h2{font-family:var(--serif) !important;font-weight:400 !important;letter-spacing:.3px !important;color:var(--ed-ink) !important;}
+.shead small{color:var(--ed-muted) !important;font-weight:400 !important;}
+/* --- 홈 히어로(라이브 영상은 유지, 빨강만 절제) --- */
+.hgrad{background:linear-gradient(140deg,#ececec,#dcdcdc) !important;}
+.livep{background:rgba(26,26,26,.72) !important;box-shadow:none !important;font-weight:500 !important;font-size:11px !important;letter-spacing:1px !important;}
+/* --- 상품 그리드 : 화이트/여백/가운데/위계 3단 --- */
+.grid2{grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;gap:34px 18px !important;padding:22px 22px 8px !important;align-items:start;}
+.pcard{text-align:center !important;min-width:0;}
+.pcard .pi{aspect-ratio:3/4 !important;border-radius:2px !important;background:#f0efed !important;}
+.pcard .num{background:rgba(26,26,26,.6) !important;font-weight:500 !important;backdrop-filter:none !important;}
+.pcard .pn{font-family:var(--serif) !important;font-weight:300 !important;font-size:15px !important;color:var(--ed-ink) !important;letter-spacing:.2px !important;margin-top:14px !important;text-align:center !important;-webkit-line-clamp:1 !important;}
+.pcard .pp{font-family:'Noto Sans KR',sans-serif !important;font-weight:400 !important;font-size:13px !important;color:var(--ed-muted) !important;letter-spacing:0 !important;margin-top:6px !important;text-align:center !important;}
+.pcard .popt{font-family:'Noto Sans KR',sans-serif;font-weight:400;font-size:11.5px;color:#a5a5a5;letter-spacing:.5px;margin-top:9px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px;line-height:1.4;}
+/* --- 피처(지금 소개중) : 에디토리얼, 메타를 이미지 아래 가운데로 --- */
+.feat{background:none !important;box-shadow:none !important;border-radius:0 !important;}
+.feat img,.feat .fimg-ph{aspect-ratio:3/4 !important;border-radius:2px !important;}
+.feat .fmeta{position:static !important;background:none !important;color:var(--ed-ink) !important;padding:14px 0 0 !important;flex-direction:column !important;align-items:center !important;text-align:center !important;gap:0 !important;}
+.feat .fn{font-family:var(--serif) !important;font-weight:300 !important;font-size:16px !important;color:var(--ed-ink) !important;}
+.feat .fp{font-family:'Noto Sans KR',sans-serif !important;font-weight:400 !important;font-size:13px !important;color:var(--ed-muted) !important;margin-top:6px !important;}
+.feat .fadd{margin:12px auto 0 !important;background:var(--ed-ink) !important;color:#fff !important;font-weight:500 !important;border-radius:2px !important;}
+.feat .nowtag{position:static !important;background:transparent !important;border:1px solid var(--ed-line) !important;color:var(--ed-ink) !important;box-shadow:none !important;font-weight:500 !important;display:inline-flex;margin:0 auto 12px !important;letter-spacing:1px;}
+.feat .nowtag i{background:#e0304a !important;}
+</style>
 </head>
 <body>
 <div class="app" id="app">
@@ -335,6 +375,8 @@ function renderClosed(msg){
 function realOpts(p){return (p.options||[]).filter(o=>o.color||o.size);}
 function colorsOf(p){const s=[];realOpts(p).forEach(o=>{if(o.color&&!s.includes(o.color))s.push(o.color);});return s;}
 function sizesOf(p){const s=[];realOpts(p).forEach(o=>{if(o.size&&!s.includes(o.size))s.push(o.size);});return s;}
+/* 디올시안 옵션줄: 색상 우선(없으면 사이즈)을 ' · '로. 4개+ '외 N' 축약. 값 없으면 빈문자(줄 생략). 주문로직 무관 */
+function optLine(p){var cs=colorsOf(p);if(!cs||!cs.length)cs=sizesOf(p);cs=(cs||[]).filter(Boolean);if(!cs.length)return '';var t=cs.length>=4?(cs.slice(0,3).join(' · ')+' 외 '+(cs.length-3)):cs.join(' · ');return '<div class="popt">'+esc(t)+'</div>';}
 function optAvail(p,color,size){const os=realOpts(p);if(!os.length)return true;const m=os.find(o=>(o.color||null)===(color||null)&&(o.size||null)===(size||null));return m?m.available:false;}
 function prodSoldOut(p){const os=realOpts(p);if(!os.length)return false;return os.every(o=>!o.available);}
 
@@ -394,7 +436,7 @@ function productsHtml(s,ps){
      const ds=(String(p.name||'')+' '+String(p.tag||'')+' '+String(p.code||'')+' '+String(numLabel(p.tag||p.code||''))).toLowerCase();
      return `<button class="pcard ${so?'sold':''}" data-s="${esc(ds)}" ${so?'disabled':`onclick="openProduct(${p.id})"`}>
        <div class="pi">${(p.tag||p.code)?`<span class="num">${esc(numLabel(p.tag||p.code))}</span>`:''}${p.video?`<span class="vbtn" onclick="event.stopPropagation();event.preventDefault();playProductVideoById(${p.id})">🎬 영상</span>`:''}${p.image_url?`<img src="${esc(p.image_url)}">`:`<div class="pi-ph">상품이미지</div>`}</div>
-       <div class="pn">${esc(p.name)}</div><div class="pp">${won(p.live_price)}</div></button>`;}).join('')}</div>
+       <div class="pn">${esc(p.name)}</div><div class="pp">${won(p.live_price)}</div>${optLine(p)}</button>`;}).join('')}</div>
    <div id="pnone" class="center" style="display:none;min-height:120px">검색 결과가 없어요.</div>`
    :`<div class="center" style="min-height:180px">등록된 상품이 곧 올라옵니다.</div>`;
   return feat+grid;
