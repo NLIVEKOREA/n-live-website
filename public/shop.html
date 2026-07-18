@@ -201,6 +201,8 @@ button,input,select,textarea{font:inherit}
 .sicon:active{transform:scale(.9)}.sicon svg{display:block}
 /* 내 주문 조회 */
 .mocard{border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:12px;background:#fff;box-shadow:0 3px 12px rgba(20,22,28,.05)}
+.modate{font-size:13.5px;font-weight:800;color:var(--ink,#111827);margin:20px 0 9px;padding-left:2px}
+.modate:first-of-type{margin-top:6px}
 .moh{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .moh small{color:var(--muted);font-size:11px;text-align:right}
 .mostage{font-size:12px;font-weight:800;padding:5px 11px;border-radius:100px;white-space:nowrap}
@@ -550,19 +552,38 @@ async function lookupOrders(){
     if(error||!data||!data.ok){if(box)box.innerHTML='<div class="center" style="min-height:130px">조회 중 문제가 생겼어요.<br>잠시 후 다시 시도해 주세요.</div>';return;}
     const os=data.orders||[];
     if(!os.length){if(box)box.innerHTML='<div class="center" style="min-height:150px"><div><div style="font-size:38px;margin-bottom:8px">📦</div>이 번호로 접수된 주문이 없어요.</div></div>';return;}
-    if(box)box.innerHTML=`<div style="font-size:12.5px;color:var(--muted);margin:4px 0 12px;font-weight:600">최근 주문 ${os.length}건</div>`+os.map(orderCard).join('');
+    if(box)box.innerHTML=renderOrdersGrouped(os);
   }catch(e){console.error(e);if(box)box.innerHTML='<div class="center" style="min-height:130px">연결 오류입니다. 인터넷을 확인해 주세요.</div>';}
 }
-function orderCard(o){
-  const st=MO_STAGES[o.stage]||MO_STAGES[1];
-  const items=(o.items||[]).map(it=>`<div class="moi"><span>${esc(it.name)}${(it.color||it.size)?` <small>${esc([it.color,it.size].filter(Boolean).join('/'))}</small>`:''}</span><b>${it.qty}개</b></div>`).join('');
-  return `<div class="mocard">
-    <div class="moh"><span class="mostage" style="color:${st.c};background:${st.bg}">${st.t}</span><small>${esc(o.order_date||'')}<br>${esc(o.group_id||'')}</small></div>
-    <div class="mobar"><i style="width:${Math.round(o.stage/5*100)}%"></i></div>
-    <div class="modesc">${st.d}</div>
-    <div class="moitems">${items}</div>
-    <div class="moft"><b>${won(o.amount)}</b>${o.track?`<button class="motrk" onclick="trackShip('${esc(o.track)}')">🚚 배송조회</button>`:''}</div>
-  </div>`;
+function moStage(v){return (Number.isInteger(v)&&v>=0&&MO_STAGES[v])?v:0;} /* 이상값=미입금(0) — '준비중' 오표시로 입금 누락 방지 */
+function renderOrdersGrouped(os){
+  /* 품목(줄)단위로 펼침 — 한 주문이 배송/미송/포장 등 여러 상태로 갈려도 각 품목이 자기 상태로 보임.
+     RPC superset: item에 stage/track/order_date 있으면 그걸 쓰고, 없으면(구 RPC) 주문단위 값으로 폴백. */
+  const recs=[];
+  (os||[]).forEach(o=>{(o.items||[]).forEach(it=>{
+    recs.push({date:(it.order_date||o.order_date||''),stage:moStage(it.stage!=null?it.stage:o.stage),track:(it.track||o.track||''),group:(o.group_id||''),
+      name:it.name,color:it.color,size:it.size,qty:it.qty,price:it.price,code:it.code,amount:(Number(it.qty)||0)*(Number(it.price)||0)});
+  });});
+  if(!recs.length)return '<div class="center" style="min-height:150px">표시할 품목이 없어요.</div>';
+  const byDate={};recs.forEach(r=>{(byDate[r.date]=byDate[r.date]||[]).push(r);});
+  const dates=Object.keys(byDate).sort((a,b)=>String(b).localeCompare(String(a)));/* 최신 날짜 먼저 */
+  let html=`<div style="font-size:12.5px;color:var(--muted);margin:4px 0 12px;font-weight:600">최근 품목 ${recs.length}건 · 날짜별 → 상태별</div>`;
+  dates.forEach(d=>{
+    html+=`<div class="modate">📅 ${esc(d||'날짜미정')}</div>`;
+    const byStage={};byDate[d].forEach(r=>{(byStage[r.stage]=byStage[r.stage]||[]).push(r);});
+    Object.keys(byStage).map(Number).sort((a,b)=>a-b).forEach(sg=>{
+      const st=MO_STAGES[sg]||MO_STAGES[0];const rows=byStage[sg];
+      const sum=rows.reduce((a,r)=>a+r.amount,0);const trk=rows.map(r=>r.track).find(Boolean)||'';
+      html+=`<div class="mocard">
+        <div class="moh"><span class="mostage" style="color:${st.c};background:${st.bg}">${st.t}</span><small>${rows.length}개 품목</small></div>
+        <div class="mobar"><i style="width:${Math.round(sg/5*100)}%"></i></div>
+        <div class="modesc">${st.d}</div>
+        <div class="moitems">${rows.map(r=>`<div class="moi"><span>${esc(r.name)}${(r.color||r.size)?` <small>${esc([r.color,r.size].filter(Boolean).join('/'))}</small>`:''}</span><b>${r.qty}개</b></div>`).join('')}</div>
+        <div class="moft"><b>${won(sum)}</b>${trk?`<button class="motrk" onclick="trackShip('${esc(trk)}')">🚚 배송조회</button>`:''}</div>
+      </div>`;
+    });
+  });
+  return html;
 }
 function trackShip(t){const n=String(t||'').replace(/[^0-9]/g,'');if(!n){toast('운송장 번호가 아직 없어요.');return;}
   window.open('https://trace.cjlogistics.com/next/tracking.html?wblNo='+n,'_blank','noopener');}
