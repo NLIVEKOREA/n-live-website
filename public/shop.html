@@ -252,12 +252,17 @@ body{background:var(--ed-bg);color:var(--ed-ink);}
 .feat .fadd{margin:12px auto 0 !important;background:var(--ed-ink) !important;color:#fff !important;font-weight:500 !important;border-radius:2px !important;}
 .feat .nowtag{position:static !important;background:transparent !important;border:1px solid var(--ed-line) !important;color:var(--ed-ink) !important;box-shadow:none !important;font-weight:500 !important;display:inline-flex;margin:0 auto 12px !important;letter-spacing:1px;}
 .feat .nowtag i{background:#e0304a !important;}
-/* ===== 영상 비율 복구 (2026-07-18) — 디올 3:4는 상품 '정지이미지'에만 적용.
-   영상(히어로 릴·라이브·상품카드 영상)은 안 잘리게 object-fit:contain(사장님 A안: 여백 OK).
-   히어로는 startReel의 loadedmetadata가 hero를 영상 실제비율로 맞추므로 영상엔 3:4를 강제하지 않음. ===== */
-#reelvid,.hmedia>video,.hmedia>iframe{object-fit:contain !important;}
-.pcard .pi>video,.feat>video{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto !important;object-fit:contain !important;}
-.vidbox video{object-fit:contain !important;}
+/* ===== 영상 꽉채움 (2026-07-18 재수정): 영상 영역이 영상 실제비율로 adapt → 영상이 그 영역을 꽉 채움(크롭0·여백0) =====
+   HERO: startReel이 hero를 영상비율로 세팅(원래 정답 로직). 영상은 그 hero를 cover로 꽉 채움.
+         vert의 고정높이·9/16·contain(영상 작게+여백 버그) 무력화. 미디어 없으면 기존 그대로(붕괴X).
+   GATE: 영상일 때만(.gate-hasvid) 영상영역이 영상비율로 adapt(자연배치)+꽉 참. 로그인은 하단 오버레이 유지. 이미지/그라데 게이트는 기존 풀스크린 유지. */
+.hero .hmedia,.hero.vert .hmedia{position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;aspect-ratio:auto !important;object-fit:cover !important;}
+.hero.vert{height:auto !important;}
+#reelvid,.hero .hmedia>video,.hero .hmedia>img{position:absolute !important;inset:0 !important;width:100% !important;height:100% !important;object-fit:cover !important;aspect-ratio:auto !important;}
+.gate-hasvid .gate-bg{position:relative !important;inset:auto !important;width:100% !important;height:auto !important;overflow:hidden;}
+.gate-hasvid .gate-bg video,.gate-hasvid .gate-bg img{position:static !important;inset:auto !important;width:100% !important;height:auto !important;display:block !important;object-fit:fill !important;}
+.gate-hasvid{justify-content:flex-start !important;}
+.gate-hasvid .gate-inner{position:absolute !important;inset:0 !important;min-height:0 !important;}
 </style>
 </head>
 <body>
@@ -713,7 +718,7 @@ function renderGate(sess){
   const av=sess&&sess.seller_photo?`<img class="gate-av" src="${esc(sess.seller_photo)}">`:(nm?`<div class="gate-av">${esc(nm[0])}</div>`:'');
   const sellerRow=nm?`<div class="gate-seller">${av}<div><b>${esc(nm)}</b><small>${live?'지금 라이브 방송 중':'라이브 쇼핑'}</small></div></div>`:'';
   const title=live?'지금 방송 중인 특가,<br>놓치지 마세요':'라이브 특가 쇼핑,<br>지금 만나보세요';
-  $('#app').innerHTML=`<div class="gate">${bg}<div class="gate-scrim"></div>
+  $('#app').innerHTML=`<div class="gate${mp4?' gate-hasvid':''}">${bg}<div class="gate-scrim"></div>
     <div class="gate-inner">
       <div class="gate-top">${live?'<span class="gate-live"><i></i>LIVE</span>':''}</div>
       <div class="gate-hero">
