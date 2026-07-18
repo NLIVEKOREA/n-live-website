@@ -78,6 +78,14 @@
   .toast{ position:fixed; left:50%; bottom:70px; transform:translateX(-50%); background:#101826; color:#fff; font-size:13px; padding:10px 16px; border-radius:20px; opacity:0; transition:opacity .2s; z-index:20; max-width:88%; text-align:center; }
   .toast.show{ opacity:1; }
   .sec-title{ font-size:13px; font-weight:800; margin:4px 0 6px; }
+  /* 2026-07-18 폰 4기능: 새방송·주문내 재고등록·상품현황·주문서 */
+  .actrow{ display:flex; gap:8px; margin-bottom:10px; }
+  .actrow .btn{ flex:1; padding:13px 8px; font-size:14px; }
+  .btn.ol{ border-color:var(--blue-line); color:var(--blue); background:var(--blue-soft); }
+  .quickreg{ background:var(--card); border:1px solid var(--blue-line); border-radius:13px; padding:11px 12px; margin-bottom:10px; }
+  .sheet-h{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
+  .sheet-item{ font-size:13px; color:var(--sub); padding:2px 0; line-height:1.5; }
+  .sum{ font-weight:800; color:var(--ink); }
 </style>
 </head>
 <body>
@@ -107,20 +115,34 @@
   </div>
 
   <div class="view" id="viewOrders">
+    <div class="actrow">
+      <button class="btn ol" id="newBcBtn">▶ 새 방송 시작</button>
+      <button class="btn pri" id="quickRegToggle">＋ 재고등록</button>
+    </div>
+    <div class="quickreg hidden" id="quickReg">
+      <div class="next">다음 빈 번호표 추천: <b id="nextTag">–</b> <button class="btn" id="useNext" style="padding:4px 10px">이 번호로</button></div>
+      <div class="reg-in">
+        <input id="regInput" placeholder="2-50-6000" inputmode="text" />
+        <button class="add" id="regBtn">등록</button>
+      </div>
+      <div class="reg-hint">양식: <b>번호표-재고-가격</b> (예: <b>2-50-6000</b>). 색상: <b>3-블랙-50-6000</b>.</div>
+      <div class="parsemsg" id="parseMsg"></div>
+    </div>
     <div id="ordersList"><div class="empty">주문을 불러오는 중…</div></div>
   </div>
 
   <div class="view hidden" id="viewStock">
-    <div class="sec-title">재고 등록 · 수정</div>
-    <div class="reg-hint">양식: <b>번호표-재고-가격</b> (예: <b>2-50-6000</b>). 색상 넣으려면 <b>3-블랙-50-6000</b>.</div>
-    <div class="next">다음 빈 번호표 추천: <b id="nextTag">–</b> <button class="btn" id="useNext" style="padding:4px 10px">이 번호로</button></div>
-    <div class="reg-in">
-      <input id="regInput" placeholder="2-50-6000" inputmode="text" />
-      <button class="add" id="regBtn">등록</button>
-    </div>
-    <div class="parsemsg" id="parseMsg"></div>
+    <div class="sec-title">상품현황</div>
+    <div class="reg-hint">ERP와 실시간 연동됩니다. ERP에서 삭제된 상품은 여기서도 사라져요. (등록은 [주문] 탭의 <b>＋재고등록</b>)</div>
+    <button class="btn ol" id="erpPullBtn" style="width:100%;padding:12px;margin-bottom:10px">↻ ERP 상품 불러오기</button>
     <div class="toolbar"><input id="stockSearch" placeholder="번호표·상품명 검색" /></div>
     <div class="plist" id="stockList"><div class="empty">불러오는 중…</div></div>
+  </div>
+
+  <div class="view hidden" id="viewSheet">
+    <div class="sec-title">주문서 · 고객별 취합</div>
+    <div class="reg-hint">이번 방송의 주문을 고객별로 묶어 보여줍니다. (ERP 원본 기준 · [새 방송 시작]과 무관하게 전체 표시)</div>
+    <div id="sheetList"><div class="empty">불러오는 중…</div></div>
   </div>
 
   <div class="view hidden" id="viewPrinter">
@@ -138,7 +160,8 @@
 
   <div class="tabs">
     <button class="tab on" data-view="Orders"><span class="t">🧾</span>주문</button>
-    <button class="tab" data-view="Stock"><span class="t">📦</span>재고등록</button>
+    <button class="tab" data-view="Stock"><span class="t">📦</span>상품현황</button>
+    <button class="tab" data-view="Sheet"><span class="t">📋</span>주문서</button>
     <button class="tab" data-view="Printer"><span class="t">🖨️</span>프린터</button>
   </div>
 </div>
@@ -193,11 +216,68 @@ $("keyInput").addEventListener("keydown", function(e){ if(e.key==="Enter") $("lo
 
 /* ── 탭 ── */
 function showView(name){
-  ["Orders","Stock","Printer"].forEach(function(v){ $("view"+v).classList.toggle("hidden", v!==name); });
+  ["Orders","Stock","Sheet","Printer"].forEach(function(v){ $("view"+v).classList.toggle("hidden", v!==name); });
   document.querySelectorAll(".tab").forEach(function(b){ b.classList.toggle("on", b.dataset.view===name); });
   if(name==="Stock"){ loadStock(); loadNextTag(); }
+  if(name==="Sheet"){ loadSheets(); }
 }
 document.querySelectorAll(".tab").forEach(function(b){ b.addEventListener("click", function(){ showView(b.dataset.view); }); });
+
+/* ── 새 방송 시작 — 화면(주문큐)만 비움. ERP 원본 보존·번호 안 꼬임. 모드 자동판단 ── */
+var _bcHidden = {};
+try{ (JSON.parse(localStorage.getItem("wc_bc_hidden")||"[]")||[]).forEach(function(id){ _bcHidden[id]=1; }); }catch(e){}
+function _saveBcHidden(){ try{ localStorage.setItem("wc_bc_hidden", JSON.stringify(Object.keys(_bcHidden))); }catch(e){} }
+async function newBroadcast(){
+  var erp = !!(cfg && cfg.erp_url);
+  var m1 = erp
+    ? "새 방송을 시작할까요?\n\n· 화면(주문큐)만 비웁니다.\n· 고객번호는 ERP가 이어서 매겨 안 꼬입니다.\n· ERP 원본 주문·재고는 그대로 보존됩니다."
+    : "새 방송을 시작할까요?\n\n· 화면(주문큐)만 비웁니다.\n· 번호는 1번부터 다시 시작합니다.\n· 저장된 원본은 지워지지 않습니다.";
+  if(!confirm(m1)) return;
+  if(!confirm("한 번 더 확인 — 지금 화면의 주문을 이번 방송 큐에서 내릴까요?\n\n(원본 삭제 아님 · 이전 주문은 [주문서] 탭에 그대로 남습니다)")) return;
+  var r = await erpRpc("get_chat_orders", { limit: 300 });
+  ((r&&r.orders)||[]).forEach(function(o){ if(o.order_group_id!=null) _bcHidden[o.order_group_id]=1; });
+  _saveBcHidden();
+  $("ordersList").innerHTML = '<div class="empty">▶ 새 방송 시작 — 새 주문이 여기 쌓입니다.</div>';
+  toast("새 방송 시작 — 화면을 비웠어요");
+  loadOrders();
+}
+$("newBcBtn").addEventListener("click", newBroadcast);
+$("quickRegToggle").addEventListener("click", function(){
+  var q=$("quickReg"); q.classList.toggle("hidden");
+  if(!q.classList.contains("hidden")){ loadNextTag(); $("regInput").focus(); }
+});
+$("erpPullBtn").addEventListener("click", function(){ loadStock(); loadNextTag(); toast("ERP와 동기화했어요"); });
+
+/* ── 주문서: 고객별 취합 (get_chat_orders 재사용 · 클라이언트 그룹핑, 새 파괴적 RPC 없음) ── */
+async function loadSheets(){
+  var box = $("sheetList");
+  var r = await erpRpc("get_chat_orders", { limit: 300 });
+  if(!r || r.ok===false){ box.innerHTML = '<div class="empty">'+esc((r&&r.reason)||"불러오기 실패")+'</div>'; return; }
+  var list = r.orders || [];
+  if(!list.length){ box.innerHTML = '<div class="empty">주문이 없어요.</div>'; return; }
+  var groups = {}, order = [];
+  list.forEach(function(o){
+    var key = o.nick || o.cust || ("#"+(o.cust_no||"?"));
+    if(!groups[key]){ groups[key] = { name:key, cust_no:o.cust_no, items:[], qty:0, amt:0, miss:0 }; order.push(key); }
+    var g = groups[key];
+    g.items.push(o); g.qty += Number(o.qty)||0;
+    g.amt += (Number(o.price)||0) * (Number(o.qty)||1);
+    if(o.pay!=="paid") g.miss++;
+    if(o.cust_no && !g.cust_no) g.cust_no = o.cust_no;
+  });
+  order.sort(function(a,b){ return (Number(groups[a].cust_no)||9999)-(Number(groups[b].cust_no)||9999); });
+  box.innerHTML = order.map(function(k){
+    var g = groups[k];
+    var items = g.items.map(function(o){
+      return '<div class="sheet-item">· <b>'+esc(o.tag||"–")+'</b> '+esc(o.name)+(o.color?' ('+esc(o.color)+')':'')+' × '+num(o.qty)+' = '+num((Number(o.price)||0)*(Number(o.qty)||1))+'원'+(o.pay==="paid"?' ✅':'')+'</div>';
+    }).join("");
+    return '<div class="card"><div class="sheet-h">'
+      + '<div class="oname">'+esc(g.name)+(g.cust_no?' <span class="osub">#'+esc(g.cust_no)+'번</span>':'')+'</div>'
+      + '<span class="badge '+(g.miss?"miss":"paid")+'">'+(g.miss?(g.miss+"건 미결제"):"전액 입금")+'</span></div>'
+      + items
+      + '<div class="sheet-item sum" style="margin-top:4px">합계 '+num(g.qty)+'개 · '+num(g.amt)+'원</div></div>';
+  }).join("");
+}
 
 /* ── 주문 대기열 ── */
 function startOrders(){ loadOrders(); if(ordersTimer) clearInterval(ordersTimer); ordersTimer = setInterval(loadOrders, 5000); }
@@ -205,7 +285,7 @@ async function loadOrders(){
   var r = await erpRpc("get_chat_orders", { limit: 100 });
   var box = $("ordersList");
   if(!r || r.ok===false){ box.innerHTML = '<div class="empty">'+esc((r&&r.reason)||"불러오기 실패")+'</div>'; return; }
-  var list = r.orders || [];
+  var list = (r.orders || []).filter(function(o){ return !_bcHidden[o.order_group_id]; });
   if(!list.length){ box.innerHTML = '<div class="empty">아직 주문이 없어요.</div>'; return; }
   box.innerHTML = list.map(function(o){
     var paid = o.pay==="paid";
@@ -309,7 +389,7 @@ $("stockList").addEventListener("click", async function(e){
   if(ed){
     var s = _stockCache.find(function(x){ return String(x.tag)===ed.dataset.edit; }) || {};
     $("regInput").value = [s.tag, s.name||"", (s.qty||0), (s.price||0)].filter(function(x){return x!=="";}).join("-");
-    showView("Stock"); $("regInput").dispatchEvent(new Event("input")); $("regInput").focus();
+    showView("Orders"); $("quickReg").classList.remove("hidden"); $("regInput").dispatchEvent(new Event("input")); $("regInput").focus();
   } else if(dl){
     if(!confirm(dl.dataset.del+"번 상품을 삭제할까요?")) return;
     var r = await erpRpc("delete_chat_product", { tag: dl.dataset.del });
