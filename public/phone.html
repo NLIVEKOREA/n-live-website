@@ -95,8 +95,12 @@
   .os-pre{ white-space:pre-wrap; font-size:13px; color:var(--ink); background:#f7f9fc; border:1px dashed var(--line); border-radius:10px; padding:9px 10px; margin-top:8px; line-height:1.55; }
   .copy-btn{ background:var(--blue); color:#fff; border:none; padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; flex:none; }
   .sheet-tools{ display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
-  .sheet-date{ font-size:12px; color:var(--sub); display:flex; align-items:center; gap:6px; }
-  .sheet-date select{ font-size:13px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; background:#fff; width:auto; }
+  .sheet-date{ font-size:12px; color:var(--sub); display:flex; align-items:center; gap:8px; flex:1 1 100%; min-width:0; }
+  .sd-lbl{ flex:none; font-weight:700; }
+  .datechips{ display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
+  .datechips::-webkit-scrollbar{ height:0; }
+  .dchip{ flex:none; font-size:12px; font-weight:700; padding:6px 11px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--sub); white-space:nowrap; }
+  .dchip.on{ background:var(--blue); color:#fff; border-color:var(--blue); }
   .sfilters{ display:flex; gap:6px; }
   .sfilter{ font-size:12px; font-weight:700; padding:6px 11px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--sub); }
   .sfilter.on{ background:var(--blue); color:#fff; border-color:var(--blue); }
@@ -179,7 +183,7 @@
       </div>
     </div>
     <div class="sheet-tools">
-      <label class="sheet-date">날짜 <select id="sheetDate"></select></label>
+      <div class="sheet-date"><span class="sd-lbl">날짜</span><div id="sheetDates" class="datechips"></div></div>
       <div class="sfilters">
         <button class="sfilter on" data-sfilter="all">전체</button>
         <button class="sfilter" data-sfilter="unpaid">미결제</button>
@@ -336,12 +340,12 @@ function orderDate(o){
 }
 var _sheetsRaw = [];
 var _sheetFilter = "all";
-var _sheetDate = "";   // "" => 첫 렌더 때 오늘(있으면)·없으면 전체 · "all" => 전체 · "YYYY-MM-DD"
+var _sheetDate = "";   // "" => 첫 렌더 때 마지막(최신) 주문 날짜 · "all" => 전체 · "YYYY-MM-DD"
 async function loadSheets(){
   var box = $("sheetList");
   // ⚠️ 과부하 방지: get_chat_orders 에 날짜 파라미터가 있는지 불명 → 시그니처를 못 바꿈(PostgREST 404 위험).
   //  그래서 여기선 limit 상한으로 로드량을 막고, 날짜는 클라 필터로 처리한다(무제한 로드 금지).
-  //  서버측 '그 날짜분만' 쿼리는 db/proposal_ordersheet_erp.sql 로 분리 제안(팀장 배포 후 전환).
+  //  서버측 '그 날짜분만' 쿼리(get_chat_orders_by_date)는 통합SQL '위잉치킨앱_ERP연동_설치.sql' v6에 포함(팀장 배포 후 전환).
   var r = await erpRpc("get_chat_orders", { limit: 300 });
   if(!r || r.ok===false){ box.innerHTML = '<div class="empty">'+esc((r&&r.reason)||"불러오기 실패")+'</div>'; return; }
   var list = r.orders || [];
@@ -368,13 +372,15 @@ function sheetDates(){
   return Object.keys(set).sort().reverse();
 }
 function todayStamp(){ var d=new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
+function fmtChip(d){ var p=String(d).split("-"); return p.length===3 ? (Number(p[1])+"/"+Number(p[2])) : d; }
 function renderDateOptions(){
-  var sel=$("sheetDate"); if(!sel) return;
+  var box=$("sheetDates"); if(!box) return;
   var dates=sheetDates(), today=todayStamp();
-  if(_sheetDate===""){ _sheetDate = dates.indexOf(today)>=0 ? today : "all"; }   // 기본 오늘, 없으면 전체
-  var opts=dates.map(function(d){ return '<option value="'+d+'">'+d+(d===today?' (오늘)':'')+'</option>'; });
-  opts.push('<option value="all">전체</option>');
-  sel.innerHTML=opts.join(""); sel.value=_sheetDate;
+  if(_sheetDate===""){ _sheetDate = dates.length ? dates[0] : "all"; }   // 기본 = 마지막(최신) 주문 날짜, 없으면 전체
+  if(_sheetDate!=="all" && dates.indexOf(_sheetDate)<0){ _sheetDate = dates.length ? dates[0] : "all"; }   // 선택 날짜가 사라지면 최신으로
+  var chips=dates.map(function(d){ return '<button class="dchip'+(d===_sheetDate?' on':'')+'" data-d="'+d+'">'+fmtChip(d)+(d===today?' ·오늘':'')+'</button>'; });
+  chips.push('<button class="dchip'+(_sheetDate==="all"?' on':'')+'" data-d="all">전체</button>');
+  box.innerHTML=chips.join("");
 }
 function renderSheets(){
   var box=$("sheetList"), os=loadOrderSheetCfg();
@@ -416,7 +422,7 @@ $("sheetList").addEventListener("click", async function(e){
     toast(ok ? "복사됨! 카톡에 붙여넣으세요" : "복사 실패 — 안내문을 길게 눌러 복사하세요");
   }
 });
-$("sheetDate").addEventListener("change", function(){ _sheetDate=$("sheetDate").value; renderSheets(); });
+$("sheetDates").addEventListener("click", function(e){ var c=e.target.closest(".dchip"); if(!c) return; _sheetDate=c.dataset.d; renderDateOptions(); renderSheets(); });
 document.querySelectorAll(".sfilters .sfilter").forEach(function(b){ b.addEventListener("click", function(){
   document.querySelectorAll(".sfilters .sfilter").forEach(function(x){ x.classList.remove("on"); });
   b.classList.add("on"); _sheetFilter=b.dataset.sfilter; renderSheets();
