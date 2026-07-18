@@ -490,6 +490,9 @@
   }
   /* 라이브 판매 전용 유틸 */
   .card2{background:#fff;border:1px solid var(--line,#e7ebf1);border-radius:14px;padding:16px}
+  /* 상품추가 진입 반응형: PC(≥641)=3버튼 인라인 노출 / 모바일(≤640)=[＋ 상품 추가] 1버튼→시트 */
+  .addbtns-pc{display:contents} .addbtns-mo{display:none}
+  @media (max-width:640px){.addbtns-pc{display:none} .addbtns-mo{display:inline-flex;gap:8px}}
   .form2 label,.lbl{display:block;font-size:12px;color:#475467;font-weight:700;margin:11px 0 5px}
   .form2 input,.form2 textarea,.form2 select{width:100%;border:1px solid var(--line,#d9dee7);border-radius:9px;padding:9px 11px;background:#fff;font:inherit}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -551,6 +554,47 @@ html.big-ui .nav button{font-size:15.5px;padding:13px 12px}
 .ordsubs{padding:4px 10px 9px 34px;border-top:1px dashed var(--line);background:#fafbfd;border-radius:0 0 10px 10px}
 .ordsubs label{display:inline-flex;gap:6px;align-items:center;margin:3px 14px 3px 0;font-size:12.5px;cursor:pointer}
 /* ═══ v2 스킨 끝 ═══ */
+</style>
+<style id="lpcard-css">
+/* 방송상품 모바일 카드 (≤640px). PC(>640px)는 기존 표 유지 — 카드 숨김 */
+.lp-cards{display:none}
+.lp-card{background:#fff;border:1px solid #DCE5F2;border-radius:14px;box-shadow:0 8px 24px rgba(11,18,32,.06);padding:12px;flex-direction:column}
+.lp-card.off{background:#FAFBFD}
+.lp-crow{display:flex;gap:10px;align-items:flex-start}
+.lp-ckwrap{flex:0 0 auto;margin-top:14px}
+.lp-cards .lp-ck{width:24px;height:24px;accent-color:#135CF2}
+.lp-thumb{width:58px;height:58px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#eef1f6;cursor:zoom-in}
+.lp-thumb.ph{display:grid;place-items:center;font-size:22px;color:#9aa;cursor:default}
+.lp-info{flex:1;min-width:0}
+.lp-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px}
+.lp-numtag{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:7px;background:#0B1220;color:#fff;font-size:12px;font-weight:800}
+.lp-pill{display:inline-flex;align-items:center;height:19px;padding:0 7px;border-radius:6px;background:#E8F0FF;color:#135CF2;font-size:10.5px;font-weight:800}
+.lp-pill.req{background:#FDF3D6;color:#9A7400}
+.lp-nm{font-size:14px;font-weight:700;color:#0B1220;line-height:1.35;word-break:break-all;display:block;margin-top:1px}
+.lp-opt{font-size:11.5px;color:#6B7280;margin-top:3px}
+.lp-price{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:11px;padding-top:11px;border-top:1px dashed #DCE5F2}
+.lp-lab{font-size:11.5px;color:#6B7280;font-weight:600;flex:0 0 auto}
+.lp-priceinput{width:112px;height:44px;border:1.5px solid #DCE5F2;border-radius:10px;padding:0 10px;font-size:17px;font-weight:800;color:#0B1220;text-align:right}
+.lp-priceinput:focus{border-color:#135CF2;box-shadow:0 0 0 3px rgba(19,92,242,.18);outline:none}
+.lp-won{font-size:13px;font-weight:700;color:#6B7280;flex:0 0 auto}
+.lp-qty{margin-left:auto;font-size:12px;font-weight:700;color:#0E8E8B;background:#E2F7F6;border-radius:7px;padding:4px 9px;white-space:nowrap}
+.lp-qty.low{color:#D64550;background:#FBE9EA}
+.lp-toggles{display:flex;gap:8px;margin-top:11px}
+.lp-tg{flex:1;height:48px;border-radius:11px;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:5px;border:1.5px solid transparent;cursor:pointer;padding:0}
+.lp-tg.exp-on{background:#E2F7F6;color:#0E8E8B;border-color:#12B8B5}
+.lp-tg.exp-off{background:#F1F3F7;color:#8A94A6;border-color:#E1E5EC}
+.lp-tg.now-on{background:#F5B400;color:#5C4600;border-color:#9A7400}
+.lp-tg.now-off{background:#fff;color:#9A7400;border-color:#EBD9A6}
+.lp-ops{display:flex;align-items:center;gap:8px;margin-top:11px}
+.lp-icon{width:44px;height:44px;border:1px solid #DCE5F2;background:#fff;border-radius:10px;font-size:16px;color:#1F2A3D;display:grid;place-items:center;font-weight:700;cursor:pointer;padding:0}
+.lp-icon:disabled{opacity:.35}
+.lp-icon.del{border-color:#F3D2D5;color:#D64550}
+@media(max-width:640px){
+  .lp-tablewrap{display:none!important}
+  .lp-cards{display:flex!important;flex-direction:column;gap:10px}
+  .lp-bar{position:sticky;bottom:0;z-index:15;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-top:1px solid #DCE5F2;box-shadow:0 -6px 18px rgba(11,18,32,.07);padding:10px 4px 12px;margin-top:10px}
+  .lp-bar .btn{min-height:44px;font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -765,7 +809,10 @@ async function tcfgSave(patch,summary){return guard('tcfg',async()=>{
   const {error}=await SB.from('work_schedules').upsert({id:'_tenant_config',data:next,owner:'_tcfg',updated_at:new Date().toISOString()});
   if(error){console.error('tcfgSave',error);toast('⚠️ 설정 저장 실패 — 다시 시도하세요');render();return false;}
   TCFG=next;_tcfgSavedAt=Date.now();tcfgApply();toast('✅ 저장됨 — 즉시 반영');buildNav();render();return true;});}
-async function delOrd(o){if(o.id)_pendMark(_pendDel,'orders',o.id);try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){_pendDel.delete(_pk('orders',o.id));console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');}}}catch(e){if(o.id)_pendDel.delete(_pk('orders',o.id));console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');}}
+/* 삭제 성공여부를 반환한다(true=DB에서 지워짐 / false=실패).
+   ⚠️ 호출부는 반드시 이 값을 확인하고 재고를 복원할 것 — 삭제 실패한 주문은 새로고침하면 되살아나므로
+   그때 복원까지 했으면 다시 취소 → 이중복원(재고 과대)이 된다. id 없는 주문은 DB에 없으니 true. */
+async function delOrd(o){if(o.id)_pendMark(_pendDel,'orders',o.id);try{if(o.id){const {error}=await SB.from('orders').delete().eq('id',o.id);if(error){_pendDel.delete(_pk('orders',o.id));console.error('delOrd',error);toast('⚠️ 삭제 저장 실패 — 새로고침으로 확인하세요');return false;}}return true;}catch(e){if(o.id)_pendDel.delete(_pk('orders',o.id));console.error(e);toast('⚠️ 삭제 오류 — 인터넷 확인');return false;}}
 async function saveStock(s){try{if(s&&s.id!=null){_pendMark(_pendSave,'stock',s.id);const {error}=await SB.from('stock').update({qty:s.qty}).eq('id',s.id);if(error){_pendSave.delete(_pk('stock',s.id));console.error('saveStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');}}}catch(e){if(s&&s.id!=null)_pendSave.delete(_pk('stock',s.id));console.error(e);toast('⚠️ 재고 저장 오류');}}
 /* 재고 원자적 가감 — DB에서 qty=qty±delta 계산(동시 차감해도 안 깨짐). 반환된 정확한 값으로 화면 갱신 */
 async function adjustStockDB(s,delta,reason,ref){if(!s)return false;if(s.id==null){s.qty=(s.qty||0)+delta;return true;}_pendMark(_pendSave,'stock',s.id);try{const {data,error}=await SB.rpc('adjust_stock',{p_id:s.id,p_delta:delta});if(error){_pendSave.delete(_pk('stock',s.id));console.error('adjustStock',error);toast('⚠️ 재고 저장 실패 — 다시 시도하세요');return false;}_pendMark(_pendSave,'stock',s.id);/* RPC 반환값 반영 직후 재보호 */if(typeof data==='number')s.qty=data;try{await SB.from('stock_log').insert({stock_id:s.id,code:s.code,delta:delta,reason:reason||'조정',ref:ref||null,staff:(window.ME&&ME.name)||null});}catch(e){}return true;}catch(e){console.error(e);toast('⚠️ 재고 저장 오류');return false;}}
@@ -884,11 +931,12 @@ async function saveScanShip(){if(!SCAN)return;
       const svcL=mine(ORD).filter(function(o){return o.cust===e.cust&&o.ship!=='done'&&_isSvcLine(o)&&(!boxPhone||String(o.phone||'')===String(boxPhone))&&prodL.indexOf(o)<0;});
       const lines=prodL.concat(svcL);const ids=lines.map(function(o){return o.id;}).filter(function(x){return x!=null;});
       const trk=(prodL[0]&&prodL[0].track)||(lines[0]&&lines[0].track)||'';
+      const _md=lines.filter(undeductedAtShip);/* ⚠️ back=false로 바꾸기 '전에' 미차감분을 확정 */
       const prev=lines.map(function(o){return {ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date};});
       lines.forEach(function(o){o.ship='done';if(trk)o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
       const upd={ship:'done',back:false,req:null,shipped_date:_td};if(trk)upd.track=trk;
       let ok=true;if(ids.length){try{const res=await SB.from('orders').update(upd).in('id',ids);if(res.error){ok=false;console.error('scanShip',res.error);}}catch(x){ok=false;console.error(x);}}
-      if(ok){doneN++;lines.forEach(function(o){if(o.meta&&o.meta.scanGot!=null)delete o.meta.scanGot;});delete SCAN.tr[dg];SCAN.order=SCAN.order.filter(function(x){return x!==dg;});if(SCAN.cur===dg)SCAN.cur=null;}
+      if(ok){await _shipDeduct(_md);/* 출고 확정된 뒤에만 차감 */doneN++;lines.forEach(function(o){if(o.meta&&o.meta.scanGot!=null)delete o.meta.scanGot;});delete SCAN.tr[dg];SCAN.order=SCAN.order.filter(function(x){return x!==dg;});if(SCAN.cur===dg)SCAN.cur=null;}
       else{lines.forEach(function(o,j){Object.assign(o,prev[j]);});failN++;}}
     else{let any=false;for(const it of e.items){const o=ORD.find(function(x){return x.id===it.lid;});if(o){o.meta=o.meta||{};if((o.meta.scanGot||0)!==it.got){o.meta.scanGot=it.got;await saveOrd(o);}if(it.got>0)any=true;}}if(any)partN++;}
   }
@@ -1097,6 +1145,53 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');cl
 const prodName=c=>{const s=STOCK.find(x=>x.code===c);return s?s.name:c;};
 const tagOf=c=>{const s=STOCK.find(x=>x.code===c);return s?s.tag:'';};
 const skuOf=(c,col,sz)=>STOCK.find(x=>x.code===c&&x.color===col&&x.size===sz);
+/* ===== 재고 차감 여부의 단일 진실 = meta.stockDeducted 마커 (2026-07-17 박지훈) =====
+   배경: "이 주문이 재고를 깠는가"가 생성경로마다 다르다 —
+     · 수동 일반 / 수동 미송 / 샘플(자동미송) → commitOrder에서 차감 (back 무관)
+     · 링크(shop) 일반                        → payGroup 입금확인 시 차감
+     · 링크(shop) 미송 / 교환 재발송 미송      → 미차감 (출고 때 실차감해야 함)
+   back·source만으론 못 가른다: 수동미송(차감)과 교환미송(미차감)이 둘 다 source없음+back=true다.
+   게다가 back은 setProg가 상태전이로 계속 바꾸므로(미송→포장 시 false) 판정 근거가 될 수 없다.
+   → 차감하는 지점에서 true, 미차감으로 남기는 지점에서 false를 심고, 취소·출고는 이 마커만 본다.
+   ⚠️ 저장 위치는 orders.meta(jsonb) — DB 스키마 변경 없음. meta 라운드트립은 DB2ORD·ORD2DB에 이미 있음(확인필).
+   ⚠️ 마커 없는 과거 주문(레거시)은 기존 필드로 추론해 하위호환 유지 — 마커가 없다고 재고가 틀어지면 안 된다. */
+/* 재고와 무관한 서비스·비재고 라인 */
+function _stkSvc(c){return !c||c==='배송비'||c==='적립금'||c==='낱장'||c==='방송상품';}
+/* 마커 원본값: true/false, 없으면 null(=레거시 주문) */
+function _stkMark(o){return (o&&o.meta&&typeof o.meta.stockDeducted==='boolean')?o.meta.stockDeducted:null;}
+/* 이 주문이 실제로 재고를 깠는가? — 취소 시 복원 여부 판단용 */
+function wasStockDeducted(o){if(!o)return false;const f=_stkMark(o);if(f!==null)return f;
+  if(_stkSvc(o.code))return false;
+  if(o.source==='shop'&&o.reservation_expires_at)return false;/*레거시: 미입금 가예약 = 미차감*/
+  if(o.source==='shop'&&o.back)return false;/*레거시: 링크미송 = 미차감*/
+  if(o.meta&&o.meta.exchangeOf&&o.back)return false;/*레거시: 교환 재발송 미송 = 미차감*/
+  return true;/*레거시 나머지(수동주문·수동미송·샘플) = 차감됨*/}
+/* 출고 시점에 아직 안 깐 주문인가? — 출고 실차감 판단용 */
+function undeductedAtShip(o){if(!o)return false;if(_stkSvc(o.code))return false;if(!((o.qty||0)>0))return false;
+  const f=_stkMark(o);
+  if(f===false)return true;/*마커=미차감 → 지금 실차감*/
+  if(f===true)return false;/*이미 차감됨 → 건너뜀(이중차감 방지)*/
+  if(o.source==='shop'&&o.back)return true;/*레거시 링크미송*/
+  if(o.meta&&o.meta.exchangeOf&&o.back)return true;/*레거시 교환미송*/
+  return false;/*레거시 나머지는 이미 차감된 것으로 본다(안전측: 이중차감보다 낫다)*/}
+/* 차감 마커 세팅 + DB 저장. meta만 갱신해 다른 필드는 건드리지 않는다. */
+async function markDeducted(o){if(!o)return;o.meta=Object.assign({},o.meta,{stockDeducted:true});
+  if(o.id!=null){try{_pendMark(_pendSave,'orders',o.id);const {error}=await SB.from('orders').update({meta:o.meta}).eq('id',o.id);
+    if(error){_pendSave.delete(_pk('orders',o.id));console.error('markDeducted',error);}}catch(e){console.error('markDeducted',e);}}}
+/* 출고 4지점(shipWait·shipChecked·shipPopAction·saveScanShip) 공용 —
+   미차감 미송분을 출고 확정 '후' 실차감하고 마커를 남긴다.
+   차감 실패 시 마커를 안 남기므로 다음 기회(재시도·다른 출고지점)에 다시 잡힌다.
+
+   ⚠️ 반드시 `undeductedAtShip`으로 back 변경 '전에' 걸러낸 목록을 넘길 것.
+   출고 함수들은 back=false로 만든 뒤에 이걸 부르는데, undeductedAtShip의 레거시 추론은 back을 보기 때문에
+   여기서 다시 undeductedAtShip으로 재검사하면 마커 없는 과거 shop미송·교환미송이 전부 누락된다(=오버셀 존치).
+   여기선 back에 흔들리지 않는 마커만으로 이중차감을 막는다. */
+async function _shipDeduct(list){for(const o of (list||[])){
+  if(!o||_stkSvc(o.code)||!((o.qty||0)>0))continue;
+  if(_stkMark(o)===true)continue;/* 이미 차감됨 → 건너뜀(이중차감 방지) */
+  const s=skuOf(o.code,o.color,o.size);if(!s)continue;
+  const okd=await adjustStockDB(s,-(o.qty||0),'미송 출고차감',o.cust);
+  if(okd!==false)await markDeducted(o);}}
 /* 품목코드 체계: 상품번호6-색상번호-사이즈번호. 저장은 code(불변)+색상명+사이즈명, 표시코드는 정렬해서 실시간 계산 */
 const SIZE_ORDER=['F','FREE','FR','ONE','ONESIZE','XS','S','M','L','XL','2XL','XXL','3XL','XXXL','4XL'];
 function sizeRank(sz){const s=String(sz==null?'':sz).toUpperCase().replace(/\s/g,'');const i=SIZE_ORDER.indexOf(s);if(i>=0)return i;const n=parseInt(s,10);if(!isNaN(n))return 200+n;return 100;}
@@ -1935,7 +2030,7 @@ function viewOrder(){
       ${(()=>{const g=OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0),sh=OE.lines.filter(l=>l.kind==='ship').reduce((a,l)=>a+(l.price||0),0),th=freeThresh();return (th>0&&g>=th&&sh>0)?`<span style="flex-basis:100%;margin-top:6px;padding:7px 11px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:8px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px">🆓 무료배송 대상(${won(g)} ≥ ${won(th)})인데 배송비 ${won(sh)}이 잡혀 있어요 <button class="btn sm" style="background:#059669;padding:3px 10px" onclick="addShip(0,'무료배송')">무료배송으로 바꾸기</button></span>`:'';})()}
       <span class="muted" style="margin:0 2px">|</span>
       <button class="btn sm" style="background:#f0fdf4;color:#059669;border:1px solid #b9e6c9" onclick="usePoints()" ${OE.cust&&custPoints(OE.cust)>0?'':'disabled title="적립금 보유 고객만"'}>💰 적립금 사용${OE.cust?' <b>(보유 '+won(custPoints(OE.cust))+')</b>':''}</button>
-      <span class="muted" style="margin-left:auto;font-size:12.5px;display:flex;align-items:center;gap:5px;white-space:nowrap">🆓 무료배송 기준 <input type="number" value="${freeThresh()}" onchange="setFreeThresh(this.value)" style="width:96px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:13px"> 원 이상</span>
+      <span class="muted" style="margin-left:auto;font-size:12.5px;display:flex;align-items:center;gap:5px;white-space:nowrap">🆓 무료배송 기준 <input type="number" value="${freeThresh()}" ${canSeeAll()?'':'disabled title="가게 전체 설정입니다 — 관리자만 변경할 수 있어요"'} onchange="setFreeThresh(this.value)" style="width:96px;text-align:right;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:13px${canSeeAll()?'':';background:var(--bg);cursor:not-allowed'}"> 원 이상${canSeeAll()?'':' <span title="가게 전체 설정입니다 — 관리자만 변경할 수 있어요">🔒</span>'}</span>
     </div>
     <div class="oe-actbar">
       <span class="oe-sum">합계 <b>${won(total)}</b></span>
@@ -2076,9 +2171,14 @@ async function payGroup(idx){const g=orderGroups('unpaid')[idx];if(!g)return;con
         const s=skuOf(o.code,o.color,o.size);
         const samp=isSampleO(o),short=s&&(s.qty||0)<o.qty;/* 샘플·재고부족 → 자동 미송(수기 주문과 동일). 재고 차감 안 함 */
         const upd={reservation_expires_at:null};
+        let _dedu=false;/* 이번 입금확인에서 실제로 재고를 깠는가 */
         if(samp||short){o.back=true;o.req='미송';upd.back=true;upd.req='미송';}
         else if(s){const okd=await adjustStockDB(s,-o.qty,'라이브 입금확인',o.cust);
-          if(!okd){/* 차감 실패 → 오버셀 방지 위해 미송 강등(재입고/미송사입에서 정상 처리) */o.back=true;o.req='미송';upd.back=true;upd.req='미송';_stkFail.push(itemLabel(o));}}
+          if(!okd){/* 차감 실패 → 오버셀 방지 위해 미송 강등(재입고/미송사입에서 정상 처리) */o.back=true;o.req='미송';upd.back=true;upd.req='미송';_stkFail.push(itemLabel(o));}
+          else _dedu=true;}
+        /* 차감여부 마커를 반드시 남긴다 — 이게 있어야 ①미송분이 출고 때 실차감(오버셀 방지) ②취소 때 안 깐 재고를 복원 안 함(유령재고 방지).
+           SKU를 못 찾은 경우(s 없음)도 false로 남긴다: 실제로 안 깠으므로, 나중에 품목이 등록되면 출고 때 정상 차감된다. */
+        o.meta=Object.assign({},o.meta,{stockDeducted:_dedu});upd.meta=o.meta;
         o.reservation_expires_at=null;
         try{await SB.from('orders').update(upd).eq('id',o.id);}catch(e){console.error(e);}
       }
@@ -2096,12 +2196,17 @@ async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(
   if(ok){
     /* 링크주문 입금확인 취소 → 실차감했던 재고 원복 + 가예약 재설정(30분) */
     for(const o of g.items){
-      if(o.source==='shop'&&!o.reservation_expires_at&&!o.back&&o.code&&o.code!=='배송비'&&o.code!=='방송상품'){
+      /* 복원 대상 판정을 !o.back → wasStockDeducted(o)로 교체. 대상 집합은 기존과 동일하되(미송=미차감이라 그대로 제외)
+         "실제 깐 것만 복원"이 마커로 보장된다. */
+      if(o.source==='shop'&&!o.reservation_expires_at&&wasStockDeducted(o)&&o.code&&o.code!=='배송비'&&o.code!=='방송상품'){
         const s=skuOf(o.code,o.color,o.size);
         const okr=s?await adjustStockDB(s,o.qty,'라이브 입금취소 원복',o.cust):true;
-        if(!okr)continue;/* 원복 실패 → 재예약 안 함(재입금 시 이중차감 방지, 재고는 차감상태 유지) */
+        if(!okr)continue;/* 원복 실패 → 재예약·마커변경 안 함(재입금 시 이중차감 방지, 재고는 차감상태 유지) */
         const exp=new Date(Date.now()+30*60000).toISOString();o.reservation_expires_at=exp;
-        try{await SB.from('orders').update({reservation_expires_at:exp}).eq('id',o.id);}catch(e){console.error(e);}
+        /* ⚠️ 재고를 되돌렸으면 마커도 반드시 '미차감'으로 되돌린다 —
+           안 그러면 마커가 true로 남아 이후 취소 때 또 복원해 이중복원(재고 과대)이 된다. */
+        o.meta=Object.assign({},o.meta,{stockDeducted:false});
+        try{await SB.from('orders').update({reservation_expires_at:exp,meta:o.meta}).eq('id',o.id);}catch(e){console.error(e);}
       }
     }
     toast('↩ 입금확인 취소 → 미결제로 복구: '+g.cust);}
@@ -2148,9 +2253,23 @@ async function cancelPaidGroup(date,cust){const _cn=custCanon(cust);/* 카드가
   if(!items.length)return;
   if(!confirm('⚠️ '+cust+' 주문('+items.length+'건)을 취소할까요?\n주문이 삭제되고, 차감됐던 재고가 복원됩니다. (되돌릴 수 없음)'))return;
   await cancelGroupObj({cust,items},true);}
-async function cancelGroupObj(g,restoreStock){if(!g)return;const removed=[];g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);removed.push({o,s,dq:o.qty});});
+/* 그룹 취소 공용.
+   ⚠️ restoreStock 파라미터는 더 이상 '복원 여부'를 정하지 않는다(토스트 문구 표시용으로만 남김).
+   복원 여부는 오직 마커(wasStockDeducted)가 정한다 — 기존 `(restoreStock?!o.back:true)` 는 두 방향으로 동시에 틀렸다:
+     · 미결제 취소(restoreStock=false): 삼항식이 무조건 true → 안 깐 재고를 항상 복원 = 유령재고 → 오버셀
+     · 결제완료 취소(restoreStock=true): !o.back 이라 수동미송(실제 차감됨)을 복원 스킵 = 재고 누수
+   back으로는 차감여부를 못 가른다(수동미송=차감 / shop미송·교환미송=미차감이 모두 back=true). */
+async function cancelGroupObj(g,restoreStock){if(!g)return;const removed=[];g.items.forEach(o=>{const s=skuOf(o.code,o.color,o.size);const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);removed.push({o,s,dq:o.qty,at:k});});
   toast('🗑️ 주문 취소'+(restoreStock?' → 재고 복원':'')+': '+(g.cust||''));render();
-  for(const {o,s,dq} of removed){await delOrd(o);if((restoreStock?!o.back:true)&&s&&o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장')await adjustStockDB(s,dq,'주문취소',o.cust);}}
+  let _delFail=0;
+  for(const {o,s,dq,at} of removed){
+    /* 삭제 성공을 확인한 뒤에만 복원 — 실패했는데 복원하면 새로고침 시 주문이 되살아나 또 취소 → 이중복원 */
+    if(await delOrd(o)===false){_delFail++;if(at>=0&&at<=ORD.length)ORD.splice(at,0,o);else ORD.push(o);continue;}
+    if(wasStockDeducted(o)&&s)await adjustStockDB(s,dq,'주문취소',o.cust);/* 실제 깐 것만 복원 */
+    /* 사용 적립금 환원 — 단건취소(cancelSaleCommit)엔 있는데 그룹취소엔 없어 고객 적립금이 증발하던 것 */
+    if(o.code==='적립금'&&o.price)await addPoints(o.cust,Math.abs(o.price),'주문취소 적립환원',{item:'취소 환원',amount:Math.abs(o.price)});
+  }
+  if(_delFail){toast('⚠️ '+_delFail+'건 삭제 실패 — 재고·적립금은 건드리지 않았습니다. 새로고침 후 다시 시도하세요');render();}}
 
 /* ===== 주문서(고객 안내문) ===== */
 /* 셀러별 입금계좌 (주문서 복사·라이브 계좌안내에 g.staff/셀러 기준 자동매칭) · 예금주 나영식 */
@@ -2308,9 +2427,19 @@ const ISLAND_ADDR=[['제주','제주 (도서산간)',3000],['서귀포','제주 
 function islandByAddr(addr){const a=String(addr||'');if(!a)return null;for(const r of ISLAND_ADDR){if(a.indexOf(r[0])>=0)return {region:r[1],extra:r[2]};}return null;}
 function islandOf(){return islandInfo(OE.zip)||islandByAddr(OE.addr||'');}
 /* 무료배송 기준 (회사 공통값, 기본 10만원) */
-function freeThresh(){return (PREFS.freeship!=null)?PREFS.freeship:((typeof TCFG!=='undefined'&&TCFG&&TCFG.freeShipMin!=null&&TCFG.freeShipMin!=='')?(+TCFG.freeShipMin||0):100000);}
-function setFreeThresh(v){const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);PREFS.freeship=n;savePrefs();toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료');
-  if(typeof ME!=='undefined'&&ME&&ME.scope==='all')tcfgSave({freeShipMin:n},'무료배송 기준 '+n.toLocaleString()+'원');/* 관리자가 바꾸면 가게 기본값으로 저장 */
+/* 무료배송 기준 = '가게 전체' 상거래 정책 → 테넌트 설정(TCFG)이 단일 기준.
+   기존엔 PREFS(직원 개인설정)가 TCFG를 이겨서, 같은 고객 주문이라도 '결제를 누가 처리했느냐'에 따라 배송비가 달라졌다.
+   결정적으로 합배(shipConsolidate)는 여러 셀러·여러 날짜 주문을 한 박스로 묶는데, 그 무배 판정을 '처리 직원 계정'이
+   좌우하면 어떤 방어도 성립하지 않는다. → TCFG 단일 기준으로 통일.
+   · 개인설정(PREFS.freeship)은 더 이상 읽지 않는다 — 기존에 저장된 값은 그냥 무시된다(DB 변경·마이그레이션 불필요).
+   · TCFG 미설정 테넌트는 기본값 100000원(기존 폴백과 동일) → 하위호환.
+   ※ 방송(셀러)별 무배 기준은 live_sessions.free_ship_min으로 shop 쪽에서 따로 관리된다 — 그걸 대체하는 게 아니다. */
+function freeThresh(){return (typeof TCFG!=='undefined'&&TCFG&&TCFG.freeShipMin!=null&&TCFG.freeShipMin!=='')?(+TCFG.freeShipMin||0):100000;}
+async function setFreeThresh(v){
+  /* 가게 전체 정책이므로 관리자만 변경 — 직원이 바꿔봐야 반영 안 되는데 입력은 되는 '유령 설정'을 만들지 않는다 */
+  if(!(typeof ME!=='undefined'&&ME&&ME.scope==='all')){toast('🔒 무료배송 기준은 가게 전체 설정이라 관리자만 변경할 수 있어요');render();return;}
+  const n=Math.max(0,parseInt(String(v).replace(/\D/g,''),10)||0);
+  if(await tcfgSave({freeShipMin:n},'무료배송 기준 '+n.toLocaleString()+'원'))toast('🆓 무료배송 기준: '+n.toLocaleString()+'원 이상 무료 (가게 전체 적용)');
   render();}
 /* 배송비 자동계산 — 상품합계·주소·무료기준에 따라 배송비 라인 자동 세팅 (수동지정 시 건너뜀) */
 function shipBase(){return OE.lines.filter(l=>l.kind!=='ship'&&l.kind!=='point').reduce((a,l)=>a+(l.price||0)*(l.qty||0),0);}
@@ -2374,19 +2503,40 @@ async function commitOrder(){
   /* 주문서 1건 = 고유 그룹ID 1개. ※ 2026-07-17 사양변경으로 이 gid는 더 이상 카드를 나누지 않는다
      (_ogKey 참고 — 카드는 '날짜+정규화 고객명' 기준 1장). 이력추적·되돌리기용으로 계속 기록만 한다. */
   {const _gid=OE.editGid||genGid();created.forEach(({o})=>{if(o.order_group_id==null)o.order_group_id=_gid;});}
+  /* [수정모드] 원주문 재고 '복원'을 신규 '차감'보다 먼저 실행 (감사 #6).
+     같은 SKU를 유지한 채 수정하면, 복원 전에 차감이 일어나 재고가 순간 이중계상되고
+     prevent_negative_stock 트리거에 막혀 차감이 실패 → 그 뒤 복원만 더해져 재고가 과대해진다. 순서를 뒤집어 원인을 없앤다.
+     원주문 삭제(delOrd/splice)는 기존대로 '신규가 전부 저장된 뒤'에만 한다 — 부분 실패 시 원주문 보존.
+     복원 대상 판정은 NL 기존 그대로(수기 원주문=source!=='shop'만) 유지한다. */
+  const _restored=[];
+  if(_editOrig.length){
+    for(const o of _editOrig){
+      const s=skuOf(o.code,o.color,o.size);
+      if(s&&o.source!=='shop'&&o.code!=='낱장'&&o.code!=='배송비'&&o.code!=='적립금'&&await adjustStockDB(s,o.qty,'주문수정 원복',o.cust)!==false)_restored.push({s,q:o.qty,cust:o.cust});
+    }
+  }
   let _failed=0;
   for(const {o,s,dq,points,l} of created){
     const ok=await saveOrd(o);
     if(ok===false){_failed++;const _i=ORD.indexOf(o);if(_i>=0)ORD.splice(_i,1);continue;}/* 저장 실패 → 재고·적립금 손대지 않고 로컬에서도 제거 */
-    /* 링크(shop)주문 줄은 입금확인 때 실차감하므로 여기선 차감 안 함(가예약). 수기 줄은 즉시 차감 — 줄 단위 판단 */
-    if(s&&!(l&&l._carry))await adjustStockDB(s,-dq,'판매',o.cust);
+    /* 링크(shop)주문 줄은 입금확인 때 실차감하므로 여기선 차감 안 함(가예약). 수기 줄은 즉시 차감 — 줄 단위 판단.
+       실제 차감한 줄에만 마커 — 취소 때 '이 주문이 깠는지'의 단일 근거가 된다. */
+    if(s&&!(l&&l._carry)){const okd=await adjustStockDB(s,-dq,'판매',o.cust);if(okd!==false)await markDeducted(o);}
     if(points)await addPoints(o.cust,points,'적립사용',{item:'주문 사용',amount:Math.abs(points)});
   }
-  // 수정모드: 새 주문이 전부 저장된 경우에만 원주문 삭제+재고 원복(부분 실패 시 원주문 보존)
-  /* 원복도 줄 단위: 링크(shop)주문 원주문은 애초에 차감된 적이 없으니 원복하면 재고가 부풀어난다.
-     실제로 차감됐던 수기 원주문만 되돌린다. */
-  if(_editOrig.length){if(_failed===0){for(const o of _editOrig){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);const s=skuOf(o.code,o.color,o.size);if(s&&o.source!=='shop'&&o.code!=='낱장'&&o.code!=='배송비'&&o.code!=='적립금')await adjustStockDB(s,o.qty,'주문수정 원복',o.cust);}}else{toast('⚠️ 일부 저장 실패 — 원주문은 그대로 두었습니다. 확인 후 다시 시도하세요');}}
-  toast((_failed?'⚠️ ':'✅ ')+'주문서 저장 ('+(_cnt-_failed)+'건)'+(back?' · 미송 '+back+'건 포함':'')+(_failed?' · '+_failed+'건 저장 실패(재고 미차감)':''));
+  // 수정모드: 새 주문이 전부 저장된 경우에만 원주문 삭제 (재고 복원은 위에서 이미 완료)
+  if(_editOrig.length){
+    if(_failed===0){for(const o of _editOrig){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);}}
+    else{
+      /* 부분 실패 → 원주문을 그대로 두므로, 미리 되돌려놨던 재고를 다시 깎아 '수정 전 상태'로 원위치시킨다.
+         (안 그러면 원주문은 남았는데 재고만 +복원된 채라 재고 과대) */
+      const _rb=[];
+      for(const r of _restored){if(await adjustStockDB(r.s,-r.q,'주문수정 복원취소',r.cust)===false)_rb.push(`${r.s.code} ${r.s.color||''} ${r.s.size||''} +${r.q}`);}
+      /* 되돌리기까지 실패 = 실제 재고 불일치. 토스트는 아래 최종 토스트에 덮이므로 반드시 alert로 알린다. */
+      if(_rb.length)alert('⚠️ 재고 불일치 주의\n\n주문 일부가 저장에 실패해 원주문을 유지했는데, 미리 복원했던 재고를 되돌리는 데 실패했습니다.\n아래 품목의 재고가 실제보다 많게 잡혀 있을 수 있으니 [재고관리]에서 직접 확인하세요:\n\n'+_rb.join('\n'));
+    }
+  }
+  toast((_failed?'⚠️ ':'✅ ')+'주문서 저장 ('+(_cnt-_failed)+'건)'+(back?' · 미송 '+back+'건 포함':'')+(_failed?' · '+_failed+'건 저장 실패(재고 미차감) · 원주문 유지됨':''));
   OE={cust:null,phone:'',addr:'',staff:null,lines:[],date:OE.date};render();
   }catch(e){console.error('commitOrder',e);toast('⚠️ 주문 저장 중 오류 — 새로고침 후 확인하세요');}
   finally{_committing=false;}
@@ -2677,11 +2827,12 @@ function shipToggle(id){if(SHIPCHK.has(id))SHIPCHK.delete(id);else SHIPCHK.add(i
 async function shipWait(i){const c=catCustList('wait')[i];if(!c)return;
   const trk=($('#trk_wait_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const _td=todayStr();
+  const _md=c.lines.filter(undeductedAtShip);/* ⚠️ back=false로 바꾸기 '전에' 미차감분을 확정 — 링크미송·교환미송은 여기서 처음 재고가 깎인다 */
   const prev=c.lines.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   c.lines.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
   const ids=c.lines.map(o=>o.id).filter(x=>x!=null);
   let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({ship:'done',track:trk,back:false,req:null,shipped_date:_td}).in('id',ids);if(error){console.error('shipWait',error);ok=false;}}catch(e){console.error(e);ok=false;}}
-  if(ok)toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);
+  if(ok){await _shipDeduct(_md);/* 출고 확정된 뒤에만 차감 */toast('🚚 출고완료: '+c.cust+' '+c.lines.length+'건 · 송장 '+trk);}
   else{c.lines.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
 async function shipChecked(cat,i){const c=catCustList(cat)[i];if(!c)return;
@@ -2691,11 +2842,12 @@ async function shipChecked(cat,i){const c=catCustList(cat)[i];if(!c)return;
   const sel=picked.concat(svc);
   const trk=($('#trk_'+cat+'_'+i)?.value||'').trim();if(!trk){toast('⚠️ 송장번호를 입력하세요');return;}
   const _td=todayStr();
+  const _md=sel.filter(undeductedAtShip);/* ⚠️ back=false로 바꾸기 '전에' 미차감분을 확정 */
   const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
   const ids=sel.map(o=>o.id).filter(x=>x!=null);
   let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({ship:'done',track:trk,back:false,req:null,shipped_date:_td}).in('id',ids);if(error){console.error('shipDone',error);ok=false;}}catch(e){console.error(e);ok=false;}}
-  if(ok){sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);}
+  if(ok){await _shipDeduct(_md);/* 출고 확정된 뒤에만 차감 */sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);}
   else{sel.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();}
 function openCustPopup(cat,i){const c=catCustList(cat)[i];if(!c)return;CUSTPOP={cat,cust:c.cust};render();}
@@ -2727,11 +2879,12 @@ async function shipPopAction(){
   const svc=cat==='wait'?[]:c.lines.filter(l=>_isSvcLine(l)&&l.ship!=='done'&&!picked.includes(l));
   const sel=picked.concat(svc);
   const _td=todayStr();
+  const _md=sel.filter(undeductedAtShip);/* ⚠️ back=false로 바꾸기 '전에' 미차감분을 확정 */
   const prev=sel.map(o=>({ship:o.ship,track:o.track,back:o.back,req:o.req,shipped_date:o.shipped_date}));
   sel.forEach(o=>{o.ship='done';o.track=trk;o.back=false;o.req='';o.shipped_date=_td;});
   const ids=sel.map(o=>o.id).filter(x=>x!=null);
   let ok=true;if(ids.length){try{const {error}=await SB.from('orders').update({ship:'done',track:trk,back:false,req:null,shipped_date:_td}).in('id',ids);if(error){console.error('shipDone',error);ok=false;}}catch(e){console.error(e);ok=false;}}
-  if(ok){sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}
+  if(ok){await _shipDeduct(_md);/* 출고 확정된 뒤에만 차감 */sel.forEach(o=>SHIPCHK.delete(o.id));toast('🚚 출고완료: '+c.cust+' '+sel.length+'건 · 송장 '+trk);CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}
   else{sel.forEach((o,j)=>Object.assign(o,prev[j]));toast('⚠️ 저장 실패 — 다시 시도하세요');}
   render();
 }
@@ -2900,7 +3053,7 @@ async function rxStepStockEffect(o,step,sign){const q=o.qty||1;
       if(!s||have<q){/* 재고 부족 → 미송(사입) 자동 등록 */
         if(!confirm('교환 새상품 재고가 부족합니다 (현재 '+(s?have:0)+'개 · 필요 '+q+'개).\n\n재고 차감 대신 [미송(사입)]으로 등록할까요?\n→ 미송관리·미송사입에 떠서 사입 후 발송합니다.\n\n[취소] 하면 재발송 단계로 넘어가지 않습니다.'))return false;
         const today=(todayStr()).replace(/-/g,'/');
-        const mo={date:today,staff:o.staff,cust:o.cust,phone:o.phone||'',addr:o.addr||'',code:nw.code,disp:`${nw.name||nw.code} ${nw.color||''} ${nw.size||''}`.replace(/ +/g,' ').trim(),tag:nw.tag||tagOf(nw.code)||'',color:nw.color||'',size:nw.size||'',qty:q,price:0,pay:'paid',ship:'miss',back:true,req:'미송',prog:'미포장',reason:'교환 재발송(재고부족→미송사입)',meta:{exchangeOf:o.id}};
+        const mo={date:today,staff:o.staff,cust:o.cust,phone:o.phone||'',addr:o.addr||'',code:nw.code,disp:`${nw.name||nw.code} ${nw.color||''} ${nw.size||''}`.replace(/ +/g,' ').trim(),tag:nw.tag||tagOf(nw.code)||'',color:nw.color||'',size:nw.size||'',qty:q,price:0,pay:'paid',ship:'miss',back:true,req:'미송',prog:'미포장',reason:'교환 재발송(재고부족→미송사입)',meta:{exchangeOf:o.id,stockDeducted:false}};/* 재고부족이라 안 깎고 미송 등록 → 미차감 마커. 출고 시 _shipDeduct가 실차감한다(안 남기면 영구 미차감=오버셀) */
         ORD.unshift(mo);await saveOrd(mo);
         return `${nw.code||'새상품'} 재고부족 → 미송(사입) 등록`;
       }
@@ -3142,7 +3295,9 @@ async function cancelSaleCommit(){const d=CANCELDRAFT;if(!d)return;const o=ORD.f
   const i=ORD.indexOf(o);if(i>=0)ORD.splice(i,1);const s=skuOf(o.code,o.color,o.size);
   closeModal();CANCELDRAFT=null;
   toast('🗑️ '+kind+' 처리 → 재고 복원'+(toP?' · 적립금 +'+won(amt):' · 실환불 '+won(net)));render();
-  await delOrd(o);if(s)await adjustStockDB(s,o.qty,kind,cust);
+  /* 삭제 성공을 확인한 뒤에만 복원 — 실패했는데 복원하면 새로고침 시 주문이 되살아나 또 취소 → 이중복원(재고 과대) */
+  if(await delOrd(o)===false){if(i>=0)ORD.splice(i,0,o);else ORD.push(o);toast('⚠️ 삭제 저장 실패 — 취소를 되돌렸습니다. 다시 시도하세요');render();return;}
+  if(s&&wasStockDeducted(o))await adjustStockDB(s,o.qty,kind,cust);/* 실제 깐 것만 복원(shop미송·교환미송은 미차감이라 복원하면 유령재고) */
   await sweepOrphanShip(cust,_snap.date);/* 마지막 상품이었으면 남은 배송비 줄도 정리 */
   /* 현금/계좌 환불 → 환불대장에 CS 기록 (매출에는 안 잡히도록 pay='cs') */
   if(!toP){const _td=todayStr();const led={date:(_snap.date||_td).replace(/-/g,'/'),staff:_snap.staff||ME.name||'박시연',cust,code:'CS',disp:item,tag:'CS',color:'',size:'',qty:_snap.qty||1,price:amt,pay:'cs',ship:'done',source:'cs',rxtype:'refund',rxstat:'done',rxreason:kind,rxdate:_td,rxdone:_td,
@@ -4201,8 +4356,11 @@ async function sweepOrphanShip(cust,date){
   for(const o of orphans){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);}
   toast('🧹 상품이 없어 남은 배송비 '+orphans.length+'건도 자동 정리');render();}
 async function cancelOrder(id,reason){const i=ORD.findIndex(x=>x.id===id);if(i<0)return;const o=ORD[i],s=skuOf(o.code,o.color,o.size);ORD.splice(i,1);
-  toast('🗑️ 주문 취소 → 재고 '+o.qty+'개 복원 ('+prodName(o.code)+' '+o.color+')');render();
-  await delOrd(o);if(s)await adjustStockDB(s,o.qty,reason||'주문취소',o.cust);
+  const _was=!!(s&&wasStockDeducted(o));/* 실제 깐 것만 복원 — 안내 문구도 실제 동작과 일치시킨다(복원 안 하는데 "복원" 뜨면 운영자가 못 알아챔) */
+  toast('🗑️ 주문 취소'+(_was?' → 재고 '+o.qty+'개 복원 ('+prodName(o.code)+' '+o.color+')':' (미차감 주문이라 재고 변동 없음)'));render();
+  /* 삭제 성공을 확인한 뒤에만 복원 — 실패 시 되살리고 재고는 손대지 않는다(이중복원 방지) */
+  if(await delOrd(o)===false){if(i>=0)ORD.splice(i,0,o);else ORD.push(o);toast('⚠️ 삭제 저장 실패 — 취소를 되돌렸습니다. 다시 시도하세요');render();return;}
+  if(_was)await adjustStockDB(s,o.qty,reason||'주문취소',o.cust);
   await sweepOrphanShip(o.cust,o.date);}
 /* 미송 상품 취소 — 배송지연 등. 적립금 적립 여부 포함한 취소/환불 모달로 연결 */
 function cancelBackOrder(id){cancelSale(id,'취소');}
@@ -4711,11 +4869,12 @@ function liveDetail(s){
     <div class="card2">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap"><h3 style="margin:0">📦 방송 상품 <span class="muted" style="font-weight:400;font-size:12px">${prods.length}개</span></h3>
         <span style="flex:1"></span>
-        <button class="btn sm" onclick="liveAddSearch(${s.id})"><i class="ti ti-search"></i> ERP 상품 연결</button>
+        <span class="addbtns-pc"><button class="btn sm" onclick="liveAddSearch(${s.id})"><i class="ti ti-search"></i> ERP 상품 연결</button>
         <button class="btn sm ghost" onclick="liveAddManual(${s.id})"><i class="ti ti-square-plus"></i> 개별상품(미재고)</button>
-        <button class="btn sm ghost" onclick="liveAddCapture(${s.id})"><i class="ti ti-photo"></i> 캡처 이미지 상품</button></div>
+        <button class="btn sm ghost" onclick="liveAddCapture(${s.id})"><i class="ti ti-photo"></i> 캡처 이미지 상품</button></span>
+        <span class="addbtns-mo"><button class="btn sm" onclick="liveAddMenu(${s.id})"><i class="ti ti-square-plus"></i> 상품 추가</button></span></div>
       ${prods.length>0?`<input id="lp_q" placeholder="🔍 등록 상품 검색 (품번·상품명) — 소개중 지정할 상품 빨리 찾기" oninput="liveProdFilter()" style="width:100%;height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;margin-bottom:10px">`:''}
-      ${prods.length?`<div class="muted" style="font-size:12px;margin-bottom:8px">💡 <b>노출</b>이 <b>☑ 노출중</b>(초록)이어야 고객 URL에 보입니다. <b>☐ 숨김</b>은 안 보여요. 상품은 담으면 기본 노출중입니다.</div><div style="overflow:auto"><table class="tbl" id="lp_table"><thead><tr><th style="width:34px;text-align:center"><input type="checkbox" id="lp_ckall" ${liveSelCount(s.id)>0&&liveSelCount(s.id)===prods.length?'checked':''} onclick="liveSelAllToggle(${s.id},this.checked)" title="전체선택/해제"></th><th>순서</th><th>상품</th><th>옵션</th><th class="num-cell">방송가</th><th>소개중</th><th>고객 노출</th><th></th></tr></thead><tbody>
+      ${prods.length?`<div class="muted" style="font-size:12px;margin-bottom:8px">💡 <b>노출</b>이 <b>☑ 노출중</b>(초록)이어야 고객 URL에 보입니다. <b>☐ 숨김</b>은 안 보여요. 상품은 담으면 기본 노출중입니다.</div><div class="lp-tablewrap" style="overflow:auto"><table class="tbl" id="lp_table"><thead><tr><th style="width:34px;text-align:center"><input type="checkbox" id="lp_ckall" ${liveSelCount(s.id)>0&&liveSelCount(s.id)===prods.length?'checked':''} onclick="liveSelAllToggle(${s.id},this.checked)" title="전체선택/해제"></th><th>순서</th><th>상품</th><th>옵션</th><th class="num-cell">방송가</th><th>소개중</th><th>고객 노출</th><th></th></tr></thead><tbody>
         ${prods.map((p,i)=>{const opts=liveOptText(p);const numtag=p.stock_code?baseCode(p.stock_code):(p.manual_code||'');const kind=p.stock_code?'재고':(p.manual_code?'개별':'캡처');const bt=liveNumTag(p);return `<tr data-s="${escAttr(((bt||'')+' '+(numtag||'')+' '+(p.name||'')).toLowerCase())}">
           <td style="text-align:center"><input class="lp-ck" type="checkbox" ${liveSelHas(p.id)?'checked':''} onclick="liveSelToggle(${p.id},${s.id})"></td><td style="white-space:nowrap"><button class="ico-btn" onclick="liveMove(${p.id},-1)" ${i===0?'disabled':''}>▲</button><button class="ico-btn" onclick="liveMove(${p.id},1)" ${i===prods.length-1?'disabled':''}>▼</button></td>
           <td><div style="display:flex;gap:8px;align-items:center"><span class="tagbox" title="번호표 — 고객이 방송·채팅에서 부르는 번호">${esc(bt)}</span>${p.image_url?`<img src="${esc(p.image_url)}" alt="" onclick="imgZoom('${escAttr(p.image_url)}')" title="클릭하면 크게 보기" style="width:44px;height:44px;object-fit:cover;border-radius:7px;flex:0 0 auto;cursor:zoom-in">`:''}<div>${numtag?`<span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:10px;font-weight:800" title="품번">${esc(numtag)}</span> `:`<span class="pill p-req" style="font-size:10px">${kind}</span> `}<b>${esc(p.name)}</b></div></div></td>
@@ -4725,7 +4884,12 @@ function liveDetail(s){
           <td><button class="btn sm ${p.active?'green':'gray'}" onclick="liveToggleActive(${p.id})" title="체크되면 고객 URL에 노출됩니다 (누르면 켜기/끄기)">${p.active?'☑ 노출중':'☐ 숨김'}</button></td>
           <td style="white-space:nowrap">${p.stock_code?`<button class="btn sm ghost" onclick="livePhotoModal('${escAttr(baseCode(p.stock_code))}')" title="상품사진 등록/변경">📷</button> `:''}<button class="btn sm red ghost" onclick="liveDelProduct(${p.id})">삭제</button></td>
         </tr>`;}).join('')}
-      </tbody></table></div>${_lpBar(s.id,prods.length)}`:`<div class="muted" style="padding:16px">상품을 추가하세요. [ERP 상품 연결]은 재고·옵션이 자동 연동되고, [캡처 이미지 상품]은 사진을 올려 판매합니다.</div>`}
+      </tbody></table></div><div class="lp-cards">${prods.map((p,i)=>{const opts=liveOptText(p);const numtag=p.stock_code?baseCode(p.stock_code):(p.manual_code||'');const kind=p.stock_code?'재고':(p.manual_code?'개별':'캡처');const bt=liveNumTag(p);const qty=(()=>{if(p.stock_code){const b=baseCode(p.stock_code);const q=STOCK.filter(x=>baseCode(x.code)===b).reduce((a,r)=>a+(+r.qty||0),0);return `<span class="lp-qty${q<=5?' low':''}">재고 ${q}개</span>`;}const mx=+p.max_qty||0;return `<span class="lp-qty">${mx>0?'등록 '+mx+'개':'수량 제한없음'}</span>`;})();return `<div class="lp-card${p.active?'':' off'}" data-s="${escAttr(((bt||'')+' '+(numtag||'')+' '+(p.name||'')).toLowerCase())}">
+          <div class="lp-crow"><div class="lp-ckwrap"><input class="lp-ck" type="checkbox" ${liveSelHas(p.id)?'checked':''} onclick="liveSelToggle(${p.id},${s.id})"></div>${p.image_url?`<img class="lp-thumb" src="${esc(p.image_url)}" alt="" onclick="imgZoom('${escAttr(p.image_url)}')" title="크게 보기">`:`<span class="lp-thumb ph">📷</span>`}<div class="lp-info"><div class="lp-tags"><span class="lp-numtag" title="번호표">${esc(bt)}</span>${numtag?`<span class="lp-pill" title="품번">${esc(numtag)}</span>`:`<span class="lp-pill req">${kind}</span>`}</div><b class="lp-nm">${esc(p.name)}</b><div class="lp-opt">${esc(opts)}</div></div></div>
+          <div class="lp-price"><span class="lp-lab">방송가</span><input class="lp-priceinput" type="number" value="${p.live_price}" onchange="liveSetPrice(${p.id},this.value)"><span class="lp-won">원</span>${qty}</div>
+          <div class="lp-toggles"><button class="lp-tg ${p.active?'exp-on':'exp-off'}" onclick="liveToggleActive(${p.id})">${p.active?'☑ 노출중':'☐ 숨김'}</button><button class="lp-tg ${p.is_now?'now-on':'now-off'}" onclick="liveToggleNow(${p.id})">${p.is_now?'★ 소개중':'☆ 소개중 지정'}</button></div>
+          <div class="lp-ops"><button class="lp-icon" onclick="liveMove(${p.id},-1)" ${i===0?'disabled':''}>▲</button><button class="lp-icon" onclick="liveMove(${p.id},1)" ${i===prods.length-1?'disabled':''}>▼</button><span style="flex:1"></span>${p.stock_code?`<button class="lp-icon" onclick="livePhotoModal('${escAttr(baseCode(p.stock_code))}')" title="사진">📷</button>`:''}<button class="lp-icon del" onclick="liveDelProduct(${p.id})" title="삭제">🗑</button></div>
+        </div>`;}).join('')}</div>${_lpBar(s.id,prods.length)}`:`<div class="muted" style="padding:16px">상품을 추가하세요. [ERP 상품 연결]은 재고·옵션이 자동 연동되고, [캡처 이미지 상품]은 사진을 올려 판매합니다.</div>`}
     </div>`;
 }
 function liveNumTag(p){
@@ -4935,6 +5099,7 @@ function liveAddCapture(sid){
   window._liveAddSid=sid;
   $('#modalBox').className='modal-box modal-photo';
   $('#modalBox').innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">🖼️ 캡처 이미지 상품 <span style="font-size:11px;color:var(--blue);font-weight:500">↘ 모서리 드래그로 크게</span></h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+    <div class="muted" style="font-size:12px;margin-bottom:10px">PC <b>방송화면을 캡처</b>해 사진 위주로 빠르게 등록합니다. <b>폰 카메라로 찍으려면 [모바일 등록]</b>을 쓰세요.</div>
     <div class="form2">
       <label>상품명</label><input id="lc_name" placeholder="예: 크롭 니트 가디건">
       <div class="row2"><div><label>방송가(원)</label><input id="lc_price" type="number" placeholder="39000"></div>
@@ -4948,6 +5113,56 @@ function liveAddCapture(sid){
   $('#modal').classList.remove('hide');imgPickerBind('lc');
 }
 /* ===== 통합 이미지 입력기: A(붙여넣기=Win+Shift+S 영역스니핑) / B(화면공유+드래그 크롭) · 마지막 선택 기억 ===== */
+/* ===== 모바일 상품 등록 (2026-07-18) — 상품추가 4버튼 진입 + 폰 카메라/갤러리 최소입력. 저장경로는 캡처상품과 100% 동일 재사용 ===== */
+function liveAddMenu(sid){
+  window._liveAddSid=sid;const box=$('#modalBox');if(box)box.className='modal-box';
+  const R=(em,tt,sub,call,hot)=>`<button type="button" onclick="${call}" style="display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:${hot?'#f5f8ff':'#fff'};border:1.5px solid ${hot?'var(--blue)':'var(--line)'};border-radius:16px;padding:14px;margin-bottom:11px;cursor:pointer">
+    <span style="width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;font-size:23px;border-radius:13px;background:${hot?'var(--blue)':'var(--blue-s,#eaf1ff)'};${hot?'color:#fff':''}">${em}</span>
+    <span style="flex:1;min-width:0"><b style="display:flex;align-items:center;font-size:15.5px;font-weight:800;color:var(--ink,#191f2e)">${tt}${hot?' <span style="font-size:10px;font-weight:900;color:#fff;background:var(--blue);border-radius:6px;padding:2px 7px;margin-left:6px">폰 추천</span>':''}</b><span style="display:block;font-size:12px;color:var(--gray,#7b8698);margin-top:2px">${sub}</span></span>
+    <span style="color:#a3adbd;font-size:20px;font-weight:700">›</span></button>`;
+  box.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><h3 style="margin:0">상품 추가</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+    ${R('📦','ERP 상품 불러오기','등록된 재고에서 골라 담기 (옵션·재고 연동)','liveAddSearch('+sid+')')}
+    ${R('➕','개별상품 (미재고)','재고에 없는 낱장·원정 상품 직접 등록','liveAddManual('+sid+')')}
+    ${R('🖼️','캡처 이미지 상품','PC 방송화면을 캡처해 빠르게 등록','liveAddCapture('+sid+')')}
+    ${R('📱','모바일 등록','폰 카메라로 찍거나 갤러리에서 바로 등록','liveAddMobile('+sid+')',true)}`;
+  $('#modal').classList.remove('hide');
+}
+function liveAddMobile(sid){
+  window._liveAddSid=sid;const box=$('#modalBox');if(box)box.className='modal-box';
+  const bs='flex:1;min-height:64px;flex-direction:column;gap:5px;font-size:15px';
+  box.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="margin:0">📱 모바일 상품 등록</h3><span style="flex:1"></span><button class="btn gray sm" onclick="closeModal()">✕</button></div>
+    <div style="display:flex;gap:10px;margin-bottom:10px">
+      <label class="btn" style="${bs}">📷<span>카메라로 촬영</span><input id="lb_cam" type="file" accept="image/*" capture="environment" style="display:none"></label>
+      <label class="btn gray" style="${bs}">🖼<span>갤러리에서 선택</span><input id="lb_img" type="file" accept="image/*" style="display:none"></label>
+    </div>
+    <div class="muted" style="font-size:11.5px;margin-bottom:10px;line-height:1.5">방송 중 급할 땐 <b>사진 + 이름 + 가격</b>만으로 바로 등록돼요. 후면 카메라가 바로 켜집니다. <span style="color:#a3adbd">(옵션·수량은 나중에)</span></div>
+    <img id="lb_prev" alt="" onclick="imgZoom(this.src)" style="display:none;width:100%;max-height:min(42vh,360px);object-fit:contain;border-radius:12px;border:1px solid var(--line);margin-bottom:12px;cursor:zoom-in">
+    <div class="form2">
+      <label>상품명</label><input id="lb_name" placeholder="예: 크롭 니트 가디건">
+      <label>방송가(원)</label><input id="lb_price" type="number" placeholder="39000">
+      <details style="margin-top:8px"><summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--gray)">＋ 옵션 · 수량 (선택 — 나중에 가능)</summary>
+        <div class="row2" style="margin-top:8px"><div><label>색상(쉼표)</label><input id="lb_colors" placeholder="크림,블랙"></div>
+          <div><label>사이즈(쉼표)</label><input id="lb_sizes" placeholder="F 또는 S,M,L"></div></div>
+        <label style="margin-top:6px">최대수량(0=제한없음)</label><input id="lb_max" type="number" value="0"></details>
+    </div>
+    <div class="modal-foot"><button class="btn gray" onclick="closeModal()">취소</button><button class="btn" id="lb_save" onclick="liveSaveMobile()">✓ 등록하기</button></div>`;
+  $('#modal').classList.remove('hide');imgPickerBind('lb');
+}
+async function liveSaveMobile(){
+  const sid=window._liveAddSid;const name=($('#lb_name').value||'').trim();const price=+$('#lb_price').value||0;
+  if(!name){toast('상품명을 입력하세요');return;}if(price<=0){toast('방송가를 입력하세요');return;}
+  const btn=$('#lb_save');if(btn){btn.disabled=true;btn.textContent='업로드 중...';}
+  let image_url=null;
+  try{
+    image_url=await imgResolveUrl(sid);
+    const sort=(liveProdsOf(sid).reduce((m,p)=>Math.max(m,p.sort),0))+1;
+    const {error}=await SB.from('session_products').insert({session_id:sid,stock_code:null,name,live_price:price,
+      colors:(($('#lb_colors')&&$('#lb_colors').value.trim())||null),sizes:(($('#lb_sizes')&&$('#lb_sizes').value.trim())||null),
+      max_qty:(($('#lb_max')&&+$('#lb_max').value)||0),image_url,sort,active:true});
+    if(error){console.error(error);toast('⚠️ 추가 실패: '+(error.message||''));if(btn){btn.disabled=false;btn.textContent='✓ 등록하기';}return;}
+    closeModal();toast('✅ 모바일 상품 추가: '+name);await liveReload();
+  }catch(e){console.error(e);toast('⚠️ 오류');if(btn){btn.disabled=false;btn.textContent='✓ 등록하기';}}
+}
 function imgPickerHtml(prefix){return `
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
     <button type="button" class="btn sm" onclick="imgStartCapture('${prefix}')">📸 화면 캡처 (영역 선택)</button>
@@ -4984,6 +5199,7 @@ function imgPickerBind(prefix){window._imgBlob=null;window._imgUrl=null;window._
     drop.addEventListener('drop',e=>{e.preventDefault();drop.style.background='';const dt=e.dataTransfer;if(!dt)return;if(dt.files&&dt.files[0]&&(dt.files[0].type||'').indexOf('image')===0){useFile(dt.files[0]);return;}const uri=dt.getData('text/uri-list')||dt.getData('text/plain');if(uri&&useUrl(uri))return;const html=dt.getData('text/html');const m=html&&html.match(/src=["']([^"']+)["']/);if(m&&useUrl(m[1]))return;});
   }
   const fi=$('#'+prefix+'_img');if(fi)fi.addEventListener('change',()=>useFile(fi.files[0]));
+  const cam=$('#'+prefix+'_cam');if(cam)cam.addEventListener('change',()=>useFile(cam.files[0]));/* 폰 후면카메라 직촬영(capture) — lc/lm엔 없으니 가드로 무시 */
   const url=$('#'+prefix+'_url');if(url)url.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(!useUrl(url.value))toast('http로 시작하는 이미지 주소를 넣어주세요');}});}
 async function imgStartCapture(prefix){
   const md=navigator.mediaDevices;
@@ -5049,8 +5265,9 @@ async function liveSaveCapture(){
   }catch(e){console.error(e);toast('⚠️ 오류');btn.disabled=false;btn.textContent='추가';}
 }
 /* 등록 상품 검색(품번·이름) — 표에서 안 맞는 행 숨김(리렌더 없이 포커스 유지) */
-function liveProdFilter(){const q=(($('#lp_q')&&$('#lp_q').value)||'').trim().toLowerCase();const tb=$('#lp_table');if(!tb)return;
-  tb.querySelectorAll('tbody tr').forEach(tr=>{const s=tr.getAttribute('data-s')||'';tr.style.display=(!q||s.includes(q))?'':'none';});}
+function liveProdFilter(){const q=(($('#lp_q')&&$('#lp_q').value)||'').trim().toLowerCase();const tb=$('#lp_table');
+  if(tb)tb.querySelectorAll('tbody tr').forEach(tr=>{const s=tr.getAttribute('data-s')||'';tr.style.display=(!q||s.includes(q))?'':'none';});
+  document.querySelectorAll('.lp-cards .lp-card').forEach(c=>{const s=c.getAttribute('data-s')||'';c.style.display=(!q||s.includes(q))?'':'none';});}
 /* 개별상품(미재고) — 재고 연동 없이 품번·이름·가격·수량만. 사진 붙여넣기 선택 */
 function liveAddManual(sid){
   window._liveAddSid=sid;
@@ -5105,11 +5322,11 @@ function _lpSyncBar(sid){
 }
 function liveSelToggle(id,sid){if(LP_SEL.has(id))LP_SEL.delete(id);else LP_SEL.add(id);_lpSyncBar(sid);}
 function liveSelAllToggle(sid,on){liveProdsOf(sid).forEach(p=>{if(on)LP_SEL.add(p.id);else LP_SEL.delete(p.id);});
-  document.querySelectorAll('#lp_table .lp-ck').forEach(el=>{el.checked=!!on;});_lpSyncBar(sid);}
+  document.querySelectorAll('.lp-ck').forEach(el=>{el.checked=!!on;});_lpSyncBar(sid);}
 function _lpNames(list){return list.slice(0,10).map(p=>'· '+(p.name||'(이름없음)')).join('\n')+(list.length>10?('\n… 외 '+(list.length-10)+'개'):'');}
 /* 하단 액션바 — 실행 버튼은 오른쪽 하단 */
 function _lpBar(sid,tot){const n=liveSelCount(sid);
-  return `<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+  return `<div class="lp-bar" style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
     <span class="muted" style="font-size:12px">선택 <b id="lp_selcnt">${n}</b>개 / 전체 ${tot}개 <span style="color:#94a3b8">· SHOP 노출만 해제됩니다 (재고·주문은 그대로)</span></span>
     <span style="flex:1"></span>
     <button class="btn sm ghost" onclick="liveSelAllToggle(${sid},true)">전체선택</button>
