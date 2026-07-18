@@ -252,6 +252,12 @@ body{background:var(--ed-bg);color:var(--ed-ink);}
 .feat .fadd{margin:12px auto 0 !important;background:var(--ed-ink) !important;color:#fff !important;font-weight:500 !important;border-radius:2px !important;}
 .feat .nowtag{position:static !important;background:transparent !important;border:1px solid var(--ed-line) !important;color:var(--ed-ink) !important;box-shadow:none !important;font-weight:500 !important;display:inline-flex;margin:0 auto 12px !important;letter-spacing:1px;}
 .feat .nowtag i{background:#e0304a !important;}
+/* ===== 영상 비율 복구 (2026-07-18) — 디올 3:4는 상품 '정지이미지'에만 적용.
+   영상(히어로 릴·라이브·상품카드 영상)은 안 잘리게 object-fit:contain(사장님 A안: 여백 OK).
+   히어로는 startReel의 loadedmetadata가 hero를 영상 실제비율로 맞추므로 영상엔 3:4를 강제하지 않음. ===== */
+#reelvid,.hmedia>video,.hmedia>iframe{object-fit:contain !important;}
+.pcard .pi>video,.feat>video{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto !important;object-fit:contain !important;}
+.vidbox video{object-fit:contain !important;}
 </style>
 </head>
 <body>
