@@ -1887,7 +1887,7 @@ function viewOrder(){
   const sellers=sellerList().map(nm=>`<option ${OE.staff===nm?'selected':''}>${esc(nm)}</option>`).join('');
   const total=OE.lines.reduce((a,l)=>a+(l.price||0)*(l.qty||0),0),cnt=OE.lines.reduce((a,l)=>a+(l.qty||0),0);
   // 합배 안내 — 선택한 고객의 아직 출고 안 된 주문(합쳐질 대상)
-  const priorOrders=OE.cust?mine(ORD).filter(o=>o.cust===OE.cust&&o.ship!=='done'&&o.code!=='배송비'&&o.code!=='적립금'):[];
+  const priorOrders=OE.cust?mine(ORD).filter(o=>custCanon(o.cust)===custCanon(OE.cust)&&o.ship!=='done'&&o.code!=='배송비'&&o.code!=='적립금'):[];
   const priorDates=[...new Set(priorOrders.map(o=>o.date))].sort();
   const mergeBanner=priorOrders.length?`<div class="note" style="background:#eff6ff;border:1px solid #bcd3ff;color:#1e40af;margin-bottom:10px">🔗 <b>${esc(OE.cust)}</b> 고객은 아직 출고 안 된 주문이 <b>${priorOrders.length}건</b> 있습니다 (${priorDates.join(', ')}) — 이번 주문은 <b>합배</b>로 함께 나갑니다.</div>`:'';
   return `
@@ -1964,19 +1964,64 @@ function viewOrder(){
   </div>`;
 }
 function payBadge(pw){if(!pw||pw==='-')return '';const cash=pw==='현금';return `<span class="pill ${cash?'p-done':'p-req'}" style="font-size:11px;flex:0 0 auto;white-space:nowrap">${cash?'💵':'💳'} ${pw}</span>`;}
+/* ===== 고객 정체성 정규화(canonical identity) — 주문서 병합버그 근본수정 =====
+   [문제] [닉네임 관리]의 채널연동(= 사장님이 말하는 "매칭")은 customers.platform_ids 에
+          저장만 될 뿐 주문행(orders.cust)을 1도 안 바꾼다. 그런데 주문 그룹핑·합배 배송비·
+          고객통계는 전부 cust '이름 문자열'이 키다 → 라이브 닉네임으로 들어온 주문과
+          실명으로 들어온 주문이 영원히 갈린다.
+          = 주문서 2장 · 배송비 2번 청구 · 고객통계 반토막 (돈 문제)
+   [해결] '읽는 시점'에 alias(연동 닉네임/채널ID) → 대표고객 name 으로 통합한다.
+          · DB는 안 건드림 → 이미 갈려 있는 과거 주문도 그대로 합쳐져 보임(하위호환·무마이그레이션)
+          · 사람이 [닉네임 관리]에서 명시적으로 연동한 것만 매핑. 이름 괄호 파싱 같은 추측 금지
+          · 별칭이 다른 실제 고객의 이름이면서 전화가 서로 다르면 동명이인 위험 → 매핑 보류
+            (CJ송장 연결 923행의 동명이인 안전장치와 같은 원칙)
+          · 두 고객이 같은 별칭을 주장하면 모호 → 봉인(둘 다 매핑 안 함) */
+let _ALIAS=null;
+function custAliasMap(){
+  if(_ALIAS)return _ALIAS;
+  const byName=Object.create(null);
+  CUSTOMERS.forEach(c=>{if(c&&c.name&&!byName[c.name])byName[c.name]=c;});
+  const owner=Object.create(null);/* alias → 대표명 ('' = 모호하여 봉인) */
+  CUSTOMERS.forEach(c=>{
+    if(!c||!c.name)return;
+    custPlats(c).forEach(p=>{
+      [p&&p.nick,p&&p.uid].forEach(raw=>{
+        const a=(raw||'').trim();
+        if(!a||a===c.name)return;
+        const other=byName[a];
+        if(other&&other!==c){const pa=custPhoneNorm(c.phone),pb=custPhoneNorm(other.phone);
+          if(pa&&pb&&pa!==pb)return;/* 전화가 명백히 다름 = 동명이인 → 이 별칭 무시 */}
+        if((a in owner)&&owner[a]!==c.name){owner[a]='';return;}/* 두 고객이 같은 별칭 → 봉인 */
+        owner[a]=c.name;
+      });
+    });
+  });
+  const m=Object.create(null);
+  Object.keys(owner).forEach(a=>{if(owner[a])m[a]=owner[a];});
+  _ALIAS=m;return m;
+}
+/* 별칭이면 대표 고객명으로, 아니면 원래 이름 그대로(연동 안 한 고객은 100% 무회귀) */
+function custCanon(n){const m=custAliasMap();return (n&&m[n])||n||'';}
 let _onCache=null;
-function orderNoOf(date,cust){if(!_onCache)_onCache={};const d=(date||'');if(!_onCache[d]){const seen={};let n=0;ORD.filter(x=>(x.date||'')===d).sort((a,b)=>(a.id||0)-(b.id||0)).forEach(x=>{if(x.cust&&!(x.cust in seen))seen[x.cust]=++n;});_onCache[d]=seen;}return d.replace(/[\/-]/g,'.')+'-'+String((_onCache[d]||{})[cust]||0).padStart(2,'0');}
+function orderNoOf(date,cust){if(!_onCache)_onCache={};const d=(date||'');if(!_onCache[d]){const seen={};let n=0;ORD.filter(x=>(x.date||'')===d).sort((a,b)=>(a.id||0)-(b.id||0)).forEach(x=>{const cn=custCanon(x.cust);if(cn&&!(cn in seen))seen[cn]=++n;});_onCache[d]=seen;}return d.replace(/[\/-]/g,'.')+'-'+String((_onCache[d]||{})[custCanon(cust)]||0).padStart(2,'0');}
 function onoBadge(date,cust){return `<span style="display:inline-block;background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;flex:0 0 auto;white-space:nowrap;letter-spacing:.3px">${orderNoOf(date,cust)}</span>`;}
 /* 주문별 고유 그룹ID 생성(uuid v4) — 저장 1건마다 별개 카드로 분리 */
 function genGid(){try{if(typeof crypto!=='undefined'&&crypto.randomUUID)return crypto.randomUUID();}catch(e){}
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){const r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);});}
-/* 그룹 키: order_group_id 있으면 그걸로(주문별 분리), 없으면 옛 방식(날짜+고객) — 기존데이터 무회귀 */
-function _ogKey(o){return o&&o.order_group_id?('g:'+o.order_group_id):((o&&o.date||'')+'||'+(o&&o.cust||''));}
+/* 그룹 키: 같은 사람·같은 날 = 주문서 카드 1장.
+   [사양확정 2026-07-17] c59d303의 '저장 1건마다 별개 카드로 분리'를 폐기한다.
+     · c59d303의 목적 = "같은 고객·같은 날 주문을 일부러 따로 배송하는 경우"
+     · 사장님 확인 결과 그런 케이스는 "거의 없는 게 아니고 아예 없음"
+     → 안 쓰는 기능 때문에 주문서 갈림·배송비 2번 청구가 나고 있었으므로 걷어냄.
+   order_group_id는 컬럼·저장·수정유지(editGid) 로직을 전부 그대로 둔다(데이터 무해·되돌리기 가능).
+   '그룹핑 판단에서만' 배제 → 이미 gid가 찍힌 과거 주문도 이름 기준으로 합쳐져 보임(DB 무수정). */
+function _ogKey(o){return (o&&o.date||'')+'||'+custCanon(o&&o.cust);}
 function orderGroups(pay){
   const list=mine(ORD).filter(o=>o.pay===pay),map={};
   list.forEach(o=>{const k=_ogKey(o);
-    if(!map[k]){const _c=(!o.phone||!o.addr)?CUSTOMERS.find(x=>x.name===o.cust):null;/* 라이브챗 주문은 주문행 phone/addr가 빈값 → 매칭된 고객정보에서 폴백(SUNPICK서 발견: 매칭고객 주문서 연락처·주소 안뜸) */
-      map[k]={key:k,date:o.date,cust:o.cust,phone:o.phone||(_c&&_c.phone)||'',addr:o.addr||(_c&&_c.addr)||'',staff:o.staff,items:[]};}
+    if(!map[k]){const cn=custCanon(o.cust);/* 연동(매칭)된 닉네임 주문은 대표고객 이름으로 통합 */
+      const _c=(!o.phone||!o.addr)?CUSTOMERS.find(x=>x.name===cn):null;/* 라이브챗 주문은 주문행 phone/addr가 빈값 → 매칭된 고객정보에서 폴백(SUNPICK서 발견: 매칭고객 주문서 연락처·주소 안뜸) */
+      map[k]={key:k,date:o.date,cust:cn,phone:o.phone||(_c&&_c.phone)||'',addr:o.addr||(_c&&_c.addr)||'',staff:o.staff,items:[]};}
     map[k].items.push(o);});
   return Object.values(map).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 }
@@ -2064,7 +2109,9 @@ async function unpayGroup(idx){const g=orderGroups('paid')[idx];if(!g)return;if(
   render();}
 async function editOrderGroup(idx){await editGroupObj(orderGroups('unpaid')[idx],{});}
 /* 결제완료(판매현황·판매관리) 주문 수정 — 재고 자동조정, 결제·출고 상태 보존 */
-async function editPaidGroup(date,cust){const items=mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'')===date&&(o.cust||'')===cust);
+/* 호출부(판매현황 카드)가 넘기는 cust는 정규화된 대표명 → 별칭(라이브 닉네임)으로 저장된 주문행도 반드시 같이 잡아야 한다.
+   이름 완전일치로 두면 합쳐진 카드를 수정할 때 별칭 주문이 조용히 빠진 채 저장돼 주문이 증발한다. */
+async function editPaidGroup(date,cust){const _cn=custCanon(cust);const items=mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'')===date&&custCanon(o.cust)===_cn);
   if(!items.length){toast('주문을 찾을 수 없어요');return;}
   const sh=(items.find(o=>o.ship&&o.code!=='배송비'&&o.code!=='적립금')||items[0]||{}).ship||'done';
   await editGroupObj({date,cust,phone:(items[0]||{}).phone,addr:(items[0]||{}).addr,staff:(items[0]||{}).staff,items},{payKeep:'paid',shipKeep:(sh==='miss'?'done':sh)});}
@@ -2073,26 +2120,31 @@ async function editGroupObj(g,opts){opts=opts||{};if(!g)return;
   OE={cust:g.cust,phone:g.phone||'',addr:g.addr||'',staff:g.staff||null,shipManual:true,
     date:((g.date||'').replace(/\//g,'-').slice(0,10))||todayStr(),
     lines:g.items.map(function(o){
-      if(o.code==='배송비')return {kind:'ship',name:o.disp||'배송비',price:o.price||0,qty:1};
-      if(o.code==='적립금')return {kind:'point',name:'적립금 사용',price:o.price||0,qty:1};
-      if(o.code==='낱장')return {kind:'natjang',name:o.disp||'',tag:o.tag||'',color:o.color||'',size:o.size||'',qty:o.qty,price:o.price};
-      var s=skuOf(o.code,o.color,o.size);
-      return {code:o.code,name:(s&&s.name)||o.disp||o.code,color:o.color||'',size:o.size||'',qty:o.qty,price:o.price,tag:o.tag||(s&&s.tag)||'',back:!!o.back};
+      /* ⚠️ 2026-07-17 사양변경(같은사람=카드 1장) 이후 한 카드에 링크(shop)주문과 수기주문이 섞일 수 있다.
+         → 링크주문 식별정보를 '줄 단위'로 들고 간다. 예전처럼 카드 전체를 shop으로 뭉뚱그리면
+            수기주문까지 가예약(reservation) 상태가 되어 입금확인 때 재고가 두 번 빠진다(재고사고). */
+      var _c=(o.source==='shop')?{source:'shop',session_id:o.session_id||null,order_group_id:o.order_group_id||null,
+        reservation_expires_at:o.reservation_expires_at||new Date().toISOString(),payway:o.payway||null,meta:o.meta||null}:null;
+      var L;
+      if(o.code==='배송비')L={kind:'ship',name:o.disp||'배송비',price:o.price||0,qty:1};
+      else if(o.code==='적립금')L={kind:'point',name:'적립금 사용',price:o.price||0,qty:1};
+      else if(o.code==='낱장')L={kind:'natjang',name:o.disp||'',tag:o.tag||'',color:o.color||'',size:o.size||'',qty:o.qty,price:o.price};
+      else{var s=skuOf(o.code,o.color,o.size);
+        L={code:o.code,name:(s&&s.name)||o.disp||o.code,color:o.color||'',size:o.size||'',qty:o.qty,price:o.price,tag:o.tag||(s&&s.tag)||'',back:!!o.back};}
+      L._carry=_c;return L;
     })};
   OE.editOrig=g.items.slice();/* 원주문 보존 — 저장 성공 시에만 교체(도중 이탈해도 원주문 유지) */
-  OE.editGid=(g.items.find(o=>o.order_group_id)||{}).order_group_id||g.key&&(String(g.key).indexOf('g:')===0?g.key.slice(2):null)||null;/* 수정 시 원주문 그룹ID 유지(한 카드 유지) */
-  const shopItem=g.items.find(o=>o.source==='shop');
-  if(shopItem){/* 링크주문: 입금 전 재고 미차감 상태이므로 재고 원복/차감을 하지 않고 식별필드를 보존 */
-    OE.noStockAdjust=true;
-    OE.shopCarry={source:'shop',session_id:shopItem.session_id||null,order_group_id:shopItem.order_group_id||null,
-      reservation_expires_at:shopItem.reservation_expires_at||new Date().toISOString(),payway:shopItem.payway||null,meta:shopItem.meta||null};
-  }else{OE.noStockAdjust=false;OE.shopCarry=null;}
+  /* 수정 시 원주문 그룹ID 유지(이력추적용). 2026-07-17 사양변경 후 g.key는 'g:'로 시작하지 않으므로
+     사실상 첫 아이템의 gid를 물려받는다(과거 'g:' 키 폴백은 무해하게 남겨둠). gid가 없으면 저장부에서 새로 발급. */
+  OE.editGid=(g.items.find(o=>o.order_group_id)||{}).order_group_id||g.key&&(String(g.key).indexOf('g:')===0?g.key.slice(2):null)||null;
+  /* 링크(shop)주문 여부는 이제 줄 단위(_carry)로 판단한다 — 위 lines 매핑 참고.
+     예전의 카드단위 OE.noStockAdjust/OE.shopCarry는 카드가 합쳐지면 수기주문을 오염시키므로 폐기. */
   OE.payKeep=opts.payKeep||null;OE.shipKeep=opts.shipKeep||null;
   VIEW='order';render();toast('✏️ 수정 모드 — 항목 변경 후 [저장]하면 반영됩니다'+(opts.payKeep?' (결제완료 유지·재고 자동조정)':' (저장 전엔 원주문 그대로 유지)'));
 }
 async function cancelGroupBtn(idx){await cancelGroupObj(orderGroups('unpaid')[idx],false);}
 /* 결제완료 주문 취소 — 차감됐던 재고 복원 */
-async function cancelPaidGroup(date,cust){const items=mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'')===date&&(o.cust||'')===cust);
+async function cancelPaidGroup(date,cust){const _cn=custCanon(cust);/* 카드가 대표명으로 합쳐졌으므로 별칭 주문행까지 같이 취소해야 함 */const items=mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'')===date&&custCanon(o.cust)===_cn);
   if(!items.length)return;
   if(!confirm('⚠️ '+cust+' 주문('+items.length+'건)을 취소할까요?\n주문이 삭제되고, 차감됐던 재고가 복원됩니다. (되돌릴 수 없음)'))return;
   await cancelGroupObj({cust,items},true);}
@@ -2298,34 +2350,42 @@ async function commitOrder(){
    }}
   _committing=true;
   try{
-  const noStk=!!OE.noStockAdjust;const carry=OE.shopCarry||null;/* 링크주문 수정: 재고 손대지 않고 식별필드 보존 */
+  /* 링크(shop)주문 식별정보·재고처리는 줄 단위(l._carry)로 판단 — 카드 통합(2026-07-17) 후
+     한 카드에 shop+수기가 섞일 수 있으므로 카드단위 일괄처리 금지. */
   const pk=OE.payKeep||'unpaid',sk=OE.shipKeep||'miss';/* 결제완료 주문 수정 시 결제·출고 상태 보존 */
   const staff=isSeller()?(OE.staff||ME.owner||ME.name):(OE.staff||$('#oeStaff')?.value||'박시연');
   let back=0;const created=[];
   const _editOrig=OE.editOrig||[];/* 수정모드면 원주문 목록 — 저장 성공 후 교체 */
   const today=(OE.date||todayStr()).replace(/-/g,'/');
   OE.lines.forEach(l=>{
-    if(l.kind==='ship'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'배송비',disp:l.name,tag:'배송비',color:'',size:'',qty:1,price:l.price,back:false,pay:pk,ship:sk};ORD.unshift(o);created.push({o,s:null});return;}
-    if(l.kind==='point'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'적립금',disp:'적립금 사용',tag:'적립금',color:'',size:'',qty:1,price:l.price,back:false,pay:pk,ship:sk};ORD.unshift(o);created.push({o,s:null,points:l.price});return;}
-    if(l.kind==='natjang'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'낱장',disp:((l.name||'낱장')+' '+(l.color||'')+' '+(l.size||'')).replace(/ +/g,' ').trim(),tag:l.tag||'낱장',color:l.color||'',size:l.size||'',qty:l.qty,price:l.price,back:false,pay:pk,ship:sk};ORD.unshift(o);created.push({o,s:null});return;}
+    if(l.kind==='ship'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'배송비',disp:l.name,tag:'배송비',color:'',size:'',qty:1,price:l.price,back:false,pay:pk,ship:sk};ORD.unshift(o);created.push({o,s:null,l});return;}
+    if(l.kind==='point'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'적립금',disp:'적립금 사용',tag:'적립금',color:'',size:'',qty:1,price:l.price,back:false,pay:pk,ship:sk};ORD.unshift(o);created.push({o,s:null,points:l.price,l});return;}
+    if(l.kind==='natjang'){const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:'낱장',disp:((l.name||'낱장')+' '+(l.color||'')+' '+(l.size||'')).replace(/ +/g,' ').trim(),tag:l.tag||'낱장',color:l.color||'',size:l.size||'',qty:l.qty,price:l.price,back:false,pay:pk,ship:sk};ORD.unshift(o);created.push({o,s:null,l});return;}
     const s=skuOf(l.code,l.color,l.size);if(l.back)back++;
     const o={date:today,staff,cust:OE.cust,phone:OE.phone,addr:OE.addr,code:l.code,disp:`${l.name} ${l.color} ${l.size}`,tag:tagOf(l.code),color:l.color,size:l.size,qty:l.qty,price:l.price,back:!!l.back,pay:pk,ship:l.back?'miss':sk};
-    ORD.unshift(o);created.push({o,s,dq:l.qty});});
+    ORD.unshift(o);created.push({o,s,dq:l.qty,l});});
   const _cnt=created.length;
   /* created_by는 uuid+FK(auth.users) 컬럼 — 클라이언트가 이름/임의값을 넣으면 저장 실패(22P02/23503).
      새 주문은 생략해 DB가 채우게 두고(ORD2DB에서 미전송), 실적 집계는 staff 기준으로 처리 */
-  if(carry)created.forEach(({o})=>{o.source=carry.source;o.session_id=carry.session_id;o.order_group_id=carry.order_group_id;o.reservation_expires_at=(o.code==='배송비'?null:carry.reservation_expires_at);o.payway=carry.payway;o.meta=carry.meta;});
-  /* 주문서 1건 = 고유 그룹ID 1개 → 같은 고객·같은 날짜여도 별개 카드로 분리(합쳐짐 방지). 수정 시 원주문 그룹ID 유지 */
+  /* 링크(shop)주문에서 온 줄만 식별필드 복원 — 같은 카드의 수기주문 줄은 절대 shop으로 물들이지 않는다 */
+  created.forEach(({o,l})=>{const c=l&&l._carry;if(!c)return;
+    o.source=c.source;o.session_id=c.session_id;o.order_group_id=c.order_group_id;
+    o.reservation_expires_at=(o.code==='배송비'?null:c.reservation_expires_at);o.payway=c.payway;o.meta=c.meta;});
+  /* 주문서 1건 = 고유 그룹ID 1개. ※ 2026-07-17 사양변경으로 이 gid는 더 이상 카드를 나누지 않는다
+     (_ogKey 참고 — 카드는 '날짜+정규화 고객명' 기준 1장). 이력추적·되돌리기용으로 계속 기록만 한다. */
   {const _gid=OE.editGid||genGid();created.forEach(({o})=>{if(o.order_group_id==null)o.order_group_id=_gid;});}
   let _failed=0;
-  for(const {o,s,dq,points} of created){
+  for(const {o,s,dq,points,l} of created){
     const ok=await saveOrd(o);
     if(ok===false){_failed++;const _i=ORD.indexOf(o);if(_i>=0)ORD.splice(_i,1);continue;}/* 저장 실패 → 재고·적립금 손대지 않고 로컬에서도 제거 */
-    if(s&&!noStk)await adjustStockDB(s,-dq,'판매',o.cust);
+    /* 링크(shop)주문 줄은 입금확인 때 실차감하므로 여기선 차감 안 함(가예약). 수기 줄은 즉시 차감 — 줄 단위 판단 */
+    if(s&&!(l&&l._carry))await adjustStockDB(s,-dq,'판매',o.cust);
     if(points)await addPoints(o.cust,points,'적립사용',{item:'주문 사용',amount:Math.abs(points)});
   }
   // 수정모드: 새 주문이 전부 저장된 경우에만 원주문 삭제+재고 원복(부분 실패 시 원주문 보존)
-  if(_editOrig.length){if(_failed===0){for(const o of _editOrig){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);const s=skuOf(o.code,o.color,o.size);if(!noStk&&s&&o.code!=='낱장'&&o.code!=='배송비'&&o.code!=='적립금')await adjustStockDB(s,o.qty,'주문수정 원복',o.cust);}}else{toast('⚠️ 일부 저장 실패 — 원주문은 그대로 두었습니다. 확인 후 다시 시도하세요');}}
+  /* 원복도 줄 단위: 링크(shop)주문 원주문은 애초에 차감된 적이 없으니 원복하면 재고가 부풀어난다.
+     실제로 차감됐던 수기 원주문만 되돌린다. */
+  if(_editOrig.length){if(_failed===0){for(const o of _editOrig){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);const s=skuOf(o.code,o.color,o.size);if(s&&o.source!=='shop'&&o.code!=='낱장'&&o.code!=='배송비'&&o.code!=='적립금')await adjustStockDB(s,o.qty,'주문수정 원복',o.cust);}}else{toast('⚠️ 일부 저장 실패 — 원주문은 그대로 두었습니다. 확인 후 다시 시도하세요');}}
   toast((_failed?'⚠️ ':'✅ ')+'주문서 저장 ('+(_cnt-_failed)+'건)'+(back?' · 미송 '+back+'건 포함':'')+(_failed?' · '+_failed+'건 저장 실패(재고 미차감)':''));
   OE={cust:null,phone:'',addr:'',staff:null,lines:[],date:OE.date};render();
   }catch(e){console.error('commitOrder',e);toast('⚠️ 주문 저장 중 오류 — 새로고침 후 확인하세요');}
@@ -2377,7 +2437,7 @@ function orderRowsToday(){const t=todayStr();return orderRowsAll().filter(o=>(o.
 function orderRows(){return ORDTAB==='today'?orderRowsToday():orderRowsAll();}
 function shipRows(){const d=SHIPDATE||todayStr();return mine(ORD).filter(o=>o.pay==='paid'&&(o.date||'').replace(/\//g,'-').slice(0,10)===d&&!RXSET.includes(o.req)&&((o.req==='출고요청'||o.req==='합배요청')||o.ship==='done'));}
 function rxAll(){return baseRows().filter(o=>o.req==='교환요청'||o.req==='환불요청');}
-function grpDC(rows){const m={};rows.forEach(o=>{const k=_ogKey(o);(m[k]=m[k]||{key:k,date:o.date,cust:o.cust,phone:o.phone,staff:o.staff,items:[]}).items.push(o);});return Object.values(m).sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
+function grpDC(rows){const m={};rows.forEach(o=>{const k=_ogKey(o);(m[k]=m[k]||{key:k,date:o.date,cust:custCanon(o.cust),phone:o.phone,staff:o.staff,items:[]}).items.push(o);});return Object.values(m).sort((a,b)=>(b.date||'').localeCompare(a.date||''));}
 function curGroups(){return SALETAB==='order'?grpDC(orderRows()):grpDC(shipRows());}
 async function saveReq(gi){const g=curGroups()[gi];if(!g)return;const chg=[];const prev=[];
   g.items.forEach(o=>{const d=REQDRAFT[o.id];if(d&&o.id!=null){prev.push({o,req:o.req,reason:o.reason});o.req=d.req==='없음'?'':d.req;o.reason=d.reason;chg.push(o);}});
@@ -2411,7 +2471,7 @@ async function sendBackAll(gi){const g=curGroups()[gi];if(!g)return;const chg=g.
   if(!ok){chg.forEach((o,i)=>o.req=prev[i]);toast('⚠️ 저장 실패 — 되돌렸습니다');}else{toast('📦 일괄 미송: '+g.cust+' '+ids.length+'건 전체 미송관리로 (재입고 후 한번에 출고)');await shipConsolidate(g.cust);}render();}
 /* 이미 미송 보유한 고객: 이번 주문을 기존 미송과 합쳐 미송관리에서 대기 → 재입고 후 한 박스로 함께 출고 (출고장 waitMergeMisong의 판매관리 버전) */
 async function mergeToMisong(gi){const g=curGroups()[gi];if(!g)return;
-  const prior=mine(ORD).filter(o=>o.cust===g.cust&&o.ship!=='done'&&o.req==='미송'&&!_isSvcLine(o)&&!g.items.some(x=>x.id===o.id));
+  const prior=mine(ORD).filter(o=>custCanon(o.cust)===custCanon(g.cust)&&o.ship!=='done'&&o.req==='미송'&&!_isSvcLine(o)&&!g.items.some(x=>x.id===o.id));
   const chg=g.items.filter(o=>o.id!=null&&!_isSvcLine(o)&&o.req!=='미송');
   if(!chg.length){toast('미송과 합칠 상품이 없습니다');return;}
   if(!confirm('🔗 '+g.cust+' 이번 주문 '+chg.length+'건을 기존 미송('+prior.length+'건)과 합쳐서 대기시킬까요?\n\n지금 출고하지 않고, 미송이 재입고되면 '+g.cust+' 전체를 한 박스로 함께 출고합니다.\n(물류 미송관리에서 처리)'))return;
@@ -2425,8 +2485,11 @@ async function mergeToMisong(gi){const g=curGroups()[gi];if(!g)return;
    규칙 = 무료배송 라인이 있거나 상품합계≥무료기준 → 무료(배송비 삭제, 무료배송 1줄), 아니면 배송비 4,000 1줄. 나머지 배송비 행은 삭제. */
 async function shipConsolidate(cust){
   if(!cust)return false;
-  /* 같은 고객의 미출고 주문 전체 = 한 박스(합배) 대상 — 미송이든 출고요청이든 결국 함께 나감 */
-  const set=ORD.filter(o=>o.cust===cust&&o.ship!=='done');
+  /* 같은 고객의 미출고 주문 전체 = 한 박스(합배) 대상 — 미송이든 출고요청이든 결국 함께 나감
+     ⚠️ 이름 문자열 대신 정규화 비교: 라이브 닉네임 주문 + 실명 주문이 같은 사람이면
+        한 박스로 나가므로 배송비도 1번이어야 한다(안 그러면 배송비 2번 청구 = 돈 문제) */
+  const _cn=custCanon(cust);
+  const set=ORD.filter(o=>custCanon(o.cust)===_cn&&o.ship!=='done');
   const ships=set.filter(o=>o.code==='배송비'&&o.id!=null);
   if(ships.length===0)return false;
   const goods=set.filter(o=>o.code!=='배송비'&&o.code!=='적립금'&&o.code!=='낱장');
@@ -2444,7 +2507,7 @@ async function setShipReq(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;cons
 async function setShipReason(id,v){const o=ORD.find(x=>x.id===id);if(!o)return;const prev=o.reason;o.reason=v;if(await saveOrd(o)===false){o.reason=prev;toast('⚠️ 저장 실패 — 되돌렸습니다');}render();}
 function orderCard(g,gi){const tot=g.items.reduce((a,o)=>a+amtOf(o),0);
   /* "이미 미송 보유" = 미송관리에 실제 대기중(req='미송')인 것만. 다른날 미결정 재고부족(back·req없음)은 아직 미송 아님 → 오배지 방지 */
-  const priorMi=mine(ORD).filter(o=>o.cust===g.cust&&o.ship!=='done'&&o.req==='미송'&&!_isSvcLine(o)&&!g.items.some(x=>x.id===o.id));
+  const priorMi=mine(ORD).filter(o=>custCanon(o.cust)===custCanon(g.cust)&&o.ship!=='done'&&o.req==='미송'&&!_isSvcLine(o)&&!g.items.some(x=>x.id===o.id));
   return `<div class="card${COLLAPSED.has('so:'+g.key)?' collapsed':''}">
     <div class="card-h"><div style="display:flex;align-items:center;gap:8px;min-width:0">${collBtn('so:'+g.key)}${onoBadge(g.date,g.cust)} <h2 style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(g.cust)}<span class="muted" style="font-size:12px;font-weight:400;margin-left:7px">${g.phone?esc(g.phone)+' · ':''}${g.items.length}건 · ${won(tot)}</span></h2></div>${staffBadge(g.staff)}${payBadge(g.items[0]&&g.items[0].payway)}${priorMi.length?`<span class="pill p-low" style="font-size:10px" title="이 고객은 미송관리에 ${priorMi.length}건 대기 중 — 이번 주문을 합쳐 한 박스로 보낼 수 있어요">📦 미송 ${priorMi.length}건 보유</span>`:''}
       <button class="ico-btn" onclick="openSalePopup(${gi})" title="크게 보기" aria-label="크게 보기"><i class="ti ti-arrows-diagonal"></i></button></div>${shipMemoBar(g.cust)}
@@ -2554,7 +2617,7 @@ function waitCard(list){
   </div>`).join('')+'</div></div>';
 }
 /* 출고대기 고객이 미송도 보유하면 표시·선택용 */
-function custMisongItems(cust){return mine(ORD).filter(o=>o.cust===cust&&o.ship!=='done'&&(o.req==='미송'||o.back===true)&&!_isSvcLine(o));}
+function custMisongItems(cust){const _cn=custCanon(cust);return mine(ORD).filter(o=>custCanon(o.cust)===_cn&&o.ship!=='done'&&(o.req==='미송'||o.back===true)&&!_isSvcLine(o));}
 /* 출고장 카테고리별 고객카드 목록 — 렌더·핸들러가 반드시 동일 목록·순서·필터를 쓰게. 위치인덱스 오조회(엉뚱한 고객 출고) 원천차단 */
 function catCustList(cat){let list=shipSort(openCustomers().filter(x=>x.cat===cat));
   if(cat==='back'){const q=(BACKQ||'').trim(),fld=BACKFIELD||'고객명';
@@ -2585,12 +2648,12 @@ function shipRowsByDate(c,cat,isWait){const byd={};(c.lines||[]).filter(o=>!_isS
   const dates=Object.keys(byd).sort((a,b)=>String(a).localeCompare(String(b)));
   return dates.map(d=>`<div style="font-size:11px;font-weight:800;color:#334155;background:#eef2f7;padding:4px 9px;border-radius:7px;margin:8px 0 4px">🗓️ ${d} <span class="muted" style="font-weight:400">· ${byd[d].length}건</span></div>`+byd[d].map(o=>shipRowHtml(o,cat,isWait)).join('')).join('');}
 /* ===== 배송메모 — 물류가 출고 전 반드시 확인. 고객의 미출고(ship!=='done') 주문 meta.shipMemo에 저장, 출고 전 모든 카드에 노란 배너 ===== */
-function custShipMemo(cust){const o=mine(ORD).find(x=>x.cust===cust&&x.ship!=='done'&&x.meta&&x.meta.shipMemo);return o?o.meta.shipMemo:'';}
+function custShipMemo(cust){const _cn=custCanon(cust);const o=mine(ORD).find(x=>custCanon(x.cust)===_cn&&x.ship!=='done'&&x.meta&&x.meta.shipMemo);return o?o.meta.shipMemo:'';}
 function shipMemoBar(cust){const m=custShipMemo(cust);return m
   ?`<div onclick="editShipMemo('${escAttr(cust)}')" style="cursor:pointer;margin:7px 0;padding:8px 11px;background:#fef9c3;border:1.5px solid #facc15;border-radius:9px;font-size:13px;font-weight:800;color:#854d0e;line-height:1.4">📝 배송메모: ${esc(m)} <span style="font-weight:400;font-size:11px;color:#a16207">· 클릭 수정</span></div>`
   :`<div onclick="editShipMemo('${escAttr(cust)}')" style="cursor:pointer;margin:5px 0;font-size:11.5px;color:#94a3b8">＋ 배송메모 추가</div>`;}
 async function editShipMemo(cust){const cur=custShipMemo(cust);const v=prompt('📝 '+cust+' 배송메모\n(물류가 출고 전 꼭 확인 · 비우면 삭제):',cur||'');if(v==null)return;await setCustShipMemo(cust,String(v).trim());}
-async function setCustShipMemo(cust,memo){const items=mine(ORD).filter(o=>o.cust===cust&&o.ship!=='done');if(!items.length){toast('대상 주문이 없어요');return;}
+async function setCustShipMemo(cust,memo){const _cn=custCanon(cust);const items=mine(ORD).filter(o=>custCanon(o.cust)===_cn&&o.ship!=='done');if(!items.length){toast('대상 주문이 없어요');return;}
   const prev=items.map(o=>o.meta);
   items.forEach(o=>{const mt=Object.assign({},o.meta||{});if(memo)mt.shipMemo=memo;else delete mt.shipMemo;o.meta=mt;});
   let ok=true;for(const o of items){if(o.id!=null&&await saveOrd(o)===false){ok=false;break;}}
@@ -3349,7 +3412,7 @@ function platLab(p){return (PLAT_META[p]||PLAT_META.etc).l;}
 function custPlats(c){return (c&&Array.isArray(c.platform_ids))?c.platform_ids:[];}/* 구고객·undefined 전부 빈배열 가드 */
 function custDisplayName(c){return (c&&(c.rep_nick||c.name))||'이름없음';}/* 표시 전용 — 절대 통계/주문매칭 키로 쓰지 말 것 */
 function custFilterSort(){const stats=custStats();let list=CUSTOMERS.slice();if(!isSeller()&&typeof SELLERVIEW!=='undefined'&&SELLERVIEW)list=list.filter(c=>c.owner===SELLERVIEW);const q=(CUSTSEARCH||'').trim(),qn=custPhoneNorm(q),ql=q.toLowerCase();if(q)list=list.filter(c=>(c.name||'').toLowerCase().includes(ql)||(c.rep_nick||'').toLowerCase().includes(ql)||(qn&&custPhoneNorm(c.phone).includes(qn))||(c.addr||'').toLowerCase().includes(ql)||custPlats(c).some(p=>((p.nick||'').toLowerCase().includes(ql))||((p.uid||'').toLowerCase().includes(ql))));
-  if(CUSTFILTER){const back=new Set(ORD.filter(o=>o.back&&o.ship!=='done'&&o.cust).map(o=>o.cust));const d90=daysAgoYmd(90);
+  if(CUSTFILTER){const back=new Set(ORD.filter(o=>o.back&&o.ship!=='done'&&o.cust).map(o=>custCanon(o.cust)));const d90=daysAgoYmd(90);
     list=list.filter(c=>{const s=stats[c.name]||{};switch(CUSTFILTER){
       case 'vip':return (s.amt||0)>=500000;
       case 'points':return (c.points||0)>0;
@@ -3361,7 +3424,7 @@ function custFilterSort(){const stats=custStats();let list=CUSTOMERS.slice();if(
   list.sort((a,b)=>{const va=sv(a),vb=sv(b);return typeof va==='string'?CUSTSORT.d*String(va).localeCompare(String(vb)):CUSTSORT.d*(va-vb);});
   return {list,stats};}
 function custCSV(){const {list,stats}=custFilterSort();const rows=[['이름','연락처','주소','구매건','구매액','적립금','최근구매','비고']];list.forEach(c=>{const s=stats[c.name]||{};rows.push([c.name||'',formatPhone(c.phone)||'',c.addr||'',s.cnt||0,s.amt||0,c.points||0,s.last||'',c.flag||'']);});downloadCSV(rows,'고객목록');}
-function custStats(){const m={};ORD.forEach(o=>{if(!o.cust)return;if(o.code==='배송비'||o.code==='적립금')return;/* 서비스라인 제외 — 실제 구매 상품만 집계 */const x=m[o.cust]||(m[o.cust]={cnt:0,amt:0,last:'',_dates:new Set()});x.cnt++;x.amt+=amtOf(o);x._dates.add(o.date);if((o.date||'')>x.last)x.last=o.date||'';});Object.values(m).forEach(x=>{x.orders=x._dates.size;});return m;}
+function custStats(){const m={};ORD.forEach(o=>{if(!o.cust)return;if(o.code==='배송비'||o.code==='적립금')return;/* 서비스라인 제외 — 실제 구매 상품만 집계 */const _k=custCanon(o.cust);/* 연동된 닉네임 주문도 대표고객 집계에 합산 — 안 그러면 VIP·재구매·적립이 반토막 */const x=m[_k]||(m[_k]={cnt:0,amt:0,last:'',_dates:new Set()});x.cnt++;x.amt+=amtOf(o);x._dates.add(o.date);if((o.date||'')>x.last)x.last=o.date||'';});Object.values(m).forEach(x=>{x.orders=x._dates.size;});return m;}
 /* ===== 고객별 원장(적립금·취소·환불 이력) ===== */
 function custPoints(name){const c=CUSTOMERS.find(x=>x.name===name);return (c&&c.points)||0;}
 async function logCust(custName,type,opt){opt=opt||{};const c=CUSTOMERS.find(x=>x.name===custName);const owner=(c&&c.owner)||((typeof ME!=='undefined'&&ME&&(ME.owner||ME.name)))||null;
@@ -3378,8 +3441,8 @@ async function openCustDetail(id){const c=CUSTOMERS.find(x=>x.id===id);if(!c){to
   renderCustDetail(c,logs);}
 function renderCustDetail(c,logs){
   const st=custStats()[c.name]||{cnt:0,amt:0,last:''};
-  const rx=mine(ORD).filter(o=>o.cust===c.name&&o.rxtype);
-  const back=mine(ORD).filter(o=>o.cust===c.name&&(o.back||o.req==='미송')&&o.ship!=='done');
+  const rx=mine(ORD).filter(o=>custCanon(o.cust)===c.name&&o.rxtype);
+  const back=mine(ORD).filter(o=>custCanon(o.cust)===c.name&&(o.back||o.req==='미송')&&o.ship!=='done');
   const pointLog=logs.filter(l=>l.points_delta&&l.points_delta!==0);
   const csLog=logs.filter(l=>l.type==='취소'||l.type==='환불');
   const fdt=s=>String(s||'').slice(0,10);
@@ -4131,8 +4194,9 @@ function payConfirm(id){const o=ORD.find(x=>x.id===id);o.pay='paid';toast('💳 
 async function sweepOrphanShip(cust,date){
   if(!cust)return;
   const svc=o=>o.code==='배송비'||o.code==='적립금'||o.code==='낱장';
-  if(ORD.some(o=>o.cust===cust&&o.date===date&&!svc(o)))return;/* 상품이 남아있으면 정상 */
-  const orphans=ORD.filter(o=>o.cust===cust&&o.date===date&&o.code==='배송비');
+  const _cn=custCanon(cust);/* 별칭 주문행에 상품이 남아있는데 못 보고 배송비를 지우면 안 됨 */
+  if(ORD.some(o=>custCanon(o.cust)===_cn&&o.date===date&&!svc(o)))return;/* 상품이 남아있으면 정상 */
+  const orphans=ORD.filter(o=>custCanon(o.cust)===_cn&&o.date===date&&o.code==='배송비');
   if(!orphans.length)return;
   for(const o of orphans){const k=ORD.indexOf(o);if(k>=0)ORD.splice(k,1);await delOrd(o);}
   toast('🧹 상품이 없어 남은 배송비 '+orphans.length+'건도 자동 정리');render();}
@@ -4651,9 +4715,9 @@ function liveDetail(s){
         <button class="btn sm ghost" onclick="liveAddManual(${s.id})"><i class="ti ti-square-plus"></i> 개별상품(미재고)</button>
         <button class="btn sm ghost" onclick="liveAddCapture(${s.id})"><i class="ti ti-photo"></i> 캡처 이미지 상품</button></div>
       ${prods.length>0?`<input id="lp_q" placeholder="🔍 등록 상품 검색 (품번·상품명) — 소개중 지정할 상품 빨리 찾기" oninput="liveProdFilter()" style="width:100%;height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;margin-bottom:10px">`:''}
-      ${prods.length?`<div class="muted" style="font-size:12px;margin-bottom:8px">💡 <b>노출</b>이 <b>☑ 노출중</b>(초록)이어야 고객 URL에 보입니다. <b>☐ 숨김</b>은 안 보여요. 상품은 담으면 기본 노출중입니다.</div><div style="overflow:auto"><table class="tbl" id="lp_table"><thead><tr><th>순서</th><th>상품</th><th>옵션</th><th class="num-cell">방송가</th><th>소개중</th><th>고객 노출</th><th></th></tr></thead><tbody>
+      ${prods.length?`<div class="muted" style="font-size:12px;margin-bottom:8px">💡 <b>노출</b>이 <b>☑ 노출중</b>(초록)이어야 고객 URL에 보입니다. <b>☐ 숨김</b>은 안 보여요. 상품은 담으면 기본 노출중입니다.</div><div style="overflow:auto"><table class="tbl" id="lp_table"><thead><tr><th style="width:34px;text-align:center"><input type="checkbox" id="lp_ckall" ${liveSelCount(s.id)>0&&liveSelCount(s.id)===prods.length?'checked':''} onclick="liveSelAllToggle(${s.id},this.checked)" title="전체선택/해제"></th><th>순서</th><th>상품</th><th>옵션</th><th class="num-cell">방송가</th><th>소개중</th><th>고객 노출</th><th></th></tr></thead><tbody>
         ${prods.map((p,i)=>{const opts=liveOptText(p);const numtag=p.stock_code?baseCode(p.stock_code):(p.manual_code||'');const kind=p.stock_code?'재고':(p.manual_code?'개별':'캡처');const bt=liveNumTag(p);return `<tr data-s="${escAttr(((bt||'')+' '+(numtag||'')+' '+(p.name||'')).toLowerCase())}">
-          <td style="white-space:nowrap"><button class="ico-btn" onclick="liveMove(${p.id},-1)" ${i===0?'disabled':''}>▲</button><button class="ico-btn" onclick="liveMove(${p.id},1)" ${i===prods.length-1?'disabled':''}>▼</button></td>
+          <td style="text-align:center"><input class="lp-ck" type="checkbox" ${liveSelHas(p.id)?'checked':''} onclick="liveSelToggle(${p.id},${s.id})"></td><td style="white-space:nowrap"><button class="ico-btn" onclick="liveMove(${p.id},-1)" ${i===0?'disabled':''}>▲</button><button class="ico-btn" onclick="liveMove(${p.id},1)" ${i===prods.length-1?'disabled':''}>▼</button></td>
           <td><div style="display:flex;gap:8px;align-items:center"><span class="tagbox" title="번호표 — 고객이 방송·채팅에서 부르는 번호">${esc(bt)}</span>${p.image_url?`<img src="${esc(p.image_url)}" alt="" onclick="imgZoom('${escAttr(p.image_url)}')" title="클릭하면 크게 보기" style="width:44px;height:44px;object-fit:cover;border-radius:7px;flex:0 0 auto;cursor:zoom-in">`:''}<div>${numtag?`<span class="pill" style="background:#e8efff;color:#1d4ed8;font-size:10px;font-weight:800" title="품번">${esc(numtag)}</span> `:`<span class="pill p-req" style="font-size:10px">${kind}</span> `}<b>${esc(p.name)}</b></div></div></td>
           <td class="muted" style="font-size:12px;max-width:180px">${esc(opts)}</td>
           <td class="num-cell"><input type="number" value="${p.live_price}" style="width:92px" onchange="liveSetPrice(${p.id},this.value)"></td>
@@ -4661,7 +4725,7 @@ function liveDetail(s){
           <td><button class="btn sm ${p.active?'green':'gray'}" onclick="liveToggleActive(${p.id})" title="체크되면 고객 URL에 노출됩니다 (누르면 켜기/끄기)">${p.active?'☑ 노출중':'☐ 숨김'}</button></td>
           <td style="white-space:nowrap">${p.stock_code?`<button class="btn sm ghost" onclick="livePhotoModal('${escAttr(baseCode(p.stock_code))}')" title="상품사진 등록/변경">📷</button> `:''}<button class="btn sm red ghost" onclick="liveDelProduct(${p.id})">삭제</button></td>
         </tr>`;}).join('')}
-      </tbody></table></div>`:`<div class="muted" style="padding:16px">상품을 추가하세요. [ERP 상품 연결]은 재고·옵션이 자동 연동되고, [캡처 이미지 상품]은 사진을 올려 판매합니다.</div>`}
+      </tbody></table></div>${_lpBar(s.id,prods.length)}`:`<div class="muted" style="padding:16px">상품을 추가하세요. [ERP 상품 연결]은 재고·옵션이 자동 연동되고, [캡처 이미지 상품]은 사진을 올려 판매합니다.</div>`}
     </div>`;
 }
 function liveNumTag(p){
@@ -5025,6 +5089,59 @@ async function liveToggleNow(id){const p=SESS_PROD.find(x=>x.id===id);if(!p)retu
 async function liveToggleActive(id){const p=SESS_PROD.find(x=>x.id===id);if(!p)return;try{const {error}=await SB.from('session_products').update({active:!p.active}).eq('id',id);if(error){console.error(error);toast('⚠️ 실패');return;}await liveReload();}catch(e){console.error(e);}}
 async function liveMove(id,dir){const p=SESS_PROD.find(x=>x.id===id);if(!p)return;const list=liveProdsOf(p.session_id);const i=list.findIndex(x=>x.id===id);const j=i+dir;if(j<0||j>=list.length)return;
   const a=list[i],b=list[j];const sa=a.sort,sb=b.sort;try{await SB.from('session_products').update({sort:sb}).eq('id',a.id);await SB.from('session_products').update({sort:sa}).eq('id',b.id);await liveReload();}catch(e){console.error(e);}}
+/* ===== SHOP 방송상품 선택/일괄 삭제 (편성 해제 — 재고·주문 무손상) =====
+   사장님 지시: "SHOP에 등록된 상품 모두삭제 (재고등록 삭제가 아니라 SHOP에 연동되는걸 삭제)"
+   → session_products 행만 지운다. stock(재고)·orders(주문/판매기록)는 단 한 줄도 안 건드린다.
+     기존 단건삭제 liveDelProduct("'○○' 상품을 방송에서 뺄까요?")와 완전히 같은 경로·권한을 재사용. */
+let LP_SEL=new Set();/* 체크된 session_products.id — 세션 넘어가도 liveProdsOf로 걸러 쓰므로 안전 */
+function liveSelHas(id){return LP_SEL.has(id);}
+function liveSelCount(sid){const ids=new Set(liveProdsOf(sid).map(p=>p.id));let n=0;LP_SEL.forEach(i=>{if(ids.has(i))n++;});return n;}
+/* 선택 변경 시 render() 대신 DOM만 동기화 — render하면 검색어(lp_q)·스크롤이 날아간다 */
+function _lpSyncBar(sid){
+  const tot=liveProdsOf(sid).length,n=liveSelCount(sid);
+  const c=$('#lp_selcnt');if(c)c.textContent=n;
+  const b=$('#lp_delsel');if(b){b.disabled=!n;b.textContent='선택 삭제'+(n?' ('+n+')':'');}
+  const a=$('#lp_ckall');if(a){a.checked=tot>0&&n===tot;a.indeterminate=n>0&&n<tot;}
+}
+function liveSelToggle(id,sid){if(LP_SEL.has(id))LP_SEL.delete(id);else LP_SEL.add(id);_lpSyncBar(sid);}
+function liveSelAllToggle(sid,on){liveProdsOf(sid).forEach(p=>{if(on)LP_SEL.add(p.id);else LP_SEL.delete(p.id);});
+  document.querySelectorAll('#lp_table .lp-ck').forEach(el=>{el.checked=!!on;});_lpSyncBar(sid);}
+function _lpNames(list){return list.slice(0,10).map(p=>'· '+(p.name||'(이름없음)')).join('\n')+(list.length>10?('\n… 외 '+(list.length-10)+'개'):'');}
+/* 하단 액션바 — 실행 버튼은 오른쪽 하단 */
+function _lpBar(sid,tot){const n=liveSelCount(sid);
+  return `<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+    <span class="muted" style="font-size:12px">선택 <b id="lp_selcnt">${n}</b>개 / 전체 ${tot}개 <span style="color:#94a3b8">· SHOP 노출만 해제됩니다 (재고·주문은 그대로)</span></span>
+    <span style="flex:1"></span>
+    <button class="btn sm ghost" onclick="liveSelAllToggle(${sid},true)">전체선택</button>
+    <button class="btn sm ghost" onclick="liveSelAllToggle(${sid},false)">선택해제</button>
+    <button class="btn sm red ghost" id="lp_delsel" ${n?'':'disabled'} onclick="liveDelSelected(${sid})">선택 삭제${n?' ('+n+')':''}</button>
+    <button class="btn sm red" onclick="liveDelAllProducts(${sid})">전체 삭제</button>
+  </div>`;}
+/* 공통 실행부 — session_products만 삭제 */
+async function _liveDelRows(list,label){
+  const ids=list.map(p=>p.id).filter(x=>x!=null);
+  if(!ids.length)return false;
+  try{const {error}=await SB.from('session_products').delete().in('id',ids);
+    if(error){console.error('liveDelRows',error);toast('⚠️ 삭제 실패 — 다시 시도하세요');return false;}
+  }catch(e){console.error(e);toast('⚠️ 삭제 오류 — 인터넷 연결을 확인하세요');return false;}
+  ids.forEach(i=>LP_SEL.delete(i));
+  toast('🧹 '+label+' '+ids.length+'개를 방송에서 뺐습니다 (재고·주문은 그대로)');
+  await liveReload();return true;
+}
+async function liveDelSelected(sid){
+  const sel=liveProdsOf(sid).filter(p=>LP_SEL.has(p.id));
+  if(!sel.length){toast('선택된 상품이 없어요 — 왼쪽 체크박스로 고르세요');return;}
+  if(!confirm('선택한 '+sel.length+'개 상품을 방송에서 뺄까요?\n\n'+_lpNames(sel)+'\n\n※ SHOP 노출만 해제됩니다.\n   재고·주문·판매기록은 그대로 남습니다.'))return;
+  if(!confirm('정말 뺄까요? 되돌릴 수 없습니다.\n\n'+sel.length+'개가 이 방송 편성에서 사라집니다.\n(상품 자체는 재고에 그대로 있습니다)'))return;
+  await _liveDelRows(sel,'선택 상품');
+}
+async function liveDelAllProducts(sid){
+  const all=liveProdsOf(sid);
+  if(!all.length){toast('편성된 상품이 없어요');return;}
+  if(!confirm('🧹 이 방송의 상품을 SHOP에서 전부 뺄까요?\n\n· 대상: '+all.length+'개 (편성 전체)\n\n'+_lpNames(all)+'\n\n※ SHOP 노출만 해제됩니다.\n   재고·주문·판매기록은 그대로 남습니다.'))return;
+  if(!confirm('정말 전체를 뺄까요? 되돌릴 수 없습니다.\n\n'+all.length+'개가 이 방송 편성에서 모두 사라집니다.\n(상품 자체는 재고에 그대로 있습니다)'))return;
+  await _liveDelRows(all,'방송 상품 전체');
+}
 async function liveDelProduct(id){const p=SESS_PROD.find(x=>x.id===id);if(!p)return;if(!confirm("'"+(p.name||'')+"' 상품을 방송에서 뺄까요?"))return;
   try{const {error}=await SB.from('session_products').delete().eq('id',id);if(error){console.error(error);toast('⚠️ 삭제 실패');return;}toast('삭제됨');await liveReload();}catch(e){console.error(e);}}
 
@@ -5512,7 +5629,7 @@ function renderTabs(){const el=document.getElementById('viewTabs');if(!el)return
   el.innerHTML=t.map(v=>`<span class="vtab ${v===VIEW?'on':''}" onclick="go('${v}')">${esc(menuLabel(v))}${v==='dash'?'':`<i class="ti ti-x" title="탭 닫기" onclick="tabClose('${v}',event)"></i>`}</span>`).join('');}
 function go(v){if(menuAllowed(v)){VIEW=v;try{history.replaceState(null,'','#'+v)}catch(e){}tabsOnNavigate(v);buildNav();render();}}
 function updateTopbar(){$('#tbName').textContent=ME.name;$('#tbRole').textContent=ME.team+' · '+ME.role;$('#tbAv').textContent=ME.name[0];const ab=$('#alertBdg');if(ab){const n=alertCount();ab.textContent=n;ab.style.display=n?'':'none';}tabsOnNavigate(VIEW);}
-function render(){if(!_fromRt)_localActAt=Date.now();/* 내 조작(클릭·저장·이동) 시각 기록 — realtime 리로드가 이 직후엔 안 끼어들게 */_onCache=null;const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();enhanceResponsiveUI(_mn);if(VIEW==='dash')setTimeout(initDashGrid,0);if(VIEW==='config')setTimeout(ordDragInit,0);updateTopbar();const cv=$('#currentView');if(cv)cv.textContent=menuLabel(VIEW)||'';if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
+function render(){if(!_fromRt)_localActAt=Date.now();/* 내 조작(클릭·저장·이동) 시각 기록 — realtime 리로드가 이 직후엔 안 끼어들게 */_onCache=null;_ALIAS=null;/* 별칭맵도 매 렌더 1회만 재계산 → 연동 추가/해제 즉시 반영, 절대 안 상함 */const _mn=$('#main');const _ch=window._lv!==VIEW;window._lv=VIEW;_mn.innerHTML=VIEWS[VIEW]();enhanceResponsiveUI(_mn);if(VIEW==='dash')setTimeout(initDashGrid,0);if(VIEW==='config')setTimeout(ordDragInit,0);updateTopbar();const cv=$('#currentView');if(cv)cv.textContent=menuLabel(VIEW)||'';if(_ch){_mn.classList.remove('view-anim');void _mn.offsetWidth;_mn.classList.add('view-anim');}
   if(CUSTPOP){const c=custPopTarget();if(VIEW==='ship'&&c)renderCustPop();else{CUSTPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}
   if(SALEPOP){const g=curGroups()[SALEPOP.gi];if(VIEW==='sales'&&SALETAB===SALEPOP.tab&&g)renderSalePop();else{SALEPOP=null;$('#modalBox').className='modal-box';$('#modal').classList.add('hide');}}}
 function buildNav(){applyMenuOrder();[...$('#nav').querySelectorAll('button')].forEach(b=>{b.style.display=menuAllowed(b.dataset.v)?'flex':'none';b.classList.toggle('on',b.dataset.v===VIEW);});}
