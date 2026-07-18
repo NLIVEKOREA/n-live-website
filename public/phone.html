@@ -86,6 +86,24 @@
   .sheet-h{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
   .sheet-item{ font-size:13px; color:var(--sub); padding:2px 0; line-height:1.5; }
   .sum{ font-weight:800; color:var(--ink); }
+  /* 2026-07-18 주문서 → 고객발송 완성 안내문 + 복사 */
+  .os-set{ background:var(--card); border:1px solid var(--blue-line); border-radius:13px; padding:11px 12px; margin-bottom:10px; }
+  .os-set label{ font-size:12px; color:var(--sub); display:block; margin:8px 0 4px; }
+  .os-set textarea{ font-family:inherit; font-size:14px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; width:100%; min-height:52px; resize:vertical; background:#fff; }
+  .os-row2{ display:flex; gap:8px; }
+  .os-actions{ display:flex; justify-content:flex-end; margin-top:10px; }
+  .os-pre{ white-space:pre-wrap; font-size:13px; color:var(--ink); background:#f7f9fc; border:1px dashed var(--line); border-radius:10px; padding:9px 10px; margin-top:8px; line-height:1.55; }
+  .copy-btn{ background:var(--blue); color:#fff; border:none; padding:8px 12px; border-radius:10px; font-size:13px; font-weight:700; flex:none; }
+  .sheet-tools{ display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+  .sheet-date{ font-size:12px; color:var(--sub); display:flex; align-items:center; gap:6px; }
+  .sheet-date select{ font-size:13px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; background:#fff; width:auto; }
+  .sfilters{ display:flex; gap:6px; }
+  .sfilter{ font-size:12px; font-weight:700; padding:6px 11px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--sub); }
+  .sfilter.on{ background:var(--blue); color:#fff; border-color:var(--blue); }
+  .paytog{ border:1px solid var(--line); background:#fff; color:var(--ink); padding:7px 11px; border-radius:9px; font-size:12px; font-weight:700; flex:none; }
+  .paytog.topaid{ border-color:var(--ok); color:var(--ok); }
+  .card.paid{ opacity:.82; }
+  .card.unpaid{ border-left:4px solid var(--warn); }
 </style>
 </head>
 <body>
@@ -140,8 +158,34 @@
   </div>
 
   <div class="view hidden" id="viewSheet">
-    <div class="sec-title">주문서 · 고객별 취합</div>
-    <div class="reg-hint">이번 방송의 주문을 고객별로 묶어 보여줍니다. (ERP 원본 기준 · [새 방송 시작]과 무관하게 전체 표시)</div>
+    <div class="sec-title">주문서 · 고객 발송용 안내문</div>
+    <div class="reg-hint">고객별 주문을 <b>카톡에 그대로 붙여넣는 완성 안내문</b>으로 만듭니다. 카드의 <b>[📋 복사]</b>를 누르면 그 고객 안내문이 클립보드에 복사돼요. (ERP 원본 기준 · 전체 표시)</div>
+    <div class="os-set">
+      <div class="sheet-h"><b style="font-size:13px">⚙ 안내문 설정</b><button class="btn" id="osToggle" style="padding:4px 10px">펼치기</button></div>
+      <div id="osFields" class="hidden">
+        <label>방송명 / 날짜 (비우면 오늘 날짜)</label>
+        <input id="osTitle" placeholder="예: 7/18 저녁" />
+        <label>인삿말 ( {날짜} 자리에 위 방송명이 들어갑니다 )</label>
+        <textarea id="osGreeting"></textarea>
+        <div class="os-row2">
+          <div style="flex:1"><label>은행</label><input id="osBank" placeholder="예: 하나" /></div>
+          <div style="flex:2"><label>계좌번호</label><input id="osAcct" placeholder="예: 123-456789-01234" /></div>
+        </div>
+        <label>예금주</label>
+        <input id="osHolder" placeholder="예: 김선아" />
+        <label>요청사항</label>
+        <textarea id="osRequest"></textarea>
+        <div class="os-actions"><button class="btn pri" id="osSave" style="padding:10px 16px">설정 저장</button></div>
+      </div>
+    </div>
+    <div class="sheet-tools">
+      <label class="sheet-date">날짜 <select id="sheetDate"></select></label>
+      <div class="sfilters">
+        <button class="sfilter on" data-sfilter="all">전체</button>
+        <button class="sfilter" data-sfilter="unpaid">미결제</button>
+        <button class="sfilter" data-sfilter="paid">입금완료</button>
+      </div>
+    </div>
     <div id="sheetList"><div class="empty">불러오는 중…</div></div>
   </div>
 
@@ -248,36 +292,155 @@ $("quickRegToggle").addEventListener("click", function(){
 });
 $("erpPullBtn").addEventListener("click", function(){ loadStock(); loadNextTag(); toast("ERP와 동기화했어요"); });
 
-/* ── 주문서: 고객별 취합 (get_chat_orders 재사용 · 클라이언트 그룹핑, 새 파괴적 RPC 없음) ── */
+/* ── 주문서: 고객 발송용 완성 안내문 (get_chat_orders 재사용 · 클라이언트 그룹핑, 파괴적 RPC 없음) ── */
+/* 단독 고객 기본값 — 인삿말/요청사항은 샘플 제공, 계좌는 빈칸+설정 안내(매번 강요 없이 바로 쓸 수 있게) */
+var DEFAULT_ORDERSHEET = {
+  title: "",
+  greeting: "안녕하세요 😊 [{날짜} 라이브] 주문 안내입니다 💛",
+  bank: "", acct: "", holder: "",
+  request: "카카오채널 추가 후 · 받는 분 성함 · 연락처 · 주소를 남겨주세요 🙏"
+};
+function loadOrderSheetCfg(){
+  try{ return Object.assign({}, DEFAULT_ORDERSHEET, JSON.parse(localStorage.getItem("wc_ordersheet")||"{}")); }
+  catch(e){ return Object.assign({}, DEFAULT_ORDERSHEET); }
+}
+function saveOrderSheetCfg(o){ try{ localStorage.setItem("wc_ordersheet", JSON.stringify(o)); }catch(e){} }
+function todayKo(){ var d=new Date(); return (d.getMonth()+1)+"/"+d.getDate(); }
+function platKo(p){ return p==="tiktok"?"틱톡":p==="youtube"?"유튜브":(p||""); }
+/* 한 고객 → 카톡에 그대로 붙여넣는 완성 안내문. 계좌+총액이 한 줄(은행앱 자동인식 잘 되게), 딥링크 없음. */
+function announceText(g, os){
+  os = os || loadOrderSheetCfg();
+  var title = (os.title||"").trim() || todayKo();
+  var greeting = (os.greeting || DEFAULT_ORDERSHEET.greeting).split("{날짜}").join(title);
+  var plat = platKo(g.platform);
+  var L = [greeting, ""];
+  L.push("🛍 "+(g.name||"-")+(plat?" ("+plat+")":"")+(g.cust_no?"  #"+g.cust_no:""));
+  g.items.forEach(function(o){
+    L.push("· "+(o.tag||"?")+"번 "+(o.name||"")+(o.color?" ("+o.color+")":"")+" × "+num(o.qty)+" = "+num((Number(o.price)||0)*(Number(o.qty)||1))+"원");
+  });
+  L.push("합계 "+num(g.qty)+"개 · "+num(g.amt)+"원");
+  L.push("");
+  if(os.acct){ L.push("💰 "+((os.bank?os.bank+" ":"")+os.acct)+"  "+num(g.amt)+"원"); if(os.holder) L.push("   (예금주 "+os.holder+")"); }
+  else { L.push("💰 (입금계좌는 ⚙ 안내문 설정에서 등록)  "+num(g.amt)+"원"); }
+  L.push("");
+  L.push("📌 "+(os.request||DEFAULT_ORDERSHEET.request));
+  return L.join("\n");
+}
+async function copyText(t){
+  try{ if(navigator.clipboard && navigator.clipboard.writeText){ await navigator.clipboard.writeText(t); return true; } }catch(e){}
+  try{ var ta=document.createElement("textarea"); ta.value=t; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.focus(); ta.select(); var ok=document.execCommand("copy"); document.body.removeChild(ta); return ok; }catch(e){ return false; }
+}
+function orderDate(o){
+  var d = o.created_at || o.created || o.ts || o.time || o.order_time || o.date || "";
+  return String(d).slice(0,10);   // "YYYY-MM-DD" 또는 ""(ERP 날짜필드 불명 시 빈값 → '전체'로 취급)
+}
+var _sheetsRaw = [];
+var _sheetFilter = "all";
+var _sheetDate = "";   // "" => 첫 렌더 때 오늘(있으면)·없으면 전체 · "all" => 전체 · "YYYY-MM-DD"
 async function loadSheets(){
   var box = $("sheetList");
+  // ⚠️ 과부하 방지: get_chat_orders 에 날짜 파라미터가 있는지 불명 → 시그니처를 못 바꿈(PostgREST 404 위험).
+  //  그래서 여기선 limit 상한으로 로드량을 막고, 날짜는 클라 필터로 처리한다(무제한 로드 금지).
+  //  서버측 '그 날짜분만' 쿼리는 db/proposal_ordersheet_erp.sql 로 분리 제안(팀장 배포 후 전환).
   var r = await erpRpc("get_chat_orders", { limit: 300 });
   if(!r || r.ok===false){ box.innerHTML = '<div class="empty">'+esc((r&&r.reason)||"불러오기 실패")+'</div>'; return; }
   var list = r.orders || [];
-  if(!list.length){ box.innerHTML = '<div class="empty">주문이 없어요.</div>'; return; }
+  if(!list.length){ _sheetsRaw=[]; renderDateOptions(); box.innerHTML = '<div class="empty">주문이 없어요.</div>'; return; }
   var groups = {}, order = [];
   list.forEach(function(o){
     var key = o.nick || o.cust || ("#"+(o.cust_no||"?"));
-    if(!groups[key]){ groups[key] = { name:key, cust_no:o.cust_no, items:[], qty:0, amt:0, miss:0 }; order.push(key); }
+    if(!groups[key]){ groups[key] = { name:key, cust_no:o.cust_no, platform:o.platform||"", date:orderDate(o), items:[], qty:0, amt:0, miss:0, gids:[] }; order.push(key); }
     var g = groups[key];
     g.items.push(o); g.qty += Number(o.qty)||0;
     g.amt += (Number(o.price)||0) * (Number(o.qty)||1);
     if(o.pay!=="paid") g.miss++;
     if(o.cust_no && !g.cust_no) g.cust_no = o.cust_no;
+    if(o.platform && !g.platform) g.platform = o.platform;
+    if(o.order_group_id!=null && g.gids.indexOf(o.order_group_id)<0) g.gids.push(o.order_group_id);
+    var d=orderDate(o); if(d && (!g.date || d>g.date)) g.date=d;
   });
-  order.sort(function(a,b){ return (Number(groups[a].cust_no)||9999)-(Number(groups[b].cust_no)||9999); });
-  box.innerHTML = order.map(function(k){
-    var g = groups[k];
-    var items = g.items.map(function(o){
-      return '<div class="sheet-item">· <b>'+esc(o.tag||"–")+'</b> '+esc(o.name)+(o.color?' ('+esc(o.color)+')':'')+' × '+num(o.qty)+' = '+num((Number(o.price)||0)*(Number(o.qty)||1))+'원'+(o.pay==="paid"?' ✅':'')+'</div>';
-    }).join("");
-    return '<div class="card"><div class="sheet-h">'
-      + '<div class="oname">'+esc(g.name)+(g.cust_no?' <span class="osub">#'+esc(g.cust_no)+'번</span>':'')+'</div>'
-      + '<span class="badge '+(g.miss?"miss":"paid")+'">'+(g.miss?(g.miss+"건 미결제"):"전액 입금")+'</span></div>'
-      + items
-      + '<div class="sheet-item sum" style="margin-top:4px">합계 '+num(g.qty)+'개 · '+num(g.amt)+'원</div></div>';
+  _sheetsRaw = order.map(function(k){ var g=groups[k]; g.paid = g.miss===0; return g; });
+  renderDateOptions();
+  renderSheets();
+}
+function sheetDates(){
+  var set={}; _sheetsRaw.forEach(function(g){ if(g.date) set[g.date]=1; });
+  return Object.keys(set).sort().reverse();
+}
+function todayStamp(){ var d=new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
+function renderDateOptions(){
+  var sel=$("sheetDate"); if(!sel) return;
+  var dates=sheetDates(), today=todayStamp();
+  if(_sheetDate===""){ _sheetDate = dates.indexOf(today)>=0 ? today : "all"; }   // 기본 오늘, 없으면 전체
+  var opts=dates.map(function(d){ return '<option value="'+d+'">'+d+(d===today?' (오늘)':'')+'</option>'; });
+  opts.push('<option value="all">전체</option>');
+  sel.innerHTML=opts.join(""); sel.value=_sheetDate;
+}
+function renderSheets(){
+  var box=$("sheetList"), os=loadOrderSheetCfg();
+  var rows=_sheetsRaw.filter(function(g){
+    if(_sheetDate!=="all" && g.date && g.date!==_sheetDate) return false;
+    if(_sheetFilter==="unpaid") return !g.paid;
+    if(_sheetFilter==="paid") return g.paid;
+    return true;
+  });
+  rows.sort(function(a,b){ return (Number(a.paid)-Number(b.paid)) || ((Number(a.cust_no)||9999)-(Number(b.cust_no)||9999)); });  // 미결제 상단
+  if(!rows.length){ box.innerHTML='<div class="empty">이 조건에 주문이 없어요.</div>'; return; }
+  box.innerHTML = rows.map(function(g){
+    var gi=_sheetsRaw.indexOf(g), txt=announceText(g, os);
+    return '<div class="card '+(g.paid?"paid":"unpaid")+'"><div class="sheet-h">'
+      + '<div class="oname">'+esc(g.name)+(g.cust_no?' <span class="osub">#'+esc(g.cust_no)+'번</span>':'')
+      + ' <span class="badge '+(g.paid?"paid":"miss")+'">'+(g.paid?"입금완료":"미결제")+'</span></div>'
+      + '<div style="display:flex;gap:6px;flex:none">'
+      + '<button class="paytog '+(g.paid?"":"topaid")+'" data-pay="'+gi+'">'+(g.paid?"미결제로":"입금완료")+'</button>'
+      + '<button class="copy-btn" data-copy="'+encodeURIComponent(txt)+'">📋 복사</button></div></div>'
+      + '<div class="os-pre">'+esc(txt)+'</div></div>';
   }).join("");
 }
+/* 안내문 복사 · 입금 토글(낙관적) · 설정 편집 */
+$("sheetList").addEventListener("click", async function(e){
+  var pg=e.target.closest("[data-pay]"), cp=e.target.closest("[data-copy]");
+  if(pg){
+    var g=_sheetsRaw[Number(pg.dataset.pay)]; if(!g) return;
+    var pm=g.miss, pp=g.paid, nv=!g.paid;
+    // 낙관적 UI: 즉시 반영·재렌더(서버 응답 안 기다림 — 버벅임 방지). 실패 시 되돌림.
+    g.paid=nv; g.miss=nv?0:(pm||1); renderSheets();
+    // 입금확인 = pay 플래그만(재고·발번 무관). RPC는 제안 단계 — 미배포면 실패→되돌림.
+    var r=await erpRpc("mark_chat_orders_paid", { order_group_ids:g.gids, paid:nv });
+    if(!r || r.ok===false){ g.paid=pp; g.miss=pm; renderSheets(); toast("입금확인 저장 실패 — ERP RPC 배포 후 반영돼요"); }
+    else toast(nv?"입금완료로 표시":"미결제로 되돌림");
+    return;
+  }
+  if(cp){
+    var ok = await copyText(decodeURIComponent(cp.dataset.copy));
+    toast(ok ? "복사됨! 카톡에 붙여넣으세요" : "복사 실패 — 안내문을 길게 눌러 복사하세요");
+  }
+});
+$("sheetDate").addEventListener("change", function(){ _sheetDate=$("sheetDate").value; renderSheets(); });
+document.querySelectorAll(".sfilters .sfilter").forEach(function(b){ b.addEventListener("click", function(){
+  document.querySelectorAll(".sfilters .sfilter").forEach(function(x){ x.classList.remove("on"); });
+  b.classList.add("on"); _sheetFilter=b.dataset.sfilter; renderSheets();
+}); });
+function fillOsForm(){
+  var os=loadOrderSheetCfg();
+  $("osTitle").value=os.title||""; $("osGreeting").value=os.greeting||"";
+  $("osBank").value=os.bank||""; $("osAcct").value=os.acct||""; $("osHolder").value=os.holder||"";
+  $("osRequest").value=os.request||"";
+}
+$("osToggle").addEventListener("click", function(){
+  var f=$("osFields"); f.classList.toggle("hidden");
+  var open = !f.classList.contains("hidden");
+  $("osToggle").textContent = open ? "접기" : "펼치기";
+  if(open) fillOsForm();
+});
+$("osSave").addEventListener("click", function(){
+  saveOrderSheetCfg({
+    title:$("osTitle").value.trim(), greeting:$("osGreeting").value,
+    bank:$("osBank").value.trim(), acct:$("osAcct").value.trim(), holder:$("osHolder").value.trim(),
+    request:$("osRequest").value
+  });
+  toast("안내문 설정 저장됨"); loadSheets();
+});
 
 /* ── 주문 대기열 ── */
 function startOrders(){ loadOrders(); if(ordersTimer) clearInterval(ordersTimer); ordersTimer = setInterval(loadOrders, 5000); }
