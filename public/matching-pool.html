@@ -2122,7 +2122,7 @@ Object.assign(window.MP_I18N, {
       [tr('bd.stocklead'), b.stockLeadTime], [tr('bd.prodlead'), b.prodLeadTime],
       [tr('bd.korealive'), _yn(b.koreaLive)]
     ];
-    const glanceHtml = _anyVal(glanceRows) ? `<section class="bd-sec"><h3>${tr('bd.glance')}</h3><div class="sd-stats bd-glance">${glanceRows.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+(r[1]?esc2(r[1]):'—')+'</b></div>';}).join('')}</div></section>` : '';
+    const glanceHtml = _anyVal(glanceRows) ? `<section class="bd-sec"><h3>${tr('bd.glance')}</h3><div class="sd-stats bd-glance">${glanceRows.filter(function(r){return r[1];}).map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+esc2(r[1])+'</b></div>';}).join('')}</div></section>` : '';
     // 수출 가능 국가 · 인증 — 데이터 있을 때만
     const _certsRaw = b.exportCountries || b.exportCerts;
     let _certChips = '';
@@ -2133,7 +2133,7 @@ Object.assign(window.MP_I18N, {
     const _spaceImgs = (b.liveSpaceImages||[]).filter(Boolean);
     const _spaceHtml = _spaceImgs.length ? `<div class="bd-gallery">${_spaceImgs.map(function(s){return '<img src="'+esc2(s)+'" loading="lazy">';}).join('')}</div>` : '';
     const _liveRows = [[tr('bd.korealive'), _yn(b.koreaLive)], [tr('bd.samplesku'), b.sampleSku]];
-    const liveCondSec = (_anyVal(_liveRows) || _spaceImgs.length) ? `<section class="bd-sec"><h3>${tr('bd.livecond')}</h3><div class="sd-stats">${_liveRows.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+(r[1]?esc2(r[1]):'—')+'</b></div>';}).join('')}</div>${_spaceHtml}</section>` : '';
+    const liveCondSec = (_anyVal(_liveRows) || _spaceImgs.length) ? `<section class="bd-sec"><h3>${tr('bd.livecond')}</h3>${_anyVal(_liveRows)?('<div class="sd-stats">'+_liveRows.filter(function(r){return r[1];}).map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+esc2(r[1])+'</b></div>';}).join('')+'</div>'):''}${_spaceHtml}</section>` : '';
     // 고객층·판매국가
     const custRows = [[tr('bd.customer'), b.customerBase], [tr('bd.salescountry'), b.salesCountries]].filter(function(r){return r[1];});
     const custHtml = custRows.length ? `<section class="bd-sec"><h3>${tr('bd.customer.sec')}</h3><div class="sd-stats">${custRows.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+esc2(r[1])+'</b></div>';}).join('')}</div></section>` : '';
@@ -2194,7 +2194,8 @@ Object.assign(window.MP_I18N, {
     const _na = `<span class="bd-na">${esc2(tr('bd.prep'))}</span>`;
     const _slock = `<span class="bd-lock">🔒 ${esc2(tr('lock.aftermatch'))}</span>`;
     const _any = (rows)=> rows.some(function(r){return r[1];});
-    const grid = (rows)=>`<div class="sd-stats">${rows.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+(r[1]?esc2(String(r[1])):'—')+'</b></div>';}).join('')}</div>`;
+    // 값 있는 칸만 렌더 (빈 칸 '—' 숨김 → 뻥 뚫린 그리드 방지)
+    const grid = (rows)=>{ var f=rows.filter(function(r){return r[1];}); return f.length?('<div class="sd-stats">'+f.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+esc2(String(r[1]))+'</b></div>';}).join('')+'</div>'):''; };
     // 섹션: 값이 하나라도 있을 때만 노출 (빈 섹션 숨김)
     const secOf = (title, rows)=> _any(rows) ? `<section class="bd-sec"><h3>${esc2(title)}</h3>${grid(rows)}</section>` : '';
     // 한눈에 (핵심 실적 지표) — 방송매출·판매가·마진은 ￥ 실수치 그대로
