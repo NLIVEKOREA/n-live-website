@@ -1122,11 +1122,20 @@
   .mp-lang-btn{ font-size:15px; font-weight:600; padding:10px 20px; border-radius:24px; border:1px solid var(--line-strong); background:var(--bg-elev); color:var(--text-dim); cursor:pointer; transition:all .15s; }
   .mp-lang-btn:hover{ border-color:var(--gold); color:#e7cf9b; transform:translateY(-1px); }
   .mp-lang-btn.active{ background:var(--gold); color:#1a1505; border-color:var(--gold); }
+  /* ── 미인증(=0) 게이트 패널 ── */
+  .gate-zero{ grid-column:1/-1; text-align:center; padding:64px 28px; border:1.5px dashed var(--line-strong); border-radius:18px; background:var(--bg-elev); }
+  .gate-zero-lock{ font-size:40px; margin-bottom:14px; }
+  .gate-zero h3{ font-size:20px; font-weight:800; margin:0 0 10px; color:var(--text); }
+  .gate-zero p{ font-size:14.5px; line-height:1.7; color:var(--text-dim); max-width:560px; margin:0 auto 22px; }
+  .gate-zero-ctas{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  .gate-zero-ctas .btn-cta{ display:inline-block; width:auto; padding:12px 22px; text-decoration:none; }
+  .gate-count{ margin-top:18px; font-size:13px; color:var(--text-mute); }
+  .gate-count b{ color:var(--gold); }
 </style>
 </head>
 <body>
 <script>
-window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 풀", "en": "N-LIVE NETWORK · VERIFIED PARTNER POOL", "ja": "N-LIVE NETWORK · 認証済みパートナープール", "zh-Hans": "N-LIVE NETWORK · 认证合作伙伴库", "zh-Hant": "N-LIVE NETWORK · 認證合作伙伴庫"}, "hero.h1": {"ko": "K-브랜드와<br>글로벌 셀러를 <em>매칭</em>합니다", "en": "Matching K-Brands<br>with Global <em>Sellers</em>", "ja": "K-ブランドと<br>グローバルセラーを<em>マッチング</em>", "zh-Hans": "为K-品牌与<br>全球卖家进行<em>匹配</em>", "zh-Hant": "為K-品牌與<br>全球賣家進行<em>匹配</em>"}, "hero.lead": {"ko": "엔라이브와 파트너십을 맺은 검증된 K-브랜드와 글로벌 라이브커머스 셀러 풀입니다. 리스트 열람은 문의 후 발급되는 <b>접근 코드</b>로 가능합니다.", "en": "A verified pool of K-brands and global live-commerce sellers partnered with N-LIVE. The list can be viewed with an <b>access code</b> issued after inquiry.", "ja": "N-LIVEと提携した認証済みK-ブランド及びグローバルライブコマースセラーのプールです。リスト閲覧はお問い合わせ後に発行される<b>アクセスコード</b>で可能です。", "zh-Hans": "与N-LIVE建立合作关系的认证K-品牌及全球直播电商卖家资源库。咨询后发放<b>访问代码</b>即可查看名单。", "zh-Hant": "與N-LIVE建立合作關係的認證K-品牌及全球直播電商賣家資源庫。諮詢後發放<b>訪問程式碼</b>即可檢視名單。"}, "tab.brands": {"ko": "K-브랜드 보기 (셀러용)", "en": "K-Brands (for Sellers)", "ja": "K-ブランド (セラー向け)", "zh-Hans": "K-品牌 (卖家专用)", "zh-Hant": "K-品牌 (賣家專用)"}, "tab.sellers": {"ko": "글로벌 셀러 보기 (브랜드용)", "en": "Global Sellers (for Brands)", "ja": "グローバルセラー (ブランド向け)", "zh-Hans": "全球卖家 (品牌专用)", "zh-Hant": "全球賣家 (品牌專用)"}, "tab.china": {"ko": "🇨🇳 중국관", "en": "🇨🇳 China Zone", "ja": "🇨🇳 中国館", "zh-Hans": "🇨🇳 中国馆", "zh-Hant": "🇨🇳 中國館"}, "filter.label": {"ko": "필터 ·", "en": "FILTER ·", "ja": "フィルター ·", "zh-Hans": "筛选 ·", "zh-Hant": "篩選 ·"}, "filter.all": {"ko": "전체", "en": "All", "ja": "すべて", "zh-Hans": "全部", "zh-Hant": "全部"}, "cat.fashion": {"ko": "패션", "en": "Fashion", "ja": "ファッション", "zh-Hans": "时尚", "zh-Hant": "時尚"}, "cat.fashionacc": {"ko": "패션잡화", "en": "Accessories", "ja": "ファッション雑貨", "zh-Hans": "时尚配饰", "zh-Hant": "時尚配飾"}, "cat.beauty": {"ko": "뷰티", "en": "Beauty", "ja": "ビューティー", "zh-Hans": "美妆", "zh-Hant": "美妝"}, "cat.food": {"ko": "식품", "en": "Food", "ja": "食品", "zh-Hans": "食品", "zh-Hant": "食品"}, "cat.life": {"ko": "라이프스타일", "en": "Lifestyle", "ja": "ライフスタイル", "zh-Hans": "生活方式", "zh-Hant": "生活方式"}, "f.tw": {"ko": "대만", "en": "Taiwan", "ja": "台湾", "zh-Hans": "台湾", "zh-Hant": "臺灣"}, "f.hk": {"ko": "홍콩", "en": "Hong Kong", "ja": "香港", "zh-Hans": "香港", "zh-Hant": "香港"}, "f.th": {"ko": "태국", "en": "Thailand", "ja": "タイ", "zh-Hans": "泰国", "zh-Hant": "泰國"}, "f.my": {"ko": "말레이시아", "en": "Malaysia", "ja": "マレーシア", "zh-Hans": "马来西亚", "zh-Hant": "馬來西亞"}, "f.f10": {"ko": "10만+", "en": "100K+", "ja": "10万+", "zh-Hans": "10万+", "zh-Hant": "10萬+"}, "f.f50": {"ko": "50만+", "en": "500K+", "ja": "50万+", "zh-Hans": "50万+", "zh-Hant": "50萬+"}, "f.f100": {"ko": "100만+", "en": "1M+", "ja": "100万+", "zh-Hans": "100万+", "zh-Hant": "100萬+"}, "auth.status.locked": {"ko": "<b>비공개 모드</b> · 카드 미리보기 가능, 상세는 잠금", "en": "<b>Private mode</b> · Card preview available, details locked", "ja": "<b>非公開モード</b> · カードプレビュー可能、詳細はロック", "zh-Hans": "<b>非公开模式</b> · 可预览卡片，详情已锁定", "zh-Hant": "<b>非公開模式</b> · 可預覽卡片，詳情已鎖定"}, "auth.status.authed.all": {"ko": "<b>통합 코드로 인증됨</b> · K-브랜드 + 글로벌 셀러 전체 열람 가능", "en": "<b>Verified with master code</b> · Full access to K-brands + global sellers", "ja": "<b>統合コードで認証済み</b> · K-ブランド＋グローバルセラー全て閲覧可能", "zh-Hans": "<b>已通过通用代码验证</b> · 可查看全部K-品牌与全球卖家", "zh-Hant": "<b>已透過通用程式碼驗證</b> · 可檢視全部K-品牌與全球賣家"}, "auth.unlock": {"ko": "🔓 잠금 해제", "en": "🔓 Unlock", "ja": "🔓 ロック解除", "zh-Hans": "🔓 解锁", "zh-Hant": "🔓 解鎖"}, "auth.lock": {"ko": "잠그기", "en": "Lock", "ja": "ロック", "zh-Hans": "锁定", "zh-Hant": "鎖定"}, "modal.title": {"ko": "파트너 풀 열람", "en": "View Partner Pool", "ja": "パートナープール閲覧", "zh-Hans": "查看合作伙伴库", "zh-Hant": "檢視合作伙伴庫"}, "modal.desc": {"ko": "본인을 어떻게 소개해야 할까요? 셀러는 K-브랜드만, 브랜드는 글로벌 셀러만 열람할 수 있어요.", "en": "How would you introduce yourself? Sellers can view K-brands only; brands can view global sellers only.", "ja": "ご自身をどう紹介されますか？セラーはK-ブランドのみ、ブランドはグローバルセラーのみ閲覧できます。", "zh-Hans": "请问您的身份是？卖家仅可查看K-品牌，品牌仅可查看全球卖家。", "zh-Hant": "請問您的身份是？賣家僅可檢視K-品牌，品牌僅可檢視全球賣家。"}, "role.seller": {"ko": "셀러", "en": "Seller", "ja": "セラー", "zh-Hans": "卖家", "zh-Hant": "賣家"}, "role.seller.sub": {"ko": "K-브랜드 풀 열람", "en": "View K-brand pool", "ja": "K-ブランドプール閲覧", "zh-Hans": "查看K-品牌库", "zh-Hant": "檢視K-品牌庫"}, "role.brand": {"ko": "브랜드", "en": "Brand", "ja": "ブランド", "zh-Hans": "品牌", "zh-Hant": "品牌"}, "role.brand.sub": {"ko": "글로벌 셀러 풀 열람", "en": "View global seller pool", "ja": "グローバルセラープール閲覧", "zh-Hans": "查看全球卖家库", "zh-Hant": "檢視全球賣家庫"}, "auth.input.ph": {"ko": "접근 코드 입력", "en": "Enter access code", "ja": "アクセスコード入力", "zh-Hans": "输入访问代码", "zh-Hant": "輸入訪問程式碼"}, "auth.err": {"ko": "접근 코드가 잘못되었어요. 다시 확인해주세요.", "en": "Invalid access code. Please check again.", "ja": "アクセスコードが正しくありません。再度ご確認ください。", "zh-Hans": "访问代码有误，请重新确认。", "zh-Hant": "訪問程式碼有誤，請重新確認。"}, "auth.submit": {"ko": "역할 선택 후 잠금 해제", "en": "Select role to unlock", "ja": "役割を選択して解除", "zh-Hans": "选择身份后解锁", "zh-Hant": "選擇身份後解鎖"}, "auth.submit.ready": {"ko": "잠금 해제", "en": "Unlock", "ja": "ロック解除", "zh-Hans": "解锁", "zh-Hant": "解鎖"}, "modal.help": {"ko": "<b>코드가 없으신가요?</b> <a href=\"/contact\">문의하기</a> → 영업일 24시간 내 발급<br>셀러는 셀러용, 브랜드는 브랜드용 코드를 안내드립니다.", "en": "<b>No code?</b> <a href=\"/contact\">Contact us</a> → Issued within 24 business hours<br>Sellers receive a seller code; brands receive a brand code.", "ja": "<b>コードをお持ちでない方</b> <a href=\"/contact\">お問い合わせ</a> → 営業時間24時間以内に発行<br>セラーにはセラー用、ブランドにはブランド用コードをご案内します。", "zh-Hans": "<b>没有代码？</b> <a href=\"/contact\">联系我们</a> → 工作日24小时内发放<br>卖家发放卖家代码，品牌发放品牌代码。", "zh-Hant": "<b>沒有程式碼？</b> <a href=\"/contact\">聯絡我們</a> → 工作日24小時內發放<br>賣家發放賣家程式碼，品牌發放品牌程式碼。"}, "lbl.follower": {"ko": "팔로워", "en": "Followers", "ja": "フォロワー", "zh-Hans": "粉丝", "zh-Hant": "粉絲"}, "lbl.platform": {"ko": "플랫폼", "en": "Platform", "ja": "プラットフォーム", "zh-Hans": "平台", "zh-Hant": "平臺"}, "lbl.salesmethod": {"ko": "판매방식", "en": "Sales type", "ja": "販売方式", "zh-Hans": "销售方式", "zh-Hant": "銷售方式"}, "lbl.live": {"ko": "라이브", "en": "Live", "ja": "ライブ", "zh-Hans": "直播", "zh-Hant": "直播"}, "lbl.avgsales": {"ko": "일평균 매출", "en": "Avg. daily sales", "ja": "1日平均売上", "zh-Hans": "日均销售额", "zh-Hant": "日均銷售額"}, "lbl.nation": {"ko": "국적", "en": "Country", "ja": "国籍", "zh-Hans": "国籍", "zh-Hant": "國籍"}, "lbl.fee": {"ko": "섭외비용", "en": "Booking fee", "ja": "起用費用", "zh-Hans": "邀约费用", "zh-Hant": "邀約費用"}, "card.before.brand": {"ko": "🔒 인증 후 브랜드 정보 보기", "en": "🔒 View brand info after verification", "ja": "🔒 認証後にブランド情報を見る", "zh-Hans": "🔒 验证后查看品牌信息", "zh-Hant": "🔒 驗證後檢視品牌資訊"}, "card.after.brand": {"ko": "브랜드 정보 보기 →", "en": "View brand info →", "ja": "ブランド情報を見る →", "zh-Hans": "查看品牌信息 →", "zh-Hant": "檢視品牌資訊 →"}, "card.before.seller": {"ko": "🔒 인증 후 매칭 정보 보기", "en": "🔒 View matching info after verification", "ja": "🔒 認証後にマッチング情報を見る", "zh-Hans": "🔒 验证后查看匹配信息", "zh-Hant": "🔒 驗證後檢視匹配資訊"}, "card.after.seller": {"ko": "셀러 정보 보기 →", "en": "View seller info →", "ja": "セラー情報を見る →", "zh-Hans": "查看卖家信息 →", "zh-Hant": "檢視賣家資訊 →"}, "card.before.china": {"ko": "🔒 인증 후 왕홍 정보 보기", "en": "🔒 View KOL info after verification", "ja": "🔒 認証後に網紅情報を見る", "zh-Hans": "🔒 验证后查看网红信息", "zh-Hant": "🔒 驗證後檢視網紅資訊"}, "card.after.china": {"ko": "왕홍 정보 보기 →", "en": "View KOL info →", "ja": "網紅情報を見る →", "zh-Hans": "查看网红信息 →", "zh-Hant": "檢視網紅資訊 →"}, "card.unlockhint": {"ko": "접근 코드 입력하면 마스킹 자동 해제", "en": "Enter access code to auto-unmask", "ja": "アクセスコードを入力すると自動でマスク解除", "zh-Hans": "输入访问代码自动解除遮罩", "zh-Hant": "輸入訪問程式碼自動解除遮罩"}, "bd.intro.brand": {"ko": "브랜드 소개", "en": "Brand Intro", "ja": "ブランド紹介", "zh-Hans": "品牌介绍", "zh-Hant": "品牌介紹"}, "bd.products": {"ko": "전체 상품군", "en": "All Products", "ja": "全商品", "zh-Hans": "全部商品", "zh-Hant": "全部商品"}, "bd.sns": {"ko": "SNS 채널", "en": "SNS Channels", "ja": "SNSチャンネル", "zh-Hans": "社交媒体", "zh-Hant": "社交媒體"}, "bd.marketing": {"ko": "마케팅 · 홍보 자료", "en": "Marketing & PR", "ja": "マーケティング・PR資料", "zh-Hans": "营销宣传资料", "zh-Hant": "營銷宣傳資料"}, "bd.note": {"ko": "추가 설명", "en": "Additional Info", "ja": "追加説明", "zh-Hans": "补充说明", "zh-Hant": "補充說明"}, "bd.intro.seller": {"ko": "셀러 소개", "en": "Seller Intro", "ja": "セラー紹介", "zh-Hans": "卖家介绍", "zh-Hant": "賣家介紹"}, "bd.intro.china": {"ko": "왕홍 소개", "en": "KOL Intro", "ja": "網紅紹介", "zh-Hans": "网红介绍", "zh-Hant": "網紅介紹"}, "bd.strength": {"ko": "채널 강점", "en": "Channel Strength", "ja": "チャンネルの強み", "zh-Hans": "渠道优势", "zh-Hant": "渠道優勢"}, "bd.matching": {"ko": "매칭 진행 방식", "en": "How Matching Works", "ja": "マッチングの進め方", "zh-Hans": "匹配流程", "zh-Hant": "匹配流程"}, "bd.hint.products": {"ko": "사진 클릭 시 크게 보기 · 브랜드 SHOP 기준 일부 상품", "en": "Click image to enlarge · Selected items from brand SHOP", "ja": "画像クリックで拡大 · ブランドSHOPの一部商品", "zh-Hans": "点击图片放大 · 品牌SHOP部分商品", "zh-Hant": "點選圖片放大 · 品牌SHOP部分商品"}, "cta.eyebrow.list": {"ko": "🔒 검증된 전체 리스트", "en": "🔒 Full verified list", "ja": "🔒 認証済み全リスト", "zh-Hans": "🔒 已认证完整名单", "zh-Hant": "🔒 已認證完整名單"}, "cta.eyebrow.china": {"ko": "🇨🇳 중국 진출 상담", "en": "🇨🇳 China-entry consulting", "ja": "🇨🇳 中国進出相談", "zh-Hans": "🇨🇳 中国市场咨询", "zh-Hant": "🇨🇳 中國市場諮詢"}, "cta.h3.preview": {"ko": "지금 보시는 카드는 일부 미리보기예요", "en": "What you see is a partial preview", "ja": "表示中のカードは一部プレビューです", "zh-Hans": "当前显示为部分预览", "zh-Hant": "當前顯示為部分預覽"}, "cta.h3.china": {"ko": "지금 보시는 왕홍은 일부 미리보기예요", "en": "The KOLs shown are a partial preview", "ja": "表示中の網紅は一部プレビューです", "zh-Hans": "当前显示的网红为部分预览", "zh-Hant": "當前顯示的網紅為部分預覽"}, "cta.p.brand": {"ko": "검증된 <b>K-브랜드 전체 리스트</b>와 실적·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 찾으시는 협업·입점 방향을 알려주시면 맞춤 리스트를 준비해 드려요.", "en": "The full verified <b>K-brand list</b> and details such as performance and contacts are provided <b>after a consultation</b>. Tell us your collaboration goals and we'll prepare a tailored list.", "ja": "認証済み<b>K-ブランド全リスト</b>と実績・連絡先などの詳細は<b>商談後</b>に提供します。協業・出店の方向性をお知らせいただければ最適なリストをご用意します。", "zh-Hans": "完整的认证<b>K-品牌名单</b>及业绩、联系方式等详情将于<b>洽谈后</b>提供。告知您的合作方向，我们将准备专属名单。", "zh-Hant": "完整的認證<b>K-品牌名單</b>及業績、聯絡方式等詳情將於<b>洽談後</b>提供。告知您的合作方向，我們將準備專屬名單。"}, "cta.p.seller": {"ko": "검증된 <b>글로벌 셀러·왕홍 전체 리스트</b>와 팔로워·섭외비용·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 원하시는 매칭·입점 방향을 알려주세요.", "en": "The full verified <b>global seller/KOL list</b> and details such as followers, fees and contacts are provided <b>after a consultation</b>. Tell us your matching goals.", "ja": "認証済み<b>グローバルセラー・網紅全リスト</b>とフォロワー・起用費用・連絡先などの詳細は<b>商談後</b>に提供します。希望のマッチング方向をお知らせください。", "zh-Hans": "完整的认证<b>全球卖家·网红名单</b>及粉丝数、邀约费用、联系方式等详情将于<b>洽谈后</b>提供。请告知您的匹配方向。", "zh-Hant": "完整的認證<b>全球賣家·網紅名單</b>及粉絲數、邀約費用、聯絡方式等詳情將於<b>洽談後</b>提供。請告知您的匹配方向。"}, "cta.p.china": {"ko": "검증된 <b>도우인 라이브 왕홍 전체 리스트</b>와 매출·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 진출 브랜드·예산을 알려주시면 맞춤 왕홍을 매칭해 드려요.", "en": "The full verified <b>Douyin live KOL list</b> and details such as sales and contacts are provided <b>after a consultation</b>. Tell us your brand and budget for tailored matching.", "ja": "認証済み<b>抖音ライブ網紅全リスト</b>と売上・連絡先などの詳細は<b>商談後</b>に提供します。進出ブランド・予算をお知らせいただければ最適な網紅をマッチングします。", "zh-Hans": "完整的认证<b>抖音直播网红名单</b>及销售额、联系方式等详情将于<b>洽谈后</b>提供。告知品牌与预算，我们将匹配合适网红。", "zh-Hant": "完整的認證<b>抖音直播網紅名單</b>及銷售額、聯絡方式等詳情將於<b>洽談後</b>提供。告知品牌與預算，我們將匹配合適網紅。"}, "cta.btn.brand": {"ko": "K-브랜드 협업·입점 문의 →", "en": "K-brand partnership inquiry →", "ja": "K-ブランド協業・出店のお問い合わせ →", "zh-Hans": "K-品牌合作·入驻咨询 →", "zh-Hant": "K-品牌合作·入駐諮詢 →"}, "cta.btn.seller": {"ko": "글로벌 셀러 매칭·입점 문의 →", "en": "Global seller matching inquiry →", "ja": "グローバルセラーマッチングのお問い合わせ →", "zh-Hans": "全球卖家匹配·入驻咨询 →", "zh-Hant": "全球賣家匹配·入駐諮詢 →"}, "cta.btn.china": {"ko": "중국 진출·왕홍 매칭 문의 →", "en": "China-entry & KOL matching inquiry →", "ja": "中国進出・網紅マッチングのお問い合わせ →", "zh-Hans": "中国市场·网红匹配咨询 →", "zh-Hant": "中國市場·網紅匹配諮詢 →"}, "cta.cap.brand": {"ko": "뷰티 · 패션 · 생활 카테고리의 검증된 K-브랜드 — 전체 리스트와 공급 조건은 상담 후 제공됩니다.", "en": "Verified K-brands across beauty, fashion & lifestyle — full list and terms provided after consultation.", "ja": "ビューティー・ファッション・生活カテゴリの認証K-ブランド — 全リストと供給条件は商談後に提供。", "zh-Hans": "美妆·时尚·生活品类的认证K-品牌 — 完整名单与供货条件洽谈后提供。", "zh-Hant": "美妝·時尚·生活品類的認證K-品牌 — 完整名單與供貨條件洽談後提供。"}, "cta.cap.seller": {"ko": "대만 · 홍콩 · 태국 · 말레이시아 등 글로벌 라이브 셀러 — 전체 리스트와 상세 프로필은 상담 후 제공됩니다.", "en": "Global live sellers from Taiwan, Hong Kong, Thailand, Malaysia & more — full list and profiles after consultation.", "ja": "台湾・香港・タイ・マレーシアなどのグローバルライブセラー — 全リストと詳細プロフィールは商談後に提供。", "zh-Hans": "台湾·香港·泰国·马来西亚等全球直播卖家 — 完整名单与详细资料洽谈后提供。", "zh-Hant": "臺灣·香港·泰國·馬來西亞等全球直播賣家 — 完整名單與詳細資料洽談後提供。"}, "cta.cap.china": {"ko": "抖音(Douyin) 라이브 커머스 왕홍 — 상세 프로필·실적·섭외 조건은 계약 후 제공됩니다.", "en": "Douyin live-commerce KOLs — detailed profiles, performance and terms provided after contract.", "ja": "抖音(Douyin)ライブコマース網紅 — 詳細プロフィール・実績・起用条件は契約後に提供。", "zh-Hans": "抖音(Douyin)直播电商网红 — 详细资料·业绩·邀约条件签约后提供。", "zh-Hant": "抖音(Douyin)直播電商網紅 — 詳細資料·業績·邀約條件簽約後提供。"}, "china.eyebrow": {"ko": "SPECIAL · 중국관", "en": "SPECIAL · China Zone", "ja": "SPECIAL · 中国館", "zh-Hans": "SPECIAL · 中国馆", "zh-Hant": "SPECIAL · 中國館"}, "china.title": {"ko": "중국 진출 브랜드 × 도우인 라이브 왕홍", "en": "China-entry Brands × Douyin Live KOLs", "ja": "中国進出ブランド × 抖音ライブ網紅", "zh-Hans": "中国市场品牌 × 抖音直播网红", "zh-Hant": "中國市場品牌 × 抖音直播網紅"}, "china.desc": {"ko": "중국에 진출한 K-브랜드를 검증된 <b>도우인 라이브 왕홍</b>으로 방송·판매합니다. NLIVE가 진입 준비부터 스토어·콘텐츠·라이브 판매·성과 확장까지 전 과정을 실행합니다. 아래는 일평균 매출 상위 라이브 왕홍입니다.", "en": "K-brands entering China are broadcast and sold by verified <b>Douyin live KOLs</b>. N-LIVE executes the entire process from entry prep to store, content, live sales and growth. Below are the top KOLs by daily sales.", "ja": "中国に進出したK-ブランドを認証済み<b>抖音ライブ網紅</b>で配信・販売します。N-LIVEが参入準備からストア・コンテンツ・ライブ販売・成果拡大まで全工程を実行します。以下は1日平均売上上位の網紅です。", "zh-Hans": "由认证<b>抖音直播网红</b>为进入中国的K-品牌进行直播销售。N-LIVE执行从入驻准备到店铺、内容、直播销售及业绩拓展的全流程。以下为日均销售额排名靠前的网红。", "zh-Hant": "由認證<b>抖音直播網紅</b>為進入中國的K-品牌進行直播銷售。N-LIVE執行從入駐準備到店鋪、內容、直播銷售及業績拓展的全流程。以下為日均銷售額排名靠前的網紅。"}, "china.guidebtn": {"ko": "📋 중국 진출 가이드 보기", "en": "📋 View China-Entry Guide", "ja": "📋 中国進出ガイドを見る", "zh-Hans": "📋 查看中国市场进入指南", "zh-Hant": "📋 檢視中國市場進入指南"}, "note.code": {"ko": "접근 코드 발급은 사업자등록증 / 영업 의지 확인 후 이뤄지며, 1주 단위로 재발급됩니다.", "en": "Access codes are issued after verifying business registration and intent, and reissued weekly.", "ja": "アクセスコードは事業者登録証/営業意思の確認後に発行され、1週間ごとに再発行されます。", "zh-Hans": "访问代码在确认营业执照/合作意向后发放，每周重新发放一次。", "zh-Hant": "訪問程式碼在確認營業執照/合作意向後發放，每週重新發放一次。"}, "lang.label": {"ko": "언어", "en": "Language", "ja": "言語", "zh-Hans": "语言", "zh-Hant": "語言"}, "msg.cap": {"ko": "문의하기", "en": "Contact us", "ja": "お問い合わせ", "zh-Hans": "立即咨询", "zh-Hant": "立即諮詢"}};
+window.MP_I18N={"hero.eyebrow": {"ko": "N-LIVE NETWORK · 검증된 파트너 풀", "en": "N-LIVE NETWORK · VERIFIED PARTNER POOL", "ja": "N-LIVE NETWORK · 認証済みパートナープール", "zh-Hans": "N-LIVE NETWORK · 认证合作伙伴库", "zh-Hant": "N-LIVE NETWORK · 認證合作伙伴庫"}, "hero.h1": {"ko": "K-브랜드와<br>글로벌 셀러를 <em>매칭</em>합니다", "en": "Matching K-Brands<br>with Global <em>Sellers</em>", "ja": "K-ブランドと<br>グローバルセラーを<em>マッチング</em>", "zh-Hans": "为K-品牌与<br>全球卖家进行<em>匹配</em>", "zh-Hant": "為K-品牌與<br>全球賣家進行<em>匹配</em>"}, "hero.lead": {"ko": "엔라이브와 파트너십을 맺은 검증된 K-브랜드와 글로벌 라이브커머스 셀러 풀입니다. 리스트 열람은 문의 후 발급되는 <b>접근 코드</b>로 가능합니다.", "en": "A verified pool of K-brands and global live-commerce sellers partnered with N-LIVE. The list can be viewed with an <b>access code</b> issued after inquiry.", "ja": "N-LIVEと提携した認証済みK-ブランド及びグローバルライブコマースセラーのプールです。リスト閲覧はお問い合わせ後に発行される<b>アクセスコード</b>で可能です。", "zh-Hans": "与N-LIVE建立合作关系的认证K-品牌及全球直播电商卖家资源库。咨询后发放<b>访问代码</b>即可查看名单。", "zh-Hant": "與N-LIVE建立合作關係的認證K-品牌及全球直播電商賣家資源庫。諮詢後發放<b>訪問程式碼</b>即可檢視名單。"}, "tab.brands": {"ko": "K-브랜드 보기 (셀러용)", "en": "K-Brands (for Sellers)", "ja": "K-ブランド (セラー向け)", "zh-Hans": "K-品牌 (卖家专用)", "zh-Hant": "K-品牌 (賣家專用)"}, "tab.sellers": {"ko": "글로벌 셀러 보기 (브랜드용)", "en": "Global Sellers (for Brands)", "ja": "グローバルセラー (ブランド向け)", "zh-Hans": "全球卖家 (品牌专用)", "zh-Hant": "全球賣家 (品牌專用)"}, "tab.china": {"ko": "🇨🇳 중국관", "en": "🇨🇳 China Zone", "ja": "🇨🇳 中国館", "zh-Hans": "🇨🇳 中国馆", "zh-Hant": "🇨🇳 中國館"}, "filter.label": {"ko": "필터 ·", "en": "FILTER ·", "ja": "フィルター ·", "zh-Hans": "筛选 ·", "zh-Hant": "篩選 ·"}, "filter.all": {"ko": "전체", "en": "All", "ja": "すべて", "zh-Hans": "全部", "zh-Hant": "全部"}, "cat.fashion": {"ko": "패션", "en": "Fashion", "ja": "ファッション", "zh-Hans": "时尚", "zh-Hant": "時尚"}, "cat.fashionacc": {"ko": "패션잡화", "en": "Accessories", "ja": "ファッション雑貨", "zh-Hans": "时尚配饰", "zh-Hant": "時尚配飾"}, "cat.beauty": {"ko": "뷰티", "en": "Beauty", "ja": "ビューティー", "zh-Hans": "美妆", "zh-Hant": "美妝"}, "cat.food": {"ko": "식품", "en": "Food", "ja": "食品", "zh-Hans": "食品", "zh-Hant": "食品"}, "cat.life": {"ko": "라이프스타일", "en": "Lifestyle", "ja": "ライフスタイル", "zh-Hans": "生活方式", "zh-Hant": "生活方式"}, "f.tw": {"ko": "대만", "en": "Taiwan", "ja": "台湾", "zh-Hans": "台湾", "zh-Hant": "臺灣"}, "f.hk": {"ko": "홍콩", "en": "Hong Kong", "ja": "香港", "zh-Hans": "香港", "zh-Hant": "香港"}, "f.th": {"ko": "태국", "en": "Thailand", "ja": "タイ", "zh-Hans": "泰国", "zh-Hant": "泰國"}, "f.my": {"ko": "말레이시아", "en": "Malaysia", "ja": "マレーシア", "zh-Hans": "马来西亚", "zh-Hant": "馬來西亞"}, "f.f10": {"ko": "10만+", "en": "100K+", "ja": "10万+", "zh-Hans": "10万+", "zh-Hant": "10萬+"}, "f.f50": {"ko": "50만+", "en": "500K+", "ja": "50万+", "zh-Hans": "50万+", "zh-Hant": "50萬+"}, "f.f100": {"ko": "100만+", "en": "1M+", "ja": "100万+", "zh-Hans": "100万+", "zh-Hant": "100萬+"}, "auth.status.locked": {"ko": "<b>비공개 모드</b> · 파트너 정보는 인증 후에만 표시됩니다", "en": "<b>Private mode</b> · Partner info is shown only after verification", "ja": "<b>非公開モード</b> · パートナー情報は認証後にのみ表示されます", "zh-Hans": "<b>非公开模式</b> · 合作伙伴信息仅在验证后显示", "zh-Hant": "<b>非公開模式</b> · 合作伙伴資訊僅在驗證後顯示"}, "auth.status.authed.all": {"ko": "<b>통합 코드로 인증됨</b> · K-브랜드 + 글로벌 셀러 전체 열람 가능", "en": "<b>Verified with master code</b> · Full access to K-brands + global sellers", "ja": "<b>統合コードで認証済み</b> · K-ブランド＋グローバルセラー全て閲覧可能", "zh-Hans": "<b>已通过通用代码验证</b> · 可查看全部K-品牌与全球卖家", "zh-Hant": "<b>已透過通用程式碼驗證</b> · 可檢視全部K-品牌與全球賣家"}, "auth.unlock": {"ko": "🔓 잠금 해제", "en": "🔓 Unlock", "ja": "🔓 ロック解除", "zh-Hans": "🔓 解锁", "zh-Hant": "🔓 解鎖"}, "auth.lock": {"ko": "잠그기", "en": "Lock", "ja": "ロック", "zh-Hans": "锁定", "zh-Hant": "鎖定"}, "modal.title": {"ko": "파트너 풀 열람", "en": "View Partner Pool", "ja": "パートナープール閲覧", "zh-Hans": "查看合作伙伴库", "zh-Hant": "檢視合作伙伴庫"}, "modal.desc": {"ko": "본인을 어떻게 소개해야 할까요? 셀러는 K-브랜드만, 브랜드는 글로벌 셀러만 열람할 수 있어요.", "en": "How would you introduce yourself? Sellers can view K-brands only; brands can view global sellers only.", "ja": "ご自身をどう紹介されますか？セラーはK-ブランドのみ、ブランドはグローバルセラーのみ閲覧できます。", "zh-Hans": "请问您的身份是？卖家仅可查看K-品牌，品牌仅可查看全球卖家。", "zh-Hant": "請問您的身份是？賣家僅可檢視K-品牌，品牌僅可檢視全球賣家。"}, "role.seller": {"ko": "셀러", "en": "Seller", "ja": "セラー", "zh-Hans": "卖家", "zh-Hant": "賣家"}, "role.seller.sub": {"ko": "K-브랜드 풀 열람", "en": "View K-brand pool", "ja": "K-ブランドプール閲覧", "zh-Hans": "查看K-品牌库", "zh-Hant": "檢視K-品牌庫"}, "role.brand": {"ko": "브랜드", "en": "Brand", "ja": "ブランド", "zh-Hans": "品牌", "zh-Hant": "品牌"}, "role.brand.sub": {"ko": "글로벌 셀러 풀 열람", "en": "View global seller pool", "ja": "グローバルセラープール閲覧", "zh-Hans": "查看全球卖家库", "zh-Hant": "檢視全球賣家庫"}, "auth.input.ph": {"ko": "접근 코드 입력", "en": "Enter access code", "ja": "アクセスコード入力", "zh-Hans": "输入访问代码", "zh-Hant": "輸入訪問程式碼"}, "auth.err": {"ko": "접근 코드가 잘못되었어요. 다시 확인해주세요.", "en": "Invalid access code. Please check again.", "ja": "アクセスコードが正しくありません。再度ご確認ください。", "zh-Hans": "访问代码有误，请重新确认。", "zh-Hant": "訪問程式碼有誤，請重新確認。"}, "auth.submit": {"ko": "역할 선택 후 잠금 해제", "en": "Select role to unlock", "ja": "役割を選択して解除", "zh-Hans": "选择身份后解锁", "zh-Hant": "選擇身份後解鎖"}, "auth.submit.ready": {"ko": "잠금 해제", "en": "Unlock", "ja": "ロック解除", "zh-Hans": "解锁", "zh-Hant": "解鎖"}, "modal.help": {"ko": "<b>코드가 없으신가요?</b> <a href=\"/contact\">문의하기</a> → 영업일 24시간 내 발급<br>셀러는 셀러용, 브랜드는 브랜드용 코드를 안내드립니다.", "en": "<b>No code?</b> <a href=\"/contact\">Contact us</a> → Issued within 24 business hours<br>Sellers receive a seller code; brands receive a brand code.", "ja": "<b>コードをお持ちでない方</b> <a href=\"/contact\">お問い合わせ</a> → 営業時間24時間以内に発行<br>セラーにはセラー用、ブランドにはブランド用コードをご案内します。", "zh-Hans": "<b>没有代码？</b> <a href=\"/contact\">联系我们</a> → 工作日24小时内发放<br>卖家发放卖家代码，品牌发放品牌代码。", "zh-Hant": "<b>沒有程式碼？</b> <a href=\"/contact\">聯絡我們</a> → 工作日24小時內發放<br>賣家發放賣家程式碼，品牌發放品牌程式碼。"}, "lbl.follower": {"ko": "팔로워", "en": "Followers", "ja": "フォロワー", "zh-Hans": "粉丝", "zh-Hant": "粉絲"}, "lbl.platform": {"ko": "플랫폼", "en": "Platform", "ja": "プラットフォーム", "zh-Hans": "平台", "zh-Hant": "平臺"}, "lbl.salesmethod": {"ko": "판매방식", "en": "Sales type", "ja": "販売方式", "zh-Hans": "销售方式", "zh-Hant": "銷售方式"}, "lbl.live": {"ko": "라이브", "en": "Live", "ja": "ライブ", "zh-Hans": "直播", "zh-Hant": "直播"}, "lbl.avgsales": {"ko": "일평균 매출", "en": "Avg. daily sales", "ja": "1日平均売上", "zh-Hans": "日均销售额", "zh-Hant": "日均銷售額"}, "lbl.nation": {"ko": "국적", "en": "Country", "ja": "国籍", "zh-Hans": "国籍", "zh-Hant": "國籍"}, "lbl.fee": {"ko": "섭외비용", "en": "Booking fee", "ja": "起用費用", "zh-Hans": "邀约费用", "zh-Hant": "邀約費用"}, "card.before.brand": {"ko": "🔒 인증 후 브랜드 정보 보기", "en": "🔒 View brand info after verification", "ja": "🔒 認証後にブランド情報を見る", "zh-Hans": "🔒 验证后查看品牌信息", "zh-Hant": "🔒 驗證後檢視品牌資訊"}, "card.after.brand": {"ko": "브랜드 정보 보기 →", "en": "View brand info →", "ja": "ブランド情報を見る →", "zh-Hans": "查看品牌信息 →", "zh-Hant": "檢視品牌資訊 →"}, "card.before.seller": {"ko": "🔒 인증 후 매칭 정보 보기", "en": "🔒 View matching info after verification", "ja": "🔒 認証後にマッチング情報を見る", "zh-Hans": "🔒 验证后查看匹配信息", "zh-Hant": "🔒 驗證後檢視匹配資訊"}, "card.after.seller": {"ko": "셀러 정보 보기 →", "en": "View seller info →", "ja": "セラー情報を見る →", "zh-Hans": "查看卖家信息 →", "zh-Hant": "檢視賣家資訊 →"}, "card.before.china": {"ko": "🔒 인증 후 왕홍 정보 보기", "en": "🔒 View KOL info after verification", "ja": "🔒 認証後に網紅情報を見る", "zh-Hans": "🔒 验证后查看网红信息", "zh-Hant": "🔒 驗證後檢視網紅資訊"}, "card.after.china": {"ko": "왕홍 정보 보기 →", "en": "View KOL info →", "ja": "網紅情報を見る →", "zh-Hans": "查看网红信息 →", "zh-Hant": "檢視網紅資訊 →"}, "card.unlockhint": {"ko": "접근 코드 입력하면 마스킹 자동 해제", "en": "Enter access code to auto-unmask", "ja": "アクセスコードを入力すると自動でマスク解除", "zh-Hans": "输入访问代码自动解除遮罩", "zh-Hant": "輸入訪問程式碼自動解除遮罩"}, "bd.intro.brand": {"ko": "브랜드 소개", "en": "Brand Intro", "ja": "ブランド紹介", "zh-Hans": "品牌介绍", "zh-Hant": "品牌介紹"}, "bd.products": {"ko": "전체 상품군", "en": "All Products", "ja": "全商品", "zh-Hans": "全部商品", "zh-Hant": "全部商品"}, "bd.sns": {"ko": "SNS 채널", "en": "SNS Channels", "ja": "SNSチャンネル", "zh-Hans": "社交媒体", "zh-Hant": "社交媒體"}, "bd.marketing": {"ko": "마케팅 · 홍보 자료", "en": "Marketing & PR", "ja": "マーケティング・PR資料", "zh-Hans": "营销宣传资料", "zh-Hant": "營銷宣傳資料"}, "bd.note": {"ko": "추가 설명", "en": "Additional Info", "ja": "追加説明", "zh-Hans": "补充说明", "zh-Hant": "補充說明"}, "bd.intro.seller": {"ko": "셀러 소개", "en": "Seller Intro", "ja": "セラー紹介", "zh-Hans": "卖家介绍", "zh-Hant": "賣家介紹"}, "bd.intro.china": {"ko": "왕홍 소개", "en": "KOL Intro", "ja": "網紅紹介", "zh-Hans": "网红介绍", "zh-Hant": "網紅介紹"}, "bd.strength": {"ko": "채널 강점", "en": "Channel Strength", "ja": "チャンネルの強み", "zh-Hans": "渠道优势", "zh-Hant": "渠道優勢"}, "bd.matching": {"ko": "매칭 진행 방식", "en": "How Matching Works", "ja": "マッチングの進め方", "zh-Hans": "匹配流程", "zh-Hant": "匹配流程"}, "bd.hint.products": {"ko": "사진 클릭 시 크게 보기 · 브랜드 SHOP 기준 일부 상품", "en": "Click image to enlarge · Selected items from brand SHOP", "ja": "画像クリックで拡大 · ブランドSHOPの一部商品", "zh-Hans": "点击图片放大 · 品牌SHOP部分商品", "zh-Hant": "點選圖片放大 · 品牌SHOP部分商品"}, "cta.eyebrow.list": {"ko": "🔒 검증된 전체 리스트", "en": "🔒 Full verified list", "ja": "🔒 認証済み全リスト", "zh-Hans": "🔒 已认证完整名单", "zh-Hant": "🔒 已認證完整名單"}, "cta.eyebrow.china": {"ko": "🇨🇳 중국 진출 상담", "en": "🇨🇳 China-entry consulting", "ja": "🇨🇳 中国進出相談", "zh-Hans": "🇨🇳 中国市场咨询", "zh-Hant": "🇨🇳 中國市場諮詢"}, "cta.h3.preview": {"ko": "지금 보시는 카드는 일부 미리보기예요", "en": "What you see is a partial preview", "ja": "表示中のカードは一部プレビューです", "zh-Hans": "当前显示为部分预览", "zh-Hant": "當前顯示為部分預覽"}, "cta.h3.china": {"ko": "지금 보시는 왕홍은 일부 미리보기예요", "en": "The KOLs shown are a partial preview", "ja": "表示中の網紅は一部プレビューです", "zh-Hans": "当前显示的网红为部分预览", "zh-Hant": "當前顯示的網紅為部分預覽"}, "cta.p.brand": {"ko": "검증된 <b>K-브랜드 전체 리스트</b>와 실적·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 찾으시는 협업·입점 방향을 알려주시면 맞춤 리스트를 준비해 드려요.", "en": "The full verified <b>K-brand list</b> and details such as performance and contacts are provided <b>after a consultation</b>. Tell us your collaboration goals and we'll prepare a tailored list.", "ja": "認証済み<b>K-ブランド全リスト</b>と実績・連絡先などの詳細は<b>商談後</b>に提供します。協業・出店の方向性をお知らせいただければ最適なリストをご用意します。", "zh-Hans": "完整的认证<b>K-品牌名单</b>及业绩、联系方式等详情将于<b>洽谈后</b>提供。告知您的合作方向，我们将准备专属名单。", "zh-Hant": "完整的認證<b>K-品牌名單</b>及業績、聯絡方式等詳情將於<b>洽談後</b>提供。告知您的合作方向，我們將準備專屬名單。"}, "cta.p.seller": {"ko": "검증된 <b>글로벌 셀러·왕홍 전체 리스트</b>와 팔로워·섭외비용·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 원하시는 매칭·입점 방향을 알려주세요.", "en": "The full verified <b>global seller/KOL list</b> and details such as followers, fees and contacts are provided <b>after a consultation</b>. Tell us your matching goals.", "ja": "認証済み<b>グローバルセラー・網紅全リスト</b>とフォロワー・起用費用・連絡先などの詳細は<b>商談後</b>に提供します。希望のマッチング方向をお知らせください。", "zh-Hans": "完整的认证<b>全球卖家·网红名单</b>及粉丝数、邀约费用、联系方式等详情将于<b>洽谈后</b>提供。请告知您的匹配方向。", "zh-Hant": "完整的認證<b>全球賣家·網紅名單</b>及粉絲數、邀約費用、聯絡方式等詳情將於<b>洽談後</b>提供。請告知您的匹配方向。"}, "cta.p.china": {"ko": "검증된 <b>도우인 라이브 왕홍 전체 리스트</b>와 매출·연락처 등 상세 정보는 <b>대면(비대면) 상담 후</b> 제공됩니다. 진출 브랜드·예산을 알려주시면 맞춤 왕홍을 매칭해 드려요.", "en": "The full verified <b>Douyin live KOL list</b> and details such as sales and contacts are provided <b>after a consultation</b>. Tell us your brand and budget for tailored matching.", "ja": "認証済み<b>抖音ライブ網紅全リスト</b>と売上・連絡先などの詳細は<b>商談後</b>に提供します。進出ブランド・予算をお知らせいただければ最適な網紅をマッチングします。", "zh-Hans": "完整的认证<b>抖音直播网红名单</b>及销售额、联系方式等详情将于<b>洽谈后</b>提供。告知品牌与预算，我们将匹配合适网红。", "zh-Hant": "完整的認證<b>抖音直播網紅名單</b>及銷售額、聯絡方式等詳情將於<b>洽談後</b>提供。告知品牌與預算，我們將匹配合適網紅。"}, "cta.btn.brand": {"ko": "K-브랜드 협업·입점 문의 →", "en": "K-brand partnership inquiry →", "ja": "K-ブランド協業・出店のお問い合わせ →", "zh-Hans": "K-品牌合作·入驻咨询 →", "zh-Hant": "K-品牌合作·入駐諮詢 →"}, "cta.btn.seller": {"ko": "글로벌 셀러 매칭·입점 문의 →", "en": "Global seller matching inquiry →", "ja": "グローバルセラーマッチングのお問い合わせ →", "zh-Hans": "全球卖家匹配·入驻咨询 →", "zh-Hant": "全球賣家匹配·入駐諮詢 →"}, "cta.btn.china": {"ko": "중국 진출·왕홍 매칭 문의 →", "en": "China-entry & KOL matching inquiry →", "ja": "中国進出・網紅マッチングのお問い合わせ →", "zh-Hans": "中国市场·网红匹配咨询 →", "zh-Hant": "中國市場·網紅匹配諮詢 →"}, "cta.cap.brand": {"ko": "뷰티 · 패션 · 생활 카테고리의 검증된 K-브랜드 — 전체 리스트와 공급 조건은 상담 후 제공됩니다.", "en": "Verified K-brands across beauty, fashion & lifestyle — full list and terms provided after consultation.", "ja": "ビューティー・ファッション・生活カテゴリの認証K-ブランド — 全リストと供給条件は商談後に提供。", "zh-Hans": "美妆·时尚·生活品类的认证K-品牌 — 完整名单与供货条件洽谈后提供。", "zh-Hant": "美妝·時尚·生活品類的認證K-品牌 — 完整名單與供貨條件洽談後提供。"}, "cta.cap.seller": {"ko": "대만 · 홍콩 · 태국 · 말레이시아 등 글로벌 라이브 셀러 — 전체 리스트와 상세 프로필은 상담 후 제공됩니다.", "en": "Global live sellers from Taiwan, Hong Kong, Thailand, Malaysia & more — full list and profiles after consultation.", "ja": "台湾・香港・タイ・マレーシアなどのグローバルライブセラー — 全リストと詳細プロフィールは商談後に提供。", "zh-Hans": "台湾·香港·泰国·马来西亚等全球直播卖家 — 完整名单与详细资料洽谈后提供。", "zh-Hant": "臺灣·香港·泰國·馬來西亞等全球直播賣家 — 完整名單與詳細資料洽談後提供。"}, "cta.cap.china": {"ko": "抖音(Douyin) 라이브 커머스 왕홍 — 상세 프로필·실적·섭외 조건은 계약 후 제공됩니다.", "en": "Douyin live-commerce KOLs — detailed profiles, performance and terms provided after contract.", "ja": "抖音(Douyin)ライブコマース網紅 — 詳細プロフィール・実績・起用条件は契約後に提供。", "zh-Hans": "抖音(Douyin)直播电商网红 — 详细资料·业绩·邀约条件签约后提供。", "zh-Hant": "抖音(Douyin)直播電商網紅 — 詳細資料·業績·邀約條件簽約後提供。"}, "china.eyebrow": {"ko": "SPECIAL · 중국관", "en": "SPECIAL · China Zone", "ja": "SPECIAL · 中国館", "zh-Hans": "SPECIAL · 中国馆", "zh-Hant": "SPECIAL · 中國館"}, "china.title": {"ko": "중국 진출 브랜드 × 도우인 라이브 왕홍", "en": "China-entry Brands × Douyin Live KOLs", "ja": "中国進出ブランド × 抖音ライブ網紅", "zh-Hans": "中国市场品牌 × 抖音直播网红", "zh-Hant": "中國市場品牌 × 抖音直播網紅"}, "china.desc": {"ko": "중국에 진출한 K-브랜드를 검증된 <b>도우인 라이브 왕홍</b>으로 방송·판매합니다. NLIVE가 진입 준비부터 스토어·콘텐츠·라이브 판매·성과 확장까지 전 과정을 실행합니다. 아래는 일평균 매출 상위 라이브 왕홍입니다.", "en": "K-brands entering China are broadcast and sold by verified <b>Douyin live KOLs</b>. N-LIVE executes the entire process from entry prep to store, content, live sales and growth. Below are the top KOLs by daily sales.", "ja": "中国に進出したK-ブランドを認証済み<b>抖音ライブ網紅</b>で配信・販売します。N-LIVEが参入準備からストア・コンテンツ・ライブ販売・成果拡大まで全工程を実行します。以下は1日平均売上上位の網紅です。", "zh-Hans": "由认证<b>抖音直播网红</b>为进入中国的K-品牌进行直播销售。N-LIVE执行从入驻准备到店铺、内容、直播销售及业绩拓展的全流程。以下为日均销售额排名靠前的网红。", "zh-Hant": "由認證<b>抖音直播網紅</b>為進入中國的K-品牌進行直播銷售。N-LIVE執行從入駐準備到店鋪、內容、直播銷售及業績拓展的全流程。以下為日均銷售額排名靠前的網紅。"}, "china.guidebtn": {"ko": "📋 중국 진출 가이드 보기", "en": "📋 View China-Entry Guide", "ja": "📋 中国進出ガイドを見る", "zh-Hans": "📋 查看中国市场进入指南", "zh-Hant": "📋 檢視中國市場進入指南"}, "note.code": {"ko": "접근 코드 발급은 사업자등록증 / 영업 의지 확인 후 이뤄지며, 1주 단위로 재발급됩니다.", "en": "Access codes are issued after verifying business registration and intent, and reissued weekly.", "ja": "アクセスコードは事業者登録証/営業意思の確認後に発行され、1週間ごとに再発行されます。", "zh-Hans": "访问代码在确认营业执照/合作意向后发放，每周重新发放一次。", "zh-Hant": "訪問程式碼在確認營業執照/合作意向後發放，每週重新發放一次。"}, "lang.label": {"ko": "언어", "en": "Language", "ja": "言語", "zh-Hans": "语言", "zh-Hant": "語言"}, "msg.cap": {"ko": "문의하기", "en": "Contact us", "ja": "お問い合わせ", "zh-Hans": "立即咨询", "zh-Hant": "立即諮詢"}};
 Object.assign(window.MP_I18N, {
  "tag.studio":{"ko":"스튜디오","en":"Studio","ja":"スタジオ","zh-Hans":"摄影棚","zh-Hant":"攝影棚"},
  "bd.noimg":{"ko":"상품 이미지 준비 중","en":"Product images coming soon","ja":"商品画像準備中","zh-Hans":"商品图片准备中","zh-Hant":"商品圖片準備中"},
@@ -1186,6 +1195,22 @@ Object.assign(window.MP_I18N, {
  "wh.empty":{"ko":"＋ 선품창고 입점 모집중 — 다음 파트너 자리","en":"＋ Sourcing hubs wanted — your spot here","ja":"＋ 選品倉庫 出店募集中 — 次のパートナー枠","zh-Hans":"＋ 选品仓入驻招募中 — 下一个合作伙伴","zh-Hant":"＋ 選品倉入駐招募中 — 下一個合作伙伴"},
  "wh.foot":{"ko":"※ 상세 소싱 조건·정산 방식은 셀러 등록·상담 후 안내됩니다.","en":"※ Detailed sourcing terms and settlement are provided after seller sign-up and consultation.","ja":"※ 詳細な仕入れ条件・精算方法はセラー登録・相談後にご案内します。","zh-Hans":"※ 详细采购条件·结算方式将于卖家注册·洽谈后告知。","zh-Hant":"※ 詳細採購條件·結算方式將於賣家註冊·洽談後告知。"}
 });
+Object.assign(window.MP_I18N, {
+ "gate.zero.brands.h":{"ko":"K-브랜드 리스트는 인증 후 열람할 수 있어요","en":"The K-brand list opens after verification","ja":"K-ブランドリストは認証後に閲覧できます","zh-Hans":"K-品牌名单需验证后查看","zh-Hant":"K-品牌名單需驗證後檢視"},
+ "gate.zero.brands.p":{"ko":"셀러·바이어 인증 코드를 입력하면 브랜드 풀이 열립니다. 코드가 없다면 아래 양식으로 먼저 등록해 주세요 — 검토 후 접근 코드를 발급해 드립니다.","en":"Enter a seller/buyer access code to open the brand pool. No code yet? Register below first — we issue an access code after review.","ja":"セラー・バイヤー認証コードを入力するとブランドプールが開きます。コードがない場合は、まず下記フォームでご登録ください。審査後にアクセスコードを発行します。","zh-Hans":"输入卖家/买家验证代码即可打开品牌库。还没有代码？请先通过下方表单登记，审核后发放访问代码。","zh-Hant":"輸入賣家/買家驗證程式碼即可開啟品牌庫。還沒有程式碼？請先透過下方表單登記，審核後發放訪問程式碼。"},
+ "gate.zero.sellers.h":{"ko":"글로벌 셀러 리스트는 브랜드 인증 후 열람할 수 있어요","en":"The global seller list opens after brand verification","ja":"グローバルセラーリストはブランド認証後に閲覧できます","zh-Hans":"全球卖家名单需品牌验证后查看","zh-Hant":"全球賣家名單需品牌驗證後檢視"},
+ "gate.zero.sellers.p":{"ko":"이 리스트는 입점을 검토하는 <b>브랜드 전용</b>입니다. 브랜드 인증 코드를 입력하면 셀러 풀이 열립니다. 코드가 없다면 브랜드 입점 신청 후 발급받으세요.","en":"This list is <b>for brands</b> evaluating partnerships. Enter a brand access code to open the seller pool — apply below to receive one.","ja":"このリストは出店を検討する<b>ブランド専用</b>です。ブランド認証コードを入力するとセラープールが開きます。コードは出店申請後に発行されます。","zh-Hans":"该名单为评估合作的<b>品牌专用</b>。输入品牌验证代码即可打开卖家库，代码在入驻申请后发放。","zh-Hant":"該名單為評估合作的<b>品牌專用</b>。輸入品牌驗證程式碼即可開啟賣家庫，程式碼在入駐申請後發放。"},
+ "gate.zero.china.h":{"ko":"중국관 왕홍 리스트는 브랜드 인증 후 열람할 수 있어요","en":"The China Zone KOL list opens after brand verification","ja":"中国館の網紅リストはブランド認証後に閲覧できます","zh-Hans":"中国馆网红名单需品牌验证后查看","zh-Hant":"中國館網紅名單需品牌驗證後檢視"},
+ "gate.zero.china.p":{"ko":"중국 진출·왕홍 매칭을 검토하는 <b>브랜드 전용</b>입니다. 브랜드 인증 코드를 입력하면 왕홍 리스트가 열립니다.","en":"For <b>brands</b> exploring China entry and KOL matching. Enter a brand access code to open the KOL list.","ja":"中国進出・網紅マッチングを検討する<b>ブランド専用</b>です。ブランド認証コードを入力すると網紅リストが開きます。","zh-Hans":"面向考虑进入中国市场·网红匹配的<b>品牌</b>。输入品牌验证代码即可打开网红名单。","zh-Hant":"面向考慮進入中國市場·網紅匹配的<b>品牌</b>。輸入品牌驗證程式碼即可開啟網紅名單。"},
+ "gate.cta.unlock":{"ko":"🔓 접근 코드 입력","en":"🔓 Enter access code","ja":"🔓 アクセスコード入力","zh-Hans":"🔓 输入访问代码","zh-Hant":"🔓 輸入訪問程式碼"},
+ "gate.cta.sellerform":{"ko":"해외 셀러 등록 →","en":"Overseas seller sign-up →","ja":"海外セラー登録 →","zh-Hans":"海外卖家登记 →","zh-Hant":"海外賣家登記 →"},
+ "gate.cta.b2bform":{"ko":"B2B 바이어 신청 →","en":"B2B buyer application →","ja":"B2Bバイヤー申請 →","zh-Hans":"B2B买家申请 →","zh-Hant":"B2B買家申請 →"},
+ "gate.cta.brandform":{"ko":"브랜드 입점 신청 →","en":"Brand partnership application →","ja":"ブランド出店申請 →","zh-Hans":"品牌入驻申请 →","zh-Hant":"品牌入駐申請 →"},
+ "gate.count":{"ko":"현재 풀에 등록된 파트너","en":"Partners currently in the pool:","ja":"現在プールに登録済みのパートナー","zh-Hans":"当前库内已登记伙伴","zh-Hant":"當前庫內已登記伙伴"},
+ "bd.intake":{"ko":"한국 방송 매칭 정보","en":"Korea Live Matching Info","ja":"韓国ライブマッチング情報","zh-Hans":"韩国直播匹配信息","zh-Hant":"韓國直播匹配資訊"},
+ "lbl.avgshow":{"ko":"평균 1회 방송매출","en":"Avg. sales per show","ja":"平均1回配信売上","zh-Hans":"场均销售额","zh-Hant":"場均銷售額"},
+ "lbl.maxshow":{"ko":"최고 1회 방송매출","en":"Best sales per show","ja":"最高1回配信売上","zh-Hans":"单场最高销售额","zh-Hant":"單場最高銷售額"}
+});
 (function(){
   function valid(l){ return MP_I18N["tab.china"] && MP_I18N["tab.china"][l]; }
   try{ var s=localStorage.getItem("nlive_lang"); if(s==="zh") s="zh-Hans"; window.mpLang = (s && valid(s))? s : "ko"; }catch(e){ window.mpLang="ko"; }
@@ -1200,8 +1225,10 @@ Object.assign(window.MP_I18N, {
     // 열려있는 브랜드 상세 모달도 현재 언어로 다시 렌더
     var _bd=document.getElementById("brandDetail");
     if(window.__openBrandId && _bd && _bd.classList.contains("show") && window.openBrandDetail) window.openBrandDetail(window.__openBrandId);
-    if(window.__SELLERS_ARR && document.getElementById("sellerGrid")) document.getElementById("sellerGrid").innerHTML = window.__SELLERS_ARR.map(sellerCard).join("");
-    if(window.__CHINA_LIST && document.getElementById("chinaGrid")) document.getElementById("chinaGrid").innerHTML = window.__CHINA_LIST.map(chinaCard).join("");
+    var _sg=document.getElementById("sellerGrid");
+    if(_sg){ if(window.__SELLERS_ARR && window.__SELLERS_ARR.length) _sg.innerHTML = window.__SELLERS_ARR.map(sellerCard).join(""); else if(window.gatePanel) _sg.innerHTML = gatePanel('sellers', (window.__POOL_TOTALS||{}).sellers); }
+    var _cg=document.getElementById("chinaGrid");
+    if(_cg){ if(window.__CHINA_LIST && window.__CHINA_LIST.length) _cg.innerHTML = window.__CHINA_LIST.map(chinaCard).join(""); else if(window.gatePanel) _cg.innerHTML = gatePanel('china', (window.__POOL_TOTALS||{}).china); }
     // 선품창고 그리드 + 열려있는 창고 상세도 현재 언어로 다시 렌더
     if(window.__WAREHOUSES_ARR && document.getElementById("warehouseGrid") && window.warehouseCard) document.getElementById("warehouseGrid").innerHTML = window.__WAREHOUSES_ARR.map(warehouseCard).join("") + '<div class="wh-empty-slot">'+tr('wh.empty')+'</div>';
     var _wd=document.getElementById("warehouseDetail");
@@ -1458,19 +1485,35 @@ Object.assign(window.MP_I18N, {
 </p>
 
 <script>
-  // ─── 셀러 더미 데이터 (실 데이터 입력 전 레이아웃용) ───
-  const SELLERS = [
-    { plat:'샤오홍슈', cat:'xhs',      followers:'85만',  nick:'뷰티 크리에이터 #S047', real:'@뷰티셀러A', time:'평일 20~23시', nation:'中国', fee:'협의' },
-    { plat:'더우인',   cat:'douyin',   followers:'120만', nick:'라이프 크리에이터 #S112', real:'@라이프셀러B', time:'매일 21~24시', nation:'中国', fee:'협의' },
-    { plat:'콰이쇼우', cat:'kuaishou', followers:'60만',  nick:'패션 크리에이터 #S203', real:'@패션셀러C', time:'주말 19~22시', nation:'中国', fee:'협의' },
-    { plat:'웨이보',   cat:'weibo',    followers:'200만', nick:'K-컬처 크리에이터 #S041', real:'@컬처셀러D', time:'평일 18~21시', nation:'中国', fee:'협의' },
-    { plat:'샤오홍슈', cat:'xhs',      followers:'45만',  nick:'푸드 크리에이터 #S077', real:'@푸드셀러E', time:'평일 12~14시', nation:'中国', fee:'협의' },
-    { plat:'더우인',   cat:'douyin',   followers:'90만',  nick:'피트니스 크리에이터 #S088', real:'@핏셀러F', time:'매일 07~09시', nation:'中国', fee:'협의' },
-    { plat:'샤오홍슈', cat:'xhs',      followers:'30만',  nick:'육아 크리에이터 #S066', real:'@육아셀러G', time:'평일 10~12시', nation:'中国', fee:'협의' },
-    { plat:'콰이쇼우', cat:'kuaishou', followers:'150만', nick:'라이브 셀러 #S099', real:'@라이브셀러H', time:'매일 20~23시', nation:'中国', fee:'협의' },
-  ];
-
   function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  // ─── 접수 폼 (폼=시트=노출 파이프라인 1단계) — 공개 응답용 URL ───
+  const MP_FORMS = {
+    seller: 'https://docs.google.com/forms/d/e/1FAIpQLSfx4yWTcfB7BVsG5ewJYT2x1bCiYWem297vavrFu9GgP3xoPw/viewform',
+    b2b:    'https://docs.google.com/forms/d/e/1FAIpQLSdQhV0olxeHxCMPyus5Gvh1_YnYP9TNT6ZsKmOZMxLLx0q3lg/viewform',
+    brand:  'https://docs.google.com/forms/d/1NE5sVlk86Bt0F3z9yHOqvU_hqFDWytGDRfCUdebvVIo/viewform'
+  };
+
+  // ─── 미인증(=0) 게이트 패널: 카드 대신 접수 CTA — 상대 정보는 인증 전 어디에도 노출 안 함 ───
+  function gatePanel(kind, total){
+    const h = tr('gate.zero.'+kind+'.h');
+    const p = tr('gate.zero.'+kind+'.p');
+    let ctas = `<button class="btn-cta btn-cta-after gate-unlock" onclick="document.getElementById('authOpenBtn').click()">${tr('gate.cta.unlock')}</button>`;
+    if (kind === 'brands') {
+      ctas += ` <a class="btn-cta btn-cta-after gate-form" href="${MP_FORMS.seller}" target="_blank" rel="noopener">${tr('gate.cta.sellerform')}</a>`
+            + ` <a class="btn-cta btn-cta-after gate-form" href="${MP_FORMS.b2b}" target="_blank" rel="noopener">${tr('gate.cta.b2bform')}</a>`;
+    } else {
+      ctas += ` <a class="btn-cta btn-cta-after gate-form" href="${MP_FORMS.brand}" target="_blank" rel="noopener">${tr('gate.cta.brandform')}</a>`;
+    }
+    const cnt = total ? `<p class="gate-count">${tr('gate.count')} <b>${total}</b></p>` : '';
+    return `<div class="gate-zero">
+      <div class="gate-zero-lock">🔒</div>
+      <h3>${h}</h3>
+      <p>${p}</p>
+      <div class="gate-zero-ctas">${ctas}</div>
+      ${cnt}
+    </div>`;
+  }
 
   const CSHORT = {대한민국:'한국'};
   // ── 브랜드 콘텐츠 다국어 사전 + 헬퍼 (언어 변경 시 카드·상세 내용 번역) ──
@@ -1768,6 +1811,12 @@ Object.assign(window.MP_I18N, {
   window.MP_REVEAL = false;   // 5712 잠금해제 시 true → 숨긴 브랜드 노출
   window.renderBrandGrid = function(){
     if (!window.__BRANDS_ALL) return;
+    // 미인증(=0) 상태: 카드 대신 게이트 패널 유지 (언어 변경 재렌더 포함)
+    if (!window.__BRANDS_ALL.length) {
+      var g0 = document.getElementById('brandGrid');
+      if (g0) g0.innerHTML = gatePanel('brands', (window.__POOL_TOTALS||{}).brands);
+      return;
+    }
     var visible = window.__BRANDS_ALL.filter(function(b){
       return window.MP_REVEAL || !b.status || window.MP_VISIBLE_STATUS.indexOf(b.status) !== -1;
     });
@@ -1783,28 +1832,66 @@ Object.assign(window.MP_I18N, {
     });
   };
 
-  // 렌더
-  (async () => {
+  // 렌더 — 브랜드·셀러·중국관은 서버 게이트 API에서만 로드 (미인증=0, 게이트 패널 노출)
+  window.loadPools = async function(){
     try {
-      window.__brandsReady = fetch('/api/brands/').then(function(r){ return r.json(); });
+      window.__brandsReady = fetch('/api/brands/', {cache:'no-store'}).then(function(r){ return r.json(); });
       const data = await window.__brandsReady;
       const brands = (data.brands || []);
-      brands.sort((a,b) => ((b.pin?1:0)-(a.pin?1:0)) || ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));   // ELITE 최상단 → 점수 높은 순
-      window.__BRANDS_ALL = brands;
       window.__AUTHED = !!data.authed;
-      window.renderBrandGrid();
+      window.__POOL_TOTALS = window.__POOL_TOTALS || {};
+      window.__POOL_TOTALS.brands = data.total || brands.length;
+      if (brands.length) {
+        brands.sort((a,b) => ((b.pin?1:0)-(a.pin?1:0)) || ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));   // ELITE 최상단 → 점수 높은 순
+        window.__BRANDS_ALL = brands;
+        window.renderBrandGrid();
+      } else {
+        window.__BRANDS_ALL = []; window.__BRANDS = {}; window.__BRANDS_ARR = [];
+        document.getElementById('brandGrid').innerHTML = gatePanel('brands', data.total);
+      }
     } catch(e){
+      // 실패 시 stale 카드 잔존 방지 (잠금 직후 재요청 실패해도 옛 데이터 재렌더 금지)
+      window.__BRANDS_ALL = null; window.__BRANDS = {}; window.__BRANDS_ARR = [];
       document.getElementById('brandGrid').innerHTML = '<p style="color:var(--text-mute);padding:20px">브랜드 데이터를 불러오지 못했습니다.</p>';
     }
     try {
-      const sres = await fetch('/pool-sellers.json', {cache:'no-store'});
-      const sellers = await sres.json();
-      sellers.sort((a,b) => (b.score||0) - (a.score||0) || (b.followers||0) - (a.followers||0));
-      window.__SELLERS = {}; sellers.forEach(s => window.__SELLERS[s.id] = s); window.__SELLERS_ARR = sellers;
-      document.getElementById('sellerGrid').innerHTML = sellers.map(sellerCard).join('');
+      const sd = await fetch('/api/sellers/', {cache:'no-store'}).then(function(r){ return r.json(); });
+      const sellers = (sd.sellers || []);
+      window.__POOL_TOTALS = window.__POOL_TOTALS || {};
+      window.__POOL_TOTALS.sellers = sd.total || sellers.length;
+      if (sellers.length) {
+        sellers.sort((a,b) => (b.score||0) - (a.score||0) || (b.followers||0) - (a.followers||0));
+        window.__SELLERS = {}; sellers.forEach(s => window.__SELLERS[s.id] = s); window.__SELLERS_ARR = sellers;
+        document.getElementById('sellerGrid').innerHTML = sellers.map(sellerCard).join('');
+      } else {
+        window.__SELLERS = {}; window.__SELLERS_ARR = null;
+        document.getElementById('sellerGrid').innerHTML = gatePanel('sellers', sd.total);
+      }
     } catch(e){
-      document.getElementById('sellerGrid').innerHTML = SELLERS.map(sellerCard).join('');
+      window.__SELLERS = {}; window.__SELLERS_ARR = null;
+      document.getElementById('sellerGrid').innerHTML = gatePanel('sellers', 0);
     }
+    try {
+      const cd = await fetch('/api/china/', {cache:'no-store'}).then(function(r){ return r.json(); });
+      const china = (cd.kols || []);
+      window.__POOL_TOTALS = window.__POOL_TOTALS || {};
+      window.__POOL_TOTALS.china = cd.total || china.length;
+      if (china.length) {
+        china.sort((a,b) => (a.rank||999) - (b.rank||999));
+        window.__CHINA = {}; china.forEach(c => window.__CHINA[c.id] = c);
+        window.__CHINA_LIST = china;
+        renderChina();
+      } else {
+        window.__CHINA = {}; window.__CHINA_LIST = null;
+        document.getElementById('chinaGrid').innerHTML = gatePanel('china', cd.total);
+      }
+    } catch(e){
+      window.__CHINA = {}; window.__CHINA_LIST = null;
+      document.getElementById('chinaGrid').innerHTML = gatePanel('china', 0);
+    }
+  };
+  (async () => {
+    await window.loadPools();
     try {
       const wres = await fetch('/pool-warehouses.json', {cache:'no-store'});
       const whs = await wres.json();
@@ -1815,16 +1902,6 @@ Object.assign(window.MP_I18N, {
     } catch(e){
       const wg = document.getElementById('warehouseGrid');
       if (wg) wg.innerHTML = '<p style="color:var(--text-mute);padding:20px">창고 데이터를 불러오지 못했습니다.</p>';
-    }
-    try {
-      const cres = await fetch('/pool-china.json', {cache:'no-store'});
-      const china = await cres.json();
-      china.sort((a,b) => (a.rank||999) - (b.rank||999));
-      window.__CHINA = {}; china.forEach(c => window.__CHINA[c.id] = c);
-      window.__CHINA_LIST = china;
-      renderChina();
-    } catch(e){
-      document.getElementById('chinaGrid').innerHTML = '<p style="color:var(--text-mute);padding:20px">중국관 데이터를 불러오지 못했습니다.</p>';
     }
   })();
 
@@ -2019,10 +2096,18 @@ Object.assign(window.MP_I18N, {
     const ava = s.image
       ? `<img src="${esc2(s.image)}" alt="">`
       : `<span class="logo-fallback">${esc2((s.realName||'?').slice(0,2))}</span>`;
-    const data = [
+    const statRows = [
       ['팔로워', (s.followersText||'-')], ['국적', (s.country||'-')],
       ['판매방식', '라이브'], ['섭외비용', (s.fee||'협의')],
-    ].map(([k,v])=>`<div class="sd-stat"><span>${esc2(k)}</span><b>${esc2(v)}</b></div>`).join('');
+    ];
+    // 방송매출은 접수 양식(파일4) 그대로 ￥ 실수치 노출
+    if (s.avgShowSales) statRows.push([tr('lbl.avgshow'), s.avgShowSales]);
+    if (s.maxShowSales) statRows.push([tr('lbl.maxshow'), s.maxShowSales]);
+    const data = statRows.map(([k,v])=>`<div class="sd-stat"><span>${esc2(k)}</span><b>${esc2(v)}</b></div>`).join('');
+    // 접수 양식 전체 필드 (폼=시트=노출 동일 파이프라인) — s.intake = {라벨: 값}
+    const intakeSec = s.intake && Object.keys(s.intake).length
+      ? `<section class="bd-sec"><h3>${tr('bd.intake')}</h3><div class="sd-stats">${Object.entries(s.intake).map(([k,v])=>`<div class="sd-stat"><span>${esc2(k)}</span><b>${esc2(v)}</b></div>`).join('')}</div></section>`
+      : '';
     ov.innerHTML = `
       <div class="bd-panel">
         <button class="bd-close" aria-label="닫기">✕</button>
@@ -2036,6 +2121,7 @@ Object.assign(window.MP_I18N, {
         </div>
         ${document.body.classList.contains('master') && s.url ? `<div class="sd-adminurl"><span>🔑 플랫폼 바로가기 (관리자 전용)</span><a href="${esc2(s.url)}" target="_blank" rel="noopener">${esc2(s.url)}</a></div>` : ''}
         <div class="sd-stats">${data}</div>
+        ${intakeSec}
         <section class="bd-sec"><h3>${tr('bd.intro.seller')}</h3><p>${esc2(s.intro||'')||'<span class=bd-na>준비 중</span>'}</p></section>
         <section class="bd-sec"><h3>채널 강점</h3><p>팔로워 <b style="color:#cbb896">${esc2(s.followersText||'-')}</b> 규모의 ${esc2(s.platform||'라이브')} 채널 운영 · ${esc2(s.country||'해외')} 시장 타깃 라이브 커머스 셀러입니다.</p></section>
         <section class="bd-sec"><h3>협업 · 라이브 실적</h3><p class="bd-na">검증된 라이브 셀러 — 한·중 브랜드 협업 이력 보유 (상세 실적은 매칭 진행 시 제공)</p></section>
@@ -2279,11 +2365,10 @@ Object.assign(window.MP_I18N, {
       if (!r.ok) { authErr.classList.add('show'); authSubmit.disabled = false; return; }
       const ures = await r.json().catch(function(){ return {}; });
       const role = ures.role || 'all';
-      // 인증 성공 → 서버에서 데이터 재요청 (마스터면 숨김+공급률 포함)
-      const data = await fetch('/api/brands/', {cache:'no-store'}).then(function(x){ return x.json(); });
-      const brands = (data.brands || []);
-      brands.sort((a,b) => ((b.pin?1:0)-(a.pin?1:0)) || ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
-      window.__BRANDS_ALL = brands; window.__AUTHED = true; window.__ROLE = role;
+      // 인증 성공 → 서버에서 역할별 풀 전체 재요청 (양방향 게이트: 역할에 맞는 쪽만 내려옴)
+      window.__ROLE = role;
+      await window.loadPools();
+      window.__AUTHED = true;
       session = { role: role, expiresAt: null, reveal: role === 'all' };
       applySession();
       closeModal();
@@ -2307,6 +2392,8 @@ Object.assign(window.MP_I18N, {
       if (isChina) t.style.display = (session.role === 'seller') ? 'none' : '';   // 셀러는 중국관(왕홍) 숨김
       // 셀러 코드는 글로벌 셀러 탭도 완전히 숨김 — 브랜드 리스트만 노출
       if (t.dataset.tab === 'sellers') t.style.display = (session.role === 'seller') ? 'none' : '';
+      // 브랜드 코드는 K-브랜드 탭 숨김 — 셀러 리스트만 노출 (양방향 대칭)
+      if (t.dataset.tab === 'brands') t.style.display = (session.role === 'brand') ? 'none' : '';
       const allowed = session.role === 'all' || t.dataset.tab === targetView || (isChina && session.role === 'brand') || t.dataset.tab === 'warehouses';
       t.style.opacity = allowed ? '' : '0.35';
       t.title = allowed ? '' : `${ROLE_LABEL[session.role]} 코드로는 열람 불가`;
@@ -2363,15 +2450,11 @@ Object.assign(window.MP_I18N, {
   // ─── Lock (sign out) ───
   lockBtn.addEventListener('click', async () => {
     try { await fetch('/api/lock/', { method:'POST' }); } catch(e) {}
-    try {
-      const data = await fetch('/api/brands/', {cache:'no-store'}).then(function(x){ return x.json(); });
-      const brands = (data.brands || []);
-      brands.sort((a,b) => ((b.pin?1:0)-(a.pin?1:0)) || ((b.elite?1:0)-(a.elite?1:0)) || ((b.score||0) - (a.score||0)));
-      window.__BRANDS_ALL = brands; window.__AUTHED = false;
-    } catch(e) {}
     session = null;
+    // 잠금 → 서버 재요청 (미인증=0: 브랜드·셀러·중국관 전부 게이트 패널로 복귀)
+    try { await window.loadPools(); } catch(e) {}
+    window.__AUTHED = false;
     applyLockedOut();
-    if (window.renderBrandGrid) window.renderBrandGrid();
   });
 
   // ─── Restore session on load (서버 쿠키 기준 — 클라이언트엔 코드/세션 저장 안 함) ───

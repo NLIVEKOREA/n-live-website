@@ -27,12 +27,25 @@ export async function GET(req: Request) {
   const authed = !!role;
 
   // 비공개/검수전 등은 5712(마스터)로도 노출 안 함 — 게시완료/게시요청만 홈페이지 노출
-  let brands = (full as any[]).filter((b) => !b.status || VISIBLE.includes(b.status));
-  // 목록은 항상 가볍게 (민감필드·무거운 배열 제거)
-  brands = brands.map(light);
+  const visibleAll = (full as any[]).filter((b) => !b.status || VISIBLE.includes(b.status));
+
+  // 브랜드 풀 = 셀러·바이어 전용 (양방향 포지션 게이트) — 미인증·브랜드 코드는 목록 0건, 개수만 응답
+  const allowed = role === "seller" || role === "all";
+  const master = role === "all";
+  const brands = allowed
+    ? visibleAll.map((b) => {
+        const c = light(b);
+        // 공식 홈페이지 URL·내부 메모는 마스터 전용 (연락처·홈페이지는 매칭 확정 후 안내)
+        if (!master) {
+          delete c.url;
+          delete c.note;
+        }
+        return c;
+      })
+    : [];
 
   return NextResponse.json(
-    { authed, role: role || null, brands },
+    { authed, role: role || null, total: visibleAll.length, brands },
     { headers: { "Cache-Control": "no-store" } }
   );
 }

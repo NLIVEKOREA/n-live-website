@@ -20,6 +20,11 @@ export async function GET(req: Request) {
   const role = roleFromCookie(req.headers.get("cookie"));
   const master = role === "all";
 
+  // 브랜드 상세 = 셀러·바이어 전용 (양방향 포지션 게이트) — 미인증·브랜드 코드는 열람 불가
+  if (role !== "seller" && role !== "all") {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
   const b = (full as any[]).find((x) => x.id === id);
   if (!b) return NextResponse.json({ error: "not found" }, { status: 404 });
 
@@ -30,6 +35,11 @@ export async function GET(req: Request) {
   }
 
   const brand: any = { ...b };
+  // 공식 홈페이지 URL·내부 메모는 마스터 전용 (연락처·홈페이지는 매칭 확정 후 안내)
+  if (!master) {
+    delete brand.url;
+    delete brand.note;
+  }
   // 공급률은 마스터 인증 시에만 환경변수에서 병합
   if (master) {
     const rates = brandRates();
