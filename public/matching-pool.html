@@ -2034,12 +2034,12 @@ Object.assign(window.MP_I18N, {
     const na = `<span class="bd-na">${esc2(tr('bd.prep'))}</span>`;
     const ctrs = (b.countries && b.countries.length ? b.countries.slice() : ['대한민국']);
     const ctrsOrdered = ['대한민국', ...ctrs.filter(c=>c!=='대한민국')];
-    const attrs = `<div class="sd-stats">
-        <div class="sd-stat"><span>${esc2(tr('bd.stat.sales'))}</span><b>${b.salesMethod?esc2(valL(b.salesMethod)):'—'}</b></div>
-        <div class="sd-stat sd-stat-hl"><span>${esc2(tr('bd.stat.supply'))}</span><b>${b.supplyRate?esc2(b.supplyRate):esc2(valL('협의'))}</b></div>
-        <div class="sd-stat"><span>${esc2(tr('bd.stat.studio'))}</span><b>${b.hasStudio?esc2(valL(b.hasStudio)):'—'}</b></div>
-        <div class="sd-stat"><span>${esc2(tr('bd.stat.country'))}</span><b>${esc2(ctrsOrdered.map(ctrL).join(' · '))}</b></div>
-      </div>`;
+    const _attrCells = [];
+    if(b.salesMethod) _attrCells.push(`<div class="sd-stat"><span>${esc2(tr('bd.stat.sales'))}</span><b>${esc2(valL(b.salesMethod))}</b></div>`);
+    _attrCells.push(`<div class="sd-stat sd-stat-hl"><span>${esc2(tr('bd.stat.supply'))}</span><b>${b.supplyRate?esc2(b.supplyRate):esc2(valL('협의'))}</b></div>`);
+    if(b.hasStudio) _attrCells.push(`<div class="sd-stat"><span>${esc2(tr('bd.stat.studio'))}</span><b>${esc2(valL(b.hasStudio))}</b></div>`);
+    _attrCells.push(`<div class="sd-stat"><span>${esc2(tr('bd.stat.country'))}</span><b>${esc2(ctrsOrdered.map(ctrL).join(' · '))}</b></div>`);
+    const attrs = `<div class="sd-stats">${_attrCells.join('')}</div>`;
     const adminUrl = (document.body.classList.contains('master') && b.url)
       ? `<div class="sd-adminurl"><span>🔑 공식 홈페이지 (관리자 전용)</span><a href="${esc2(b.url)}" target="_blank" rel="noopener">${esc2(b.url)}</a></div>` : '';
     const snsMeta = (u) => {
