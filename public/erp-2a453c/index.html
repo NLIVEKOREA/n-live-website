@@ -2130,7 +2130,7 @@ function orderStatusCards(pay){
     <div class="ord-cards">
     ${arr.map(g=>{const idx=all.indexOf(g),tot=g.items.reduce((a,o)=>a+amtOf(o),0);const payw=(g.items.find(o=>o.payway)||{}).payway||'';const isShop=g.items.some(o=>o.source==='shop');return `
       <div class="ord-card${COLLAPSED.has('os:'+pay+g.key)?' collapsed':''}${isShop?' shop-order':''}">
-        <div class="oc-head">${collBtn('os:'+pay+g.key)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}${staffBadge(g.staff)}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
+        <div class="oc-head">${collBtn('os:'+pay+g.key)}${onoBadge(g.date,g.cust)} <b>${g.cust}</b>${shopBadge(g)}${pay==='unpaid'?'<span class="pill p-miss">미결제</span>':'<span class="pill p-done">결제완료</span>'}${custCardTags(g.cust)}${staffBadge(g.staff)}<span class="grow"></span><span class="oc-total">${won(tot)}</span></div>
         ${g.phone||(isShop&&payw)?`<div class="oc-sub">${g.phone?'📞 '+g.phone:''}${isShop&&payw?` · 💳 고객선택: <b>${esc(payw)}</b>${payw==='카드'?' (결제링크 발송 필요)':''}`:''}</div>`:''}
         <div class="oc-items">${g.items.map(o=>`<div class="oc-i"><span class="tagbox">${tagShow(o)}</span><span class="oc-nm">${itemLabel(o)}${sampleBadge(o)}</span><span class="muted">${o.qty}개</span><span class="oc-amt">${won(amtOf(o))}</span></div>`).join('')}</div>
         ${pay==='unpaid'
@@ -2357,6 +2357,20 @@ function entryRow(no){
 /* 고객 검색 */
 /* 검색 드롭다운을 화면기준(fixed)으로 입력칸 아래 배치 — 표/카드 overflow에 안 짤리고, 화면 하단까지 공간만큼 자동 높이 */
 function dropPos(d,inp){if(!d||!inp)return;const r=inp.getBoundingClientRect();const below=window.innerHeight-r.bottom-12;d.style.position='fixed';d.style.left=Math.max(6,r.left)+'px';d.style.top=(r.bottom+3)+'px';d.style.minWidth=Math.max(360,r.width)+'px';d.style.maxHeight=Math.max(160,below)+'px';}
+/* 미결제/결제완료 카드용 고객 상태 태그 — 카드엔 이미 미결제 배지가 있으니 '그 외' 상태만(신규/주문이력·미송·합배·교환반품) */
+function custCardTags(name){
+  if(!name)return '';
+  const os=mine(ORD).filter(o=>o.cust===name&&o.code!=='배송비'&&o.code!=='적립금');
+  if(!os.length)return '';
+  const S='style="font-size:10px;padding:1px 6px"',P=[];
+  const paid=os.some(o=>o.pay==='paid'),dates=new Set(os.map(o=>o.date));
+  if(!paid&&dates.size<=1)P.push(`<span class="pill p-gray" ${S}>신규</span>`);
+  else P.push(`<span class="pill p-done" ${S}>주문이력</span>`);
+  if(os.some(o=>o.back&&o.ship!=='done'))P.push(`<span class="pill p-miss" ${S}>미송</span>`);
+  if(new Set(os.filter(o=>o.ship!=='done').map(o=>o.date)).size>=2)P.push(`<span class="pill p-req" ${S}>합배</span>`);
+  if(os.some(o=>o.rxtype||o.rxstat))P.push(`<span class="pill p-purple" ${S}>교환/반품</span>`);
+  return ' '+P.join(' ');
+}
 function custSearch(v){const d=$('#custDrop');if(!d)return;v=v.trim();
   if(!v){d.innerHTML='';return;}
   const m=CUSTOMERS.filter(c=>inc(c.name,v)||(c.phone&&c.phone.replace(/[^0-9]/g,'').includes(v.replace(/[^0-9]/g,'')))&&/\d/.test(v)).slice(0,25);
@@ -4655,7 +4669,7 @@ function kakaoSet(){return `
     <tr><td class="muted">API Key</td><td class="barcode">SOLAPI-****-****-9F2A</td></tr>
     <tr><td class="muted">발신 프로필</td><td>엔라이브</td></tr>
     </tbody></table>
-    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end"><button class="btn ghost sm" onclick="toast('연결 테스트 발송 (데모)')">연결 테스트</button><button class="btn" onclick="toast('충전 페이지로 이동 (데모)')">충전하기</button></div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end"><button class="btn ghost sm" onclick="toast('연결 테스트 발송 (데모)')">연결 테스트</button><button class="btn" onclick="window.open('https://console.solapi.com/cash','_blank','noopener');toast('솔라피 충전 페이지를 새 탭으로 열었어요')">💳 솔라피 충전하기</button></div>
   </div>`;
 }
 function kakaoAlert(){return `
