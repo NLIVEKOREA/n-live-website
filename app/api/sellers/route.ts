@@ -12,10 +12,14 @@ export async function GET(req: Request) {
   const list = allowed
     ? (sellers as any[]).map((s) => {
         const c: any = { ...s };
-        // 채널 URL·내부 메모는 마스터 전용
+        // 희망 브랜드(매칭 확정 후 노출) 존재 여부 플래그 — 값 없이 잠금 표시만
+        const dw = s.desiredBrands;
+        c.hasWish = !!(Array.isArray(dw) ? dw.length : dw);
+        // 채널 URL·내부 메모·희망 브랜드 실값은 마스터 전용
         if (!master) {
           delete c.url;
           delete c.note;
+          delete c.desiredBrands;
         }
         return c;
       })

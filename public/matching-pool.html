@@ -1131,6 +1131,18 @@
   .gate-zero-ctas .btn-cta{ display:inline-block; width:auto; padding:12px 22px; text-decoration:none; }
   .gate-count{ margin-top:18px; font-size:13px; color:var(--text-mute); }
   .gate-count b{ color:var(--gold); }
+  /* ── 상세 신규 섹션(등록 양식 기반) ── */
+  .bd-certs{ display:flex; flex-wrap:wrap; gap:8px; }
+  .bd-cert{ font-size:13px; font-weight:600; padding:7px 13px; border-radius:8px; background:rgba(18,184,181,.10); color:#0d9b98; border:1px solid rgba(18,184,181,.30); }
+  .bd-terms{ display:flex; flex-direction:column; gap:10px; }
+  .bd-terms > div{ display:flex; justify-content:space-between; gap:14px; align-items:baseline; padding-bottom:10px; border-bottom:1px solid var(--line); }
+  .bd-terms > div:last-child{ border-bottom:0; padding-bottom:0; }
+  .bd-terms span{ font-size:13px; color:var(--text-mute); flex:0 0 auto; }
+  .bd-terms b{ font-size:13.5px; text-align:right; color:var(--text-dim); }
+  .bd-lock{ font-size:12.5px; color:var(--gold); font-weight:600; white-space:nowrap; }
+  .bd-glance .sd-stat b{ color:#e7cf9b; }
+  .sd-wish{ display:flex; flex-direction:column; gap:8px; }
+  .sd-wish-row{ font-size:13.5px; padding:9px 13px; border-radius:8px; background:var(--bg-elev); border:1px solid var(--line); }
 </style>
 </head>
 <body>
@@ -1210,6 +1222,54 @@ Object.assign(window.MP_I18N, {
  "bd.intake":{"ko":"한국 방송 매칭 정보","en":"Korea Live Matching Info","ja":"韓国ライブマッチング情報","zh-Hans":"韩国直播匹配信息","zh-Hant":"韓國直播匹配資訊"},
  "lbl.avgshow":{"ko":"평균 1회 방송매출","en":"Avg. sales per show","ja":"平均1回配信売上","zh-Hans":"场均销售额","zh-Hant":"場均銷售額"},
  "lbl.maxshow":{"ko":"최고 1회 방송매출","en":"Best sales per show","ja":"最高1回配信売上","zh-Hans":"单场最高销售额","zh-Hant":"單場最高銷售額"}
+});
+Object.assign(window.MP_I18N, {
+ "val.yes":{"ko":"가능","en":"Yes","ja":"可能","zh-Hans":"可以","zh-Hant":"可以"},
+ "val.no":{"ko":"불가","en":"No","ja":"不可","zh-Hans":"不可","zh-Hant":"不可"},
+ "lock.aftermatch":{"ko":"매칭 확정 후 안내","en":"Shared after matching is confirmed","ja":"マッチング確定後にご案内","zh-Hans":"匹配确定后告知","zh-Hant":"配對確定後告知"},
+ "bd.glance":{"ko":"매칭 조건 한눈에","en":"Matching terms at a glance","ja":"マッチング条件一覧","zh-Hans":"匹配条件一览","zh-Hant":"配對條件一覽"},
+ "bd.origin":{"ko":"원산지","en":"Origin","ja":"原産地","zh-Hans":"原产地","zh-Hant":"原產地"},
+ "bd.moq":{"ko":"총 MOQ","en":"Total MOQ","ja":"合計MOQ","zh-Hans":"总MOQ","zh-Hant":"總MOQ"},
+ "bd.stocklead":{"ko":"재고 출고기간","en":"In-stock lead time","ja":"在庫出荷期間","zh-Hans":"现货出货周期","zh-Hant":"現貨出貨週期"},
+ "bd.prodlead":{"ko":"생산 리드타임","en":"Production lead time","ja":"生産リードタイム","zh-Hans":"生产周期","zh-Hant":"生產週期"},
+ "bd.korealive":{"ko":"한국 현장 라이브","en":"On-site live in Korea","ja":"韓国現場ライブ","zh-Hans":"韩国现场直播","zh-Hant":"韓國現場直播"},
+ "bd.export":{"ko":"수출 가능 국가 · 인증","en":"Export markets · certifications","ja":"輸出可能国・認証","zh-Hans":"可出口国家·认证","zh-Hant":"可出口國家·認證"},
+ "bd.export.hint":{"ko":"셀러 판매 시장의 판매·인증 가능 상태를 확인하세요","en":"Check sales & certification status for your market","ja":"販売市場の販売・認証可否をご確認ください","zh-Hans":"请确认您市场的销售·认证状态","zh-Hant":"請確認您市場的銷售·認證狀態"},
+ "bd.livecond":{"ko":"한국 현장 라이브 조건","en":"On-site live conditions in Korea","ja":"韓国現場ライブ条件","zh-Hans":"韩国现场直播条件","zh-Hant":"韓國現場直播條件"},
+ "bd.samplesku":{"ko":"현장 샘플 SKU","en":"On-site sample SKU","ja":"現場サンプルSKU","zh-Hans":"现场样品SKU","zh-Hant":"現場樣品SKU"},
+ "bd.customer.sec":{"ko":"주요 고객층 · 판매국가","en":"Customer base · markets","ja":"主要顧客層・販売国","zh-Hans":"主要客群·销售国家","zh-Hant":"主要客群·銷售國家"},
+ "bd.customer":{"ko":"주요 고객층","en":"Customer base","ja":"主要顧客層","zh-Hans":"主要客群","zh-Hant":"主要客群"},
+ "bd.salescountry":{"ko":"주요 판매국가","en":"Sales markets","ja":"主要販売国","zh-Hans":"主要销售国家","zh-Hant":"主要銷售國家"},
+ "bd.terms":{"ko":"거래 조건","en":"Trade terms","ja":"取引条件","zh-Hans":"交易条件","zh-Hant":"交易條件"},
+ "bd.stockout":{"ko":"품절 시 대응","en":"Stockout handling","ja":"品切れ時の対応","zh-Hans":"缺货应对","zh-Hant":"缺貨應對"},
+ "bd.defect":{"ko":"오배송·불량 책임","en":"Mis-ship / defect liability","ja":"誤配送・不良責任","zh-Hans":"错发·瑕疵责任","zh-Hant":"錯發·瑕疵責任"},
+ "bd.minprice":{"ko":"최저판매가 정책","en":"Min. price policy","ja":"最低販売価格ポリシー","zh-Hans":"最低售价政策","zh-Hant":"最低售價政策"},
+ "sd.glance":{"ko":"한눈에","en":"At a glance","ja":"一覧","zh-Hans":"一览","zh-Hant":"一覽"},
+ "sd.profile":{"ko":"판매 프로필","en":"Sales profile","ja":"販売プロフィール","zh-Hans":"销售简介","zh-Hant":"銷售簡介"},
+ "sd.koreaplan":{"ko":"한국 방송 계획","en":"Korea broadcast plan","ja":"韓国配信計画","zh-Hans":"韩国直播计划","zh-Hant":"韓國直播計劃"},
+ "sd.team":{"ko":"방문단 구성","en":"Visiting team","ja":"訪韓チーム構成","zh-Hans":"访问团构成","zh-Hant":"訪問團構成"},
+ "sd.ops":{"ko":"방송 운영","en":"Broadcast operations","ja":"配信運営","zh-Hans":"直播运营","zh-Hant":"直播運營"},
+ "sd.wishbrands":{"ko":"희망 브랜드 · 상품","en":"Desired brands · products","ja":"希望ブランド・商品","zh-Hans":"意向品牌·商品","zh-Hant":"意向品牌·商品"},
+ "sd.request":{"ko":"브랜드에 요청사항","en":"Requests to brand","ja":"ブランドへの要望","zh-Hans":"对品牌的要求","zh-Hant":"對品牌的要求"},
+ "lbl.avgprice":{"ko":"평균 판매가","en":"Avg. price","ja":"平均販売価格","zh-Hans":"平均售价","zh-Hant":"平均售價"},
+ "lbl.margin":{"ko":"희망 마진","en":"Desired margin","ja":"希望マージン","zh-Hans":"意向利润","zh-Hant":"意向利潤"},
+ "lbl.category":{"ko":"판매 카테고리","en":"Category","ja":"販売カテゴリ","zh-Hans":"销售品类","zh-Hant":"銷售品類"},
+ "lbl.agegroup":{"ko":"고객 연령대","en":"Customer age","ja":"顧客年齢層","zh-Hans":"客群年龄","zh-Hant":"客群年齡"},
+ "lbl.koreaexp":{"ko":"한국 라이브 경험","en":"Korea live experience","ja":"韓国ライブ経験","zh-Hans":"韩国直播经验","zh-Hant":"韓國直播經驗"},
+ "lbl.schedule":{"ko":"방한 일정","en":"Visit schedule","ja":"訪韓日程","zh-Hans":"访韩日程","zh-Hant":"訪韓日程"},
+ "lbl.livedates":{"ko":"방송 가능 날짜","en":"Available dates","ja":"配信可能日","zh-Hans":"可直播日期","zh-Hant":"可直播日期"},
+ "lbl.livetime":{"ko":"방송 가능 시간","en":"Available time","ja":"配信可能時間","zh-Hans":"可直播时间","zh-Hant":"可直播時間"},
+ "lbl.language":{"ko":"진행 언어","en":"Language","ja":"配信言語","zh-Hans":"直播语言","zh-Hant":"直播語言"},
+ "lbl.platforms":{"ko":"가능 플랫폼","en":"Platforms","ja":"配信可能プラットフォーム","zh-Hans":"可用平台","zh-Hant":"可用平台"},
+ "lbl.visitors":{"ko":"총 방문 인원","en":"Total visitors","ja":"訪韓総人数","zh-Hans":"访问总人数","zh-Hant":"訪問總人數"},
+ "lbl.hosts":{"ko":"셀러·쇼호스트","en":"Sellers · hosts","ja":"セラー・ホスト","zh-Hans":"卖家·主播","zh-Hant":"賣家·主播"},
+ "lbl.staff":{"ko":"촬영·운영 스태프","en":"Crew","ja":"撮影・運営スタッフ","zh-Hans":"拍摄·运营人员","zh-Hant":"拍攝·運營人員"},
+ "lbl.stayregion":{"ko":"체류 지역","en":"Stay region","ja":"滞在地域","zh-Hans":"停留地区","zh-Hant":"停留地區"},
+ "lbl.duration":{"ko":"평균 방송시간","en":"Avg. duration","ja":"平均配信時間","zh-Hans":"平均直播时长","zh-Hant":"平均直播時長"},
+ "lbl.desiredsku":{"ko":"희망 SKU 수","en":"Desired SKUs","ja":"希望SKU数","zh-Hans":"意向SKU数","zh-Hant":"意向SKU數"},
+ "lbl.expected":{"ko":"예상 방송매출","en":"Expected sales","ja":"予想配信売上","zh-Hans":"预计销售额","zh-Hant":"預計銷售額"},
+ "lbl.equipment":{"ko":"장비 준비","en":"Equipment","ja":"機材準備","zh-Hans":"设备准备","zh-Hant":"設備準備"},
+ "lbl.partner":{"ko":"셀러","en":"Seller","ja":"セラー","zh-Hans":"卖家","zh-Hant":"賣家"}
 });
 (function(){
   function valid(l){ return MP_I18N["tab.china"] && MP_I18N["tab.china"][l]; }
@@ -2050,6 +2110,35 @@ Object.assign(window.MP_I18N, {
     const heroImg = b.heroImage
       || (b.marketingItems && b.marketingItems[0] && b.marketingItems[0].img)
       || (b.images && b.images[0]) || (b.shopProducts && b.shopProducts[0]) || '';
+    // ── 등록 양식(브랜드 기본정보·라이브조건) 기반 신규 섹션 ──
+    const _master = document.body.classList.contains('master');
+    const _yn = (v)=>{ if(v==null||v==='') return ''; var s=String(v); if(/^(예|가능|yes|y|true|1|有|可)/i.test(s)) return tr('val.yes'); if(/^(아니|불가|no|n|false|0|無|不)/i.test(s)) return tr('val.no'); return valL(s); };
+    const _lock = `<span class="bd-lock">🔒 ${esc2(tr('lock.aftermatch'))}</span>`;
+    const _term = (v)=> _master ? (v?esc2(valL(v)):na) : _lock;
+    const _anyVal = (rows)=> rows.some(function(r){return r[1];});
+    // 매칭 조건 지표 (원산지·MOQ·출고·리드타임·현장라이브) — 값 있을 때만 노출
+    const glanceRows = [
+      [tr('bd.origin'), b.origin], [tr('bd.moq'), b.moqTotal],
+      [tr('bd.stocklead'), b.stockLeadTime], [tr('bd.prodlead'), b.prodLeadTime],
+      [tr('bd.korealive'), _yn(b.koreaLive)]
+    ];
+    const glanceHtml = _anyVal(glanceRows) ? `<section class="bd-sec"><h3>${tr('bd.glance')}</h3><div class="sd-stats bd-glance">${glanceRows.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+(r[1]?esc2(r[1]):'—')+'</b></div>';}).join('')}</div></section>` : '';
+    // 수출 가능 국가 · 인증 — 데이터 있을 때만
+    const _certsRaw = b.exportCountries || b.exportCerts;
+    let _certChips = '';
+    if(Array.isArray(_certsRaw)) _certChips = _certsRaw.map(function(c){var t=(typeof c==='string')?c:((c.country||'')+' '+(c.status||'')).trim();return t?'<span class="bd-cert">'+esc2(t)+'</span>':'';}).join('');
+    else if(typeof _certsRaw==='string' && _certsRaw) _certChips = _certsRaw.split(/[\/,·、]/).map(function(s){return s.trim();}).filter(Boolean).map(function(s){return '<span class="bd-cert">'+esc2(s)+'</span>';}).join('');
+    const exportCertSec = _certChips ? `<section class="bd-sec"><h3>${tr('bd.export')}</h3><div class="bd-certs">${_certChips}</div><p class="bd-hint">${esc2(tr('bd.export.hint'))}</p></section>` : '';
+    // 한국 현장 라이브 조건 (가능여부·샘플SKU·방송공간) — 데이터 있을 때만
+    const _spaceImgs = (b.liveSpaceImages||[]).filter(Boolean);
+    const _spaceHtml = _spaceImgs.length ? `<div class="bd-gallery">${_spaceImgs.map(function(s){return '<img src="'+esc2(s)+'" loading="lazy">';}).join('')}</div>` : '';
+    const _liveRows = [[tr('bd.korealive'), _yn(b.koreaLive)], [tr('bd.samplesku'), b.sampleSku]];
+    const liveCondSec = (_anyVal(_liveRows) || _spaceImgs.length) ? `<section class="bd-sec"><h3>${tr('bd.livecond')}</h3><div class="sd-stats">${_liveRows.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+(r[1]?esc2(r[1]):'—')+'</b></div>';}).join('')}</div>${_spaceHtml}</section>` : '';
+    // 고객층·판매국가
+    const custRows = [[tr('bd.customer'), b.customerBase], [tr('bd.salescountry'), b.salesCountries]].filter(function(r){return r[1];});
+    const custHtml = custRows.length ? `<section class="bd-sec"><h3>${tr('bd.customer.sec')}</h3><div class="sd-stats">${custRows.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+esc2(r[1])+'</b></div>';}).join('')}</div></section>` : '';
+    // 거래 조건 (매칭 확정 후) — 실데이터 있을 때만(서버 hasTerms 플래그)
+    const termsSec = b.hasTerms ? `<section class="bd-sec"><h3>${tr('bd.terms')}</h3><div class="bd-terms"><div><span>${tr('bd.stockout')}</span><b>${_term(b.stockoutPolicy)}</b></div><div><span>${tr('bd.defect')}</span><b>${_term(b.defectPolicy)}</b></div><div><span>${tr('bd.minprice')}</span><b>${_term(b.minPricePolicy)}</b></div></div></section>` : '';
     ov.innerHTML = `
       <div class="bd-panel">
         <button class="bd-close" aria-label="닫기">✕</button>
@@ -2062,12 +2151,17 @@ Object.assign(window.MP_I18N, {
         </div>
         ${adminUrl}
         ${attrs}
+        ${glanceHtml}
+        ${exportCertSec}
         ${(b.carriedBrands&&b.carriedBrands.length)?`<section class="bd-sec"><h3>취급 명품 브랜드 · ${b.carriedBrands.length}</h3>
           <div class="lo-auth"><span class="lo-auth-ic">✓</span><span>전 제품 <b>100% 정품</b> · 공식 유통 (병행수입·짝퉁 아님). 협업 시 아래 브랜드 아이웨어를 직접 공급받을 수 있습니다.</span></div>
           <div class="lo-brands">${b.carriedBrands.map(c=>`<div class="lo-brand${c.featured?' lo-feat':''}"><div class="lo-brand-head"><span class="lo-brand-name">${esc2(c.name)}</span>${c.featured?'<span class="lo-star">★ 대표 브랜드</span>':''}</div><div class="lo-prods">${(c.products||[]).slice(0,5).map(u=>`<img src="${esc2(u)}" loading="lazy" alt="${esc2(c.name)}">`).join('')}</div></div>`).join('')}</div></section>`:''}
         <section class="bd-sec"><h3>${tr('bd.intro.brand')}</h3><p>${esc2(bL(b,'slogan'))||na}</p></section>
+        ${custHtml}
+        ${liveCondSec}
         ${exportHtml}
         <section class="bd-sec"><h3>${tr('bd.products')}</h3>${gallery}<p class="bd-hint">${esc2(tr('bd.hint'))}</p></section>
+        ${termsSec}
         <section class="bd-sec"><h3>${tr('bd.sns')}</h3>${snsHtml}</section>
         <section class="bd-sec"><h3>${tr('bd.marketing')}</h3>${mktHtml}</section>
         <section class="bd-sec"><h3>${tr('bd.note')}</h3><p>${bL(b,'note') ? esc2(bL(b,'note')) : na} <span class="bd-dim">${esc2(tr('bd.note.dim'))}</span></p></section>
@@ -2096,18 +2190,47 @@ Object.assign(window.MP_I18N, {
     const ava = s.image
       ? `<img src="${esc2(s.image)}" alt="">`
       : `<span class="logo-fallback">${esc2((s.realName||'?').slice(0,2))}</span>`;
-    const statRows = [
-      ['팔로워', (s.followersText||'-')], ['국적', (s.country||'-')],
-      ['판매방식', '라이브'], ['섭외비용', (s.fee||'협의')],
-    ];
-    // 방송매출은 접수 양식(파일4) 그대로 ￥ 실수치 노출
-    if (s.avgShowSales) statRows.push([tr('lbl.avgshow'), s.avgShowSales]);
-    if (s.maxShowSales) statRows.push([tr('lbl.maxshow'), s.maxShowSales]);
-    const data = statRows.map(([k,v])=>`<div class="sd-stat"><span>${esc2(k)}</span><b>${esc2(v)}</b></div>`).join('');
-    // 접수 양식 전체 필드 (폼=시트=노출 동일 파이프라인) — s.intake = {라벨: 값}
-    const intakeSec = s.intake && Object.keys(s.intake).length
-      ? `<section class="bd-sec"><h3>${tr('bd.intake')}</h3><div class="sd-stats">${Object.entries(s.intake).map(([k,v])=>`<div class="sd-stat"><span>${esc2(k)}</span><b>${esc2(v)}</b></div>`).join('')}</div></section>`
-      : '';
+    const _sm = document.body.classList.contains('master');
+    const _na = `<span class="bd-na">${esc2(tr('bd.prep'))}</span>`;
+    const _slock = `<span class="bd-lock">🔒 ${esc2(tr('lock.aftermatch'))}</span>`;
+    const _any = (rows)=> rows.some(function(r){return r[1];});
+    const grid = (rows)=>`<div class="sd-stats">${rows.map(function(r){return '<div class="sd-stat"><span>'+esc2(r[0])+'</span><b>'+(r[1]?esc2(String(r[1])):'—')+'</b></div>';}).join('')}</div>`;
+    // 섹션: 값이 하나라도 있을 때만 노출 (빈 섹션 숨김)
+    const secOf = (title, rows)=> _any(rows) ? `<section class="bd-sec"><h3>${esc2(title)}</h3>${grid(rows)}</section>` : '';
+    // 한눈에 (핵심 실적 지표) — 방송매출·판매가·마진은 ￥ 실수치 그대로
+    const glanceSec = secOf(tr('sd.glance'), [
+      [tr('lbl.follower'), s.followersText], [tr('lbl.avgshow'), s.avgShowSales],
+      [tr('lbl.maxshow'), s.maxShowSales], [tr('lbl.avgprice'), s.avgPrice],
+      [tr('lbl.margin'), s.desiredMargin]
+    ]);
+    const profileSec = secOf(tr('sd.profile'), [
+      [tr('lbl.category'), s.category], [tr('lbl.agegroup'), s.ageGroup], [tr('lbl.koreaexp'), s.koreaExp]
+    ]);
+    const _sched = (s.entryDate||s.exitDate) ? [s.entryDate,s.exitDate].filter(Boolean).join(' ~ ') : '';
+    const _lang = [s.language, (s.interpreter?('('+valL(s.interpreter)+')'):'')].filter(Boolean).join(' ');
+    const koreaPlanSec = secOf(tr('sd.koreaplan'), [
+      [tr('lbl.schedule'), _sched], [tr('lbl.livedates'), s.liveDates],
+      [tr('lbl.livetime'), s.liveTime], [tr('lbl.language'), _lang], [tr('lbl.platforms'), s.platforms]
+    ]);
+    const teamSec = secOf(tr('sd.team'), [
+      [tr('lbl.visitors'), s.totalVisitors], [tr('lbl.hosts'), s.hostCount],
+      [tr('lbl.staff'), s.staffCount], [tr('lbl.stayregion'), s.stayRegion]
+    ]);
+    const opsSec = secOf(tr('sd.ops'), [
+      [tr('lbl.duration'), s.avgDuration], [tr('lbl.desiredsku'), s.desiredSku],
+      [tr('lbl.expected'), s.expectedSales], [tr('lbl.equipment'), s.equipment]
+    ]);
+    // 희망 브랜드·상품 (매칭 확정 후 — 관리자만 실값). 실데이터 있을 때만(서버 hasWish 플래그)
+    let wishSec = '';
+    if(_sm && Array.isArray(s.desiredBrands) && s.desiredBrands.length){
+      wishSec = `<section class="bd-sec"><h3>${tr('sd.wishbrands')}</h3><div class="sd-wish">${s.desiredBrands.map(function(w){var t=(typeof w==='string')?w:[w.priority,w.brand,w.targetPrice,w.terms].filter(Boolean).join(' · ');return '<div class="sd-wish-row">'+esc2(t)+'</div>';}).join('')}</div></section>`;
+    } else if(_sm && typeof s.desiredBrands==='string' && s.desiredBrands){
+      wishSec = `<section class="bd-sec"><h3>${tr('sd.wishbrands')}</h3><p>${esc2(s.desiredBrands)}</p></section>`;
+    } else if(s.hasWish){
+      wishSec = `<section class="bd-sec"><h3>${tr('sd.wishbrands')}</h3><p>${_slock}</p></section>`;
+    }
+    const requestSec = s.request ? `<section class="bd-sec"><h3>${tr('sd.request')}</h3><p>${esc2(s.request)}</p></section>` : '';
+    const introSec = s.intro ? `<section class="bd-sec"><h3>${tr('bd.intro.seller')}</h3><p>${esc2(s.intro)}</p></section>` : '';
     ov.innerHTML = `
       <div class="bd-panel">
         <button class="bd-close" aria-label="닫기">✕</button>
@@ -2115,17 +2238,19 @@ Object.assign(window.MP_I18N, {
           <div class="bd-ava">${ava}</div>
           <div class="bd-headinfo">
             <h2 class="name-real">${(()=>{const nm=s.realName||'';const h=Math.ceil(nm.length/2);return esc2(nm.slice(0,h))+'<span class="mo">'+esc2(nm.slice(h))+'</span>';})()}</h2>
-            <span class="brand-cat">${esc2([s.platform,s.category].filter(Boolean).join(' · '))}</span>
+            <span class="brand-cat">${esc2([s.partnerType||tr('lbl.partner'),s.platform].filter(Boolean).join(' · '))}</span>
             <div class="bd-region">🌐 ${esc2(s.country||'글로벌')} · ${esc2(s.platform||'')}</div>
           </div>
         </div>
-        ${document.body.classList.contains('master') && s.url ? `<div class="sd-adminurl"><span>🔑 플랫폼 바로가기 (관리자 전용)</span><a href="${esc2(s.url)}" target="_blank" rel="noopener">${esc2(s.url)}</a></div>` : ''}
-        <div class="sd-stats">${data}</div>
-        ${intakeSec}
-        <section class="bd-sec"><h3>${tr('bd.intro.seller')}</h3><p>${esc2(s.intro||'')||'<span class=bd-na>준비 중</span>'}</p></section>
-        <section class="bd-sec"><h3>채널 강점</h3><p>팔로워 <b style="color:#cbb896">${esc2(s.followersText||'-')}</b> 규모의 ${esc2(s.platform||'라이브')} 채널 운영 · ${esc2(s.country||'해외')} 시장 타깃 라이브 커머스 셀러입니다.</p></section>
-        <section class="bd-sec"><h3>협업 · 라이브 실적</h3><p class="bd-na">검증된 라이브 셀러 — 한·중 브랜드 협업 이력 보유 (상세 실적은 매칭 진행 시 제공)</p></section>
-        <section class="bd-sec"><h3>매칭 진행 방식</h3><p>관심 셀러 선택 → 엔라이브가 조건 협의 → 라이브 일정 확정. 섭외비용은 상품군·일정에 따라 <b style="color:#cbb896">협의</b>로 진행됩니다.</p></section>
+        ${_sm && s.url ? `<div class="sd-adminurl"><span>🔑 플랫폼 바로가기 (관리자 전용)</span><a href="${esc2(s.url)}" target="_blank" rel="noopener">${esc2(s.url)}</a></div>` : ''}
+        ${glanceSec}
+        ${profileSec}
+        ${koreaPlanSec}
+        ${teamSec}
+        ${opsSec}
+        ${wishSec}
+        ${requestSec}
+        ${introSec}
         <p class="bd-foot">※ 셀러 채널 링크 · 연락처는 매칭 확정 후 별도 안내됩니다.</p>
       </div>`;
     ov.classList.add('show'); document.body.style.overflow='hidden';

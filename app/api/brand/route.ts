@@ -35,10 +35,16 @@ export async function GET(req: Request) {
   }
 
   const brand: any = { ...b };
+  // 거래 조건(매칭 확정 후 노출) 존재 여부 플래그 — 값 없이 잠금 표시만 클라이언트에 전달
+  brand.hasTerms = !!(b.stockoutPolicy || b.defectPolicy || b.minPricePolicy);
   // 공식 홈페이지 URL·내부 메모는 마스터 전용 (연락처·홈페이지는 매칭 확정 후 안내)
   if (!master) {
     delete brand.url;
     delete brand.note;
+    // 거래 조건 실값은 마스터만 — 비마스터는 플래그만 받고 "매칭 확정 후 안내" 표시
+    delete brand.stockoutPolicy;
+    delete brand.defectPolicy;
+    delete brand.minPricePolicy;
   }
   // 공급률은 마스터 인증 시에만 환경변수에서 병합
   if (master) {
