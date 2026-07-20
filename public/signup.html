@@ -52,6 +52,10 @@
   .cta{width:100%;height:50px;border:0;border-radius:12px;background:var(--brand);color:#fff;font-size:16px;font-weight:800;margin-top:12px;cursor:pointer}
   .note{color:var(--sub);font-size:12px;text-align:center;margin-top:14px;line-height:1.6}
   .timer{color:var(--red);font-weight:800;font-size:12.5px}
+  .ci-btn{width:100%;height:52px;border:1.5px solid var(--brand);border-radius:10px;background:#fff;color:var(--brand);font-size:15px;font-weight:800;cursor:pointer}
+  .ci-btn:hover{background:#eef3ff}
+  .ci-desc{font-size:11.5px;color:#7b879c;line-height:1.55;margin-top:8px}
+  .ci-desc b{color:var(--brand)}
 </style>
 </head>
 <body>
@@ -124,20 +128,13 @@
 
     <div class="card">
       <h3>휴대폰 본인인증</h3>
-      <div class="field"><label>휴대폰 번호 <b>*</b></label>
-        <div class="pair">
-          <input class="inp" id="gPhone" inputmode="numeric" placeholder="'-' 없이 숫자만 입력">
-          <button class="vbtn" id="sendCodeBtn" onclick="sendCode()">인증번호 발송</button>
-        </div>
+      <div class="field">
+        <label>본인 명의 휴대폰으로 인증 <b>*</b></label>
+        <button type="button" class="ci-btn" id="ciBtn" onclick="openCI()">📱 본인인증 하기</button>
+        <input type="hidden" id="gPhone">
+        <div id="vDone" class="okmsg" style="display:none">✓ 본인인증 완료 <span id="ciPhone"></span></div>
+        <div class="ci-desc">본인확인기관을 통한 인증으로 <b>연계정보(CI)</b>를 안전하게 발급받아요. (미성년자 확인·중복가입 방지 목적)</div>
       </div>
-      <div class="field" id="codeRow" style="display:none"><label>인증번호 <span class="timer" id="vTimer"></span></label>
-        <div class="pair">
-          <input class="inp" id="gCode" inputmode="numeric" maxlength="6" placeholder="인증번호 6자리">
-          <button class="vbtn" onclick="verifyCode()">확인</button>
-        </div>
-        <div class="hint">문자로 받은 인증번호 6자리를 입력해 주세요.</div>
-      </div>
-      <div id="vDone" class="okmsg" style="display:none">✅ 휴대폰 본인인증이 완료되었습니다.</div>
     </div>
 
     <div class="card">
@@ -152,6 +149,7 @@
       <div class="agree"><input type="checkbox" class="ag req1"><div><span class="tagc">[필수]</span> 만 14세 이상입니다.</div></div>
       <div class="agree"><input type="checkbox" class="ag req1"><div><span class="tagc">[필수]</span> 서비스 이용약관에 동의합니다.</div></div>
       <div class="agree"><input type="checkbox" class="ag req1"><div><span class="tagc">[필수]</span> 개인정보 수집·이용에 동의합니다. <a href="/shop-privacy" target="_blank">처리방침 보기 ›</a></div></div>
+      <div class="agree"><input type="checkbox" class="ag req1"><div><span class="tagc">[필수]</span> 본인확인 및 중복가입 방지를 위한 연계정보(CI) 수집·이용에 동의합니다.</div></div>
       <div class="agree"><input type="checkbox" class="ag req1"><div><span class="tagc">[필수]</span> 배송지 정보(수령인명·주소·전화번호)를 배송 목적으로 수집·이용하는 것에 동의합니다.</div></div>
       <div class="agree"><input type="checkbox" class="ag"><div><span class="tagc o">[선택]</span> 할인·이벤트 등 마케팅 정보 수신에 동의합니다.</div></div>
       <button class="cta" onclick="finishGeneral()">회원가입 완료</button>
@@ -223,28 +221,17 @@ function finishSignup(){
   for(let i=1;i<=12;i++)m.insertAdjacentHTML('beforeend','<option>'+i+'</option>');
   for(let i=1;i<=31;i++)d.insertAdjacentHTML('beforeend','<option>'+i+'</option>');
 })();
-/* 휴대폰 인증 (참고용 데모 — 실제 SMS 발송 없이 절차만 동일하게) */
-let V_CODE='',V_OK=false,V_T=null;
-function sendCode(){
-  const p=document.getElementById('gPhone').value.replace(/[^0-9]/g,'');
+/* 본인확인기관 연동 지점. 현재 데모에서는 승인 화면 확인용으로 인증 완료 상태만 반영한다. */
+let V_OK=false;
+function openCI(){
+  const p=(prompt('본인확인기관 연동 전 데모입니다.\n본인 명의 휴대폰 번호를 입력해 주세요.')||'').replace(/[^0-9]/g,'');
+  if(!p)return;
   if(p.length<10){alert('휴대폰 번호를 정확히 입력해 주세요.');return;}
-  V_CODE=String(Math.floor(100000+Math.random()*900000));V_OK=false;
-  document.getElementById('codeRow').style.display='';
-  document.getElementById('vDone').style.display='none';
-  document.getElementById('sendCodeBtn').textContent='재발송';
-  let left=180;const t=document.getElementById('vTimer');
-  clearInterval(V_T);V_T=setInterval(()=>{left--;t.textContent='⏱ '+Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
-    if(left<=0){clearInterval(V_T);t.textContent='시간 초과 — 재발송해 주세요';}},1000);
-  t.textContent='⏱ 3:00';
-  alert('인증번호가 발송되었습니다.\n(데모 안내용 인증번호: '+V_CODE+')');
-}
-function verifyCode(){
-  const c=document.getElementById('gCode').value.trim();
-  if(c.length!==6){alert('인증번호 6자리를 입력해 주세요.');return;}
-  if(c!==V_CODE){alert('인증번호가 일치하지 않습니다.');return;}
-  V_OK=true;clearInterval(V_T);
-  document.getElementById('codeRow').style.display='none';
+  document.getElementById('gPhone').value=p;
+  document.getElementById('ciPhone').textContent='· '+p.replace(/(\d{3})(\d{3,4})(\d{4})/,'$1-$2-$3');
   document.getElementById('vDone').style.display='block';
+  document.getElementById('ciBtn').textContent='📱 다시 본인인증 하기';
+  V_OK=true;
 }
 function toggleAll(el){document.querySelectorAll('.ag').forEach(c=>c.checked=el.checked);}
 function show(id,on){document.getElementById(id).style.display=on?'block':'none';}
