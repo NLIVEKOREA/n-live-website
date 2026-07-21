@@ -756,14 +756,23 @@ async function dbLoadAll(){
   }catch(e){console.error('load',e);toast('⚠️ 데이터 로드 오류');}
 }
 /* 실시간 동기화 — 다른 사용자의 변경을 자동 반영. 입력 중엔 화면 재렌더 보류(입력값 보호) */
-let _rt=null,_rtTimer=null,_localActAt=0,_fromRt=false;
+let _rt=null,_rtTimer=null,_localActAt=0,_fromRt=false,_rtStarting=false,_rtHook=false,_lastType=0,_rtWantSince=0;
 function isTyping(){const a=document.activeElement;if(a&&['INPUT','TEXTAREA','SELECT'].includes(a.tagName))return true;const m=$('#modal');if(m&&!m.classList.contains('hide'))return true;return false;}
 /* realtime 동기화 — 내 작업 직후/작업 중엔 리로드를 미룬다(replica 지연으로 인한 사라졌다 다시뜨는 깜빡임 방지). 손 멈추면 한 번만 조용히 재로딩 */
-function startRealtime(){if(_rt)return;try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{clearTimeout(_rtTimer);_rtTimer=setTimeout(function tick(){
-  if(_committing||isTyping()){clearTimeout(_rtTimer);_rtTimer=setTimeout(tick,1400);return;}/* 입력/모달/커밋 중엔 대기 */
-  if(Date.now()-_localActAt<1800){clearTimeout(_rtTimer);_rtTimer=setTimeout(tick,1800);return;}/* 내 최근 조작 여파 — 조용해질 때까지 미룸 */
-  dbLoadAll().then(function(){if(!isTyping()){_fromRt=true;try{buildNav();render();}finally{_fromRt=false;}}});/* buildNav: 환경설정 메뉴 토글이 다른 직원 메뉴바에도 즉시 반영 */
-},900);}).subscribe();}catch(e){console.error('realtime',e);}}
+async function _rtAuth(){try{const {data}=await SB.auth.getSession();const t=data&&data.session&&data.session.access_token;if(t&&SB.realtime&&SB.realtime.setAuth){await SB.realtime.setAuth(t);}return !!t;}catch(e){return false;}}
+/* realtime 리로드: #main만 다시 그림(모달 #modal은 별도라 안 건드림) · 포커스된 검색칸은 값·커서 보존 */
+function _rtSnap(){try{const a=document.activeElement,m=$('#main');if(a&&a.id&&m&&m.contains(a)&&['INPUT','TEXTAREA','SELECT'].includes(a.tagName))return {id:a.id,val:('value'in a)?a.value:null,ss:a.selectionStart,se:a.selectionEnd};}catch(e){}return null;}
+function _rtRestore(s){if(!s)return;try{const el=document.getElementById(s.id);if(!el)return;if(s.val!=null&&'value'in el&&el.value!==s.val)el.value=s.val;el.focus({preventScroll:true});if(s.ss!=null&&el.setSelectionRange)el.setSelectionRange(s.ss,s.se);}catch(e){}}
+function _rtApply(){const snap=_rtSnap();dbLoadAll().then(function(){_fromRt=true;try{buildNav();render();}finally{_fromRt=false;}_rtRestore(snap);});}
+function startRealtime(){if(_rt||_rtStarting)return;_rtStarting=true;if(!_rtHook){_rtHook=true;try{SB.auth.onAuthStateChange(function(_e,session){try{if(session&&SB.realtime&&SB.realtime.setAuth)SB.realtime.setAuth(session.access_token);}catch(e){}});}catch(e){}try{document.addEventListener('input',function(e){var t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))_lastType=Date.now();},true);}catch(e){}}_rtAuth().then(function(){try{_rt=SB.channel('erp-live').on('postgres_changes',{event:'*',schema:'public'},()=>{if(!_rtWantSince)_rtWantSince=Date.now();clearTimeout(_rtTimer);_rtTimer=setTimeout(function tick(){
+  var forced=(Date.now()-_rtWantSince)>8000;/* 최대 8초 넘기면 무조건 반영 — 어떤 상태에서도 갱신 보장 */
+  if(!forced){
+    if(_committing){_rtTimer=setTimeout(tick,700);return;}/* 내 저장 처리 중엔 대기(낙관적 UI 충돌 방지) */
+    if(Date.now()-_lastType<1000){_rtTimer=setTimeout(tick,700);return;}/* 활발히 타이핑 중 — 손 멈추면 반영(검색어 보존) */
+    if(Date.now()-_localActAt<1000){_rtTimer=setTimeout(tick,700);return;}/* 방금 내 조작 여파 */
+  }
+  _rtWantSince=0;_rtApply();/* dbLoadAll→#main만 재렌더(모달 안전)·포커스 복원 */
+},600);}).subscribe();}catch(e){console.error('realtime',e);}finally{_rtStarting=false;}});}
 async function saveOrd(o){try{const row=ORD2DB(o);if(o.id){_pendMark(_pendSave,'orders',o.id);const {error}=await SB.from('orders').update(row).eq('id',o.id);if(error){_pendSave.delete(_pk('orders',o.id));console.error('saveOrd',error);toast('⚠️ 저장 실패 — 새로고침 후 다시 시도하세요');return false;}}else{const {data,error}=await SB.from('orders').insert(row).select('id').single();if(error){console.error('saveOrd',error);toast('⚠️ 저장 실패 — 다시 시도하세요');return false;}if(data){o.id=data.id;_pendMark(_pendSave,'orders',o.id);}}return true;}catch(e){console.error(e);toast('⚠️ 저장 오류 — 인터넷 연결을 확인하세요');return false;}}
 /* ===== 동시/이중 처리 안전장치 ===== 같은 작업키가 처리 중이면 재실행 차단(더블클릭·동시처리 방지) */
 const _busy=new Set();
