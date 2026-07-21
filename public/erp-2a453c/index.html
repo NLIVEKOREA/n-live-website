@@ -5963,5 +5963,27 @@ rebuildSwitcher();buildNav();render();
   }catch(e){console.error('session',e);}
 })();
 </script>
+
+<!-- LB_MIGRATE_POPUP -->
+<script>(function(){
+  function show(){
+    if(document.getElementById("__lb_mig"))return;
+    var NEW="https://nlive.labangerp.com";
+    var o=document.createElement("div");o.id="__lb_mig";
+    o.style.cssText="position:fixed;inset:0;z-index:2147483647;background:rgba(15,23,42,.74);display:flex;align-items:center;justify-content:center;font-family:Malgun Gothic,AppleSDGothicNeo,sans-serif;padding:20px;box-sizing:border-box";
+    o.innerHTML='<div style="background:#fff;max-width:430px;width:100%;border-radius:20px;padding:34px 28px 24px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.35)">'
+      +'<div style="font-size:46px;margin-bottom:10px">🚚</div>'
+      +'<h2 style="margin:0 0 10px;font-size:22px;font-weight:800;color:#0f172a">새 ERP로 이전되었어요</h2>'
+      +'<p style="margin:0 0 22px;font-size:15px;line-height:1.65;color:#475569">앞으로는 <b>아래 새 주소</b>에서 접속해 주세요.<br>기존 주문·고객·재고 데이터는 그대로 옮겨져 있습니다.</p>'
+      +'<a href="'+NEW+'" style="display:block;background:#2563eb;color:#fff;text-decoration:none;padding:16px;border-radius:13px;font-size:17px;font-weight:800;box-shadow:0 8px 20px rgba(37,99,235,.35)">새 ERP로 이동하기 →</a>'
+      +'<div style="font-size:12px;color:#94a3b8;margin-top:12px;letter-spacing:.3px">nlive.labangerp.com</div>'
+      +'<div id="__lb_mig_x" style="margin-top:18px;font-size:12.5px;color:#cbd5e1;cursor:pointer;text-decoration:underline">오늘은 이 화면에서 계속하기</div>';
+    document.body.appendChild(o);
+    try{document.documentElement.style.overflow="hidden";document.body.style.overflow="hidden";}catch(e){}
+    var x=document.getElementById("__lb_mig_x");
+    if(x)x.onclick=function(){o.parentNode.removeChild(o);try{document.documentElement.style.overflow="";document.body.style.overflow="";}catch(e){}};
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",show);else show();
+})();</script>
 </body>
 </html>
