@@ -332,7 +332,7 @@
   .ord-card{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:#fff}
   .oc-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;row-gap:5px}
   .oc-head b{font-size:14px;white-space:nowrap}
-  .oc-total{font-weight:800;font-size:14px}
+  .oc-total{font-weight:800;font-size:14px;margin-left:auto}/* 금액은 줄바꿈돼도 항상 오른쪽 — 어느 줄에 놓이든 그 줄의 남는 공간을 다 먹어 우측에 붙는다 */
   .oc-sub{font-size:12px;color:var(--gray);margin-top:5px}
   .oc-items{margin:10px 0;display:flex;flex-direction:column;gap:6px}
   .oc-i{display:flex;align-items:center;gap:7px;font-size:12.5px}
@@ -2062,7 +2062,7 @@ function viewOrder(){
   </div>
   <div class="orderstat2">
   <div class="card">
-      <div class="card-h"><h2>미결제 <span class="muted" style="font-size:11.5px;font-weight:400">${mine(ORD).filter(o=>o.pay==='unpaid').length}건 · 날짜·고객별</span></h2><div style="display:flex;gap:5px"><button class="btn sm gray" onclick="ordCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button><button class="btn sm gray" onclick="expAll()"><i class="ti ti-chevrons-down"></i> 모두펼치기</button></div></div>
+      <div class="card-h"><h2>미결제 <span class="muted" style="font-size:11.5px;font-weight:400">${mine(ORD).filter(o=>o.pay==='unpaid').length}건 · 날짜·고객별</span> <span style="font-size:15px;font-weight:800;color:var(--red);white-space:nowrap">${won(mine(ORD).filter(o=>o.pay==='unpaid').reduce((a,o)=>a+amtOf(o),0))}</span></h2><div style="display:flex;gap:5px"><button class="btn sm gray" onclick="ordCollAll()"><i class="ti ti-chevrons-up"></i> 모두접기</button><button class="btn sm gray" onclick="expAll()"><i class="ti ti-chevrons-down"></i> 모두펼치기</button></div></div>
       ${orderStatusCards('unpaid')}
     </div>
     <div class="card">
