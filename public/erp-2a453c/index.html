@@ -80,6 +80,16 @@
   .nav button:hover{background:var(--navyhi);color:#fff}
   .nav button.on{background:#fff;color:var(--navy);font-weight:700}
   .nav .ic{font-size:16px;width:20px;text-align:center}
+  /* 라이브 판매 메뉴 강조 — ON AIR (2026-07-22) */
+  .nav button[data-v="live"]{position:relative;font-weight:800;color:#ffe1e1}
+  .nav button[data-v="live"] .ic{color:#ff4d4f;animation:liveBlink 1.25s ease-in-out infinite}
+  .nav button[data-v="live"]::after{content:'';position:absolute;right:12px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#ff4d4f;animation:liveDot 1.25s ease-out infinite}
+  .nav button[data-v="live"]:hover{background:rgba(255,77,79,.18);color:#fff}
+  .nav button[data-v="live"].on{background:#fff;color:#b91c1c}
+  .nav button[data-v="live"].on .ic{color:#ef4444}
+  @keyframes liveBlink{0%,100%{opacity:1;text-shadow:0 0 8px rgba(255,77,79,.95),0 0 18px rgba(255,77,79,.55)}50%{opacity:.5;text-shadow:0 0 2px rgba(255,77,79,.3)}}
+  @keyframes liveDot{0%{box-shadow:0 0 0 0 rgba(255,77,79,.85)}70%{box-shadow:0 0 0 10px rgba(255,77,79,0)}100%{box-shadow:0 0 0 0 rgba(255,77,79,0)}}
+  @media (prefers-reduced-motion:reduce){.nav button[data-v="live"] .ic,.nav button[data-v="live"]::after{animation:none}}
   .side .foot{padding:14px;border-top:1px solid rgba(255,255,255,.08)}
   .side .foot .lab{font-size:10px;color:#64748b;margin-bottom:5px}
   .side select{width:100%;font-size:12px;background:var(--navyhi);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:7px 9px}
