@@ -39,7 +39,16 @@ const nextConfig = {
      ══════════════════════════════════════════════════════════════ */
   async redirects() {
     const SHOP = "https://nlive.labangerp.com";
+    /* 🔴 2026-08-21 — 옛 ERP 사본(public/erp-2a453c) 을 지웠다.
+       그 화면은 **옛 DB(qikvvqgxmquevzyykkcm)** 를 보고 있었다. 지금 쓰는 곳이 아니다.
+       열어도 데이터가 0건이라 빈 껍데기였지만, 고객 데이터에 붙는 화면이
+       주소만 알면 열리는 상태로 공개돼 있었다.
+       북마크·즐겨찾기가 남아 있을 수 있으니 404 대신 **지금 ERP 로 넘긴다.** */
+    const ERP = "https://nlive.labangerp.com/v1";
     return [
+      { source: "/erp-2a453c", destination: ERP, permanent: true },
+      { source: "/erp-2a453c/", destination: ERP, permanent: true },
+      { source: "/erp-2a453c/:path*", destination: ERP, permanent: true },
       { source: "/shop/:seller", destination: `${SHOP}/shop/:seller`, permanent: true },
       { source: "/shop/:seller/", destination: `${SHOP}/shop/:seller`, permanent: true },
       { source: "/link/:seller", destination: `${SHOP}/link/:seller`, permanent: true },
