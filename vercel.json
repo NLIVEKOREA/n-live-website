@@ -1,5 +1,11 @@
 {
+  "regions": [
+    "icn1"
+  ],
   "crons": [
-    { "path": "/api/check-deliveries", "schedule": "0 0 * * *" }
+    {
+      "path": "/api/check-deliveries",
+      "schedule": "0 0 * * *"
+    }
   ]
 }
