@@ -569,11 +569,15 @@ $("stockList").addEventListener("click", async function(e){
 /* ── D) 블루투스 프린터 (Web Bluetooth · Phomemo ESC/POS) — 실기기 도착 후 검증 ── */
 var btDevice=null, btChar=null;
 async function btConnect(){
-  if(!navigator.bluetooth){ $("btMsg").textContent="이 브라우저는 블루투스 인쇄를 지원하지 않아요 (안드로이드 크롬 필요)."; return; }
+  if(!navigator.bluetooth){ $("btMsg").textContent="블루투스를 못 써요. QR을 카톡/인스타 안이 아니라 '크롬' 브라우저로 열어주세요 (아이폰 미지원)."; return; }
   try{
+    // 모든 블루투스 기기를 목록에 띄움(특정 이름 필터 제거). UROVO K300 등도 직접 골라 연결.
     btDevice = await navigator.bluetooth.requestDevice({
-      filters:[{ namePrefix:"M" },{ namePrefix:"T" },{ namePrefix:"Phomemo" }],
-      optionalServices:[0xFF00, "0000ff00-0000-1000-8000-00805f9b34fb", "e7810a71-73ae-499d-8c15-faa9aef0c3f2"]
+      acceptAllDevices:true,
+      optionalServices:[0xFF00,0xFFE0,0xFEE7,0x18F0,0xFFF0,0xFF10,
+        "49535343-fe7d-4ae5-8fa9-9fafd205e455",              // ISSC transparent UART(다수 라벨프린터)
+        "0000ff00-0000-1000-8000-00805f9b34fb",
+        "e7810a71-73ae-499d-8c15-faa9aef0c3f2"]              // Niimbot
     });
     var server = await btDevice.gatt.connect();
     var svcs = await server.getPrimaryServices();
