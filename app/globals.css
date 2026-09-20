@@ -2717,6 +2717,6 @@ body.lang-ja .campaign-form .form-check{ font-size:14px }
 .news-body{margin-top:44px}
 .news-body p{font-size:17px;line-height:1.9;margin-bottom:26px}
 .news-fig{margin:38px 0}
-.news-fig img{width:100%;border-radius:14px;display:block}
+.news-fig img,.news-fig video{width:100%;border-radius:14px;display:block}
 .news-fig figcaption{margin-top:12px;font-size:13px;color:#8a8f98;text-align:center;line-height:1.55}
 .news-empty{padding:60px 0;text-align:center;opacity:.6}

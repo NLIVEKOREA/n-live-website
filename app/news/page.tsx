@@ -5,7 +5,7 @@ import PageEnter from "@/components/PageEnter";
 
 // 기사 본문은 한국어(소식란). 다음 행사는 NEWS 배열에 객체 하나 append.
 // ponytail: 단일 언어 기사 + 배열 렌더. 다국어 본문/상세 라우팅은 필요해지면 그때.
-type Block = { p: string } | { img: string; cap: string };
+type Block = { p: string } | { img: string; cap: string } | { vid: string; cap: string };
 type Article = { date: string; tag: string; title: string; lead: string; cover: string; body: Block[] };
 
 const NEWS: Article[] = [
@@ -22,6 +22,8 @@ const NEWS: Article[] = [
       { p: "대표 사례로 소개된 Tom Ford × 星选种草团 협업은 수치가 인상적이었습니다. 협업 소요 10일, 마케팅 비용 –70%, 콘텐츠(种草·종초) 품질 +28%, 신규 크리에이터 발굴 100%. 사람이 일일이 붙던 브랜드–크리에이터 매칭을 AI가 대신하면서, 더 빠르고 더 싸게, 그러나 품질은 올라간다는 방향을 분명히 했습니다." },
       { p: "엔라이브는 이 흐름을 한국 브랜드의 중국 진출, 그리고 해외 셀러·왕홍 매칭에 그대로 이어 봅니다. AI·Agent 기반 매칭이 중국 라이브커머스의 표준이 되어가는 지금, 검증된 창작자 풀과 현장 운영 역량을 함께 갖춘 파트너의 가치는 오히려 커집니다. 엔라이브는 현장에서 확인한 최신 흐름을 자사 매칭·운영에 반영해, 파트너에게 한발 앞선 크로스보더 전략을 제공하겠습니다." },
       { img: "/newsimg/douyin2026-3.jpg", cap: "2026 抖音 창작자 대회 폐막 — ‘热爱所向 万千回响’" },
+      { vid: "/newsvid/douyin2026-a.mp4", cap: "현장 스케치 ①" },
+      { vid: "/newsvid/douyin2026-b.mp4", cap: "현장 스케치 ②" },
     ],
   },
 ];
@@ -60,6 +62,11 @@ export default function NewsPage() {
                 {a.body.map((b, j) =>
                   "p" in b ? (
                     <p key={j}>{b.p}</p>
+                  ) : "vid" in b ? (
+                    <figure className="news-fig" key={j}>
+                      <video src={b.vid} controls preload="metadata" playsInline />
+                      <figcaption>{b.cap}</figcaption>
+                    </figure>
                   ) : (
                     <figure className="news-fig" key={j}>
                       <img src={b.img} alt={b.cap} loading="lazy" />
