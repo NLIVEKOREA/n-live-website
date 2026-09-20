@@ -2704,3 +2704,19 @@ body.lang-ja .campaign-form .form-check{ font-size:14px }
 .nml-check{
   color:var(--heritage);font-weight:800;font-size:12px
 }
+
+/* ── 뉴스/소식 (app/news) ── */
+.news-article{max-width:840px;margin:0 auto}
+.news-article + .news-article{margin-top:72px;padding-top:64px;border-top:1px solid var(--line)}
+.news-meta{display:flex;align-items:center;gap:14px;margin-bottom:18px;font-size:12px;letter-spacing:.06em}
+.news-tag{background:var(--ice);color:#135CF2;padding:5px 12px;border-radius:20px;font-weight:700}
+.news-meta time{color:#8a8f98}
+.news-title{font-size:clamp(26px,3.4vw,38px);font-weight:800;line-height:1.28;letter-spacing:-.02em;margin-bottom:18px;font-family:'Pretendard',sans-serif}
+.news-lead{font-size:18px;line-height:1.7;opacity:.82;margin-bottom:34px}
+.news-cover img{width:100%;border-radius:16px;display:block}
+.news-body{margin-top:44px}
+.news-body p{font-size:17px;line-height:1.9;margin-bottom:26px}
+.news-fig{margin:38px 0}
+.news-fig img{width:100%;border-radius:14px;display:block}
+.news-fig figcaption{margin-top:12px;font-size:13px;color:#8a8f98;text-align:center;line-height:1.55}
+.news-empty{padding:60px 0;text-align:center;opacity:.6}
